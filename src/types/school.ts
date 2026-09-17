@@ -24,19 +24,13 @@ export interface SchoolConfig {
 
 export interface SchoolContent {
 	sidebar: SidebarContent;
+	login: {}
 }
 
 export interface SidebarContent {
 	logo: string;
 	tagline: string;
-	collapsible: {
-		about: ItemDetail;
-		courses: ItemDetail;
-		facilities: ItemDetail;
-		gallery: ItemDetail;
-		moreInfo: ItemDetail;
-		contact: ItemDetail;
-	};
+	collapsible: Record<string, ItemDetail>;
 }
 
 export interface ItemDetail {

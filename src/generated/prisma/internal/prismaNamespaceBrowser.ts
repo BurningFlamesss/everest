@@ -63,7 +63,18 @@ export const ModelName = {
   Guardian: 'Guardian',
   GuardianStudent: 'GuardianStudent',
   Invite: 'Invite',
-  GuardianInvite: 'GuardianInvite'
+  GuardianInvite: 'GuardianInvite',
+  WebsitePage: 'WebsitePage',
+  ContentBlock: 'ContentBlock',
+  FacultyMember: 'FacultyMember',
+  Notice: 'Notice',
+  Scholarship: 'Scholarship',
+  Album: 'Album',
+  Facility: 'Facility',
+  Resource: 'Resource',
+  BoardResult: 'BoardResult',
+  BusRoute: 'BusRoute',
+  CalendarEvent: 'CalendarEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -263,12 +274,231 @@ export const GuardianInviteScalarFieldEnum = {
 export type GuardianInviteScalarFieldEnum = (typeof GuardianInviteScalarFieldEnum)[keyof typeof GuardianInviteScalarFieldEnum]
 
 
+export const WebsitePageScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  path: 'path',
+  status: 'status',
+  hasUnpublishedChanges: 'hasUnpublishedChanges',
+  seoTitle: 'seoTitle',
+  seoDescription: 'seoDescription',
+  seoKeywords: 'seoKeywords',
+  publishedAt: 'publishedAt',
+  updatedAt: 'updatedAt',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt'
+} as const
+
+export type WebsitePageScalarFieldEnum = (typeof WebsitePageScalarFieldEnum)[keyof typeof WebsitePageScalarFieldEnum]
+
+
+export const ContentBlockScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  label: 'label',
+  visible: 'visible',
+  order: 'order',
+  fields: 'fields',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt',
+  pageId: 'pageId'
+} as const
+
+export type ContentBlockScalarFieldEnum = (typeof ContentBlockScalarFieldEnum)[keyof typeof ContentBlockScalarFieldEnum]
+
+
+export const FacultyMemberScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  role: 'role',
+  department: 'department',
+  qualification: 'qualification',
+  experience: 'experience',
+  subjects: 'subjects',
+  email: 'email',
+  extension: 'extension',
+  officeHours: 'officeHours',
+  bio: 'bio',
+  joined: 'joined',
+  leadership: 'leadership',
+  rank: 'rank',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FacultyMemberScalarFieldEnum = (typeof FacultyMemberScalarFieldEnum)[keyof typeof FacultyMemberScalarFieldEnum]
+
+
+export const NoticeScalarFieldEnum = {
+  id: 'id',
+  ref: 'ref',
+  title: 'title',
+  category: 'category',
+  dateAd: 'dateAd',
+  dateBs: 'dateBs',
+  audience: 'audience',
+  issuedBy: 'issuedBy',
+  summary: 'summary',
+  body: 'body',
+  bullets: 'bullets',
+  table: 'table',
+  attachments: 'attachments',
+  pinned: 'pinned',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NoticeScalarFieldEnum = (typeof NoticeScalarFieldEnum)[keyof typeof NoticeScalarFieldEnum]
+
+
+export const ScholarshipScalarFieldEnum = {
+  id: 'id',
+  ref: 'ref',
+  name: 'name',
+  nepaliName: 'nepaliName',
+  category: 'category',
+  coverage: 'coverage',
+  award: 'award',
+  amountNpr: 'amountNpr',
+  seats: 'seats',
+  deadlineAd: 'deadlineAd',
+  deadlineBs: 'deadlineBs',
+  appliesTo: 'appliesTo',
+  summary: 'summary',
+  description: 'description',
+  eligibility: 'eligibility',
+  benefits: 'benefits',
+  documents: 'documents',
+  process: 'process',
+  renewal: 'renewal',
+  contact: 'contact',
+  spotlight: 'spotlight',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ScholarshipScalarFieldEnum = (typeof ScholarshipScalarFieldEnum)[keyof typeof ScholarshipScalarFieldEnum]
+
+
+export const AlbumScalarFieldEnum = {
+  id: 'id',
+  event: 'event',
+  year: 'year',
+  category: 'category',
+  date: 'date',
+  photos: 'photos',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AlbumScalarFieldEnum = (typeof AlbumScalarFieldEnum)[keyof typeof AlbumScalarFieldEnum]
+
+
+export const FacilityScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  room: 'room',
+  specs: 'specs',
+  images: 'images',
+  block: 'block',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FacilityScalarFieldEnum = (typeof FacilityScalarFieldEnum)[keyof typeof FacilityScalarFieldEnum]
+
+
+export const ResourceScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  category: 'category',
+  fileUrl: 'fileUrl',
+  fileSize: 'fileSize',
+  kind: 'kind',
+  audience: 'audience',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ResourceScalarFieldEnum = (typeof ResourceScalarFieldEnum)[keyof typeof ResourceScalarFieldEnum]
+
+
+export const BoardResultScalarFieldEnum = {
+  id: 'id',
+  board: 'board',
+  year: 'year',
+  appeared: 'appeared',
+  passed: 'passed',
+  distinction: 'distinction',
+  firstDivision: 'firstDivision',
+  secondDivision: 'secondDivision',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BoardResultScalarFieldEnum = (typeof BoardResultScalarFieldEnum)[keyof typeof BoardResultScalarFieldEnum]
+
+
+export const BusRouteScalarFieldEnum = {
+  id: 'id',
+  busNumber: 'busNumber',
+  driverName: 'driverName',
+  driverPhone: 'driverPhone',
+  stops: 'stops',
+  feeMonthly: 'feeMonthly',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BusRouteScalarFieldEnum = (typeof BusRouteScalarFieldEnum)[keyof typeof BusRouteScalarFieldEnum]
+
+
+export const CalendarEventScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  category: 'category',
+  term: 'term',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CalendarEventScalarFieldEnum = (typeof CalendarEventScalarFieldEnum)[keyof typeof CalendarEventScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -285,4 +515,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

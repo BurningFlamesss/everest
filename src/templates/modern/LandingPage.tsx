@@ -1,18 +1,23 @@
 import { useCanvasVideo } from "#/hooks/useCanvasVideo.ts";
-import { useSchoolContent } from "#/packages/school/hook.tsx";
-import { Link } from "@tanstack/react-router";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowUpRight } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, BookOpen, Building2, Info, Users, Image as ImageIcon } from "lucide-react";
+import { NoticeDialog } from "#/components/common/NoticeDialog";
+import { ResultsChart } from "#/templates/modern/components/utilities/ResultsChart";
+import { albums } from "#/content/gallery";
+import { people } from "#/lib/faculty";
+import { SectionHeading } from "#/templates/modern/components/chrome/PageFrame";
+import { MonogramAvatar } from "#/templates/modern/components/shared/MonogramAvatar";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function LandingPage() {
-	const { sidebar } = useSchoolContent();
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
+		if (!containerRef.current) return;
 		const ctx = gsap.context(() => {
 			gsap.fromTo(
 				".hero-next-section",
@@ -38,131 +43,276 @@ export default function LandingPage() {
 	}, []);
 
 	return (
-		<main className="w-full">
-			<div ref={containerRef} className="relative h-[500vh]">
-				<div className="sticky top-0 h-screen w-full overflow-hidden">
-					<HeroCanvas scrollTrackRef={containerRef} />
-				</div>
+		<>
+			<div className="relative min-h-screen bg-background">
+				<div ref={containerRef} className="relative h-[600vh]">
+					<div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
+						<HeroCanvas scrollTrackRef={containerRef} />
+						
+						{/* Dark Vignette Overlay for Text Legibility */}
+						<div className="pointer-events-none absolute inset-0 z-[5] bg-gradient-to-b from-black/40 via-transparent to-black/60" />
 
-				<section className="hero-next-section absolute bottom-0 left-0 z-10 h-[80vh] w-full overflow-hidden bg-white rounded-3xl">
-					<div className="grid grid-cols-[6fr_5fr] mx-20 pt-20 gap-[8%]">
-						<h2 className="text-8xl font-bold">
-							Established in purpose.
-							<br />
-							Contemporary in outlook.
-						</h2>
-						<div>
-							<p className="text-lg leading-normal mb-8">
-								Everest English Boarding Higher Secondary School is a learning
-								institution in Nepal built around a simple conviction: students
-								thrive when expectations are clear, relationships are strong,
-								and curiosity has room to become practice.
-							</p>
-							<dl className="border-t border-gray-300">
-								<div className="grid grid-cols-[140px_1fr] gap-5 p-4.5 border-b border-gray-300">
-									<dt className="text-xs uppercase">Institution</dt>
-									<dd className="text-md font-medium">
-										Everest English Boarding Higher Secondary School
-									</dd>
+						{/* Scroll-triggered Overlays */}
+						<div className="pointer-events-none absolute inset-0 z-10 flex lg:pl-[var(--nav-w)]">
+							<div className="relative h-full w-full p-8 lg:p-16">
+								{/* Text 1: Visible by default, Appears Top Right */}
+								<div className="scroll-text-1 absolute right-8 top-1/4 max-w-lg text-right text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] lg:right-24">
+									<h2 className="font-display text-5xl font-bold leading-tight md:text-7xl">
+										A place to grow.
+									</h2>
+									<p className="mt-4 text-lg font-medium text-white/95 md:text-xl">
+										Developing character, capability, and curiosity since 2050 BS.
+									</p>
 								</div>
-								<div className="grid grid-cols-[140px_1fr] gap-5 p-4.5 border-b border-gray-300">
-									<dt className="text-xs uppercase">Learning Spaces</dt>
-									<dd className="text-md font-medium">
-										Everest Building + Canon Building
-									</dd>
+
+								{/* Text 2: Appears Bottom Left (relative to layout) */}
+								<div className="scroll-text-2 absolute bottom-24 left-8 max-w-xl translate-y-[20px] text-white opacity-0 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] lg:left-24">
+									<h2 className="font-display text-5xl font-bold leading-tight md:text-7xl">
+										Future ready.
+									</h2>
+									<p className="mt-4 text-lg font-medium text-white/95 md:text-xl">
+										Our state-of-the-art facilities and modern curriculums empower students to thrive in an evolving world.
+									</p>
 								</div>
-								<div className="grid grid-cols-[140px_1fr] gap-5 p-4.5 border-b border-gray-300">
-									<dt className="text-xs uppercase">Streams</dt>
-									<dd className="text-md font-medium">
-										Science (Computer/Biology), Management
-									</dd>
+
+								{/* Text 3: Appears Center */}
+								<div className="scroll-text-3 absolute inset-0 flex flex-col items-center justify-center text-center text-white opacity-0 translate-y-[20px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+									<div className="max-w-3xl px-6">
+										<h2 className="font-display text-5xl font-bold leading-tight md:text-8xl">
+											Everest.
+										</h2>
+										<p className="mt-4 text-xl font-medium text-white/95 md:text-2xl">
+											The summit of education.
+										</p>
+									</div>
 								</div>
-								<div className="grid grid-cols-[140px_1fr] gap-5 p-4.5 border-b border-gray-300">
-									<dt className="text-xs uppercase">Labs</dt>
-									<dd className="text-md font-medium">
-										Computer, Biology, Physics, Chemistry
-									</dd>
-								</div>
-							</dl>
+							</div>
 						</div>
 					</div>
-				</section>
-			</div>
 
-			<footer className="bg-black pb-10 pt-32.5 text-white">
-				<div className="mx-8">
-					<div className="flex items-end justify-between gap-7.5">
-						<p className="m-0 text-[10px] uppercase tracking-[0.14em] text-muted">
-							Reach the Highest Point
-						</p>
-						<Link
-							className="group inline-flex items-center gap-5.5 text-[clamp(62px,7vw,110px)] leading-[0.9] no-underline"
-							to="/contact"
-						>
-							<span>With Everest</span>
-							<ArrowUpRight className="h-11 w-11 text-yellow-400 transition-transform duration-220 ease-in group-hover:translate-x-1.25 group-hover:-translate-y-1.25" />
-						</Link>
-					</div>
+					<section className="hero-next-section absolute bottom-0 left-0 z-10 w-full overflow-y-auto overflow-x-hidden bg-[#FEF2F2] rounded-t-3xl min-h-[70vh] lg:h-[80vh]">
+						<div className="grid grid-cols-1 lg:grid-cols-[6fr_5fr] mx-6 md:mx-12 lg:mx-20 pt-10 pb-16 lg:pt-20 lg:pb-0 gap-10 lg:gap-[8%]">
+							<h2 className="text-5xl md:text-6xl lg:text-8xl font-bold text-foreground">
+								Established in purpose.
+								<br />
+								Contemporary in outlook.
+							</h2>
+							<div>
+								<p className="text-base md:text-lg leading-normal mb-8 text-muted-foreground">
+									Everest English Boarding Higher Secondary School is a learning
+									institution in Nepal built around a simple conviction: students
+									thrive when expectations are clear, relationships are strong,
+									and curiosity has room to become practice.
+								</p>
+								<dl className="border-t border-rule-soft">
+									<div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
+										<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">Institution</dt>
+										<dd className="text-sm sm:text-md font-medium text-foreground">
+											Everest English Boarding Higher Secondary School
+										</dd>
+									</div>
+									<div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
+										<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">Learning Spaces</dt>
+										<dd className="text-sm sm:text-md font-medium text-foreground">
+											Everest Building + Canon Building
+										</dd>
+									</div>
+									<div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
+										<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">Streams</dt>
+										<dd className="text-sm sm:text-md font-medium text-foreground">
+											Science (Computer/Biology), Management
+										</dd>
+									</div>
+									<div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
+										<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">Labs</dt>
+										<dd className="text-sm sm:text-md font-medium text-foreground">
+											Computer, Biology, Physics, Chemistry
+										</dd>
+									</div>
+								</dl>
+							</div>
+						</div>
+					</section>
+				</div>
 
-					<div className="mb-10.5 mt-13.5 h-px bg-gray-700" />
+				<div className="relative z-20 bg-[#FEF2F2] px-8 py-24 pb-32">
+					<div className="mx-auto max-w-screen-xl">
+						{/* Result Chart */}
+						<div className="mb-32">
+							<SectionHeading
+								eyebrow="Academic Excellence"
+								title="Board Results"
+								description="Consistent performance across all levels of examination."
+							/>
+							<div className="mt-12 rounded-card border border-border bg-card p-6 shadow-sm sm:p-10">
+								<ResultsChart />
+							</div>
+						</div>
 
-					<div className="grid grid-cols-[2fr_1fr_1.5fr_1fr] gap-15">
-						<img src={sidebar.logo} alt="" />
-
-						<div className="flex flex-col gap-2.5 text-xs">
-							<span className="mb-2 text-[9px] uppercase tracking-[0.12em] text-yellow-400">
-								Explore
-							</span>
-							{["Home", "About", "Contact", "Signup"].map((item) => (
-								<Link
-									key={item}
-									to={item}
-									className="text-white no-underline transition-colors hover:text-yellow-400"
-								>
-									{item}
+						{/* Discover / About / Courses / Facilities */}
+						<div className="mb-32">
+							<SectionHeading
+								eyebrow="Explore Everest"
+								title="Discover the school"
+								description="Learn more about our academic programs, state-of-the-art facilities, and the institution's history."
+							/>
+							<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+								<Link to="/courses" className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
+									<div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 sm:h-14 sm:w-14">
+										<BookOpen className="h-6 w-6 text-accent" aria-hidden="true" />
+									</div>
+									<p className="t-eyebrow mt-6">Academics</p>
+									<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
+										Courses & Programs
+									</h3>
+									<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground line-clamp-3">
+										Explore subject lists, credit hours, fee structures and weekly routines for every programme from Nursery to Grade 12.
+									</p>
+									<span className="mt-auto pt-6 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
+										View courses
+										<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+									</span>
 								</Link>
-							))}
+								
+								<Link to="/facilities" className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
+									<div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 sm:h-14 sm:w-14">
+										<Building2 className="h-6 w-6 text-accent" aria-hidden="true" />
+									</div>
+									<p className="t-eyebrow mt-6">Campus</p>
+									<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
+										Facilities
+									</h3>
+									<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground line-clamp-3">
+										Detailed overviews of our laboratories, libraries, spaces, and digital infrastructure across the campus.
+									</p>
+									<span className="mt-auto pt-6 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
+										Tour facilities
+										<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+									</span>
+								</Link>
+
+								<Link to="/about" className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
+									<div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 sm:h-14 sm:w-14">
+										<Info className="h-6 w-6 text-accent" aria-hidden="true" />
+									</div>
+									<p className="t-eyebrow mt-6">The Institution</p>
+									<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
+										About Everest
+									</h3>
+									<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground line-clamp-3">
+										Our history, guiding principles, and the structural vision that builds the foundation of our institution.
+									</p>
+									<span className="mt-auto pt-6 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
+										Read about us
+										<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+									</span>
+								</Link>
+							</div>
 						</div>
 
-						<div className="flex flex-col gap-2.5 text-xs">
-							<span className="mb-2 text-[9px] uppercase tracking-[0.12em] text-yellow-400">
-								Institution
-							</span>
-							<p className="m-0 leading-normal text-muted">Nepal</p>
-							<p className="m-0 leading-normal text-muted">
-								School Administrator
-							</p>
+						{/* Gallery */}
+						<div className="mb-32">
+							<SectionHeading
+								eyebrow="Campus Life"
+								title="Gallery Highlights"
+								description="Moments captured around the school grounds and during major events."
+							/>
+							<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+								{albums.slice(0, 3).map((album) => (
+									<Link key={album.id} to="/gallery" className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
+										<div className="mb-6 h-[200px] w-full overflow-hidden rounded-md border border-border bg-secondary">
+											<img 
+												src={album.photos[0].src} 
+												alt={album.photos[0].alt}
+												className="h-full w-full object-cover transition-transform duration-[400ms] group-hover:scale-105"
+											/>
+										</div>
+										<p className="t-eyebrow mt-auto">{album.year} · {album.category}</p>
+										<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground line-clamp-2">
+											{album.event}
+										</h3>
+										<span className="mt-6 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
+											View all {album.photos.length} photos
+											<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+										</span>
+									</Link>
+								))}
+							</div>
 						</div>
 
-						<div className="flex flex-col items-end justify-between text-[9px] text-muted">
-							<span>SCMS / Everest</span>
-							<span>{new Date().getFullYear()}</span>
+						{/* Faculty */}
+						<div>
+							<SectionHeading
+								eyebrow="Leadership"
+								title="Our Faculty"
+								description="The educators leading our academic departments and steering the school's vision."
+							/>
+							<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+								{people.filter((p) => p.leadership).slice(0, 3).map((person) => (
+									<Link key={person.id} to="/faculty" className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
+										<MonogramAvatar
+											name={person.name}
+											department={person.department}
+											size="lg"
+										/>
+										<p className="t-eyebrow mt-6">{person.role}</p>
+										<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
+											{person.name}
+										</h3>
+										<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
+											{person.qualification}
+										</p>
+										<div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-rule-soft pt-4">
+											<span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[11.5px] leading-normal text-muted-foreground">
+												{person.department}
+											</span>
+											<span className="t-meta">Ext. {person.extension}</span>
+										</div>
+										<span className="mt-4 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
+											View directory
+											<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+										</span>
+									</Link>
+								))}
+							</div>
 						</div>
 					</div>
 				</div>
-			</footer>
-		</main>
+			</div>
+			<NoticeDialog />
+		</>
 	);
 }
 
-export function HeroCanvas({ scrollTrackRef }) {
-	const canvasRef = useRef(null);
+export function HeroCanvas({ scrollTrackRef }: { scrollTrackRef: React.RefObject<HTMLDivElement | null> }) {
+	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-	const { drawFrame, frameCount, isLoading, progress } = useCanvasVideo(
+	const { drawFrame, frameCount, isLoading, progress, ready } = useCanvasVideo(
 		canvasRef,
 		216,
 	);
 
+	// Ensure active frame is drawn whenever ready or when loading completes
 	useEffect(() => {
-		if (isLoading) return;
+		if (ready && !isLoading) {
+			requestAnimationFrame(() => {
+				const start = ScrollTrigger.getById("hero-scroll");
+				const index = start ? Math.floor(start.progress * (frameCount - 1)) : 0;
+				drawFrame(index);
+			});
+		}
+	}, [ready, isLoading, drawFrame, frameCount]);
 
-		drawFrame(0);
+	useEffect(() => {
+		if (!ready) return;
 
 		const handleResize = () => {
 			const start = ScrollTrigger.getById("hero-scroll");
 
 			if (start) {
 				drawFrame(start.progress * (frameCount - 1));
+			} else {
+				drawFrame(0);
 			}
 		};
 
@@ -174,7 +324,7 @@ export function HeroCanvas({ scrollTrackRef }) {
 				trigger: scrollTrackRef.current,
 				start: "top top",
 				end: "bottom bottom",
-				scrub: 0,
+				scrub: true,
 				onUpdate: (self) => {
 					const frameIndex = Math.floor(self.progress * (frameCount - 1));
 					drawFrame(frameIndex);
@@ -182,23 +332,35 @@ export function HeroCanvas({ scrollTrackRef }) {
 			},
 		});
 
+		timeline.to(".scroll-text-1", { opacity: 0, y: -20, duration: 1, ease: "power1.inOut" }, 1.5)
+				.to(".scroll-text-2", { opacity: 1, y: 0, duration: 1, ease: "power1.inOut" }, 3)
+				.to(".scroll-text-2", { opacity: 0, y: -20, duration: 1, ease: "power1.inOut" }, 5.5)
+				.to(".scroll-text-3", { opacity: 1, y: 0, duration: 1, ease: "power1.inOut" }, 7)
+				.to(".scroll-text-3", { opacity: 0, y: -20, duration: 1, ease: "power1.inOut" }, 9.5);
+
+		// Trigger initial frame draw after GSAP ScrollTrigger setup
+		const currentScroll = ScrollTrigger.getById("hero-scroll");
+		const initialIndex = currentScroll ? Math.floor(currentScroll.progress * (frameCount - 1)) : 0;
+		drawFrame(initialIndex);
+
 		return () => {
 			removeEventListener("resize", handleResize);
 			ScrollTrigger.getById("hero-scroll")?.kill();
 			timeline.kill();
 		};
-	}, [isLoading, drawFrame, scrollTrackRef, frameCount]);
-
-	if (isLoading) {
-		return (
-			<div className="fixed inset-0 z-50 flex flex-col items-center justify-center">
-				<h1 className="text-2xl mb-4">Loading Experience</h1>
-			</div>
-		);
-	}
+	}, [ready, drawFrame, scrollTrackRef, frameCount]);
 
 	return (
-		<div className="relative w-full h-full">
+		<div className="relative w-full h-full bg-black">
+			{isLoading && (
+				<div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background">
+					<div className="text-center">
+						<div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+						<h1 className="text-lg font-medium">Loading Experience</h1>
+						<p className="text-sm text-muted-foreground mt-1">{Math.round(progress)}%</p>
+					</div>
+				</div>
+			)}
 			<canvas
 				ref={canvasRef}
 				className="block w-full h-full object-cover filter contrast-[1.05] saturate-[1.05]"

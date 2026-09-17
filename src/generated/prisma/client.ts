@@ -106,3 +106,60 @@ export type Invite = Prisma.InviteModel
  * 
  */
 export type GuardianInvite = Prisma.GuardianInviteModel
+/**
+ * Model WebsitePage
+ * 
+ */
+export type WebsitePage = Prisma.WebsitePageModel
+/**
+ * Model ContentBlock
+ * 
+ */
+export type ContentBlock = Prisma.ContentBlockModel
+/**
+ * Model FacultyMember
+ * Public faculty directory. Mirrors the frontend Person shape so the
+ * faculty-page-detail route is driven from the database instead of static files.
+ */
+export type FacultyMember = Prisma.FacultyMemberModel
+/**
+ * Model Notice
+ * Public notice-board content, mirroring the frontend Notice shape. Complex
+ * fields (paragraphs, bullets, tables, attachments) are stored as JSON.
+ */
+export type Notice = Prisma.NoticeModel
+/**
+ * Model Scholarship
+ * Public scholarship schemes, mirroring the frontend Scholarship shape.
+ */
+export type Scholarship = Prisma.ScholarshipModel
+/**
+ * Model Album
+ * Photo albums shown in the gallery page.
+ */
+export type Album = Prisma.AlbumModel
+/**
+ * Model Facility
+ * Campus facilities (Biology lab, Library, etc).
+ */
+export type Facility = Prisma.FacilityModel
+/**
+ * Model Resource
+ * Downloadable resources for students/guardians.
+ */
+export type Resource = Prisma.ResourceModel
+/**
+ * Model BoardResult
+ * Board results tracking academic excellence over years.
+ */
+export type BoardResult = Prisma.BoardResultModel
+/**
+ * Model BusRoute
+ * Bus routes for the transportation page.
+ */
+export type BusRoute = Prisma.BusRouteModel
+/**
+ * Model CalendarEvent
+ * Calendar and school events.
+ */
+export type CalendarEvent = Prisma.CalendarEventModel
