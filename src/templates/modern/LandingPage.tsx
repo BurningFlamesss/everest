@@ -90,42 +90,42 @@ export default function LandingPage() {
 						</div>
 					</div>
 
-					<section className="hero-next-section absolute bottom-0 left-0 z-10 h-[80vh] w-full overflow-hidden bg-[#FEF2F2] rounded-t-3xl">
-						<div className="grid grid-cols-[6fr_5fr] mx-20 pt-20 gap-[8%]">
-							<h2 className="text-8xl font-bold text-foreground">
+					<section className="hero-next-section absolute bottom-0 left-0 z-10 w-full overflow-y-auto overflow-x-hidden bg-[#FEF2F2] rounded-t-3xl min-h-[70vh] lg:h-[80vh]">
+						<div className="grid grid-cols-1 lg:grid-cols-[6fr_5fr] mx-6 md:mx-12 lg:mx-20 pt-10 pb-16 lg:pt-20 lg:pb-0 gap-10 lg:gap-[8%]">
+							<h2 className="text-5xl md:text-6xl lg:text-8xl font-bold text-foreground">
 								Established in purpose.
 								<br />
 								Contemporary in outlook.
 							</h2>
 							<div>
-								<p className="text-lg leading-normal mb-8 text-muted-foreground">
+								<p className="text-base md:text-lg leading-normal mb-8 text-muted-foreground">
 									Everest English Boarding Higher Secondary School is a learning
 									institution in Nepal built around a simple conviction: students
-									thrivet when expectations are clear, relationships are strong,
+									thrive when expectations are clear, relationships are strong,
 									and curiosity has room to become practice.
 								</p>
 								<dl className="border-t border-rule-soft">
-									<div className="grid grid-cols-[140px_1fr] gap-5 p-4.5 border-b border-rule-soft">
-										<dt className="text-xs uppercase text-muted-foreground tracking-wider">Institution</dt>
-										<dd className="text-md font-medium text-foreground">
+									<div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
+										<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">Institution</dt>
+										<dd className="text-sm sm:text-md font-medium text-foreground">
 											Everest English Boarding Higher Secondary School
 										</dd>
 									</div>
-									<div className="grid grid-cols-[140px_1fr] gap-5 p-4.5 border-b border-rule-soft">
-										<dt className="text-xs uppercase text-muted-foreground tracking-wider">Learning Spaces</dt>
-										<dd className="text-md font-medium text-foreground">
+									<div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
+										<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">Learning Spaces</dt>
+										<dd className="text-sm sm:text-md font-medium text-foreground">
 											Everest Building + Canon Building
 										</dd>
 									</div>
-									<div className="grid grid-cols-[140px_1fr] gap-5 p-4.5 border-b border-rule-soft">
-										<dt className="text-xs uppercase text-muted-foreground tracking-wider">Streams</dt>
-										<dd className="text-md font-medium text-foreground">
+									<div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
+										<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">Streams</dt>
+										<dd className="text-sm sm:text-md font-medium text-foreground">
 											Science (Computer/Biology), Management
 										</dd>
 									</div>
-									<div className="grid grid-cols-[140px_1fr] gap-5 p-4.5 border-b border-rule-soft">
-										<dt className="text-xs uppercase text-muted-foreground tracking-wider">Labs</dt>
-										<dd className="text-md font-medium text-foreground">
+									<div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
+										<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">Labs</dt>
+										<dd className="text-sm sm:text-md font-medium text-foreground">
 											Computer, Biology, Physics, Chemistry
 										</dd>
 									</div>
