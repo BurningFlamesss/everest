@@ -581,10 +581,13 @@ function RouteComponent() {
 								<span className="min-w-0 flex-1 text-body-m text-ink">
 									{e.title}
 								</span>
-								<span className="u-label tnum text-n-600">
+								<span className="u-label tnum hidden md:block text-n-600">
 									{formatBs(e.date.bs)} BS
 								</span>
-								<span className="u-label tnum w-[168px] text-right text-n-600">
+								<span className="u-label tnum md:hidden text-n-600 shrink-0 text-right">
+									{formatBs(e.date.bs).split(" ").slice(0, 2).join(" ")}
+								</span>
+								<span className="u-label tnum hidden w-[168px] text-right text-n-600 md:block">
 									{formatAd(e.date.ad)}
 								</span>
 							</li>

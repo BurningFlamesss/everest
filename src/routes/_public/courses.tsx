@@ -386,10 +386,10 @@ function RouteComponent() {
                   className={[
                     "shrink-0 rounded-field border px-3.5 py-2.5 text-left transition-colors duration-fast",
                     "focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
-                    "lg:w-full lg:rounded-none lg:border-0 lg:border-l-0 lg:px-0 lg:pl-4",
+                    "lg:w-full lg:rounded-none lg:border-0 lg:border-l-2 lg:px-0 lg:pl-4",
                     active
-                      ? "border-accent/40 bg-transparent lg:border-accent lg:bg-transparent"
-                      : "border-border bg-background hover:bg-transparent lg:border-rule lg:bg-transparent lg:hover:border-rule-strong",
+                      ? "border-accent/40 bg-accent/[0.08] lg:border-accent lg:bg-transparent"
+                      : "border-border bg-background hover:bg-secondary lg:border-transparent lg:bg-transparent lg:hover:border-border",
                   ].join(" ")}
                 >
                   <span

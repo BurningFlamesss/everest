@@ -180,7 +180,7 @@ export const getSchoolContentServer = createServerFn({ method: "GET" })
 				children: [
 					{ id: "faculty", label: "Faculty", href: "/faculty" },
 					{ id: "notices", label: "Notices", href: "/notices" },
-					{ id: "scholarships", label: "Scholarships", href: "/scholarships" },
+					{ id: "scholarship", label: "Scholarships", href: "/scholarship" },
 					{ id: "calendar", label: "Calendar", href: "/calendar" },
 					{ id: "transportation", label: "Transportation", href: "/transportation" },
 					{ id: "result", label: "Result", href: "/result" },

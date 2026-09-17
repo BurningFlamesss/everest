@@ -13,9 +13,9 @@ const NAV_ITEMS = [
   { to: "/faculty", label: "Administration", testId: "top-nav-link-faculty" },
   { to: "/notices", label: "Notices", testId: "top-nav-link-notices" },
   {
-    to: "/scholarships",
+    to: "/scholarship",
     label: "Scholarships",
-    testId: "top-nav-link-scholarships",
+    testId: "top-nav-link-scholarship",
   },
 ];
 

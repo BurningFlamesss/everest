@@ -1291,10 +1291,16 @@
 
     .contact-layout {
         display: grid;
-        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        grid-template-columns: 1fr;
         gap: clamp(40px, 6vw, 80px);
         padding-block: clamp(48px, 7vw, 96px);
         border-top: 2px solid var(--color-ink, #000);
+    }
+    
+    @media (min-width: 1024px) {
+        .contact-layout {
+            grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        }
     }
 
     .contact-layout aside {

@@ -43,9 +43,9 @@
 						"href": "/calendar"
 					},
 					{
-						"id": "scholarships",
+						"id": "scholarship",
 						"label": "Scholarships",
-						"href": "/scholarships"
+						"href": "/scholarship"
 					},
 					{
 						"id": "transportation",

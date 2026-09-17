@@ -144,7 +144,7 @@ function RouteComponent() {
           />
         </div>
       ) : (
-        <div className="mt-10 grid gap-10 lg:grid-cols-[1.55fr_0.85fr] lg:gap-14">
+        <div className="mt-10 flex flex-col-reverse gap-10 lg:grid lg:grid-cols-[1.55fr_0.85fr] lg:gap-14">
           {/* Featured space */}
           <Reveal key={active.id} className="min-w-0">
             <article data-testid="facility-featured">
@@ -298,7 +298,7 @@ function RouteComponent() {
                           "flex w-full items-start gap-3.5 border-b border-border/70 px-4 py-3.5 text-left transition-colors duration-fast",
                           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/40",
                           index === filtered.length - 1 ? "border-b-0" : "",
-                          isActive ? "bg-background" : "hover:bg-background/60",
+                          isActive ? "bg-accent/[0.08]" : "hover:bg-background/60",
                         ].join(" ")}
                       >
                         <span

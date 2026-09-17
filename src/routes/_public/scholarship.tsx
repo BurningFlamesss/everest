@@ -593,11 +593,11 @@ function RouteComponent() {
                         data-active={isActive}
                         data-testid="scholarship-row"
                         className={[
-                          "flex w-full items-start gap-4 py-4 pl-3 pr-2 text-left transition-colors duration-fast !border-0 !bg-transparent",
+                          "flex w-full items-start gap-4 py-4 pl-3 pr-2 text-left transition-colors duration-fast !border-0 !bg-transparent border-l-2",
                           "focus-visible:outline-none focus-visible:ring-0",
                           isActive
-                            ? "bg-accent/[0.08]"
-                            : "hover:bg-secondary/60",
+                            ? "bg-accent/[0.08] border-accent/70"
+                            : "border-transparent hover:bg-secondary/60 hover:border-border",
                         ].join(" ")}
                       >
                         <span className="w-11 shrink-0 text-right">

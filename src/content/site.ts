@@ -7,7 +7,7 @@ export const footerLinks = [
   ['Facilities', '/facilities'],
   ['Faculty', '/faculty'],
   ['Notices', '/notices'],
-  ['Scholarships', '/scholarships'],
+  ['Scholarships', '/scholarship'],
   ['Calendar', '/calendar'],
   ['Gallery', '/gallery'],
   ['Contact', '/contact'],
@@ -19,7 +19,7 @@ export const nav = [
   ['Facilities', '/facilities'],
   ['Faculty', '/faculty'],
   ['Notices', '/notices'],
-  ['Scholarships', '/scholarships'],
+  ['Scholarships', '/scholarship'],
   ['Calendar', '/calendar'],
   ['Gallery', '/gallery'],
 ] as const;

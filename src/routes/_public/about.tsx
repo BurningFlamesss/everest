@@ -276,8 +276,8 @@ function RouteComponent() {
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                       "lg:w-full lg:rounded-none lg:border-0 lg:border-l-2 lg:px-0 lg:pl-4",
                       isActive
-                        ? "border-accent/40 bg-accent/10 lg:border-accent lg:bg-transparent"
-                        : "border-border bg-background hover:bg-secondary lg:border-rule lg:bg-transparent lg:hover:border-rule-strong",
+                        ? "border-accent/40 bg-accent/[0.08] lg:border-accent lg:bg-transparent"
+                        : "border-border bg-background hover:bg-secondary lg:border-transparent lg:bg-transparent lg:hover:border-border",
                     ].join(" ")}
                   >
                     <span
