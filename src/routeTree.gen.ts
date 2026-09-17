@@ -9,17 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as OnboardSignupRouteImport } from './routes/_onboard/signup'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as OnboardLoginRouteImport } from './routes/_onboard/login'
-import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as OnboardSignupRouteImport } from './routes/_onboard/signup'
 import { Route as OnboardActivateTokenRouteImport } from './routes/_onboard/activate.$token'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -27,14 +27,9 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardSignupRoute = OnboardSignupRouteImport.update({
-  id: '/_onboard/signup',
-  path: '/signup',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardLoginRoute = OnboardLoginRouteImport.update({
@@ -42,14 +37,19 @@ const OnboardLoginRoute = OnboardLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
+const OnboardSignupRoute = OnboardSignupRouteImport.update({
+  id: '/_onboard/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardActivateTokenRoute = OnboardActivateTokenRouteImport.update({
   id: '/_onboard/activate/$token',
   path: '/activate/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -123,11 +123,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -137,18 +137,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_onboard/signup': {
-      id: '/_onboard/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof OnboardSignupRouteImport
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_onboard/login': {
@@ -158,11 +151,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatRouteImport
+    '/_onboard/signup': {
+      id: '/_onboard/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof OnboardSignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_onboard/activate/$token': {
@@ -170,6 +163,13 @@ declare module '@tanstack/react-router' {
       path: '/activate/$token'
       fullPath: '/activate/$token'
       preLoaderRoute: typeof OnboardActivateTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
