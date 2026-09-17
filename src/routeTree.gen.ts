@@ -26,7 +26,7 @@ import { Route as PublicGalleryRouteImport } from './routes/_public/gallery'
 import { Route as PublicNoticesRouteImport } from './routes/_public/notices'
 import { Route as PublicResourcesRouteImport } from './routes/_public/resources'
 import { Route as PublicResultRouteImport } from './routes/_public/result'
-import { Route as PublicScholarshipsRouteImport } from './routes/_public/scholarships'
+import { Route as PublicScholarshipRouteImport } from './routes/_public/scholarship'
 import { Route as PublicTransportationRouteImport } from './routes/_public/transportation'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminSplatRouteImport } from './routes/admin/$'
@@ -153,9 +153,9 @@ const PublicResultRoute = PublicResultRouteImport.update({
   path: '/result',
   getParentRoute: () => PublicRoute,
 } as any)
-const PublicScholarshipsRoute = PublicScholarshipsRouteImport.update({
-  id: '/scholarships',
-  path: '/scholarships',
+const PublicScholarshipRoute = PublicScholarshipRouteImport.update({
+  id: '/scholarship',
+  path: '/scholarship',
   getParentRoute: () => PublicRoute,
 } as any)
 const PublicTransportationRoute = PublicTransportationRouteImport.update({
@@ -390,7 +390,7 @@ export interface FileRoutesByFullPath {
   '/notices': typeof PublicNoticesRoute
   '/resources': typeof PublicResourcesRoute
   '/result': typeof PublicResultRoute
-  '/scholarships': typeof PublicScholarshipsRoute
+  '/scholarship': typeof PublicScholarshipRoute
   '/transportation': typeof PublicTransportationRoute
   '/admin/$': typeof AdminSplatRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -449,7 +449,7 @@ export interface FileRoutesByTo {
   '/notices': typeof PublicNoticesRoute
   '/resources': typeof PublicResourcesRoute
   '/result': typeof PublicResultRoute
-  '/scholarships': typeof PublicScholarshipsRoute
+  '/scholarship': typeof PublicScholarshipRoute
   '/transportation': typeof PublicTransportationRoute
   '/admin/$': typeof AdminSplatRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -511,7 +511,7 @@ export interface FileRoutesById {
   '/_public/notices': typeof PublicNoticesRoute
   '/_public/resources': typeof PublicResourcesRoute
   '/_public/result': typeof PublicResultRoute
-  '/_public/scholarships': typeof PublicScholarshipsRoute
+  '/_public/scholarship': typeof PublicScholarshipRoute
   '/_public/transportation': typeof PublicTransportationRoute
   '/admin/$': typeof AdminSplatRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -574,7 +574,7 @@ export interface FileRouteTypes {
     | '/notices'
     | '/resources'
     | '/result'
-    | '/scholarships'
+    | '/scholarship'
     | '/transportation'
     | '/admin/$'
     | '/admin/activity'
@@ -633,7 +633,7 @@ export interface FileRouteTypes {
     | '/notices'
     | '/resources'
     | '/result'
-    | '/scholarships'
+    | '/scholarship'
     | '/transportation'
     | '/admin/$'
     | '/admin/activity'
@@ -694,7 +694,7 @@ export interface FileRouteTypes {
     | '/_public/notices'
     | '/_public/resources'
     | '/_public/result'
-    | '/_public/scholarships'
+    | '/_public/scholarship'
     | '/_public/transportation'
     | '/admin/$'
     | '/admin/activity'
@@ -872,11 +872,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicResultRouteImport
       parentRoute: typeof PublicRoute
     }
-    '/_public/scholarships': {
-      id: '/_public/scholarships'
-      path: '/scholarships'
-      fullPath: '/scholarships'
-      preLoaderRoute: typeof PublicScholarshipsRouteImport
+    '/_public/scholarship': {
+      id: '/_public/scholarship'
+      path: '/scholarship'
+      fullPath: '/scholarship'
+      preLoaderRoute: typeof PublicScholarshipRouteImport
       parentRoute: typeof PublicRoute
     }
     '/_public/transportation': {
@@ -1201,7 +1201,7 @@ interface PublicRouteChildren {
   PublicNoticesRoute: typeof PublicNoticesRoute
   PublicResourcesRoute: typeof PublicResourcesRoute
   PublicResultRoute: typeof PublicResultRoute
-  PublicScholarshipsRoute: typeof PublicScholarshipsRoute
+  PublicScholarshipRoute: typeof PublicScholarshipRoute
   PublicTransportationRoute: typeof PublicTransportationRoute
   PublicIndexRoute: typeof PublicIndexRoute
 }
@@ -1218,7 +1218,7 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicNoticesRoute: PublicNoticesRoute,
   PublicResourcesRoute: PublicResourcesRoute,
   PublicResultRoute: PublicResultRoute,
-  PublicScholarshipsRoute: PublicScholarshipsRoute,
+  PublicScholarshipRoute: PublicScholarshipRoute,
   PublicTransportationRoute: PublicTransportationRoute,
   PublicIndexRoute: PublicIndexRoute,
 }

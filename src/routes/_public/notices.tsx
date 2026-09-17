@@ -1,3 +1,7 @@
+
+import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
+import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { useSearch } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, Paperclip, Pin } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -174,10 +178,27 @@ const NoticeReader = ({ notice }: { notice: Notice }) => (
 /* ------------------------------- Page -------------------------------- */
 
 export const Route = createFileRoute("/_public/notices")({
+  loader: async ({ location }) => {
+    const search = location.search as { cms?: string };
+    if (String(search.cms) === "1") {
+      const previewPage = await getWebsitePagePreviewServer({
+        data: { key: "notices" },
+      });
+      return { previewPage };
+    }
+    return { previewPage: null };
+  },
 	component: RouteComponent,
 });
 
 function RouteComponent() {
+  const search = (useSearch({ strict: false }) as Record<string, unknown>) || {};
+  const cms = search.cms;
+  const { previewPage } = Route.useLoaderData();
+  const publishedContent = useWebsitePageContent("notices");
+  const preview = String(cms ?? "") === "1";
+  const cmsData = preview ? previewPage : publishedContent;
+
   // Notices are served from the database (seeded from src/lib/notices); the
   // static list is the fallback when the collection is empty.
   const dbNotices = useNotices();

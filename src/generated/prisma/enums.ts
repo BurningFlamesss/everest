@@ -49,12 +49,22 @@ export type InviteType = (typeof InviteType)[keyof typeof InviteType]
 
 
 export const WebsitePageKey = {
-  homepage: 'homepage',
+  home: 'home',
   about: 'about',
   contact: 'contact',
   other: 'other',
   faculty: 'faculty',
-  login: 'login'
+  login: 'login',
+  activate: 'activate',
+  courses: 'courses',
+  facilities: 'facilities',
+  gallery: 'gallery',
+  calendar: 'calendar',
+  resources: 'resources',
+  result: 'result',
+  transportation: 'transportation',
+  notices: 'notices',
+  scholarship: 'scholarship'
 } as const
 
 export type WebsitePageKey = (typeof WebsitePageKey)[keyof typeof WebsitePageKey]

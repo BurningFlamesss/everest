@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getPublishedPage } from '@/lib/website-content'
+import type { WebsitePageKey } from '@/types'
 
 export const Route = createFileRoute('/api/website/page/$key')({
   server: {
@@ -7,7 +8,7 @@ export const Route = createFileRoute('/api/website/page/$key')({
       GET: async ({ params }) => {
         try {
           const { key } = params
-          const page = await getPublishedPage(key as "homepage" | "about" | "contact" | "other")
+          const page = await getPublishedPage(key as WebsitePageKey)
           
           if (!page) {
             return Response.json({ error: 'Page not found' }, { status: 404 })

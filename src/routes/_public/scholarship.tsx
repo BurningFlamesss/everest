@@ -1,3 +1,7 @@
+
+import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
+import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { useSearch } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   BadgeCheck,
@@ -438,11 +442,28 @@ const ScholarshipDetail = ({ item }: { item: Scholarship }) => {
   );
 };
 
-export const Route = createFileRoute("/_public/scholarships")({
+export const Route = createFileRoute("/_public/scholarship")({
+  loader: async ({ location }) => {
+    const search = location.search as { cms?: string };
+    if (String(search.cms) === "1") {
+      const previewPage = await getWebsitePagePreviewServer({
+        data: { key: "scholarship" },
+      });
+      return { previewPage };
+    }
+    return { previewPage: null };
+  },
 	component: RouteComponent,
 });
 
 function RouteComponent() {
+  const search = (useSearch({ strict: false }) as Record<string, unknown>) || {};
+  const cms = search.cms;
+  const { previewPage } = Route.useLoaderData();
+  const publishedContent = useWebsitePageContent("scholarship");
+  const preview = String(cms ?? "") === "1";
+  const cmsData = preview ? previewPage : publishedContent;
+
   // Schemes are served from the database (seeded from src/lib/scholarships);
   // the static list is the fallback when the collection is empty.
   const dbScholarships = useScholarships();

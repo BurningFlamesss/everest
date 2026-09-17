@@ -60,7 +60,7 @@ export interface Collections {
 }
 
 const STORAGE_KEY = "scms.db.v4";
-const SCHEMA_VERSION = 4;
+const SCHEMA_VERSION = 5; // Bumped to force reload for missing website page paths
 
 let cache: Collections | null = null;
 

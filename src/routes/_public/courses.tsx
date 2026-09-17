@@ -1,3 +1,7 @@
+
+import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
+import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { useSearch } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowUpRight, GraduationCap, Minus } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -292,10 +296,27 @@ const ProgramDetail = ({ program }: { program: Program }) => {
 };
 
 export const Route = createFileRoute("/_public/courses")({
+  loader: async ({ location }) => {
+    const search = location.search as { cms?: string };
+    if (String(search.cms) === "1") {
+      const previewPage = await getWebsitePagePreviewServer({
+        data: { key: "courses" },
+      });
+      return { previewPage };
+    }
+    return { previewPage: null };
+  },
 	component: RouteComponent,
 });
 
 function RouteComponent() {
+  const search = (useSearch({ strict: false }) as Record<string, unknown>) || {};
+  const cms = search.cms;
+  const { previewPage } = Route.useLoaderData();
+  const publishedContent = useWebsitePageContent("courses");
+  const preview = String(cms ?? "") === "1";
+  const cmsData = preview ? previewPage : publishedContent;
+
   const [levelId, setLevelId] = useState<LevelId>("plus2-science");
 
   const level = useMemo(

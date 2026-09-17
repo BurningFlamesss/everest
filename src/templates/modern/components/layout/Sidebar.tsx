@@ -166,24 +166,20 @@ export function Sidebar() {
 
 	if (isAdmin) return null;
 
-	const logoMark = sidebar?.logo ? (
+	const logoMark = (
 		<img
-			src={sidebar.logo}
+			src={"/public/schools/everest/logo.png"}
 			alt="School logo"
-			className="h-16"
-		/>
-	) : (
-		<img
-			src={"../../../../../schools/everest/logo.png"}
-			alt="School logo"
-			className="h-16"
+			className="h-16 object-contain"
 		/>
 	);
 
 	const navFooter = data?.session?.id ? (
-		<div className="bg-[#EAB308] flex w-full items-center justify-center py-2 cursor-pointer text-black">
+		<>
+		{/* <div className="bg-[#EAB308] flex w-full items-center justify-center py-2 cursor-pointer text-black">
 			Dashboard Coming Soon!
-		</div>
+		</div> */}
+		</>
 	) : (
 		<Link
 				to="/login"
@@ -273,17 +269,11 @@ export function Sidebar() {
 					className="flex min-w-0 items-center gap-3"
 					data-testid="nav-home-mobile"
 				>
-					<span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-white">
-						{sidebar?.logo ? (
-							<img
-								src={sidebar.logo}
-								alt=""
-								className="size-6 object-contain"
-							/>
-						) : (
-							<Crest size={24} tone={{ ...crestTone, line: "#000" }} title="" />
-						)}
-					</span>
+					<img
+						src="/public/schools/everest/logo.png"
+						alt="School logo"
+						className="h-8 object-contain"
+					/>
 					<span className="truncate text-[15px] font-semibold text-primary-foreground">
 						{sidebar?.tagline}
 					</span>
@@ -329,18 +319,17 @@ export function Sidebar() {
 							exit={reduced ? { opacity: 0 } : { y: "100%" }}
 							transition={{ duration: 0.3 }}
 						>
-							<div className="flex items-center justify-between px-4 pt-3">
-								<span className="flex items-center gap-2 font-semibold text-primary-foreground">
-									<span className="flex size-8 items-center justify-center rounded-md bg-white">
-										{logoMark}
-									</span>
-									{sidebar?.tagline}
-								</span>
+							<div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-white/10">
+								<img
+									src="/public/schools/everest/logo.png"
+									alt="School logo"
+									className="h-16 w-full object-contain"
+								/>
 								<button
 									type="button"
 									onClick={() => setSheetOpen(false)}
 									data-testid="nav-mobile-close"
-									className="inline-flex size-11 border-none bg-transparent items-center justify-center rounded-lg text-primary-foreground"
+									className="absolute right-4 top-4 inline-flex size-11 border-none bg-transparent items-center justify-center rounded-lg text-primary-foreground"
 								>
 									<X aria-hidden="true" size={20} />
 									<span className="sr-only">Close the main menu</span>

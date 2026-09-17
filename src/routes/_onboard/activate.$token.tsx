@@ -12,9 +12,16 @@ import { Button } from "#/templates/modern/components/Button.tsx";
 import { ImageReveal, SectionLabel } from "#/templates/modern/components/Editorial.tsx";
 
 export const Route = createFileRoute("/_onboard/activate/$token")({
-	beforeLoad: async ({ context }) => {
+	beforeLoad: async ({ context, location }) => {
+		const search = location.search as any;
+		if (String(search.cms) === "1" || String(search["allow-when-logged-in"]) === "true") {
+			return; 
+		}
 		if (context.session) {
-			throw redirect({ to: "/" });
+			if (context.session.user.role === "admin" || context.session.user.role === "superadmin") {
+				throw redirect({ to: "/admin/overview" });
+			}
+			throw redirect({ to: "/user" });
 		}
 	},
 	loader: async ({ params }) => {

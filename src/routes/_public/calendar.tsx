@@ -1,3 +1,7 @@
+
+import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
+import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { useSearch } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import { CalendarPlus, ChevronLeft, ChevronRight } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
@@ -89,6 +93,16 @@ const KIND_TEXT: Record<EventKind, string> = {
 };
 
 export const Route = createFileRoute("/_public/calendar")({
+  loader: async ({ location }) => {
+    const search = location.search as { cms?: string };
+    if (String(search.cms) === "1") {
+      const previewPage = await getWebsitePagePreviewServer({
+        data: { key: "calendar" },
+      });
+      return { previewPage };
+    }
+    return { previewPage: null };
+  },
 	component: RouteComponent,
 });
 

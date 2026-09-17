@@ -1,3 +1,7 @@
+
+import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
+import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { useSearch } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import { Expand, MapPin, Quote, UserRound } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -158,10 +162,27 @@ const CATEGORY_ORDER = [
 ];
 
 export const Route = createFileRoute("/_public/about")({
+  loader: async ({ location }) => {
+    const search = location.search as { cms?: string };
+    if (String(search.cms) === "1") {
+      const previewPage = await getWebsitePagePreviewServer({
+        data: { key: "about" },
+      });
+      return { previewPage };
+    }
+    return { previewPage: null };
+  },
 	component: RouteComponent,
 });
 
 function RouteComponent() {
+  const search = (useSearch({ strict: false }) as Record<string, unknown>) || {};
+  const cms = search.cms;
+  const { previewPage } = Route.useLoaderData();
+  const publishedContent = useWebsitePageContent("about");
+  const preview = String(cms ?? "") === "1";
+  const cmsData = preview ? previewPage : publishedContent;
+
   const [category, setCategory] = useState<string>("all");
   const [activeId, setActiveId] = useState<string>(chapters[0].id);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(

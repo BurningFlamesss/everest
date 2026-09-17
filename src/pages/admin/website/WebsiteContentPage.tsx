@@ -62,7 +62,8 @@ const PAGE_KEYS: WebsitePageKey[] = [
 	"notices",
 	"scholarship",
 	"faculty",
-	"login"
+	"login",
+	"activate"
 ];
 
 function clone<T>(value: T): T {

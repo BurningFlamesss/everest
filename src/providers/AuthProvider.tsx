@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useMemo } from "react";
-import { useRouterState } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 import type { Actor, AppUser } from "@/types";
 import { can as hasPermission, type Permission } from "@/lib/permissions";
 import { authClient } from "#/packages/auth/auth-client.ts";
@@ -17,31 +17,29 @@ const FALLBACK_ACTOR: Actor = { id: "anonymous", name: "System", role: "staff" }
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const routerState = useRouterState({ select: (state) => state });
-  const session = (routerState as any).context?.session;
+  // Use Better Auth's reactive client hook directly!
+  const { data, isPending } = authClient.useSession();
+  const context = useRouteContext({ strict: false }) as any;
+  
+  // Prefer the reactive client session. If loading or missing, fall back to the SSR context
+  const sessionUser = data?.user || context?.session?.user;
 
-  const user: AppUser = session?.user ? {
-    id: session.user.id,
-    name: session.user.name || "Demo Admin",
-    email: session.user.email,
-    role: (session.user as any).role || "super_admin",
-    avatarUrl: session.user.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-    title: (session.user as any).title || "School Administrator",
-  } : {
-    id: "usr_demo",
-    name: "Demo Admin",
-    email: "admin@eebss.edu",
-    role: "super_admin",
-    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-    title: "School Administrator",
-  };
+  const user: AppUser | null = sessionUser ? {
+    id: sessionUser.id,
+    name: sessionUser.name || (sessionUser.email ? sessionUser.email.split("@")[0].replace(/[._-]/g, " ") : "Admin"),
+    email: sessionUser.email,
+    role: (sessionUser as any).role || "super_admin",
+    avatarUrl: sessionUser.image || (sessionUser.email ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(sessionUser.email)}` : "https://api.dicebear.com/7.x/avataaars/svg?seed=admin"),
+    title: (sessionUser as any).title || "Administrator",
+  } : null;
 
-  const signOut = useCallback(() => {
+  const signOut = useCallback(async () => {
     document.cookie = "scms_demo_session=; path=/; max-age=0;";
     try {
-      authClient.signOut();
+      await authClient.signOut();
+      window.location.href = "/login";
     } catch {
-      // ignore
+      window.location.href = "/login";
     }
   }, []);
 
@@ -49,11 +47,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => ({
       user,
       actor: user ? { id: user.id, name: user.name, role: user.role } : FALLBACK_ACTOR,
-      loading: false,
+      loading: isPending,
       signOut,
       can: (permission: Permission) => hasPermission(user?.role, permission),
     }),
-    [user, signOut],
+    [user, signOut, isPending],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

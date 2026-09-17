@@ -405,13 +405,28 @@ export async function unpublishPage(key: WebsitePageKey, actor: Actor): Promise<
 export async function ensureDefaultPages(): Promise<void> {
   const defaultPages: { key: WebsitePageKey; title: string; path: string }[] = [
     { key: "faculty", title: "Faculty & Administration", path: "/faculty" },
-    { key: "login", title: "Sign in", path: "/login-modern" },
+    { key: "login", title: "Sign in", path: "/login" },
+    { key: "activate", title: "Activate", path: "/_onboard/activate/" },
+    { key: "home", title: "Home", path: "/" },
+    { key: "about", title: "About", path: "/about" },
+    { key: "courses", title: "Courses", path: "/courses" },
+    { key: "facilities", title: "Facilities", path: "/facilities" },
+    { key: "gallery", title: "Gallery", path: "/gallery" },
+    { key: "calendar", title: "Calendar", path: "/calendar" },
+    { key: "contact", title: "Contact", path: "/contact" },
+    { key: "resources", title: "Resources", path: "/resources" },
+    { key: "result", title: "Results", path: "/result" },
+    { key: "transportation", title: "Transportation", path: "/transportation" },
+    { key: "notices", title: "Notices", path: "/notices" },
+    { key: "scholarship", title: "Scholarships", path: "/scholarship" },
   ];
 
   for (const page of defaultPages) {
     await prisma.websitePage.upsert({
       where: { key: page.key },
-      update: {},
+      update: {
+        path: page.path,
+      },
       create: {
         key: page.key,
         title: page.title,

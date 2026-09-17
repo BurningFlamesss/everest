@@ -307,12 +307,22 @@ model GuardianInvite {
 }
 
 enum WebsitePageKey {
-  homepage
+  home
   about
   contact
   other
   faculty
   login
+  activate
+  courses
+  facilities
+  gallery
+  calendar
+  resources
+  result
+  transportation
+  notices
+  scholarship
 }
 
 enum WebsitePageStatus {
