@@ -13,8 +13,10 @@ interface KanbanColumnProps {
 }
 
 function KanbanColumn({ status, applications, canManage, highlighted }: KanbanColumnProps) {
-  const stage = PIPELINE.find((item) => item.status === status)!;
+  const stage = PIPELINE.find((item) => item.status === status);
   const { setNodeRef, isOver } = useDroppable({ id: status });
+
+  if (!stage) return null;
 
   return (
     <section

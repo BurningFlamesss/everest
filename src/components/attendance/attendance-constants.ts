@@ -56,10 +56,9 @@ export const ATTENDANCE_STATES: AttendanceStateMeta[] = [
   },
 ];
 
-export const STATE_META = ATTENDANCE_STATES.reduce(
-  (acc, meta) => ({ ...acc, [meta.value]: meta }),
-  {} as Record<AttendanceState, AttendanceStateMeta>,
-);
+export const STATE_META = Object.fromEntries(
+  ATTENDANCE_STATES.map((meta) => [meta.value, meta])
+) as Record<AttendanceState, AttendanceStateMeta>;
 
 export function rateTone(rate: number): string {
   if (rate >= 92) return "text-success";

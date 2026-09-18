@@ -112,7 +112,7 @@ export function DataTable<T>({
       ) : loading ? (
         <TableSkeleton rows={Math.min(pageSize, 6)} columns={columns.length} />
       ) : rows.length === 0 ? (
-        <>{empty}</>
+        empty
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[720px] border-collapse text-sm">

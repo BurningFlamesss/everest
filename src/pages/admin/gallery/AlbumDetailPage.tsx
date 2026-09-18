@@ -67,7 +67,7 @@ interface StagedImage {
 }
 
 export default function AlbumDetailPage() {
-  const { id = "" } = useParams();
+  const { id = "" } = useParams({ strict: false });
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { actor, can } = useAuth();
@@ -162,7 +162,7 @@ export default function AlbumDetailPage() {
     onSuccess: () => {
       toast.success("Album deleted");
       qc.invalidateQueries({ queryKey: ["albums"] });
-      navigate("/admin/gallery");
+      navigate({ to: "/admin/gallery" });
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -215,7 +215,7 @@ export default function AlbumDetailPage() {
           title="Album not found"
           description="This album may have been deleted. Head back to the gallery to pick another one."
           primaryLabel="Back to gallery"
-          onPrimary={() => navigate("/admin/gallery")}
+          onPrimary={() => navigate({ to: "/admin/gallery" })}
           testId="album-detail-missing"
         />
       </div>
@@ -236,7 +236,7 @@ export default function AlbumDetailPage() {
             <span>Updated {relativeTime(album.updatedAt)}</span>
             <StatusBadge value={album.visibility} testId="album-visibility-badge" />
             {linkedEvent && (
-              <Link to={`/admin/events/${linkedEvent.id}`} className="text-primary hover:underline" data-testid="album-event-link">
+              <Link to="/admin/events/$id" params={{ id: linkedEvent.id }} className="text-primary hover:underline" data-testid="album-event-link">
                 {linkedEvent.title}
               </Link>
             )}
@@ -340,7 +340,7 @@ export default function AlbumDetailPage() {
       {/* Upload ----------------------------------------------------------- */}
       <Dialog
         open={uploadOpen}
-        onOpenChange={(open) => {
+        onOpenChange={(open: boolean) => {
           setUploadOpen(open);
           if (!open) setStaged([]);
         }}
@@ -475,7 +475,7 @@ export default function AlbumDetailPage() {
       />
 
       {/* Caption ---------------------------------------------------------- */}
-      <Dialog open={Boolean(captionTarget)} onOpenChange={(open) => !open && setCaptionTarget(null)}>
+      <Dialog open={Boolean(captionTarget)} onOpenChange={(open: boolean) => !open && setCaptionTarget(null)}>
         <DialogContent className="bg-popover sm:max-w-md" data-testid="album-caption-dialog">
           <DialogHeader>
             <DialogTitle className="font-display">Edit caption</DialogTitle>
