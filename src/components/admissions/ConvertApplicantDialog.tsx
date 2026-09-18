@@ -42,10 +42,10 @@ export function ConvertApplicantDialog({ application, onOpenChange }: ConvertApp
     if (!application) return;
     setClassId(options[0]?.id ?? "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [application?.id, options.length]);
+  }, [application?.id, options[0]?.id, application]);
 
   const mutation = useMutation({
-    mutationFn: () => convertApplicant(application!.id, classId, actor),
+    mutationFn: () => convertApplicant(application?.id, classId, actor),
     onSuccess: ({ student }) => {
       toast.success(`${student.firstName} ${student.lastName} enrolled as ${student.admissionNo}`);
       qc.invalidateQueries({ queryKey: ["applications"] });

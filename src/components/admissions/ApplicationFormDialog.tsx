@@ -85,7 +85,7 @@ export function ApplicationFormDialog({
         : { ...EMPTY, gradeApplied: grades[0] ?? "", branchId: branches[0]?.id ?? "" },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, application]);
+  }, [open, application, grades[0], branches[0]?.id]);
 
   const set = <K extends keyof ApplicationInput>(key: K, value: ApplicationInput[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
