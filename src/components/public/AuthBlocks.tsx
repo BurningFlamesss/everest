@@ -21,7 +21,7 @@ import { Input } from "#/templates/modern/components/Input.tsx";
 import { Label } from "#/templates/modern/components/Label.tsx";
 import type { BlockType, ContentBlock } from "#/types";
 
-const VISUAL_IMAGE = "/public/schools/everest/landing-footage/frame_0001.jpeg";
+const VISUAL_IMAGE = "/schools/everest/landing-footage/frame_0001.jpeg";
 
 function AuthVisual({ fields }: { fields: Record<string, unknown> }) {
 	return (

@@ -257,7 +257,7 @@ const BLOCK_LIBRARY_DEFAULTS: Record<BlockType, Record<string, unknown>> = {
   mission_vision: { mission: "", vision: "", values: ["Curiosity", "Integrity"] },
   history: { title: "Our history", body: "", image: "", milestones: [{ year: "2000", title: "Milestone" }] },
   auth_visual: {
-    image: "/public/schools/everest/landing-footage/frame_0001.jpeg",
+    image: "/schools/everest/landing-footage/frame_0001.jpeg",
     eyebrow: "ScMS entrance",
     headline: "The digital entrance to the school.",
     subheadline: "One community / connected responsibly",

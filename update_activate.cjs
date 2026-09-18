@@ -33,7 +33,7 @@ function RouteComponent() {
     <section className="auth-page" aria-labelledby="activate-title">
       <div className="auth-visual">
           <ImageReveal
-              src="/public/schools/everest/landing-footage/frame_0001.jpeg"
+              src="/schools/everest/landing-footage/frame_0001.jpeg"
               alt="School architecture marking the entrance to Everest"
               eager
               testId="activate-visual-image"

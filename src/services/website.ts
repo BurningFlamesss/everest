@@ -206,7 +206,7 @@ export const BLOCK_LIBRARY: {
     description: "The large image panel with eyebrow, headline and supporting text.",
     group: "Layout",
     defaults: {
-      image: "/public/schools/everest/landing-footage/frame_0001.jpeg",
+      image: "/schools/everest/landing-footage/frame_0001.jpeg",
       eyebrow: "ScMS entrance",
       headline: "The digital entrance to the school.",
       subheadline: "One community / connected responsibly",

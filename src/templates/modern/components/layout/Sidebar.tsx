@@ -168,7 +168,7 @@ export function Sidebar() {
 
 	const logoMark = (
 		<img
-			src={"/public/schools/everest/logo.png"}
+			src={"/schools/everest/logo.png"}
 			alt="School logo"
 			className="h-16 object-contain"
 		/>
@@ -270,7 +270,7 @@ export function Sidebar() {
 					data-testid="nav-home-mobile"
 				>
 					<img
-						src="/public/schools/everest/logo.png"
+						src="/schools/everest/logo.png"
 						alt="School logo"
 						className="h-8 object-contain"
 					/>
@@ -321,7 +321,7 @@ export function Sidebar() {
 						>
 							<div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-white/10">
 								<img
-									src="/public/schools/everest/logo.png"
+									src="/schools/everest/logo.png"
 									alt="School logo"
 									className="h-16 w-full object-contain"
 								/>
