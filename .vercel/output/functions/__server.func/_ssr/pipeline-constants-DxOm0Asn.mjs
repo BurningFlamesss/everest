@@ -6,7 +6,7 @@ import { useNavigate } from "../_libs/@tanstack/react-router+[...].mjs";
 import { GraduationCap } from "../_libs/lucide-react.mjs";
 import { useMutation, useQuery, useQueryClient } from "../_libs/tanstack__react-query.mjs";
 import { toast } from "../_libs/sonner.mjs";
-import { useAuth } from "./router-BSCuBY6S.mjs";
+import { useAuth } from "./router-dKngB4cM.mjs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./dialog-ST9L4J-Q.mjs";
 import { Input } from "./input-BfuYswMi.mjs";
 import { Separator } from "./separator-CW0Ij8xK.mjs";

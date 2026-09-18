@@ -3,7 +3,7 @@ import { require_react } from "../_libs/dnd-kit__accessibility+react.mjs";
 import { require_jsx_runtime } from "../_libs/@radix-ui/react-accordion+[...].mjs";
 import { Activity } from "../_libs/lucide-react.mjs";
 import { useQuery } from "../_libs/tanstack__react-query.mjs";
-import { ROLE_LABEL } from "./router-BSCuBY6S.mjs";
+import { ROLE_LABEL } from "./router-dKngB4cM.mjs";
 import { auditActors, auditResourceTypes, listAudit } from "./audit-CP1EiZ6i.mjs";
 import { PageHeader } from "./PageHeader-CM0cVttf.mjs";
 import { Panel } from "./Panel-DSd1zziT.mjs";

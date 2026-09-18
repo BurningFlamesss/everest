@@ -6,7 +6,7 @@ import { Link, useNavigate, useParams } from "../_libs/@tanstack/react-router+[.
 import { Archive, ArrowLeft, Megaphone, Pencil, Pin, PinOff, Send, Trash2, Undo2, Users } from "../_libs/lucide-react.mjs";
 import { useMutation, useQuery, useQueryClient } from "../_libs/tanstack__react-query.mjs";
 import { toast } from "../_libs/sonner.mjs";
-import { useAuth } from "./router-BSCuBY6S.mjs";
+import { useAuth } from "./router-dKngB4cM.mjs";
 import { formatDateTime, formatNumber, relativeTime } from "./format-BBWmN55e.mjs";
 import { PageHeader } from "./PageHeader-CM0cVttf.mjs";
 import { KeyValue, Panel } from "./Panel-DSd1zziT.mjs";

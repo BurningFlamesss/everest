@@ -7,7 +7,7 @@ import { Link, useNavigate } from "../_libs/@tanstack/react-router+[...].mjs";
 import { CalendarDays, Ellipsis, ImagePlus, Images, Pencil, Trash2 } from "../_libs/lucide-react.mjs";
 import { useMutation, useQuery, useQueryClient } from "../_libs/tanstack__react-query.mjs";
 import { toast } from "../_libs/sonner.mjs";
-import { useAuth } from "./router-BSCuBY6S.mjs";
+import { useAuth } from "./router-dKngB4cM.mjs";
 import { Skeleton } from "./skeleton-Dhh7pexn.mjs";
 import { formatDate, pluralize, relativeTime } from "./format-BBWmN55e.mjs";
 import { PageHeader } from "./PageHeader-CM0cVttf.mjs";

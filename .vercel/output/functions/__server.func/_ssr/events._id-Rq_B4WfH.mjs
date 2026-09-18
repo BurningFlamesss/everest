@@ -6,7 +6,7 @@ import { Link, useNavigate, useParams } from "../_libs/@tanstack/react-router+[.
 import { ArrowLeft, CalendarDays, CircleCheck, CirclePlay, CircleX, Clock, MapPin, Pencil, Trash2, Users } from "../_libs/lucide-react.mjs";
 import { useMutation, useQuery, useQueryClient } from "../_libs/tanstack__react-query.mjs";
 import { toast } from "../_libs/sonner.mjs";
-import { useAuth } from "./router-BSCuBY6S.mjs";
+import { useAuth } from "./router-dKngB4cM.mjs";
 import { Progress } from "./progress-BR51tDET.mjs";
 import { formatDate, formatNumber, relativeTime } from "./format-BBWmN55e.mjs";
 import { PageHeader } from "./PageHeader-CM0cVttf.mjs";
