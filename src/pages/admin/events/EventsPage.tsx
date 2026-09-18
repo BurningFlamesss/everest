@@ -137,7 +137,7 @@ export default function EventsPage() {
         className="row-actions h-7 w-7"
         aria-label="Open event"
         data-testid={`event-view-${event.id}`}
-        onClick={() => navigate(`/admin/events/${event.id}`)}
+              onClick={() => navigate({ to: `/admin/events/${event.id}` })}
       >
         <Eye className="h-3.5 w-3.5" />
       </Button>
@@ -157,7 +157,7 @@ export default function EventsPage() {
           <DropdownMenuItem
             className="gap-2 text-xs"
             data-testid={`event-action-open-${event.id}`}
-            onClick={() => navigate(`/admin/events/${event.id}`)}
+                  onClick={() => navigate({ to: `/admin/events/${event.id}` })}
           >
             <Eye className="h-3.5 w-3.5" /> Open
           </DropdownMenuItem>
