@@ -1,0 +1,116 @@
+import { __toESM } from "../../_runtime.mjs";
+import { require_react } from "../dnd-kit__accessibility+react.mjs";
+import { Primitive, require_jsx_runtime, useControllableState as useControllableState$1 } from "./react-accordion+[...].mjs";
+import { composeEventHandlers as composeEventHandlers$1, composeEventHandlers$1 as composeEventHandlers } from "../radix-ui__primitive.mjs";
+import { Primitive as Primitive$1 } from "./react-primitive+[...].mjs";
+//#region node_modules/@radix-ui/react-toggle-group/node_modules/@radix-ui/react-toggle/dist/index.mjs
+var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
+var import_jsx_runtime = require_jsx_runtime();
+var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", {
+	value,
+	configurable: true
+});
+var NAME$1 = "Toggle";
+var Toggle$1 = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name(function Toggle2(props, forwardedRef) {
+	const { pressed: pressedProp, defaultPressed, onPressedChange, ...buttonProps } = props;
+	const [pressed, setPressed] = useControllableState$1({
+		prop: pressedProp,
+		onChange: onPressedChange,
+		defaultProp: defaultPressed ?? false,
+		caller: NAME$1
+	});
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.button, {
+		type: "button",
+		"aria-pressed": pressed,
+		"data-state": pressed ? "on" : "off",
+		"data-disabled": props.disabled ? "" : void 0,
+		...buttonProps,
+		ref: forwardedRef,
+		onClick: composeEventHandlers(props.onClick, () => {
+			if (!props.disabled) setPressed(!pressed);
+		})
+	});
+}, "Toggle"));
+//#endregion
+//#region node_modules/@radix-ui/react-toggle/node_modules/@radix-ui/react-use-layout-effect/dist/index.mjs
+var useLayoutEffect2 = globalThis?.document ? import_react.useLayoutEffect : () => {};
+//#endregion
+//#region node_modules/@radix-ui/react-toggle/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
+var useInsertionEffect = import_react[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
+function useControllableState({ prop, defaultProp, onChange = () => {}, caller }) {
+	const [uncontrolledProp, setUncontrolledProp, onChangeRef] = useUncontrolledState({
+		defaultProp,
+		onChange
+	});
+	const isControlled = prop !== void 0;
+	const value = isControlled ? prop : uncontrolledProp;
+	{
+		const isControlledRef = import_react.useRef(prop !== void 0);
+		import_react.useEffect(() => {
+			const wasControlled = isControlledRef.current;
+			if (wasControlled !== isControlled) console.warn(`${caller} is changing from ${wasControlled ? "controlled" : "uncontrolled"} to ${isControlled ? "controlled" : "uncontrolled"}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`);
+			isControlledRef.current = isControlled;
+		}, [isControlled, caller]);
+	}
+	return [value, import_react.useCallback((nextValue) => {
+		if (isControlled) {
+			const value2 = isFunction(nextValue) ? nextValue(prop) : nextValue;
+			if (value2 !== prop) onChangeRef.current?.(value2);
+		} else setUncontrolledProp(nextValue);
+	}, [
+		isControlled,
+		prop,
+		setUncontrolledProp,
+		onChangeRef
+	])];
+}
+function useUncontrolledState({ defaultProp, onChange }) {
+	const [value, setValue] = import_react.useState(defaultProp);
+	const prevValueRef = import_react.useRef(value);
+	const onChangeRef = import_react.useRef(onChange);
+	useInsertionEffect(() => {
+		onChangeRef.current = onChange;
+	}, [onChange]);
+	import_react.useEffect(() => {
+		if (prevValueRef.current !== value) {
+			onChangeRef.current?.(value);
+			prevValueRef.current = value;
+		}
+	}, [value, prevValueRef]);
+	return [
+		value,
+		setValue,
+		onChangeRef
+	];
+}
+function isFunction(value) {
+	return typeof value === "function";
+}
+//#endregion
+//#region node_modules/@radix-ui/react-toggle/dist/index.mjs
+var NAME = "Toggle";
+var Toggle = import_react.forwardRef((props, forwardedRef) => {
+	const { pressed: pressedProp, defaultPressed, onPressedChange, ...buttonProps } = props;
+	const [pressed, setPressed] = useControllableState({
+		prop: pressedProp,
+		onChange: onPressedChange,
+		defaultProp: defaultPressed ?? false,
+		caller: NAME
+	});
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.button, {
+		type: "button",
+		"aria-pressed": pressed,
+		"data-state": pressed ? "on" : "off",
+		"data-disabled": props.disabled ? "" : void 0,
+		...buttonProps,
+		ref: forwardedRef,
+		onClick: composeEventHandlers$1(props.onClick, () => {
+			if (!props.disabled) setPressed(!pressed);
+		})
+	});
+});
+Toggle.displayName = NAME;
+var Root = Toggle;
+//#endregion
+export { Root, Toggle$1 as Toggle };
