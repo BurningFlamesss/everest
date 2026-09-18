@@ -8,7 +8,7 @@ import { CircleCheck, CircleX, Download, Ellipsis, GraduationCap, GripVertical, 
 import { CSS, DndContext, PointerSensor, closestCorners, useDraggable, useDroppable, useSensor, useSensors } from "../_libs/@dnd-kit/core+[...].mjs";
 import { useMutation, useQuery, useQueryClient } from "../_libs/tanstack__react-query.mjs";
 import { toast } from "../_libs/sonner.mjs";
-import { useAuth } from "./router-dKngB4cM.mjs";
+import { useAuth } from "./router-BSCuBY6S.mjs";
 import { Skeleton } from "./skeleton-Dhh7pexn.mjs";
 import { downloadTextFile, formatDate, relativeTime, toCsv } from "./format-BBWmN55e.mjs";
 import { PageHeader } from "./PageHeader-CM0cVttf.mjs";

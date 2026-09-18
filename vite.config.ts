@@ -21,6 +21,9 @@ const config = defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     nitro({
       preset: 'vercel',
+      externals: {
+        inline: ['@prisma/client', '@prisma/client-runtime-utils'],
+      },
     }),
   ],
 })

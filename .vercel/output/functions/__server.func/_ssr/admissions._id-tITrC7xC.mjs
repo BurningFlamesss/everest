@@ -7,7 +7,7 @@ import { Link, useNavigate, useParams } from "../_libs/@tanstack/react-router+[.
 import { ArrowLeft, CircleCheck, CircleX, FileText, GraduationCap, MailQuestionMark, MessageSquarePlus, Pencil, ShieldCheck, Trash2 } from "../_libs/lucide-react.mjs";
 import { useMutation, useQuery, useQueryClient } from "../_libs/tanstack__react-query.mjs";
 import { toast } from "../_libs/sonner.mjs";
-import { useAuth } from "./router-dKngB4cM.mjs";
+import { useAuth } from "./router-BSCuBY6S.mjs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./dialog-ST9L4J-Q.mjs";
 import { formatDate, formatDateTime, relativeTime } from "./format-BBWmN55e.mjs";
 import { PageHeader } from "./PageHeader-CM0cVttf.mjs";

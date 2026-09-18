@@ -4,7 +4,7 @@ import { Button } from "./button-CcyykU5Y.mjs";
 import { Link, useNavigate, useParams } from "../_libs/@tanstack/react-router+[...].mjs";
 import { ArrowLeft, ClipboardCheck, DoorOpen, Users } from "../_libs/lucide-react.mjs";
 import { useQuery } from "../_libs/tanstack__react-query.mjs";
-import { useAuth } from "./router-dKngB4cM.mjs";
+import { useAuth } from "./router-BSCuBY6S.mjs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs-CWtZ7hop.mjs";
 import { KeyValue, Panel } from "./Panel-DSd1zziT.mjs";
 import { DetailSkeleton } from "./Skeletons-CyC1V-yb.mjs";

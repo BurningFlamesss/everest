@@ -7,7 +7,7 @@ import { Link, useNavigate, useParams } from "../_libs/@tanstack/react-router+[.
 import { ArrowLeft, BadgeCheck, Bus, CalendarDays, Download, FileText, GraduationCap, MailPlus, MapPin, Pencil, Phone, Trash2, UserMinus } from "../_libs/lucide-react.mjs";
 import { useMutation, useQuery, useQueryClient } from "../_libs/tanstack__react-query.mjs";
 import { toast } from "../_libs/sonner.mjs";
-import { useAuth } from "./router-dKngB4cM.mjs";
+import { useAuth } from "./router-BSCuBY6S.mjs";
 import { Separator } from "./separator-CW0Ij8xK.mjs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs-CWtZ7hop.mjs";
 import { downloadTextFile, formatCurrency, formatDate, formatDateTime, toCsv } from "./format-BBWmN55e.mjs";

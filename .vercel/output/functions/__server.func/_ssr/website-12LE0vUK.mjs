@@ -7,7 +7,7 @@ import { useNavigate, useSearch } from "../_libs/@tanstack/react-router+[...].mj
 import { CloudUpload, Globe, MousePointerClick, Pencil, RefreshCw, RotateCcw, Save, Search, Undo2 } from "../_libs/lucide-react.mjs";
 import { useMutation, useQuery, useQueryClient } from "../_libs/tanstack__react-query.mjs";
 import { toast } from "../_libs/sonner.mjs";
-import { BLOCK_FIELDS, pageSectionTypes, sectionDefaults, sectionLabel, str, useAuth } from "./router-dKngB4cM.mjs";
+import { BLOCK_FIELDS, pageSectionTypes, sectionDefaults, sectionLabel, str, useAuth } from "./router-BSCuBY6S.mjs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./dialog-ST9L4J-Q.mjs";
 import { Input } from "./input-BfuYswMi.mjs";
 import { Tabs, TabsList, TabsTrigger } from "./tabs-CWtZ7hop.mjs";
