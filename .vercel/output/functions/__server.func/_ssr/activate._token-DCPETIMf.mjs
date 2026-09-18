@@ -1,5 +1,5 @@
 import { require_jsx_runtime } from "../_libs/@radix-ui/react-accordion+[...].mjs";
-import { ERROR } from "./router-B6FnglFX.mjs";
+import { ERROR } from "./router-dKngB4cM.mjs";
 //#region node_modules/.nitro/vite/services/ssr/assets/activate._token-DCPETIMf.js
 var import_jsx_runtime = require_jsx_runtime();
 var SplitErrorComponent = ({ error }) => {
