@@ -11,7 +11,7 @@ import tailwindcss from '@tailwindcss/vite'
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
   ssr: {
-    noExternal: ['@prisma/client'],
+    external: ['@prisma/client', '@prisma/client-runtime-utils'],
   },
   plugins: [
     devtools(),
@@ -21,12 +21,6 @@ const config = defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     nitro({
       preset: 'vercel',
-      serverAssets: [
-        {
-          baseName: 'prisma',
-          dir: 'node_modules/@prisma/client-runtime-utils'
-        }
-      ]
     }),
   ],
 })
