@@ -1,8 +1,7 @@
 
-import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
+import { getWebsitePagePreviewServer, getAlbumsServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
-import { useSearch } from "@tanstack/react-router";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowLeft } from "lucide-react";
@@ -27,6 +26,10 @@ import {
   totalPhotos,
 } from "#/content/gallery";
 import type { Album, Img } from "#/content/types";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
+import { str } from "#/components/cms/block-fields";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import type { BlockType } from "#/types";
 
 /** Deliberately varied tile sizes on a strict 12-column base. */
 const SPANS = [
@@ -47,9 +50,11 @@ export const Route = createFileRoute("/_public/gallery")({
       const previewPage = await getWebsitePagePreviewServer({
         data: { key: "gallery" },
       });
-      return { previewPage };
+      const dbAlbums = await getAlbumsServer();
+      return { previewPage, dbAlbums };
     }
-    return { previewPage: null };
+    const dbAlbums = await getAlbumsServer();
+    return { previewPage: null, dbAlbums };
   },
   component: RouteComponent,
 });
@@ -57,10 +62,29 @@ export const Route = createFileRoute("/_public/gallery")({
 export default function RouteComponent() {
   const search = (useSearch({ strict: false }) as Record<string, unknown>) || {};
   const cms = search.cms;
-  const { previewPage } = Route.useLoaderData();
+  const { previewPage, dbAlbums } = Route.useLoaderData();
+  const activeAlbums = dbAlbums?.length > 0 ? dbAlbums : albums;
+
   const publishedContent = useWebsitePageContent("gallery");
   const preview = String(cms ?? "") === "1";
   const cmsData = preview ? previewPage : publishedContent;
+
+  const headerSection = {
+    ...sectionDefaults("headline"),
+    ...getSectionFields(cmsData?.blocks, "headline"),
+  };
+
+  const onSelectSection = (sectionType: BlockType) => {
+    window.parent?.postMessage(
+      {
+        source: "scms-cms",
+        type: "select-section",
+        pageKey: "gallery",
+        sectionType,
+      },
+      "*",
+    );
+  };
 
   const reduced = Boolean(useReducedMotion());
   const [category, setCategory] = useState<string | null>(null);
@@ -76,7 +100,7 @@ export default function RouteComponent() {
 
   const filtered = useMemo(
     () =>
-      albums.filter(
+      activeAlbums.filter(
         (a) =>
           (!category || a.category === category) && (!year || a.year === year),
       ),
@@ -101,16 +125,27 @@ export default function RouteComponent() {
 
   return (
     <PageFrame>
-      <PageHeader
-        eyebrow={galleryIntro.eyebrow}
-        title={
-          <>
-            <LedgerCount value={totalPhotos} testId="gallery-count" />{" "}
-            PHOTOGRAPHS
-          </>
-        }
-        lead={galleryIntro.support}
-      />
+      <CmsSectionBox
+        preview={preview}
+        sectionType="headline"
+        onSelect={onSelectSection}
+        testId="cms-section-hit-gallery-headline"
+      >
+        <PageHeader
+          eyebrow={str(headerSection, "eyebrow") || galleryIntro.eyebrow}
+          title={
+            str(headerSection, "title") ? (
+              str(headerSection, "title")
+            ) : (
+              <>
+                <LedgerCount value={totalPhotos} testId="gallery-count" />{" "}
+                PHOTOGRAPHS
+              </>
+            )
+          }
+          lead={str(headerSection, "body") || galleryIntro.support}
+        />
+      </CmsSectionBox>
 
       <Section className="!mt-10">
         <div className="flex flex-col gap-4">
@@ -253,7 +288,7 @@ export default function RouteComponent() {
                   data-testid="gallery-empty"
                 >
                   <p className="max-w-measure text-body-l text-ink">
-                    No album matches those filters. There are {albums.length}{" "}
+                    No album matches those filters. There are {activeAlbums.length}{" "}
                     events in total across {galleryYears.length} academic years.
                   </p>
                   <Button

@@ -202,7 +202,7 @@ export function Sidebar() {
 			{/* ── Desktop sidebar panel: fixed left edge ── */}
 			<aside
 				className={cn(
-					"fixed top-0 left-0 z-nav hidden h-screen w-60 flex-col justify-between bg-primary rounded-br-2xl shadow-xl transition-transform duration-500 lg:flex",
+					"fixed top-0 left-0 z-nav hidden h-screen w-60 flex-col justify-between bg-primary shadow-xl transition-transform duration-500 lg:flex",
 					isOpen ? "translate-x-0" : "-translate-x-full",
 				)}
 			>

@@ -9,7 +9,7 @@ import { scholarships } from '#/lib/scholarships';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { hash } from 'bcryptjs';
+import { hashPassword } from '@better-auth/utils/password';
 
 import { PrismaPg } from '@prisma/adapter-pg'
 
@@ -164,13 +164,11 @@ async function main() {
 
 async function seedTestUsers(organizationId: string, branchId: string) {
   const testUsers = [
-    { email: "super@northfield.edu", password: "admin123", name: "Super Admin", role: "SUPERADMIN" },
-    { email: "admin@northfield.edu", password: "admin123", name: "Admin User", role: "ADMIN" },
-    { email: "staff@northfield.edu", password: "staff123", name: "Staff User", role: "STAFF" },
+    { email: "admin@gmail.com", password: "everestadmin", name: "Admin", role: "SUPERADMIN" },
   ];
 
   for (const testUser of testUsers) {
-    const hashedPassword = await hash(testUser.password, 12);
+    const hashedPassword = await hashPassword(testUser.password);
     
     const user = await prisma.user.upsert({
       where: { email: testUser.email },
@@ -184,7 +182,7 @@ async function seedTestUsers(organizationId: string, branchId: string) {
     });
 
     const existingAccount = await prisma.account.findFirst({
-      where: { userId: user.id, providerId: "email" }
+      where: { userId: user.id, providerId: "credential" }
     });
 
     if (existingAccount) {
@@ -197,8 +195,8 @@ async function seedTestUsers(organizationId: string, branchId: string) {
         data: {
           id: crypto.randomUUID(),
           userId: user.id,
-          providerId: "email",
-          accountId: testUser.email,
+          providerId: "credential",
+          accountId: user.id,
           password: hashedPassword,
         }
       });

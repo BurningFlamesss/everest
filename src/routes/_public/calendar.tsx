@@ -1,8 +1,7 @@
 
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
-import { useSearch } from "@tanstack/react-router";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { CalendarPlus, ChevronLeft, ChevronRight } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useMemo, useState } from "react";
@@ -42,6 +41,10 @@ import {
 	PageFrame,
 	PageHeader,
 } from "#/templates/modern/components/chrome/PageFrame";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
+import { str } from "#/components/cms/block-fields";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import type { BlockType } from "#/types";
 import { Segmented } from "#/templates/modern/components/Segmented";
 import { WidgetCaption } from "#/templates/modern/components/Text";
 import { duration, easing } from "#/templates/modern/components/tokens";
@@ -107,6 +110,30 @@ export const Route = createFileRoute("/_public/calendar")({
 });
 
 function RouteComponent() {
+  const search = (useSearch({ strict: false }) as Record<string, unknown>) || {};
+  const cms = search.cms;
+  const { previewPage } = Route.useLoaderData();
+  const publishedContent = useWebsitePageContent("calendar");
+  const preview = String(cms ?? "") === "1";
+  const cmsData = preview ? previewPage : publishedContent;
+
+  const headerSection = {
+    ...sectionDefaults("headline"),
+    ...getSectionFields(cmsData?.blocks, "headline"),
+  };
+
+  const onSelectSection = (sectionType: BlockType) => {
+    window.parent?.postMessage(
+      {
+        source: "scms-cms",
+        type: "select-section",
+        pageKey: "calendar",
+        sectionType,
+      },
+      "*",
+    );
+  };
+
 	const reduced = Boolean(useReducedMotion());
 	const [primary, setPrimary] = useState<"bs" | "ad">("bs");
 	const [month, setMonth] = useState(1);
@@ -200,11 +227,18 @@ function RouteComponent() {
 
 	return (
 		<PageFrame>
+      <CmsSectionBox
+        preview={preview}
+        sectionType="headline"
+        onSelect={onSelectSection}
+        testId="cms-section-hit-calendar-headline"
+      >
 			<PageHeader
-				eyebrow={calendarIntro.eyebrow}
-				title={calendarIntro.statement.join(" ")}
-				lead={calendarIntro.support}
+				eyebrow={str(headerSection, "eyebrow") || calendarIntro.eyebrow}
+				title={str(headerSection, "title") || calendarIntro.statement.join(" ")}
+				lead={str(headerSection, "body") || calendarIntro.support}
 			/>
+      </CmsSectionBox>
 			<ChromeSection testId="calendar-intro" className="!mt-10">
 				<div
 					className="grid gap-px border-hair border-n-200 bg-n-200 sm:grid-cols-2"

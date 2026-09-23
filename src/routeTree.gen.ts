@@ -24,6 +24,7 @@ import { Route as PublicFacilitiesRouteImport } from './routes/_public/facilitie
 import { Route as PublicFacultyRouteImport } from './routes/_public/faculty'
 import { Route as PublicGalleryRouteImport } from './routes/_public/gallery'
 import { Route as PublicNoticesRouteImport } from './routes/_public/notices'
+import { Route as PublicPostsRouteImport } from './routes/_public/posts'
 import { Route as PublicResourcesRouteImport } from './routes/_public/resources'
 import { Route as PublicResultRouteImport } from './routes/_public/result'
 import { Route as PublicScholarshipRouteImport } from './routes/_public/scholarship'
@@ -141,6 +142,11 @@ const PublicGalleryRoute = PublicGalleryRouteImport.update({
 const PublicNoticesRoute = PublicNoticesRouteImport.update({
   id: '/notices',
   path: '/notices',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicPostsRoute = PublicPostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
   getParentRoute: () => PublicRoute,
 } as any)
 const PublicResourcesRoute = PublicResourcesRouteImport.update({
@@ -388,6 +394,7 @@ export interface FileRoutesByFullPath {
   '/faculty': typeof PublicFacultyRoute
   '/gallery': typeof PublicGalleryRoute
   '/notices': typeof PublicNoticesRoute
+  '/posts': typeof PublicPostsRoute
   '/resources': typeof PublicResourcesRoute
   '/result': typeof PublicResultRoute
   '/scholarship': typeof PublicScholarshipRoute
@@ -447,6 +454,7 @@ export interface FileRoutesByTo {
   '/faculty': typeof PublicFacultyRoute
   '/gallery': typeof PublicGalleryRoute
   '/notices': typeof PublicNoticesRoute
+  '/posts': typeof PublicPostsRoute
   '/resources': typeof PublicResourcesRoute
   '/result': typeof PublicResultRoute
   '/scholarship': typeof PublicScholarshipRoute
@@ -509,6 +517,7 @@ export interface FileRoutesById {
   '/_public/faculty': typeof PublicFacultyRoute
   '/_public/gallery': typeof PublicGalleryRoute
   '/_public/notices': typeof PublicNoticesRoute
+  '/_public/posts': typeof PublicPostsRoute
   '/_public/resources': typeof PublicResourcesRoute
   '/_public/result': typeof PublicResultRoute
   '/_public/scholarship': typeof PublicScholarshipRoute
@@ -572,6 +581,7 @@ export interface FileRouteTypes {
     | '/faculty'
     | '/gallery'
     | '/notices'
+    | '/posts'
     | '/resources'
     | '/result'
     | '/scholarship'
@@ -631,6 +641,7 @@ export interface FileRouteTypes {
     | '/faculty'
     | '/gallery'
     | '/notices'
+    | '/posts'
     | '/resources'
     | '/result'
     | '/scholarship'
@@ -692,6 +703,7 @@ export interface FileRouteTypes {
     | '/_public/faculty'
     | '/_public/gallery'
     | '/_public/notices'
+    | '/_public/posts'
     | '/_public/resources'
     | '/_public/result'
     | '/_public/scholarship'
@@ -856,6 +868,13 @@ declare module '@tanstack/react-router' {
       path: '/notices'
       fullPath: '/notices'
       preLoaderRoute: typeof PublicNoticesRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/posts': {
+      id: '/_public/posts'
+      path: '/posts'
+      fullPath: '/posts'
+      preLoaderRoute: typeof PublicPostsRouteImport
       parentRoute: typeof PublicRoute
     }
     '/_public/resources': {
@@ -1199,6 +1218,7 @@ interface PublicRouteChildren {
   PublicFacultyRoute: typeof PublicFacultyRoute
   PublicGalleryRoute: typeof PublicGalleryRoute
   PublicNoticesRoute: typeof PublicNoticesRoute
+  PublicPostsRoute: typeof PublicPostsRoute
   PublicResourcesRoute: typeof PublicResourcesRoute
   PublicResultRoute: typeof PublicResultRoute
   PublicScholarshipRoute: typeof PublicScholarshipRoute
@@ -1216,6 +1236,7 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicFacultyRoute: PublicFacultyRoute,
   PublicGalleryRoute: PublicGalleryRoute,
   PublicNoticesRoute: PublicNoticesRoute,
+  PublicPostsRoute: PublicPostsRoute,
   PublicResourcesRoute: PublicResourcesRoute,
   PublicResultRoute: PublicResultRoute,
   PublicScholarshipRoute: PublicScholarshipRoute,

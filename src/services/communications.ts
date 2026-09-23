@@ -341,14 +341,17 @@ export async function deleteEvent(id: string, actor: Actor): Promise<void> {
 
 // -------------------------------------------------------------------- gallery
 
+import { getAlbumsServer } from "#/packages/content/server/content";
+import { createAlbumServer, updateAlbumServer, deleteAlbumServer } from "#/packages/content/server/mutations";
+
 export async function listAlbums(search = ""): Promise<Album[]> {
   await latency(240);
   return db().albums.filter((a) => matches(search, a.title, a.description));
 }
 
 export async function getAlbum(id: string): Promise<Album | null> {
-  await latency(200);
-  return db().albums.find((a) => a.id === id) ?? null;
+  const all = await getAlbumsServer();
+  return (all.find((a) => a.id === id) as unknown as Album) ?? null;
 }
 
 export interface AlbumInput {

@@ -1,8 +1,7 @@
 
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
-import { useSearch } from "@tanstack/react-router";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { ArrowUpRight, GraduationCap, Minus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { PageFrame, PageHeader, Reveal, Section, SectionHeading } from "#/templates/modern/components/chrome/PageFrame";
@@ -27,7 +26,10 @@ import { formatNpr } from "#/lib/fees";
 import { academicProspectusDoc, programProspectusDoc } from "#/lib/documents";
 import { downloadOfficialPdf } from "#/lib/pdf";
 import { STAGGER } from "#/lib/motion";
-import type { LevelId, Program } from "#/types";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
+import { str } from "#/components/cms/block-fields";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import type { BlockType, LevelId, Program } from "#/types";
 
 const ProgramDetail = ({ program }: { program: Program }) => {
   const level = levels.find((l) => l.id === program.level) ?? levels[0];
@@ -317,6 +319,23 @@ function RouteComponent() {
   const preview = String(cms ?? "") === "1";
   const cmsData = preview ? previewPage : publishedContent;
 
+  const headerSection = {
+    ...sectionDefaults("headline"),
+    ...getSectionFields(cmsData?.blocks, "headline"),
+  };
+
+  const onSelectSection = (sectionType: BlockType) => {
+    window.parent?.postMessage(
+      {
+        source: "scms-cms",
+        type: "select-section",
+        pageKey: "courses",
+        sectionType,
+      },
+      "*",
+    );
+  };
+
   const [levelId, setLevelId] = useState<LevelId>("plus2-science");
 
   const level = useMemo(
@@ -339,22 +358,28 @@ function RouteComponent() {
 
   return (
     <PageFrame testId="courses-page">
-      <PageHeader
-        testId="courses-page-header"
-        eyebrow="Academics"
-        title="Courses & Academic Programmes"
-        subtitle="Subject lists, credit hours, fee structures and weekly routines for every programme from Nursery to Grade 12."
-        meta={[
-          { label: "Programmes", value: String(programs.length) },
-          { label: "Levels", value: "5" },
-          { label: "+2 streams", value: "Science, Management" },
-          { label: "Session", value: "2083 BS" },
-        ]}
-        actions={
-          <DownloadButton
-            label="Full academic prospectus"
-            meta={`PDF · ${programs.length} programmes · ${school.session}`}
-            stamp="Official"
+      <CmsSectionBox
+        preview={preview}
+        sectionType="headline"
+        onSelect={onSelectSection}
+        testId="cms-section-hit-courses-headline"
+      >
+        <PageHeader
+          testId="courses-page-header"
+          eyebrow={str(headerSection, "eyebrow") || "Academics"}
+          title={str(headerSection, "title") || "Courses & Academic Programmes"}
+          subtitle={str(headerSection, "body") || "Subject lists, credit hours, fee structures and weekly routines for every programme from Nursery to Grade 12."}
+          meta={[
+            { label: "Programmes", value: String(programs.length) },
+            { label: "Levels", value: "5" },
+            { label: "+2 streams", value: "Science, Management" },
+            { label: "Session", value: "2083 BS" },
+          ]}
+          actions={
+            <DownloadButton
+              label="Full academic prospectus"
+              meta={`PDF · ${programs.length} programmes · ${school.session}`}
+              stamp="Official"
             testId="courses-download-prospectus-button"
             onDownload={() =>
               downloadOfficialPdf(academicProspectusDoc(levels, programs))
@@ -362,6 +387,7 @@ function RouteComponent() {
           />
         }
       />
+      </CmsSectionBox>
 
       <div className="mt-16 grid gap-12 lg:grid-cols-[236px_1fr] lg:gap-16">
         {/* Level rail — vertical index on desktop, snap rail on mobile */}

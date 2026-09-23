@@ -420,6 +420,7 @@ export const ModelName = {
   Resource: 'Resource',
   BoardResult: 'BoardResult',
   BusRoute: 'BusRoute',
+  Course: 'Course',
   CalendarEvent: 'CalendarEvent'
 } as const
 
@@ -436,7 +437,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "organization" | "branch" | "userRole" | "student" | "staff" | "guardian" | "guardianStudent" | "invite" | "guardianInvite" | "websitePage" | "contentBlock" | "facultyMember" | "notice" | "scholarship" | "album" | "facility" | "resource" | "boardResult" | "busRoute" | "calendarEvent"
+    modelProps: "user" | "session" | "account" | "verification" | "organization" | "branch" | "userRole" | "student" | "staff" | "guardian" | "guardianStudent" | "invite" | "guardianInvite" | "websitePage" | "contentBlock" | "facultyMember" | "notice" | "scholarship" | "album" | "facility" | "resource" | "boardResult" | "busRoute" | "course" | "calendarEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2142,6 +2143,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Course: {
+      payload: Prisma.$CoursePayload<ExtArgs>
+      fields: Prisma.CourseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CourseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoursePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CourseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoursePayload>
+        }
+        findFirst: {
+          args: Prisma.CourseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoursePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CourseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoursePayload>
+        }
+        findMany: {
+          args: Prisma.CourseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoursePayload>[]
+        }
+        create: {
+          args: Prisma.CourseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoursePayload>
+        }
+        createMany: {
+          args: Prisma.CourseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CourseCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoursePayload>[]
+        }
+        delete: {
+          args: Prisma.CourseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoursePayload>
+        }
+        update: {
+          args: Prisma.CourseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoursePayload>
+        }
+        deleteMany: {
+          args: Prisma.CourseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CourseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CourseUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoursePayload>[]
+        }
+        upsert: {
+          args: Prisma.CourseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoursePayload>
+        }
+        aggregate: {
+          args: Prisma.CourseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCourse>
+        }
+        groupBy: {
+          args: Prisma.CourseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CourseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CourseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CourseCountAggregateOutputType> | number
+        }
+      }
+    }
     CalendarEvent: {
       payload: Prisma.$CalendarEventPayload<ExtArgs>
       fields: Prisma.CalendarEventFieldRefs
@@ -2625,6 +2700,25 @@ export const BusRouteScalarFieldEnum = {
 export type BusRouteScalarFieldEnum = (typeof BusRouteScalarFieldEnum)[keyof typeof BusRouteScalarFieldEnum]
 
 
+export const CourseScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  department: 'department',
+  description: 'description',
+  credits: 'credits',
+  weeklyHours: 'weeklyHours',
+  teacherIds: 'teacherIds',
+  classIds: 'classIds',
+  syllabus: 'syllabus',
+  isElective: 'isElective',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CourseScalarFieldEnum = (typeof CourseScalarFieldEnum)[keyof typeof CourseScalarFieldEnum]
+
+
 export const CalendarEventScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -3042,6 +3136,7 @@ export type GlobalOmitConfig = {
   resource?: Prisma.ResourceOmit
   boardResult?: Prisma.BoardResultOmit
   busRoute?: Prisma.BusRouteOmit
+  course?: Prisma.CourseOmit
   calendarEvent?: Prisma.CalendarEventOmit
 }
 

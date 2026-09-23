@@ -1,8 +1,7 @@
 
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
-import { useSearch } from "@tanstack/react-router";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import {
   BadgeCheck,
   CalendarPlus,
@@ -28,6 +27,10 @@ import {
 } from "#/templates/modern/components/kit";
 import { toast } from "sonner";
 import { DownloadButton } from "#/templates/modern/components/shared/DownloadButton";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
+import { str, rows } from "#/components/cms/block-fields";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import type { BlockType } from "#/types";
 import { FilterChips } from "#/templates/modern/components/shared/FilterChips";
 import { scholarships as staticScholarships } from "#/lib/scholarships";
 import { school } from "#/content/school";
@@ -520,19 +523,42 @@ function RouteComponent() {
     if (first) setActiveId(first.id);
   };
 
+  const headerSection = {
+    ...sectionDefaults("headline"),
+    ...getSectionFields(cmsData?.blocks, "headline"),
+  };
+
+  const onSelectSection = (sectionType: BlockType) => {
+    window.parent?.postMessage(
+      {
+        source: "scms-cms",
+        type: "select-section",
+        pageKey: "scholarship",
+        sectionType,
+      },
+      "*",
+    );
+  };
+
   return (
     <PageFrame testId="scholarships-page">
-      <PageHeader
-        testId="scholarships-page-header"
-        eyebrow="Scholarships"
-        title="Chhatrabritti & Free Studentship"
-        subtitle="Every criterion, document and deadline published in full. Check yourself against a scheme, then download the form the desk asks for."
-        meta={[
-          { label: "Schemes", value: String(scholarships.length) },
-          { label: "Places", value: String(totalScholarshipSeats) },
-          { label: "Max relief", value: "100%" },
-          {
-            label: "Next close",
+      <CmsSectionBox
+        preview={preview}
+        sectionType="headline"
+        onSelect={onSelectSection}
+        testId="cms-section-hit-scholarship-headline"
+      >
+        <PageHeader
+          testId="scholarships-page-header"
+          eyebrow={str(headerSection, "eyebrow") || "Scholarships"}
+          title={str(headerSection, "title") || "Chhatrabritti & Free Studentship"}
+          subtitle={str(headerSection, "body") || "Every criterion, document and deadline published in full. Check yourself against a scheme, then download the form the desk asks for."}
+          meta={[
+            { label: "Schemes", value: String(scholarships.length) },
+            { label: "Places", value: String(totalScholarshipSeats) },
+            { label: "Max relief", value: "100%" },
+            {
+              label: "Next close",
             value: nextDeadline
               ? `${formatAd(nextDeadline.deadlineAd)} · ${daysUntil(nextDeadline.deadlineAd)}d`
               : "Closed",
@@ -550,6 +576,7 @@ function RouteComponent() {
           />
         }
       />
+      </CmsSectionBox>
 
       <div className="mt-14">
         <FilterChips

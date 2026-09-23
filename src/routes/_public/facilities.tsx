@@ -1,8 +1,11 @@
 
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
-import { useSearch } from "@tanstack/react-router";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
+import { str } from "#/components/cms/block-fields";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import type { BlockType } from "#/types";
 import { Clock3, Expand, MapPin, Quote, UserRound } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
@@ -60,6 +63,23 @@ function RouteComponent() {
   const preview = String(cms ?? "") === "1";
   const cmsData = preview ? previewPage : publishedContent;
 
+  const headerSection = {
+    ...sectionDefaults("headline"),
+    ...getSectionFields(cmsData?.blocks, "headline"),
+  };
+
+  const onSelectSection = (sectionType: BlockType) => {
+    window.parent?.postMessage(
+      {
+        source: "scms-cms",
+        type: "select-section",
+        pageKey: "facilities",
+        sectionType,
+      },
+      "*",
+    );
+  };
+
   const [category, setCategory] = useState<string>("all");
   const [activeId, setActiveId] = useState<string>(facilities[0].id);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(
@@ -101,12 +121,18 @@ function RouteComponent() {
 
   return (
     <PageFrame testId="facilities-page">
-      <PageHeader
-        testId="facilities-page-header"
-        eyebrow="Campus"
-        title="Facilities & Infrastructure"
-        subtitle="Capacity, opening hours and the member of staff who holds the key, for every space on the Butwal-8 campus."
-        meta={[
+      <CmsSectionBox
+        preview={preview}
+        sectionType="headline"
+        onSelect={onSelectSection}
+        testId="cms-section-hit-facilities-headline"
+      >
+        <PageHeader
+          testId="facilities-page-header"
+          eyebrow={str(headerSection, "eyebrow") || "Campus"}
+          title={str(headerSection, "title") || "Facilities & Infrastructure"}
+          subtitle={str(headerSection, "body") || "Capacity, opening hours and the member of staff who holds the key, for every space on the Butwal-8 campus."}
+          meta={[
           { label: "Facilities", value: String(facilities.length) },
           { label: "Laboratories", value: "3" },
           { label: "Hostel", value: "240 beds" },
@@ -122,6 +148,7 @@ function RouteComponent() {
           />
         }
       />
+      </CmsSectionBox>
 
       <div className="mt-14">
         <FilterChips

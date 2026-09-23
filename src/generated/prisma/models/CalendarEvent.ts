@@ -14,7 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace.ts"
 
 /**
  * Model CalendarEvent
- * Calendar and school events.
+ * 
  */
 export type CalendarEventModel = runtime.Types.Result.DefaultSelection<Prisma.$CalendarEventPayload>
 

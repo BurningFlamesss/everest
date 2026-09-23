@@ -40,15 +40,15 @@ export function pageSectionTypes(pageKey: CmsPageKey): BlockType[] {
 		case "home": return ["hero", "intro", "stats", "featured_events"];
 		case "about": return ["history", "mission_vision", "principal_message"];
 		case "contact": return ["contact_details", "office_hours", "map"];
-		case "courses": return ["academics"];
-		case "facilities": return ["facilities"];
-		case "gallery": return ["gallery_grid"];
-		case "calendar": return ["featured_events"];
-		case "resources": return ["rich_text"];
-		case "result": return ["stats"];
-		case "transportation": return ["contact_details"];
-		case "notices": return ["announcements", "featured_notices"];
-		case "scholarship": return ["admissions_info"];
+		case "courses": return ["headline", "academics"];
+		case "facilities": return ["headline", "facilities"];
+		case "gallery": return ["headline", "gallery_grid"];
+		case "calendar": return ["headline", "featured_events"];
+		case "resources": return ["headline", "rich_text"];
+		case "result": return ["headline", "stats"];
+		case "transportation": return ["headline", "contact_details"];
+		case "notices": return ["headline", "announcements", "featured_notices"];
+		case "scholarship": return ["headline", "admissions_info"];
 		default: return ["rich_text"];
 	}
 }

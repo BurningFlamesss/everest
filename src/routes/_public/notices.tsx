@@ -1,8 +1,7 @@
 
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
-import { useSearch } from "@tanstack/react-router";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { ArrowRight, Paperclip, Pin } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
@@ -28,6 +27,10 @@ import { noticeDoc } from "#/lib/documents";
 import { downloadOfficialPdf } from "#/lib/pdf";
 import { useNotices } from "#/packages/school/hook.tsx";
 import type { Notice } from "#/types";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
+import { str } from "#/components/cms/block-fields";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import type { BlockType } from "#/types";
 
 const Chip = ({ children }: { children: React.ReactNode }) => (
   <span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[11.5px] leading-normal text-muted-foreground">
@@ -199,6 +202,23 @@ function RouteComponent() {
   const preview = String(cms ?? "") === "1";
   const cmsData = preview ? previewPage : publishedContent;
 
+  const headerSection = {
+    ...sectionDefaults("headline"),
+    ...getSectionFields(cmsData?.blocks, "headline"),
+  };
+
+  const onSelectSection = (sectionType: BlockType) => {
+    window.parent?.postMessage(
+      {
+        source: "scms-cms",
+        type: "select-section",
+        pageKey: "notices",
+        sectionType,
+      },
+      "*",
+    );
+  };
+
   // Notices are served from the database (seeded from src/lib/notices); the
   // static list is the fallback when the collection is empty.
   const dbNotices = useNotices();
@@ -246,16 +266,23 @@ function RouteComponent() {
 
   return (
     <PageFrame testId="notices-page">
-      <PageHeader
-        testId="notices-page-header"
-        eyebrow="Notice board"
-        title="Notices & Announcements"
-        subtitle="Everything the school has published this session, newest first. Open any notice to read it in full."
-        meta={[
-          { label: "Published", value: String(notices.length) },
-          { label: "Latest", value: formatAd(rest[0]?.dateAd ?? pinned.dateAd) },
-        ]}
-      />
+      <CmsSectionBox
+        preview={preview}
+        sectionType="headline"
+        onSelect={onSelectSection}
+        testId="cms-section-hit-notices-headline"
+      >
+        <PageHeader
+          testId="notices-page-header"
+          eyebrow={str(headerSection, "eyebrow") || "Notice board"}
+          title={str(headerSection, "title") || "Notices & Announcements"}
+          subtitle={str(headerSection, "body") || "Everything the school has published this session, newest first. Open any notice to read it in full."}
+          meta={[
+            { label: "Published", value: String(notices.length) },
+            { label: "Latest", value: formatAd(rest[0]?.dateAd ?? pinned.dateAd) },
+          ]}
+        />
+      </CmsSectionBox>
 
       {/* ---------------- Pinned notice: read it right here ---------------- */}
       <Section testId="notice-pinned-section">

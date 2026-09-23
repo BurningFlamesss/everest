@@ -64,7 +64,8 @@ export const WebsitePageKey = {
   result: 'result',
   transportation: 'transportation',
   notices: 'notices',
-  scholarship: 'scholarship'
+  scholarship: 'scholarship',
+  posts: 'posts'
 } as const
 
 export type WebsitePageKey = (typeof WebsitePageKey)[keyof typeof WebsitePageKey]

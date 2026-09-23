@@ -159,7 +159,12 @@ export type BoardResult = Prisma.BoardResultModel
  */
 export type BusRoute = Prisma.BusRouteModel
 /**
- * Model CalendarEvent
+ * Model Course
  * Calendar and school events.
+ */
+export type Course = Prisma.CourseModel
+/**
+ * Model CalendarEvent
+ * 
  */
 export type CalendarEvent = Prisma.CalendarEventModel

@@ -131,6 +131,8 @@ export interface CourseQuery {
   elective?: string;
 }
 
+import { getCoursesServer, createCourseServer, updateCourseServer, deleteCourseServer } from "#/packages/content/server/mutations";
+
 export async function listCourses(query: CourseQuery = {}): Promise<Course[]> {
   await latency(220);
   const { search = "", department = "all", elective = "all" } = query;

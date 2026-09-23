@@ -74,6 +74,7 @@ export const ModelName = {
   Resource: 'Resource',
   BoardResult: 'BoardResult',
   BusRoute: 'BusRoute',
+  Course: 'Course',
   CalendarEvent: 'CalendarEvent'
 } as const
 
@@ -461,6 +462,25 @@ export const BusRouteScalarFieldEnum = {
 } as const
 
 export type BusRouteScalarFieldEnum = (typeof BusRouteScalarFieldEnum)[keyof typeof BusRouteScalarFieldEnum]
+
+
+export const CourseScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  department: 'department',
+  description: 'description',
+  credits: 'credits',
+  weeklyHours: 'weeklyHours',
+  teacherIds: 'teacherIds',
+  classIds: 'classIds',
+  syllabus: 'syllabus',
+  isElective: 'isElective',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CourseScalarFieldEnum = (typeof CourseScalarFieldEnum)[keyof typeof CourseScalarFieldEnum]
 
 
 export const CalendarEventScalarFieldEnum = {

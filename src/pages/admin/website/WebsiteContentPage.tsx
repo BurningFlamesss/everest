@@ -27,7 +27,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
 	type CmsPageKey,
@@ -63,7 +69,7 @@ const PAGE_KEYS: WebsitePageKey[] = [
 	"scholarship",
 	"faculty",
 	"login",
-	"activate"
+	"activate",
 ];
 
 function clone<T>(value: T): T {
@@ -278,26 +284,30 @@ export default function WebsiteContentPage() {
 			/>
 
 			<div className="mb-4 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
-				<Tabs value={pageKey} onValueChange={changePage}>
-					<TabsList className="h-9" data-testid="cms-page-tabs">
+				<Select value={pageKey} onValueChange={changePage}>
+					<SelectTrigger className="w-[280px]" data-testid="cms-page-select">
+						<SelectValue placeholder="Select a page to edit" />
+					</SelectTrigger>
+					<SelectContent>
 						{PAGE_KEYS.map((key) => {
 							const entry = pages.find((item) => item.key === key);
 							return (
-								<TabsTrigger
+								<SelectItem
 									key={key}
 									value={key}
-									className="h-7 gap-1.5 px-3 text-xs"
-									data-testid={`cms-page-tab-${key}`}
+									data-testid={`cms-page-option-${key}`}
 								>
-									{entry?.title ?? key}
-									{entry?.hasUnpublishedChanges && (
-										<span className="h-1.5 w-1.5 rounded-full bg-accent" />
-									)}
-								</TabsTrigger>
+									<span className="flex items-center gap-2">
+										{entry?.title ?? key}
+										{entry?.hasUnpublishedChanges && (
+											<span className="h-1.5 w-1.5 rounded-full bg-accent" />
+										)}
+									</span>
+								</SelectItem>
 							);
 						})}
-					</TabsList>
-				</Tabs>
+					</SelectContent>
+				</Select>
 			</div>
 
 			{isLoading ? (
