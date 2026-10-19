@@ -51,17 +51,8 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
     { key: "image", label: "Image", kind: "image" },
   ],
   stats: [
-    {
-      key: "items",
-      label: "Figures",
-      kind: "list",
-      addLabel: "Add figure",
-      itemLabel: "Figure",
-      itemFields: [
-        { key: "label", label: "Label", kind: "text" },
-        { key: "value", label: "Value", kind: "text" },
-      ],
-    },
+    { key: "title", label: "Title", kind: "text" },
+    { key: "body", label: "Body", kind: "textarea" },
   ],
   cta: [
     { key: "title", label: "Title", kind: "text" },
@@ -85,17 +76,6 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
     { key: "title", label: "Title", kind: "text" },
     { key: "body", label: "Narrative", kind: "textarea" },
     { key: "image", label: "Image", kind: "image" },
-    {
-      key: "milestones",
-      label: "Milestones",
-      kind: "list",
-      addLabel: "Add milestone",
-      itemLabel: "Milestone",
-      itemFields: [
-        { key: "year", label: "Year", kind: "text" },
-        { key: "title", label: "What happened", kind: "text" },
-      ],
-    },
   ],
   mission_vision: [
     { key: "mission", label: "Mission", kind: "textarea" },
@@ -109,32 +89,13 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
     { key: "photo", label: "Portrait", kind: "image" },
   ],
   facilities: [
-    {
-      key: "items",
-      label: "Facilities",
-      kind: "list",
-      addLabel: "Add facility",
-      itemLabel: "Facility",
-      itemFields: [
-        { key: "title", label: "Name", kind: "text" },
-        { key: "description", label: "Description", kind: "textarea" },
-        { key: "image", label: "Image", kind: "image" },
-      ],
-    },
+    { key: "eyebrow", label: "Eyebrow", kind: "text" },
+    { key: "title", label: "Title", kind: "text" },
+    { key: "body", label: "Body", kind: "textarea" },
   ],
   achievements: [
-    {
-      key: "items",
-      label: "Achievements",
-      kind: "list",
-      addLabel: "Add achievement",
-      itemLabel: "Achievement",
-      itemFields: [
-        { key: "year", label: "Year", kind: "text" },
-        { key: "title", label: "Title", kind: "text" },
-        { key: "description", label: "Description", kind: "textarea" },
-      ],
-    },
+    { key: "eyebrow", label: "Eyebrow", kind: "text" },
+    { key: "title", label: "Title", kind: "text" },
   ],
   contact_details: [
     { key: "phone", label: "Phone", kind: "text" },
@@ -163,18 +124,8 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
     { key: "directions", label: "Directions", kind: "textarea" },
   ],
   announcements: [
-    {
-      key: "items",
-      label: "Announcements",
-      kind: "list",
-      addLabel: "Add announcement",
-      itemLabel: "Announcement",
-      itemFields: [
-        { key: "title", label: "Title", kind: "text" },
-        { key: "body", label: "Body", kind: "textarea" },
-        { key: "date", label: "Date", kind: "text" },
-      ],
-    },
+    { key: "eyebrow", label: "Eyebrow", kind: "text" },
+    { key: "title", label: "Title", kind: "text" },
   ],
   gallery_grid: [{ key: "title", label: "Section title", kind: "text", help: "Albums are pulled from the gallery" }],
   faculty: [
@@ -184,33 +135,11 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
   academics: [
     { key: "title", label: "Section title", kind: "text" },
     { key: "body", label: "Body", kind: "textarea" },
-    {
-      key: "programs",
-      label: "Programmes",
-      kind: "list",
-      addLabel: "Add programme",
-      itemLabel: "Programme",
-      itemFields: [
-        { key: "title", label: "Title", kind: "text" },
-        { key: "description", label: "Description", kind: "textarea" },
-      ],
-    },
   ],
   admissions_info: [
     { key: "title", label: "Section title", kind: "text" },
     { key: "body", label: "Body", kind: "textarea" },
     { key: "deadline", label: "Deadline", kind: "date" },
-    {
-      key: "steps",
-      label: "Steps",
-      kind: "list",
-      addLabel: "Add step",
-      itemLabel: "Step",
-      itemFields: [
-        { key: "title", label: "Title", kind: "text" },
-        { key: "description", label: "Description", kind: "textarea" },
-      ],
-    },
   ],
   // The sign-in page is composed from these four section types; each one maps
   // to a region of the auth layout (visual column, panel intro, form, footer).

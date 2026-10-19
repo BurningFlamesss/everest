@@ -39,7 +39,7 @@ function PostsRoute() {
   const { previewPage } = Route.useLoaderData();
   const publishedContent = useWebsitePageContent("posts" as any);
   const preview = String(cms ?? "") === "1";
-  const cmsData = preview ? previewPage : publishedContent;
+  const cmsData = (preview ? previewPage : publishedContent) as any;
 
   const headerSection = {
     ...sectionDefaults("headline"),

@@ -181,7 +181,7 @@ function RouteComponent() {
   const { previewPage } = Route.useLoaderData();
   const publishedContent = useWebsitePageContent("about");
   const preview = String(cms ?? "") === "1";
-  const cmsData = preview ? previewPage : publishedContent;
+  const cmsData = (preview ? previewPage : publishedContent) as any;
 
   const [category, setCategory] = useState<string>("all");
   const [activeId, setActiveId] = useState<string>(chapters[0].id);

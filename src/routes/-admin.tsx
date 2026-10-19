@@ -1,5 +1,5 @@
 import { createRoute, redirect } from "@tanstack/react-router";
-import { rootRoute } from "./__root";
+import { Route as rootRoute } from "./__root";
 import { AdminShell } from "#/components/layout/AdminShell";
 
 export const adminRoute = createRoute({

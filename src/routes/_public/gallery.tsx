@@ -67,7 +67,7 @@ export default function RouteComponent() {
 
   const publishedContent = useWebsitePageContent("gallery");
   const preview = String(cms ?? "") === "1";
-  const cmsData = preview ? previewPage : publishedContent;
+  const cmsData = (preview ? previewPage : publishedContent) as any;
 
   const headerSection = {
     ...sectionDefaults("headline"),

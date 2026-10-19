@@ -19,8 +19,8 @@ export function useSyncContentStore() {
         // Only managed WebsitePage payloads belong in the websitePages map;
         // collection arrays (facultyMembers/notices/scholarships) are read
         // straight from the loader via their dedicated hooks.
-        if (page && (key === "faculty" || key === "login")) {
-          setWebsitePage(key, page as WebsitePageContent);
+        if (page) {
+          setWebsitePage(key as WebsitePageKey, page as WebsitePageContent);
         }
       }
       if (sidebar) {
@@ -46,7 +46,8 @@ export function useSchoolContent() {
   };
 }
 
-export type ManagedPageKey = "faculty" | "login";
+import type { WebsitePageKey } from "#/types";
+export type ManagedPageKey = WebsitePageKey;
 
 /**
  * Returns the published WebsitePage for a managed page key (with its rendered

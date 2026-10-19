@@ -2,30 +2,76 @@ import { createServerFn } from "@tanstack/react-start";
 import { prisma } from "#/lib/prisma";
 import type { Subject } from "#/types/index";
 
-export const getCoursesServer = createServerFn({ method: "GET" }).handler(async () => {
-  return await prisma.course.findMany({ orderBy: { name: "asc" } });
+export const getProgramsServer = createServerFn({ method: "GET" }).handler(async () => {
+  return await prisma.program.findMany({ orderBy: { title: "asc" } });
 });
 
-export const createCourseServer = createServerFn({ method: "POST" })
+export const createProgramServer = createServerFn({ method: "POST" })
   .validator((data: any) => data as any)
   .handler(async ({ data }) => {
-    return await prisma.course.create({ data });
+    return await prisma.program.create({ data });
   });
 
-export const updateCourseServer = createServerFn({ method: "POST" })
+export const updateProgramServer = createServerFn({ method: "POST" })
   .validator((data: { id: string; patch: any }) => data)
   .handler(async ({ data: { id, patch } }) => {
-    return await prisma.course.update({ where: { id }, data: patch });
+    return await prisma.program.update({ where: { id }, data: patch });
   });
 
-export const deleteCourseServer = createServerFn({ method: "POST" })
+export const deleteProgramServer = createServerFn({ method: "POST" })
   .validator((data: string) => data)
   .handler(async ({ data: id }) => {
-    await prisma.course.delete({ where: { id } });
+    await prisma.program.delete({ where: { id } });
   });
+
+export const saveFacilityServer = createServerFn({ method: "POST" })
+  .validator((data: any) => data as any)
+  .handler(async ({ data }) => {
+    if (data.id) {
+      return await prisma.facility.update({ where: { id: data.id }, data });
+    }
+    return await prisma.facility.create({ data });
+  });
+
+export const deleteFacilityServer = createServerFn({ method: "POST" })
+  .validator((data: string) => data)
+  .handler(async ({ data: id }) => {
+    await prisma.facility.delete({ where: { id } });
+  });
+
 
 
 // Albums (Gallery)
+export const saveBoardResultServer = createServerFn({ method: "POST" })
+  .validator((data: any) => data as any)
+  .handler(async ({ data }) => {
+    if (data.id) {
+      return await prisma.boardResult.update({ where: { id: data.id }, data });
+    }
+    return await prisma.boardResult.create({ data });
+  });
+
+export const deleteBoardResultServer = createServerFn({ method: "POST" })
+  .validator((data: string) => data)
+  .handler(async ({ data: id }) => {
+    await prisma.boardResult.delete({ where: { id } });
+  });
+
+export const saveBusRouteServer = createServerFn({ method: "POST" })
+  .validator((data: any) => data as any)
+  .handler(async ({ data }) => {
+    if (data.id) {
+      return await prisma.busRoute.update({ where: { id: data.id }, data });
+    }
+    return await prisma.busRoute.create({ data });
+  });
+
+export const deleteBusRouteServer = createServerFn({ method: "POST" })
+  .validator((data: string) => data)
+  .handler(async ({ data: id }) => {
+    await prisma.busRoute.delete({ where: { id } });
+  });
+
 export const createAlbumServer = createServerFn({ method: "POST" })
   .validator((data: any) => data as any)
   .handler(async ({ data }) => {

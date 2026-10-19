@@ -38,7 +38,7 @@ function RouteComponent() {
   const { previewPage } = Route.useLoaderData();
   const publishedContent = useWebsitePageContent("contact");
   const preview = String(cms ?? "") === "1";
-  const cmsData = preview ? previewPage : publishedContent;
+  const cmsData = (preview ? previewPage : publishedContent) as any;
 
 	const [route, setRoute] = useState("Admissions");
 	const [time, setTime] = useState(kathmandu());

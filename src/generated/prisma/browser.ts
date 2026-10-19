@@ -116,7 +116,7 @@ export type Scholarship = Prisma.ScholarshipModel
 export type Album = Prisma.AlbumModel
 /**
  * Model Facility
- * Campus facilities (Biology lab, Library, etc).
+ * Campus facilities matching frontend complex shapes
  */
 export type Facility = Prisma.FacilityModel
 /**
@@ -135,10 +135,11 @@ export type BoardResult = Prisma.BoardResultModel
  */
 export type BusRoute = Prisma.BusRouteModel
 /**
- * Model Course
+ * Model Program
  * Calendar and school events.
+ * Academic programs matching frontend complex shapes
  */
-export type Course = Prisma.CourseModel
+export type Program = Prisma.ProgramModel
 /**
  * Model CalendarEvent
  * 

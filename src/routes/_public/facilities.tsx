@@ -24,7 +24,7 @@ import { DownloadButton } from "#/templates/modern/components/shared/DownloadBut
 import { EditorialImage } from "#/templates/modern/components/shared/EditorialImage";
 import { EmptyState } from "#/templates/modern/components/shared/EmptyState";
 import { FilterChips } from "#/templates/modern/components/shared/FilterChips";
-import { facilities } from "#/lib/facilities";
+import { facilities as staticFacilities } from "#/lib/facilities";
 import { school } from "#/content/school";
 import { facilityBriefDoc, facilityIndexDoc } from "#/lib/documents";
 import { downloadOfficialPdf } from "#/lib/pdf";
@@ -41,16 +41,19 @@ const CATEGORY_ORDER = [
   "Campus",
 ];
 
+import { getFacilitiesServer } from "#/packages/content/server/content.ts";
+
 export const Route = createFileRoute("/_public/facilities")({
   loader: async ({ location }) => {
     const search = location.search as { cms?: string };
+    let previewPage = null;
     if (String(search.cms) === "1") {
-      const previewPage = await getWebsitePagePreviewServer({
+      previewPage = await getWebsitePagePreviewServer({
         data: { key: "facilities" },
       });
-      return { previewPage };
     }
-    return { previewPage: null };
+    const dbFacilities = await getFacilitiesServer();
+    return { previewPage, dbFacilities };
   },
 	component: RouteComponent,
 });
@@ -58,10 +61,12 @@ export const Route = createFileRoute("/_public/facilities")({
 function RouteComponent() {
   const search = (useSearch({ strict: false }) as Record<string, unknown>) || {};
   const cms = search.cms;
-  const { previewPage } = Route.useLoaderData();
+  const { previewPage, dbFacilities } = Route.useLoaderData();
   const publishedContent = useWebsitePageContent("facilities");
   const preview = String(cms ?? "") === "1";
-  const cmsData = preview ? previewPage : publishedContent;
+  const cmsData = (preview ? previewPage : publishedContent) as any;
+
+  const facilities = dbFacilities && dbFacilities.length > 0 ? dbFacilities : staticFacilities;
 
   const headerSection = {
     ...sectionDefaults("headline"),
@@ -141,7 +146,7 @@ function RouteComponent() {
         actions={
           <DownloadButton
             label="Campus facilities index"
-            meta={`PDF · ${facilities.length} facilities · ${school.session}`}
+            meta={`PDF · ${facilities.length} facilities · ${"2083 BS"}`}
             stamp="Official"
             testId="facilities-download-index-button"
             onDownload={() => downloadOfficialPdf(facilityIndexDoc(facilities))}
@@ -358,7 +363,7 @@ function RouteComponent() {
             </div>
 
             <p className="t-meta mt-4 leading-relaxed">
-              {school.fullAddress}. Visiting hours for prospective families are
+              {`${school.address.line1}, ${school.address.line2}, ${school.address.country}`}. Visiting hours for prospective families are
               Saturday, 10:00 to 16:00.
             </p>
           </aside>

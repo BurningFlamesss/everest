@@ -504,17 +504,24 @@ model Album {
   @@map("album")
 }
 
-/// Campus facilities (Biology lab, Library, etc).
+/// Campus facilities matching frontend complex shapes
 model Facility {
-  id        String   @id @default(cuid())
-  name      String
-  room      String
-  specs     Json     // strict string[]
-  images    Json     // strict Img[] { src, alt }
-  block     Json     // { d, cx, cy } for the interactive map
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String
+  category     String   @default("Campus")
+  block        String   @default("")
+  blurb        String   @default("")
+  description  String   @default("")
+  image        String   @default("")
+  gallery      Json     @default("[]") // string[]
+  stats        Json     @default("[]") // { label, value }[]
+  hours        String   @default("")
+  inCharge     String   @default("")
+  studentsLove String   @default("")
+  since        String   @default("")
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("facility")
 }
@@ -570,20 +577,32 @@ model BusRoute {
 }
 
 /// Calendar and school events.
-model Course {
-  id           String   @id @default(cuid())
-  code         String
-  name         String
-  department   String
-  description  String
-  credits      Int
-  weeklyHours  Int
-  teacherIds   Json
-  classIds     Json
-  syllabus     Json
-  isElective   Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+/// Academic programs matching frontend complex shapes
+model Program {
+  id          String   @id @default(cuid())
+  level       String
+  code        String
+  title       String
+  stream      String?
+  duration    String
+  seats       Int
+  medium      String
+  eligibility String
+  summary     String
+  description String
+  highlights  Json     // string[]
+  outcomes    Json     // string[]
+  careers     Json     // string[]
+  subjects    Json     // Subject[]
+  fees        Json     // FeeLine[]
+  image       String
+  routineKey  String
+  spotlight   Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("program")
 }
 
 model CalendarEvent {

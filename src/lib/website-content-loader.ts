@@ -1,4 +1,5 @@
 import type { SchoolConfig } from "#/types/school.ts";
+import type { WebsitePageKey } from "#/types";
 import { getPublishedPage } from "@/lib/website-content";
 
 const configs = import.meta.glob("../../schools/*/config.json", {
@@ -93,7 +94,7 @@ export async function getWebsitePageContent(key: string): Promise<WebsitePageCon
     
     if (typeof window === "undefined") {
       // Server-side: use direct database call
-      const publishedPage = await getPublishedPage(key as "homepage" | "about" | "contact" | "other");
+      const publishedPage = await getPublishedPage(key as WebsitePageKey);
       page = publishedPage as WebsitePageContent | null;
     } else {
       // Client-side: use fetch

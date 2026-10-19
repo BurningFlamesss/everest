@@ -74,7 +74,7 @@ export const ModelName = {
   Resource: 'Resource',
   BoardResult: 'BoardResult',
   BusRoute: 'BusRoute',
-  Course: 'Course',
+  Program: 'Program',
   CalendarEvent: 'CalendarEvent'
 } as const
 
@@ -404,10 +404,17 @@ export type AlbumScalarFieldEnum = (typeof AlbumScalarFieldEnum)[keyof typeof Al
 export const FacilityScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  room: 'room',
-  specs: 'specs',
-  images: 'images',
+  category: 'category',
   block: 'block',
+  blurb: 'blurb',
+  description: 'description',
+  image: 'image',
+  gallery: 'gallery',
+  stats: 'stats',
+  hours: 'hours',
+  inCharge: 'inCharge',
+  studentsLove: 'studentsLove',
+  since: 'since',
   order: 'order',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -464,23 +471,32 @@ export const BusRouteScalarFieldEnum = {
 export type BusRouteScalarFieldEnum = (typeof BusRouteScalarFieldEnum)[keyof typeof BusRouteScalarFieldEnum]
 
 
-export const CourseScalarFieldEnum = {
+export const ProgramScalarFieldEnum = {
   id: 'id',
+  level: 'level',
   code: 'code',
-  name: 'name',
-  department: 'department',
+  title: 'title',
+  stream: 'stream',
+  duration: 'duration',
+  seats: 'seats',
+  medium: 'medium',
+  eligibility: 'eligibility',
+  summary: 'summary',
   description: 'description',
-  credits: 'credits',
-  weeklyHours: 'weeklyHours',
-  teacherIds: 'teacherIds',
-  classIds: 'classIds',
-  syllabus: 'syllabus',
-  isElective: 'isElective',
+  highlights: 'highlights',
+  outcomes: 'outcomes',
+  careers: 'careers',
+  subjects: 'subjects',
+  fees: 'fees',
+  image: 'image',
+  routineKey: 'routineKey',
+  spotlight: 'spotlight',
+  order: 'order',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type CourseScalarFieldEnum = (typeof CourseScalarFieldEnum)[keyof typeof CourseScalarFieldEnum]
+export type ProgramScalarFieldEnum = (typeof ProgramScalarFieldEnum)[keyof typeof ProgramScalarFieldEnum]
 
 
 export const CalendarEventScalarFieldEnum = {

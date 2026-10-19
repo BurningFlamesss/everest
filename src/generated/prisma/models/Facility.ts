@@ -14,7 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace.ts"
 
 /**
  * Model Facility
- * Campus facilities (Biology lab, Library, etc).
+ * Campus facilities matching frontend complex shapes
  */
 export type FacilityModel = runtime.Types.Result.DefaultSelection<Prisma.$FacilityPayload>
 
@@ -37,7 +37,15 @@ export type FacilitySumAggregateOutputType = {
 export type FacilityMinAggregateOutputType = {
   id: string | null
   name: string | null
-  room: string | null
+  category: string | null
+  block: string | null
+  blurb: string | null
+  description: string | null
+  image: string | null
+  hours: string | null
+  inCharge: string | null
+  studentsLove: string | null
+  since: string | null
   order: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -46,7 +54,15 @@ export type FacilityMinAggregateOutputType = {
 export type FacilityMaxAggregateOutputType = {
   id: string | null
   name: string | null
-  room: string | null
+  category: string | null
+  block: string | null
+  blurb: string | null
+  description: string | null
+  image: string | null
+  hours: string | null
+  inCharge: string | null
+  studentsLove: string | null
+  since: string | null
   order: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -55,10 +71,17 @@ export type FacilityMaxAggregateOutputType = {
 export type FacilityCountAggregateOutputType = {
   id: number
   name: number
-  room: number
-  specs: number
-  images: number
+  category: number
   block: number
+  blurb: number
+  description: number
+  image: number
+  gallery: number
+  stats: number
+  hours: number
+  inCharge: number
+  studentsLove: number
+  since: number
   order: number
   createdAt: number
   updatedAt: number
@@ -77,7 +100,15 @@ export type FacilitySumAggregateInputType = {
 export type FacilityMinAggregateInputType = {
   id?: true
   name?: true
-  room?: true
+  category?: true
+  block?: true
+  blurb?: true
+  description?: true
+  image?: true
+  hours?: true
+  inCharge?: true
+  studentsLove?: true
+  since?: true
   order?: true
   createdAt?: true
   updatedAt?: true
@@ -86,7 +117,15 @@ export type FacilityMinAggregateInputType = {
 export type FacilityMaxAggregateInputType = {
   id?: true
   name?: true
-  room?: true
+  category?: true
+  block?: true
+  blurb?: true
+  description?: true
+  image?: true
+  hours?: true
+  inCharge?: true
+  studentsLove?: true
+  since?: true
   order?: true
   createdAt?: true
   updatedAt?: true
@@ -95,10 +134,17 @@ export type FacilityMaxAggregateInputType = {
 export type FacilityCountAggregateInputType = {
   id?: true
   name?: true
-  room?: true
-  specs?: true
-  images?: true
+  category?: true
   block?: true
+  blurb?: true
+  description?: true
+  image?: true
+  gallery?: true
+  stats?: true
+  hours?: true
+  inCharge?: true
+  studentsLove?: true
+  since?: true
   order?: true
   createdAt?: true
   updatedAt?: true
@@ -194,10 +240,17 @@ export type FacilityGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type FacilityGroupByOutputType = {
   id: string
   name: string
-  room: string
-  specs: runtime.JsonValue
-  images: runtime.JsonValue
-  block: runtime.JsonValue
+  category: string
+  block: string
+  blurb: string
+  description: string
+  image: string
+  gallery: runtime.JsonValue
+  stats: runtime.JsonValue
+  hours: string
+  inCharge: string
+  studentsLove: string
+  since: string
   order: number
   createdAt: Date
   updatedAt: Date
@@ -229,10 +282,17 @@ export type FacilityWhereInput = {
   NOT?: Prisma.FacilityWhereInput | Prisma.FacilityWhereInput[]
   id?: Prisma.StringFilter<"Facility"> | string
   name?: Prisma.StringFilter<"Facility"> | string
-  room?: Prisma.StringFilter<"Facility"> | string
-  specs?: Prisma.JsonFilter<"Facility">
-  images?: Prisma.JsonFilter<"Facility">
-  block?: Prisma.JsonFilter<"Facility">
+  category?: Prisma.StringFilter<"Facility"> | string
+  block?: Prisma.StringFilter<"Facility"> | string
+  blurb?: Prisma.StringFilter<"Facility"> | string
+  description?: Prisma.StringFilter<"Facility"> | string
+  image?: Prisma.StringFilter<"Facility"> | string
+  gallery?: Prisma.JsonFilter<"Facility">
+  stats?: Prisma.JsonFilter<"Facility">
+  hours?: Prisma.StringFilter<"Facility"> | string
+  inCharge?: Prisma.StringFilter<"Facility"> | string
+  studentsLove?: Prisma.StringFilter<"Facility"> | string
+  since?: Prisma.StringFilter<"Facility"> | string
   order?: Prisma.IntFilter<"Facility"> | number
   createdAt?: Prisma.DateTimeFilter<"Facility"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Facility"> | Date | string
@@ -241,10 +301,17 @@ export type FacilityWhereInput = {
 export type FacilityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  room?: Prisma.SortOrder
-  specs?: Prisma.SortOrder
-  images?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   block?: Prisma.SortOrder
+  blurb?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  image?: Prisma.SortOrder
+  gallery?: Prisma.SortOrder
+  stats?: Prisma.SortOrder
+  hours?: Prisma.SortOrder
+  inCharge?: Prisma.SortOrder
+  studentsLove?: Prisma.SortOrder
+  since?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -256,10 +323,17 @@ export type FacilityWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.FacilityWhereInput[]
   NOT?: Prisma.FacilityWhereInput | Prisma.FacilityWhereInput[]
   name?: Prisma.StringFilter<"Facility"> | string
-  room?: Prisma.StringFilter<"Facility"> | string
-  specs?: Prisma.JsonFilter<"Facility">
-  images?: Prisma.JsonFilter<"Facility">
-  block?: Prisma.JsonFilter<"Facility">
+  category?: Prisma.StringFilter<"Facility"> | string
+  block?: Prisma.StringFilter<"Facility"> | string
+  blurb?: Prisma.StringFilter<"Facility"> | string
+  description?: Prisma.StringFilter<"Facility"> | string
+  image?: Prisma.StringFilter<"Facility"> | string
+  gallery?: Prisma.JsonFilter<"Facility">
+  stats?: Prisma.JsonFilter<"Facility">
+  hours?: Prisma.StringFilter<"Facility"> | string
+  inCharge?: Prisma.StringFilter<"Facility"> | string
+  studentsLove?: Prisma.StringFilter<"Facility"> | string
+  since?: Prisma.StringFilter<"Facility"> | string
   order?: Prisma.IntFilter<"Facility"> | number
   createdAt?: Prisma.DateTimeFilter<"Facility"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Facility"> | Date | string
@@ -268,10 +342,17 @@ export type FacilityWhereUniqueInput = Prisma.AtLeast<{
 export type FacilityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  room?: Prisma.SortOrder
-  specs?: Prisma.SortOrder
-  images?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   block?: Prisma.SortOrder
+  blurb?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  image?: Prisma.SortOrder
+  gallery?: Prisma.SortOrder
+  stats?: Prisma.SortOrder
+  hours?: Prisma.SortOrder
+  inCharge?: Prisma.SortOrder
+  studentsLove?: Prisma.SortOrder
+  since?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -288,10 +369,17 @@ export type FacilityScalarWhereWithAggregatesInput = {
   NOT?: Prisma.FacilityScalarWhereWithAggregatesInput | Prisma.FacilityScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Facility"> | string
   name?: Prisma.StringWithAggregatesFilter<"Facility"> | string
-  room?: Prisma.StringWithAggregatesFilter<"Facility"> | string
-  specs?: Prisma.JsonWithAggregatesFilter<"Facility">
-  images?: Prisma.JsonWithAggregatesFilter<"Facility">
-  block?: Prisma.JsonWithAggregatesFilter<"Facility">
+  category?: Prisma.StringWithAggregatesFilter<"Facility"> | string
+  block?: Prisma.StringWithAggregatesFilter<"Facility"> | string
+  blurb?: Prisma.StringWithAggregatesFilter<"Facility"> | string
+  description?: Prisma.StringWithAggregatesFilter<"Facility"> | string
+  image?: Prisma.StringWithAggregatesFilter<"Facility"> | string
+  gallery?: Prisma.JsonWithAggregatesFilter<"Facility">
+  stats?: Prisma.JsonWithAggregatesFilter<"Facility">
+  hours?: Prisma.StringWithAggregatesFilter<"Facility"> | string
+  inCharge?: Prisma.StringWithAggregatesFilter<"Facility"> | string
+  studentsLove?: Prisma.StringWithAggregatesFilter<"Facility"> | string
+  since?: Prisma.StringWithAggregatesFilter<"Facility"> | string
   order?: Prisma.IntWithAggregatesFilter<"Facility"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Facility"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Facility"> | Date | string
@@ -300,10 +388,17 @@ export type FacilityScalarWhereWithAggregatesInput = {
 export type FacilityCreateInput = {
   id?: string
   name: string
-  room: string
-  specs: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  images: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  block: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  category?: string
+  block?: string
+  blurb?: string
+  description?: string
+  image?: string
+  gallery?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  stats?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  hours?: string
+  inCharge?: string
+  studentsLove?: string
+  since?: string
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -312,10 +407,17 @@ export type FacilityCreateInput = {
 export type FacilityUncheckedCreateInput = {
   id?: string
   name: string
-  room: string
-  specs: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  images: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  block: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  category?: string
+  block?: string
+  blurb?: string
+  description?: string
+  image?: string
+  gallery?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  stats?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  hours?: string
+  inCharge?: string
+  studentsLove?: string
+  since?: string
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -324,10 +426,17 @@ export type FacilityUncheckedCreateInput = {
 export type FacilityUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  room?: Prisma.StringFieldUpdateOperationsInput | string
-  specs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  block?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  block?: Prisma.StringFieldUpdateOperationsInput | string
+  blurb?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
+  gallery?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  stats?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  hours?: Prisma.StringFieldUpdateOperationsInput | string
+  inCharge?: Prisma.StringFieldUpdateOperationsInput | string
+  studentsLove?: Prisma.StringFieldUpdateOperationsInput | string
+  since?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -336,10 +445,17 @@ export type FacilityUpdateInput = {
 export type FacilityUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  room?: Prisma.StringFieldUpdateOperationsInput | string
-  specs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  block?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  block?: Prisma.StringFieldUpdateOperationsInput | string
+  blurb?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
+  gallery?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  stats?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  hours?: Prisma.StringFieldUpdateOperationsInput | string
+  inCharge?: Prisma.StringFieldUpdateOperationsInput | string
+  studentsLove?: Prisma.StringFieldUpdateOperationsInput | string
+  since?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -348,10 +464,17 @@ export type FacilityUncheckedUpdateInput = {
 export type FacilityCreateManyInput = {
   id?: string
   name: string
-  room: string
-  specs: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  images: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  block: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  category?: string
+  block?: string
+  blurb?: string
+  description?: string
+  image?: string
+  gallery?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  stats?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  hours?: string
+  inCharge?: string
+  studentsLove?: string
+  since?: string
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -360,10 +483,17 @@ export type FacilityCreateManyInput = {
 export type FacilityUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  room?: Prisma.StringFieldUpdateOperationsInput | string
-  specs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  block?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  block?: Prisma.StringFieldUpdateOperationsInput | string
+  blurb?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
+  gallery?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  stats?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  hours?: Prisma.StringFieldUpdateOperationsInput | string
+  inCharge?: Prisma.StringFieldUpdateOperationsInput | string
+  studentsLove?: Prisma.StringFieldUpdateOperationsInput | string
+  since?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -372,10 +502,17 @@ export type FacilityUpdateManyMutationInput = {
 export type FacilityUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  room?: Prisma.StringFieldUpdateOperationsInput | string
-  specs?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  block?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  block?: Prisma.StringFieldUpdateOperationsInput | string
+  blurb?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
+  gallery?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  stats?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  hours?: Prisma.StringFieldUpdateOperationsInput | string
+  inCharge?: Prisma.StringFieldUpdateOperationsInput | string
+  studentsLove?: Prisma.StringFieldUpdateOperationsInput | string
+  since?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -384,10 +521,17 @@ export type FacilityUncheckedUpdateManyInput = {
 export type FacilityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  room?: Prisma.SortOrder
-  specs?: Prisma.SortOrder
-  images?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   block?: Prisma.SortOrder
+  blurb?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  image?: Prisma.SortOrder
+  gallery?: Prisma.SortOrder
+  stats?: Prisma.SortOrder
+  hours?: Prisma.SortOrder
+  inCharge?: Prisma.SortOrder
+  studentsLove?: Prisma.SortOrder
+  since?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -400,7 +544,15 @@ export type FacilityAvgOrderByAggregateInput = {
 export type FacilityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  room?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  block?: Prisma.SortOrder
+  blurb?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  image?: Prisma.SortOrder
+  hours?: Prisma.SortOrder
+  inCharge?: Prisma.SortOrder
+  studentsLove?: Prisma.SortOrder
+  since?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -409,7 +561,15 @@ export type FacilityMaxOrderByAggregateInput = {
 export type FacilityMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  room?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  block?: Prisma.SortOrder
+  blurb?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  image?: Prisma.SortOrder
+  hours?: Prisma.SortOrder
+  inCharge?: Prisma.SortOrder
+  studentsLove?: Prisma.SortOrder
+  since?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -424,10 +584,17 @@ export type FacilitySumOrderByAggregateInput = {
 export type FacilitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  room?: boolean
-  specs?: boolean
-  images?: boolean
+  category?: boolean
   block?: boolean
+  blurb?: boolean
+  description?: boolean
+  image?: boolean
+  gallery?: boolean
+  stats?: boolean
+  hours?: boolean
+  inCharge?: boolean
+  studentsLove?: boolean
+  since?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -436,10 +603,17 @@ export type FacilitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type FacilitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  room?: boolean
-  specs?: boolean
-  images?: boolean
+  category?: boolean
   block?: boolean
+  blurb?: boolean
+  description?: boolean
+  image?: boolean
+  gallery?: boolean
+  stats?: boolean
+  hours?: boolean
+  inCharge?: boolean
+  studentsLove?: boolean
+  since?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -448,10 +622,17 @@ export type FacilitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type FacilitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  room?: boolean
-  specs?: boolean
-  images?: boolean
+  category?: boolean
   block?: boolean
+  blurb?: boolean
+  description?: boolean
+  image?: boolean
+  gallery?: boolean
+  stats?: boolean
+  hours?: boolean
+  inCharge?: boolean
+  studentsLove?: boolean
+  since?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -460,16 +641,23 @@ export type FacilitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type FacilitySelectScalar = {
   id?: boolean
   name?: boolean
-  room?: boolean
-  specs?: boolean
-  images?: boolean
+  category?: boolean
   block?: boolean
+  blurb?: boolean
+  description?: boolean
+  image?: boolean
+  gallery?: boolean
+  stats?: boolean
+  hours?: boolean
+  inCharge?: boolean
+  studentsLove?: boolean
+  since?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FacilityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "room" | "specs" | "images" | "block" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["facility"]>
+export type FacilityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "category" | "block" | "blurb" | "description" | "image" | "gallery" | "stats" | "hours" | "inCharge" | "studentsLove" | "since" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["facility"]>
 
 export type $FacilityPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Facility"
@@ -477,10 +665,17 @@ export type $FacilityPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
-    room: string
-    specs: runtime.JsonValue
-    images: runtime.JsonValue
-    block: runtime.JsonValue
+    category: string
+    block: string
+    blurb: string
+    description: string
+    image: string
+    gallery: runtime.JsonValue
+    stats: runtime.JsonValue
+    hours: string
+    inCharge: string
+    studentsLove: string
+    since: string
     order: number
     createdAt: Date
     updatedAt: Date
@@ -909,10 +1104,17 @@ export interface Prisma__FacilityClient<T, Null = never, ExtArgs extends runtime
 export interface FacilityFieldRefs {
   readonly id: Prisma.FieldRef<"Facility", 'String'>
   readonly name: Prisma.FieldRef<"Facility", 'String'>
-  readonly room: Prisma.FieldRef<"Facility", 'String'>
-  readonly specs: Prisma.FieldRef<"Facility", 'Json'>
-  readonly images: Prisma.FieldRef<"Facility", 'Json'>
-  readonly block: Prisma.FieldRef<"Facility", 'Json'>
+  readonly category: Prisma.FieldRef<"Facility", 'String'>
+  readonly block: Prisma.FieldRef<"Facility", 'String'>
+  readonly blurb: Prisma.FieldRef<"Facility", 'String'>
+  readonly description: Prisma.FieldRef<"Facility", 'String'>
+  readonly image: Prisma.FieldRef<"Facility", 'String'>
+  readonly gallery: Prisma.FieldRef<"Facility", 'Json'>
+  readonly stats: Prisma.FieldRef<"Facility", 'Json'>
+  readonly hours: Prisma.FieldRef<"Facility", 'String'>
+  readonly inCharge: Prisma.FieldRef<"Facility", 'String'>
+  readonly studentsLove: Prisma.FieldRef<"Facility", 'String'>
+  readonly since: Prisma.FieldRef<"Facility", 'String'>
   readonly order: Prisma.FieldRef<"Facility", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Facility", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Facility", 'DateTime'>

@@ -183,7 +183,7 @@ function RouteComponent() {
           { label: "Total staff", value: String(people.length) },
           { label: "Leadership", value: String(leadership.length) },
           { label: "Departments", value: String(facultyDepartments.length) },
-          { label: "Main line", value: school.phone },
+          { label: "Main line", value: school.phones[0].value },
         ]}
         actions={
           <DownloadButton
@@ -452,8 +452,8 @@ function RouteComponent() {
                       testId="faculty-detail-copy-extension"
                       onClick={() =>
                         handleCopy(
-                          `${school.phone} ext ${selected.extension}`,
-                          `${school.phone} ext ${selected.extension}`,
+                          `${school.phones[0].value} ext ${selected.extension}`,
+                          `${school.phones[0].value} ext ${selected.extension}`,
                         )
                       }
                     />

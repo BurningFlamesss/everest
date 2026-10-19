@@ -19,7 +19,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "#/templates/modern/components/kit";
-import { levels, programs } from "#/lib/programs";
+import { levels, programs as staticPrograms } from "#/lib/programs";
 import { routineByKey } from "#/lib/routines";
 import { school } from "#/content/school";
 import { formatNpr } from "#/lib/fees";
@@ -297,27 +297,33 @@ const ProgramDetail = ({ program }: { program: Program }) => {
   );
 };
 
+import { getProgramsServer } from "#/packages/content/server/content.ts";
+
 export const Route = createFileRoute("/_public/courses")({
   loader: async ({ location }) => {
     const search = location.search as { cms?: string };
+    let previewPage = null;
     if (String(search.cms) === "1") {
-      const previewPage = await getWebsitePagePreviewServer({
+      previewPage = await getWebsitePagePreviewServer({
         data: { key: "courses" },
       });
-      return { previewPage };
     }
-    return { previewPage: null };
+    const dbPrograms = await getProgramsServer();
+    return { previewPage, dbPrograms };
   },
-	component: RouteComponent,
+  component: RouteComponent,
 });
 
 function RouteComponent() {
-  const search = (useSearch({ strict: false }) as Record<string, unknown>) || {};
+  const search =
+    (useSearch({ strict: false }) as Record<string, unknown>) || {};
   const cms = search.cms;
-  const { previewPage } = Route.useLoaderData();
+  const { previewPage, dbPrograms } = Route.useLoaderData();
   const publishedContent = useWebsitePageContent("courses");
   const preview = String(cms ?? "") === "1";
-  const cmsData = preview ? previewPage : publishedContent;
+  const cmsData = (preview ? previewPage : publishedContent) as any;
+
+  const activePrograms = dbPrograms && dbPrograms.length > 0 ? dbPrograms : staticPrograms;
 
   const headerSection = {
     ...sectionDefaults("headline"),
@@ -344,8 +350,8 @@ function RouteComponent() {
   );
 
   const levelPrograms = useMemo(
-    () => programs.filter((p) => p.level === level.id),
-    [level.id],
+    () => activePrograms.filter((p) => p.level === level.id),
+    [level.id, activePrograms],
   );
 
   const spotlight = useMemo(
@@ -370,7 +376,7 @@ function RouteComponent() {
           title={str(headerSection, "title") || "Courses & Academic Programmes"}
           subtitle={str(headerSection, "body") || "Subject lists, credit hours, fee structures and weekly routines for every programme from Nursery to Grade 12."}
           meta={[
-            { label: "Programmes", value: String(programs.length) },
+            { label: "Programmes", value: String(activePrograms.length) },
             { label: "Levels", value: "5" },
             { label: "+2 streams", value: "Science, Management" },
             { label: "Session", value: "2083 BS" },
@@ -378,11 +384,11 @@ function RouteComponent() {
           actions={
             <DownloadButton
               label="Full academic prospectus"
-              meta={`PDF · ${programs.length} programmes · ${school.session}`}
+              meta={`PDF · ${activePrograms.length} programmes · 2083 BS`}
               stamp="Official"
             testId="courses-download-prospectus-button"
             onDownload={() =>
-              downloadOfficialPdf(academicProspectusDoc(levels, programs))
+              downloadOfficialPdf(academicProspectusDoc(levels, activePrograms))
             }
           />
         }
@@ -477,7 +483,7 @@ function RouteComponent() {
               </div>
               <EditorialImage
                 src={level.image}
-                alt={`${level.label} at ${school.name}`}
+                alt={`${level.label} at ${school.nameEn}`}
                 ratio="feature"
                 caption={`${level.short} · ${school.address}`}
                 testId="level-image"

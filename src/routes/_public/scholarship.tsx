@@ -465,7 +465,7 @@ function RouteComponent() {
   const { previewPage } = Route.useLoaderData();
   const publishedContent = useWebsitePageContent("scholarship");
   const preview = String(cms ?? "") === "1";
-  const cmsData = preview ? previewPage : publishedContent;
+  const cmsData = (preview ? previewPage : publishedContent) as any;
 
   // Schemes are served from the database (seeded from src/lib/scholarships);
   // the static list is the fallback when the collection is empty.
@@ -567,7 +567,7 @@ function RouteComponent() {
         actions={
           <DownloadButton
             label="All schemes and deadlines"
-            meta={`PDF · ${scholarships.length} schemes · ${school.session}`}
+            meta={`PDF · ${scholarships.length} schemes · ${"2083 BS"}`}
             stamp="Official"
             testId="scholarships-download-index-button"
             onDownload={() =>
@@ -695,7 +695,7 @@ function RouteComponent() {
 
       <Separator className="mt-section lg:mt-section-lg" />
       <p className="t-meta mt-6 max-w-measure leading-relaxed">
-        {school.name}, {school.fullAddress}. {school.affiliation}. Registration
+        {school.nameEn}, {`${school.address.line1}, ${school.address.line2}, ${school.address.country}`}. {school.affiliation}. Registration
         number {school.regNo}.
       </p>
     </PageFrame>

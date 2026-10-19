@@ -97,6 +97,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: "Classes & Sections", to: "/admin/classes", icon: GalleryVerticalEnd, permission: "classes.view" },
       { label: "Courses & Subjects", to: "/admin/courses", icon: Library, permission: "courses.view" },
+      { label: "Board Results", to: "/admin/results", icon: GraduationCap, permission: "overview.view" },
     ],
   },
   {

@@ -11,7 +11,7 @@ import type {
 } from "#/types/school";
 
 const PageKeySchema = z.object({
-	key: z.enum(["homepage", "about", "contact", "other", "faculty", "login"]),
+	key: z.string().transform(v => v as any),
 });
 
 const StringSchema = z.object({
@@ -385,7 +385,21 @@ export const getAlbumsServer = createServerFn({ method: "GET" }).handler(async (
 export const getFacilitiesServer = createServerFn({ method: "GET" }).handler(async () => {
 	setResponseHeaders(PUBLIC_CACHE_HEADERS);
 	const rows = await prisma.facility.findMany({ orderBy: { order: "asc" } });
-	return rows.map((r) => ({ ...r, specs: r.specs as any, images: r.images as any, block: r.block as any }));
+	return rows.map((r) => ({
+		id: r.id,
+		name: r.name,
+		category: r.category as any,
+		block: r.block,
+		blurb: r.blurb,
+		description: r.description,
+		image: r.image,
+		gallery: Array.isArray(r.gallery) ? r.gallery : [],
+		stats: Array.isArray(r.stats) ? r.stats : [],
+		hours: r.hours,
+		inCharge: r.inCharge,
+		studentsLove: r.studentsLove,
+		since: r.since,
+	}));
 });
 
 export const getResourcesServer = createServerFn({ method: "GET" }).handler(async () => {
@@ -396,6 +410,21 @@ export const getResourcesServer = createServerFn({ method: "GET" }).handler(asyn
 export const getBoardResultsServer = createServerFn({ method: "GET" }).handler(async () => {
 	setResponseHeaders(PUBLIC_CACHE_HEADERS);
 	return await prisma.boardResult.findMany({ orderBy: { order: "asc" } });
+});
+
+export const getProgramsServer = createServerFn({ method: "GET" }).handler(async () => {
+	setResponseHeaders(PUBLIC_CACHE_HEADERS);
+	const rows = await prisma.program.findMany({ orderBy: { order: "asc" } });
+	return rows.map((r) => ({
+		...r,
+		level: r.level as any,
+		routineKey: r.routineKey as any,
+		highlights: Array.isArray(r.highlights) ? r.highlights : [],
+		outcomes: Array.isArray(r.outcomes) ? r.outcomes : [],
+		careers: Array.isArray(r.careers) ? r.careers : [],
+		subjects: Array.isArray(r.subjects) ? r.subjects : [],
+		fees: Array.isArray(r.fees) ? r.fees : [],
+	}));
 });
 
 export const getBusRoutesServer = createServerFn({ method: "GET" }).handler(async () => {
