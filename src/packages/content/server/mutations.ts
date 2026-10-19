@@ -3,91 +3,161 @@ import { z } from "zod";
 import { prisma } from "#/lib/prisma";
 import { requirePermission } from "#/packages/auth/server/guard.ts";
 
-export const getProgramsServer = createServerFn({ method: "GET" }).handler(
-	async () => {
-		return await prisma.program.findMany({ orderBy: { title: "asc" } });
-	},
-);
+const idSchema = z.object({ id: z.string() });
 
-export const createProgramServer = createServerFn({ method: "POST" })
-	.validator((data: any) => data as any)
+// NOTE: the public `getProgramsServer` lives in content.ts (ordered, with
+// public cache headers). This module only carries the admin mutations.
+
+const programSaveSchema = z.object({
+	id: z.string().optional(),
+	level: z.string().min(1),
+	code: z.string().min(1),
+	title: z.string().min(1),
+	stream: z.string().nullable().optional(),
+	duration: z.string().default(""),
+	seats: z.number().int().default(0),
+	medium: z.string().default(""),
+	eligibility: z.string().default(""),
+	summary: z.string().default(""),
+	description: z.string().default(""),
+	highlights: z.array(z.any()).default([]),
+	outcomes: z.array(z.any()).default([]),
+	careers: z.array(z.any()).default([]),
+	subjects: z.array(z.any()).default([]),
+	fees: z.array(z.any()).default([]),
+	image: z.string().default(""),
+	routineKey: z.string().default(""),
+	spotlight: z.boolean().default(false),
+	order: z.number().int().default(0),
+});
+
+export const saveProgramServer = createServerFn({ method: "POST" })
+	.middleware([requirePermission("courses.manage")])
+	.validator(programSaveSchema)
 	.handler(async ({ data }) => {
-		return await prisma.program.create({ data });
-	});
-
-export const updateProgramServer = createServerFn({ method: "POST" })
-	.validator((data: { id: string; patch: any }) => data)
-	.handler(async ({ data: { id, patch } }) => {
-		return await prisma.program.update({ where: { id }, data: patch });
+		const { id, ...rest } = data;
+		if (id) return await prisma.program.update({ where: { id }, data: rest });
+		return await prisma.program.create({ data: rest });
 	});
 
 export const deleteProgramServer = createServerFn({ method: "POST" })
-	.validator((data: string) => data)
-	.handler(async ({ data: id }) => {
+	.middleware([requirePermission("courses.manage")])
+	.validator(idSchema)
+	.handler(async ({ data: { id } }) => {
 		await prisma.program.delete({ where: { id } });
 	});
 
+const facilitySaveSchema = z.object({
+	id: z.string().optional(),
+	name: z.string().min(1),
+	category: z.string().default("Campus"),
+	block: z.string().default(""),
+	blurb: z.string().default(""),
+	description: z.string().default(""),
+	image: z.string().default(""),
+	gallery: z.array(z.any()).default([]),
+	stats: z.array(z.any()).default([]),
+	hours: z.string().default(""),
+	inCharge: z.string().default(""),
+	studentsLove: z.string().default(""),
+	since: z.string().default(""),
+	order: z.number().int().default(0),
+});
+
 export const saveFacilityServer = createServerFn({ method: "POST" })
-	.validator((data: any) => data as any)
+	.middleware([requirePermission("website.manage")])
+	.validator(facilitySaveSchema)
 	.handler(async ({ data }) => {
-		if (data.id) {
-			return await prisma.facility.update({ where: { id: data.id }, data });
-		}
-		return await prisma.facility.create({ data });
+		const { id, ...rest } = data;
+		if (id) return await prisma.facility.update({ where: { id }, data: rest });
+		return await prisma.facility.create({ data: rest });
 	});
 
 export const deleteFacilityServer = createServerFn({ method: "POST" })
-	.validator((data: string) => data)
-	.handler(async ({ data: id }) => {
+	.middleware([requirePermission("website.manage")])
+	.validator(idSchema)
+	.handler(async ({ data: { id } }) => {
 		await prisma.facility.delete({ where: { id } });
 	});
 
-// Albums (Gallery)
+const boardResultSaveSchema = z.object({
+	id: z.string().optional(),
+	board: z.string().min(1),
+	year: z.string().min(1),
+	appeared: z.number().int().default(0),
+	passed: z.number().int().default(0),
+	distinction: z.number().int().default(0),
+	firstDivision: z.number().int().default(0),
+	secondDivision: z.number().int().default(0),
+	order: z.number().int().default(0),
+});
+
 export const saveBoardResultServer = createServerFn({ method: "POST" })
-	.validator((data: any) => data as any)
+	.middleware([requirePermission("courses.manage")])
+	.validator(boardResultSaveSchema)
 	.handler(async ({ data }) => {
-		if (data.id) {
-			return await prisma.boardResult.update({ where: { id: data.id }, data });
-		}
-		return await prisma.boardResult.create({ data });
+		const { id, ...rest } = data;
+		if (id)
+			return await prisma.boardResult.update({ where: { id }, data: rest });
+		return await prisma.boardResult.create({ data: rest });
 	});
 
 export const deleteBoardResultServer = createServerFn({ method: "POST" })
-	.validator((data: string) => data)
-	.handler(async ({ data: id }) => {
+	.middleware([requirePermission("courses.manage")])
+	.validator(idSchema)
+	.handler(async ({ data: { id } }) => {
 		await prisma.boardResult.delete({ where: { id } });
 	});
 
+const busRouteSaveSchema = z.object({
+	id: z.string().optional(),
+	busNumber: z.string().min(1),
+	driverName: z.string().default(""),
+	driverPhone: z.string().default(""),
+	stops: z.array(z.any()).default([]),
+	feeMonthly: z.number().int().nullable().optional(),
+	order: z.number().int().default(0),
+});
+
 export const saveBusRouteServer = createServerFn({ method: "POST" })
-	.validator((data: any) => data as any)
+	.middleware([requirePermission("transport.manage")])
+	.validator(busRouteSaveSchema)
 	.handler(async ({ data }) => {
-		if (data.id) {
-			return await prisma.busRoute.update({ where: { id: data.id }, data });
-		}
-		return await prisma.busRoute.create({ data });
+		const { id, ...rest } = data;
+		if (id) return await prisma.busRoute.update({ where: { id }, data: rest });
+		return await prisma.busRoute.create({ data: rest });
 	});
 
 export const deleteBusRouteServer = createServerFn({ method: "POST" })
-	.validator((data: string) => data)
-	.handler(async ({ data: id }) => {
+	.middleware([requirePermission("transport.manage")])
+	.validator(idSchema)
+	.handler(async ({ data: { id } }) => {
 		await prisma.busRoute.delete({ where: { id } });
 	});
 
-export const createAlbumServer = createServerFn({ method: "POST" })
-	.validator((data: any) => data as any)
-	.handler(async ({ data }) => {
-		return await prisma.album.create({ data });
-	});
+const albumSaveSchema = z.object({
+	id: z.string().optional(),
+	event: z.string().min(1),
+	year: z.string().min(1),
+	category: z.string().min(1),
+	date: z.string().nullable().optional(),
+	photos: z.array(z.any()).default([]),
+	order: z.number().int().default(0),
+});
 
-export const updateAlbumServer = createServerFn({ method: "POST" })
-	.validator((data: { id: string; patch: any }) => data)
-	.handler(async ({ data: { id, patch } }) => {
-		return await prisma.album.update({ where: { id }, data: patch });
+export const saveAlbumServer = createServerFn({ method: "POST" })
+	.middleware([requirePermission("gallery.manage")])
+	.validator(albumSaveSchema)
+	.handler(async ({ data }) => {
+		const { id, ...rest } = data;
+		if (id) return await prisma.album.update({ where: { id }, data: rest });
+		return await prisma.album.create({ data: rest });
 	});
 
 export const deleteAlbumServer = createServerFn({ method: "POST" })
-	.validator((data: string) => data)
-	.handler(async ({ data: id }) => {
+	.middleware([requirePermission("gallery.manage")])
+	.validator(idSchema)
+	.handler(async ({ data: { id } }) => {
 		await prisma.album.delete({ where: { id } });
 	});
 
@@ -264,12 +334,23 @@ export const deleteResourceServer = createServerFn({ method: "POST" })
 
 const calendarEventSaveSchema = z.object({
 	id: z.string().optional(),
+	slug: z.string().optional(),
 	title: z.string().min(1),
+	titleNe: z.string().optional(),
 	description: z.string().optional(),
 	startDate: z.string().min(1),
 	endDate: z.string().min(1),
+	startBs: z.string().optional(),
+	endBs: z.string().optional(),
+	kind: z.string().optional(),
 	category: z.string().min(1),
 	term: z.string().optional(),
+	status: z.string().optional(),
+	allDay: z.boolean().optional(),
+	startTime: z.string().optional(),
+	endTime: z.string().optional(),
+	location: z.string().optional(),
+	organizerName: z.string().optional(),
 });
 
 export const saveCalendarEventServer = createServerFn({ method: "POST" })

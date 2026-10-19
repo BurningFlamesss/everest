@@ -342,7 +342,7 @@ export async function deleteEvent(id: string, actor: Actor): Promise<void> {
 // -------------------------------------------------------------------- gallery
 
 import { getAlbumsServer } from "#/packages/content/server/content";
-import { createAlbumServer, updateAlbumServer, deleteAlbumServer } from "#/packages/content/server/mutations";
+import { saveAlbumServer, deleteAlbumServer } from "#/packages/content/server/mutations";
 
 export async function listAlbums(search = ""): Promise<Album[]> {
   await latency(240);

@@ -47,7 +47,7 @@ export default function TransportationPage() {
 	});
 
 	const deleteMutation = useMutation({
-		mutationFn: (id: string) => deleteBusRouteServer({ data: id }),
+		mutationFn: (id: string) => deleteBusRouteServer({ data: { id } }),
 		onSuccess: () => {
 			toast.success("Bus route deleted");
 			qc.invalidateQueries({ queryKey: ["bus-routes"] });

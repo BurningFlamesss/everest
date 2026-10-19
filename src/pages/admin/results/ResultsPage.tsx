@@ -54,7 +54,7 @@ export default function ResultsPage() {
 	});
 
 	const deleteMutation = useMutation({
-		mutationFn: (id: string) => deleteBoardResultServer({ data: id }),
+		mutationFn: (id: string) => deleteBoardResultServer({ data: { id } }),
 		onSuccess: () => {
 			toast.success("Result deleted");
 			qc.invalidateQueries({ queryKey: ["board-results"] });
