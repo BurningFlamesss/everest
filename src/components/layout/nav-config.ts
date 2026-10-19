@@ -1,6 +1,7 @@
 import {
   Activity,
   Bus,
+  Building2,
   CalendarDays,
   CreditCard,
   GalleryVerticalEnd,
@@ -141,6 +142,7 @@ export const NAV_GROUPS: NavGroup[] = [
         ],
       },
       { label: "Faculty Directory", to: "/admin/faculty", icon: Users, permission: "staff.view" },
+      { label: "Facilities", to: "/admin/facilities", icon: Building2, permission: "website.view" },
       { label: "Resources", to: "/admin/resources", icon: Library, permission: "website.view" },
     ],
   },
@@ -181,6 +183,7 @@ export const ROUTE_TITLES: Record<string, string> = {
   payments: "Payments",
   website: "Website Content",
   faculty: "Faculty Directory",
+  facilities: "Facilities",
   resources: "Resources",
   activity: "Activity",
   settings: "Settings",

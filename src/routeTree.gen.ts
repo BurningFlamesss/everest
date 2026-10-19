@@ -37,6 +37,7 @@ import { Route as AdminAttendanceRouteImport } from './routes/admin/attendance'
 import { Route as AdminClassesRouteImport } from './routes/admin/classes'
 import { Route as AdminCoursesRouteImport } from './routes/admin/courses'
 import { Route as AdminEventsRouteImport } from './routes/admin/events'
+import { Route as AdminFacilitiesRouteImport } from './routes/admin/facilities'
 import { Route as AdminFacultyRouteImport } from './routes/admin/faculty'
 import { Route as AdminGalleryRouteImport } from './routes/admin/gallery'
 import { Route as AdminNoticesRouteImport } from './routes/admin/notices'
@@ -212,6 +213,11 @@ const AdminCoursesRoute = AdminCoursesRouteImport.update({
 const AdminEventsRoute = AdminEventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFacilitiesRoute = AdminFacilitiesRouteImport.update({
+  id: '/facilities',
+  path: '/facilities',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminFacultyRoute = AdminFacultyRouteImport.update({
@@ -437,6 +443,7 @@ export interface FileRoutesByFullPath {
   '/admin/classes': typeof AdminClassesRouteWithChildren
   '/admin/courses': typeof AdminCoursesRouteWithChildren
   '/admin/events': typeof AdminEventsRouteWithChildren
+  '/admin/facilities': typeof AdminFacilitiesRoute
   '/admin/faculty': typeof AdminFacultyRoute
   '/admin/gallery': typeof AdminGalleryRouteWithChildren
   '/admin/notices': typeof AdminNoticesRouteWithChildren
@@ -501,6 +508,7 @@ export interface FileRoutesByTo {
   '/admin/classes': typeof AdminClassesRouteWithChildren
   '/admin/courses': typeof AdminCoursesRouteWithChildren
   '/admin/events': typeof AdminEventsRouteWithChildren
+  '/admin/facilities': typeof AdminFacilitiesRoute
   '/admin/faculty': typeof AdminFacultyRoute
   '/admin/gallery': typeof AdminGalleryRouteWithChildren
   '/admin/notices': typeof AdminNoticesRouteWithChildren
@@ -569,6 +577,7 @@ export interface FileRoutesById {
   '/admin/classes': typeof AdminClassesRouteWithChildren
   '/admin/courses': typeof AdminCoursesRouteWithChildren
   '/admin/events': typeof AdminEventsRouteWithChildren
+  '/admin/facilities': typeof AdminFacilitiesRoute
   '/admin/faculty': typeof AdminFacultyRoute
   '/admin/gallery': typeof AdminGalleryRouteWithChildren
   '/admin/notices': typeof AdminNoticesRouteWithChildren
@@ -638,6 +647,7 @@ export interface FileRouteTypes {
     | '/admin/classes'
     | '/admin/courses'
     | '/admin/events'
+    | '/admin/facilities'
     | '/admin/faculty'
     | '/admin/gallery'
     | '/admin/notices'
@@ -702,6 +712,7 @@ export interface FileRouteTypes {
     | '/admin/classes'
     | '/admin/courses'
     | '/admin/events'
+    | '/admin/facilities'
     | '/admin/faculty'
     | '/admin/gallery'
     | '/admin/notices'
@@ -769,6 +780,7 @@ export interface FileRouteTypes {
     | '/admin/classes'
     | '/admin/courses'
     | '/admin/events'
+    | '/admin/facilities'
     | '/admin/faculty'
     | '/admin/gallery'
     | '/admin/notices'
@@ -1018,6 +1030,13 @@ declare module '@tanstack/react-router' {
       path: '/events'
       fullPath: '/admin/events'
       preLoaderRoute: typeof AdminEventsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/facilities': {
+      id: '/admin/facilities'
+      path: '/facilities'
+      fullPath: '/admin/facilities'
+      preLoaderRoute: typeof AdminFacilitiesRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/faculty': {
@@ -1473,6 +1492,7 @@ interface AdminRouteChildren {
   AdminClassesRoute: typeof AdminClassesRouteWithChildren
   AdminCoursesRoute: typeof AdminCoursesRouteWithChildren
   AdminEventsRoute: typeof AdminEventsRouteWithChildren
+  AdminFacilitiesRoute: typeof AdminFacilitiesRoute
   AdminFacultyRoute: typeof AdminFacultyRoute
   AdminGalleryRoute: typeof AdminGalleryRouteWithChildren
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren
@@ -1498,6 +1518,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminClassesRoute: AdminClassesRouteWithChildren,
   AdminCoursesRoute: AdminCoursesRouteWithChildren,
   AdminEventsRoute: AdminEventsRouteWithChildren,
+  AdminFacilitiesRoute: AdminFacilitiesRoute,
   AdminFacultyRoute: AdminFacultyRoute,
   AdminGalleryRoute: AdminGalleryRouteWithChildren,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
