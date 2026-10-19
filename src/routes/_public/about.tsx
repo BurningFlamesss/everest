@@ -23,8 +23,27 @@ import { EmptyState } from "#/templates/modern/components/shared/EmptyState";
 import { FilterChips } from "#/templates/modern/components/shared/FilterChips";
 import { school } from "#/content/school";
 import { photo } from "#/lib/media";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
+import { str, rows } from "#/components/cms/block-fields";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import type { BlockType } from "#/types";
 
-const chapters = [
+/** Shape the about page renders for each chapter. */
+interface Chapter {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  image: string;
+  stats: { label: string; value: string | number }[];
+  inCharge: string;
+  since: string;
+  block: string;
+  studentsLove: string;
+  gallery: string[];
+}
+
+const chapters: Chapter[] = [
   {
     id: "overview",
     name: "Our Story",
@@ -183,16 +202,48 @@ function RouteComponent() {
   const preview = String(cms ?? "") === "1";
   const cmsData = (preview ? previewPage : publishedContent) as any;
 
+  // CMS section (chapters) merged over defaults; falls back to the static
+  // chapters array when no CMS content has been published for this page.
+  const chaptersSection = {
+    ...sectionDefaults("chapters"),
+    ...getSectionFields(cmsData?.blocks, "chapters"),
+  } as Record<string, unknown>;
+  const cmsChapters = rows(chaptersSection, "chapters").map((c, i) => ({
+    id: `chapter-${i}`,
+    name: str(c, "name"),
+    category: str(c, "category", "Foundation"),
+    description: str(c, "description"),
+    image: str(c, "image") || photo("schoolBuilding"),
+    stats: [
+      { label: "Established", value: school.establishedAd },
+      { label: "Category", value: str(c, "category", "Foundation") },
+      { label: "Since", value: str(c, "since", "1995") },
+    ],
+    inCharge: str(c, "inCharge"),
+    since: str(c, "since"),
+    block: str(c, "block"),
+    studentsLove: str(c, "studentsLove"),
+    gallery: [str(c, "image") || photo("assemblyCrowd"), photo("youngLearners"), photo("studyPair")],
+  })) as Chapter[];
+  const allChapters = cmsChapters.length > 0 ? cmsChapters : chapters;
+
+  const onSelectSection = (sectionType: BlockType) => {
+    window.parent?.postMessage(
+      { source: "scms-cms", type: "select-section", pageKey: "about", sectionType },
+      "*",
+    );
+  };
+
   const [category, setCategory] = useState<string>("all");
-  const [activeId, setActiveId] = useState<string>(chapters[0].id);
+  const [activeId, setActiveId] = useState<string>(allChapters[0]?.id ?? "");
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(
     null,
   );
 
   const filtered = useMemo(() => {
-    if (category === "all") return chapters;
-    return chapters.filter((f) => f.category === category);
-  }, [category]);
+    if (category === "all") return allChapters;
+    return allChapters.filter((f) => f.category === category);
+  }, [category, allChapters]);
 
   const active = useMemo(
     () => filtered.find((f) => f.id === activeId) ?? filtered[0],
@@ -201,34 +252,35 @@ function RouteComponent() {
 
   const chipOptions = useMemo(
     () => [
-      { value: "all", label: "All chapters", count: chapters.length },
+      { value: "all", label: "All chapters", count: allChapters.length },
       ...CATEGORY_ORDER.filter((c) =>
-        chapters.some((f) => f.category === c),
+        allChapters.some((f) => f.category === c),
       ).map((c) => ({
         value: c,
         label: c,
-        count: chapters.filter((f) => f.category === c).length,
+        count: allChapters.filter((f) => f.category === c).length,
       })),
     ],
-    [],
+    [allChapters],
   );
 
   const handleCategory = (next: string) => {
     setCategory(next);
     const first =
       next === "all"
-        ? chapters[0]
-        : chapters.find((f) => f.category === next);
+        ? allChapters[0]
+        : allChapters.find((f) => f.category === next);
     if (first) setActiveId(first.id);
   };
 
   return (
     <PageFrame testId="about-page">
+      <CmsSectionBox preview={preview} sectionType="chapters" onSelect={onSelectSection} testId="cms-section-hit-chapters">
       <PageHeader
         testId="about-page-header"
-        eyebrow="ABOUT EVEREST"
-        title="A place where curiosity becomes capability."
-        subtitle="An institutional story told through the people, spaces, and principles that shape each school day."
+        eyebrow={str(chaptersSection, "eyebrow", "ABOUT EVEREST")}
+        title={str(chaptersSection, "title", "A place where curiosity becomes capability.")}
+        subtitle={str(chaptersSection, "body", "An institutional story told through the people, spaces, and principles that shape each school day.")}
       />
 
       <div className="mt-14">
@@ -240,6 +292,7 @@ function RouteComponent() {
           onChange={handleCategory}
         />
       </div>
+      </CmsSectionBox>
 
       {!active ? (
         <div className="mt-10">

@@ -123,24 +123,24 @@ export function countdownLabel(deadlineAd: string): string {
 }
 
 /** Returns events that fall within a given term. */
-export function eventsInTerm(termId: string): CalEvent[] {
+export function eventsInTerm(termId: string, events: CalEvent[] = calendarEvents): CalEvent[] {
   const term = terms.find((t) => t.id === termId);
   if (!term) return [];
-  return calendarEvents.filter((e) => {
+  return events.filter((e) => {
     const ad = e.date.ad;
     return ad >= term.start.ad && ad <= term.end.ad;
   });
 }
 
 /** Returns events that occur on a specific Bikram Sambat date. */
-export function eventsOnBs(bsDate: string): CalEvent[] {
-  return calendarEvents.filter((e) => e.date.bs === bsDate);
+export function eventsOnBs(bsDate: string, events: CalEvent[] = calendarEvents): CalEvent[] {
+  return events.filter((e) => e.date.bs === bsDate);
 }
 
 /** Finds the next event of given kind(s) after today. */
-export function nextOfKind(kinds: EventKind[]): CalEvent | null {
+export function nextOfKind(kinds: EventKind[], events: CalEvent[] = calendarEvents): CalEvent | null {
   const todayAd = new Date().toISOString().slice(0, 10);
-  const upcoming = calendarEvents
+  const upcoming = events
     .filter((e) => kinds.includes(e.kind) && e.date.ad >= todayAd)
     .sort((a, b) => a.date.ad.localeCompare(b.date.ad));
   return upcoming[0] ?? null;

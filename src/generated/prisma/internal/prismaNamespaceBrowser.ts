@@ -610,10 +610,15 @@ export type ProgramScalarFieldEnum = (typeof ProgramScalarFieldEnum)[keyof typeo
 
 export const CalendarEventScalarFieldEnum = {
   id: 'id',
+  slug: 'slug',
   title: 'title',
+  titleNe: 'titleNe',
   description: 'description',
   startDate: 'startDate',
   endDate: 'endDate',
+  startBs: 'startBs',
+  endBs: 'endBs',
+  kind: 'kind',
   category: 'category',
   term: 'term',
   status: 'status',

@@ -468,5 +468,7 @@ export const getCalendarEventsServer = createServerFn({
 		...r,
 		startDate: r.startDate.toISOString(),
 		endDate: r.endDate.toISOString(),
+		createdAt: r.createdAt.toISOString(),
+		updatedAt: r.updatedAt.toISOString(),
 	}));
 });

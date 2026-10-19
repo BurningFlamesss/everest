@@ -1,18 +1,19 @@
 
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
-import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { useCalendarEvents, useWebsitePageContent } from "#/packages/school/hook.tsx";
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { CalendarPlus, ChevronLeft, ChevronRight } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useMemo, useState } from "react";
 import {
 	ACADEMIC_YEAR_BS,
-	calendarEvents,
+	calendarEvents as staticCalendarEvents,
 	calendarIntro,
 	eventKindMeta,
 	terms,
 } from "#/content/calendar";
-import type { EventKind } from "#/content/types";
+import type { CalEvent, EventKind } from "#/content/types";
+import { toCalEvents, type CalendarEventRow } from "#/lib/calendarEvents";
 import {
 	countdownLabel,
 	downloadIcs,
@@ -122,6 +123,14 @@ function RouteComponent() {
     ...getSectionFields(cmsData?.blocks, "headline"),
   };
 
+  // Calendar events: DB-driven via the root loader, with the static calendar
+  // as fallback when the collection has not been seeded yet.
+  const dbCalendarEvents = useCalendarEvents<CalendarEventRow>();
+  const events: CalEvent[] = useMemo(() => {
+    const db = toCalEvents(dbCalendarEvents);
+    return db.length > 0 ? db : staticCalendarEvents;
+  }, [dbCalendarEvents]);
+
   const onSelectSection = (sectionType: BlockType) => {
     window.parent?.postMessage(
       {
@@ -145,11 +154,11 @@ function RouteComponent() {
 	const cells = useMemo(() => buildBsMonthGrid(year, month), [year, month]);
 	const visibleKinds = KINDS.filter((k) => !hidden.includes(k));
 
-	const nextHoliday = nextOfKind(["holiday", "festival"]);
-	const nextExam = nextOfKind(["exam"]);
+	const nextHoliday = nextOfKind(["holiday", "festival"], events);
+	const nextExam = nextOfKind(["exam"], events);
 
 	const selectedEvents = selected
-		? eventsOnBs(selected).filter((e) => visibleKinds.includes(e.kind))
+		? eventsOnBs(selected, events).filter((e) => visibleKinds.includes(e.kind))
 		: [];
 
 	const monthStartAd =
@@ -391,7 +400,7 @@ function RouteComponent() {
 						{Array.from({ length: Math.ceil(cells.length / 7) }, (_, w) => (
 							<div role="row" className="grid grid-cols-7" key={w}>
 								{cells.slice(w * 7, w * 7 + 7).map((c) => {
-									const evs = eventsOnBs(c.bs).filter((e) =>
+									const evs = eventsOnBs(c.bs, events).filter((e) =>
 										visibleKinds.includes(e.kind),
 									);
 									const isSelected = selected === c.bs;
@@ -577,7 +586,7 @@ function RouteComponent() {
 							<Button
 								key={t.id}
 								variant="secondary"
-								onClick={() => downloadIcs(eventsInTerm(t.id), t.name)}
+								onClick={() => downloadIcs(eventsInTerm(t.id, events), t.name)}
 								testId={"ics-term-" + t.id}
 							>
 								<CalendarPlus aria-hidden="true" size={14} />
@@ -596,7 +605,7 @@ function RouteComponent() {
 					Every date this session
 				</h2>
 				<ul className="flex flex-col">
-					{calendarEvents
+					{events
 						.filter((e) => visibleKinds.includes(e.kind))
 						.map((e) => (
 							<li

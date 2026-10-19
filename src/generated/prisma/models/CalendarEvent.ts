@@ -36,10 +36,15 @@ export type CalendarEventSumAggregateOutputType = {
 
 export type CalendarEventMinAggregateOutputType = {
   id: string | null
+  slug: string | null
   title: string | null
+  titleNe: string | null
   description: string | null
   startDate: Date | null
   endDate: Date | null
+  startBs: string | null
+  endBs: string | null
+  kind: string | null
   category: string | null
   term: string | null
   status: string | null
@@ -57,10 +62,15 @@ export type CalendarEventMinAggregateOutputType = {
 
 export type CalendarEventMaxAggregateOutputType = {
   id: string | null
+  slug: string | null
   title: string | null
+  titleNe: string | null
   description: string | null
   startDate: Date | null
   endDate: Date | null
+  startBs: string | null
+  endBs: string | null
+  kind: string | null
   category: string | null
   term: string | null
   status: string | null
@@ -78,10 +88,15 @@ export type CalendarEventMaxAggregateOutputType = {
 
 export type CalendarEventCountAggregateOutputType = {
   id: number
+  slug: number
   title: number
+  titleNe: number
   description: number
   startDate: number
   endDate: number
+  startBs: number
+  endBs: number
+  kind: number
   category: number
   term: number
   status: number
@@ -109,10 +124,15 @@ export type CalendarEventSumAggregateInputType = {
 
 export type CalendarEventMinAggregateInputType = {
   id?: true
+  slug?: true
   title?: true
+  titleNe?: true
   description?: true
   startDate?: true
   endDate?: true
+  startBs?: true
+  endBs?: true
+  kind?: true
   category?: true
   term?: true
   status?: true
@@ -130,10 +150,15 @@ export type CalendarEventMinAggregateInputType = {
 
 export type CalendarEventMaxAggregateInputType = {
   id?: true
+  slug?: true
   title?: true
+  titleNe?: true
   description?: true
   startDate?: true
   endDate?: true
+  startBs?: true
+  endBs?: true
+  kind?: true
   category?: true
   term?: true
   status?: true
@@ -151,10 +176,15 @@ export type CalendarEventMaxAggregateInputType = {
 
 export type CalendarEventCountAggregateInputType = {
   id?: true
+  slug?: true
   title?: true
+  titleNe?: true
   description?: true
   startDate?: true
   endDate?: true
+  startBs?: true
+  endBs?: true
+  kind?: true
   category?: true
   term?: true
   status?: true
@@ -259,10 +289,15 @@ export type CalendarEventGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 
 export type CalendarEventGroupByOutputType = {
   id: string
+  slug: string | null
   title: string
+  titleNe: string | null
   description: string | null
   startDate: Date
   endDate: Date
+  startBs: string | null
+  endBs: string | null
+  kind: string | null
   category: string
   term: string | null
   status: string
@@ -303,10 +338,15 @@ export type CalendarEventWhereInput = {
   OR?: Prisma.CalendarEventWhereInput[]
   NOT?: Prisma.CalendarEventWhereInput | Prisma.CalendarEventWhereInput[]
   id?: Prisma.StringFilter<"CalendarEvent"> | string
+  slug?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   title?: Prisma.StringFilter<"CalendarEvent"> | string
+  titleNe?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   description?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   startDate?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
   endDate?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
+  startBs?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  endBs?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  kind?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   category?: Prisma.StringFilter<"CalendarEvent"> | string
   term?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   status?: Prisma.StringFilter<"CalendarEvent"> | string
@@ -324,10 +364,15 @@ export type CalendarEventWhereInput = {
 
 export type CalendarEventOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  slug?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
+  titleNe?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
+  startBs?: Prisma.SortOrderInput | Prisma.SortOrder
+  endBs?: Prisma.SortOrderInput | Prisma.SortOrder
+  kind?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrder
   term?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -345,13 +390,18 @@ export type CalendarEventOrderByWithRelationInput = {
 
 export type CalendarEventWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  slug?: string
   AND?: Prisma.CalendarEventWhereInput | Prisma.CalendarEventWhereInput[]
   OR?: Prisma.CalendarEventWhereInput[]
   NOT?: Prisma.CalendarEventWhereInput | Prisma.CalendarEventWhereInput[]
   title?: Prisma.StringFilter<"CalendarEvent"> | string
+  titleNe?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   description?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   startDate?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
   endDate?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
+  startBs?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  endBs?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  kind?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   category?: Prisma.StringFilter<"CalendarEvent"> | string
   term?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   status?: Prisma.StringFilter<"CalendarEvent"> | string
@@ -365,14 +415,19 @@ export type CalendarEventWhereUniqueInput = Prisma.AtLeast<{
   capacity?: Prisma.IntNullableFilter<"CalendarEvent"> | number | null
   createdAt?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
-}, "id">
+}, "id" | "slug">
 
 export type CalendarEventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  slug?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
+  titleNe?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
+  startBs?: Prisma.SortOrderInput | Prisma.SortOrder
+  endBs?: Prisma.SortOrderInput | Prisma.SortOrder
+  kind?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrder
   term?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -398,10 +453,15 @@ export type CalendarEventScalarWhereWithAggregatesInput = {
   OR?: Prisma.CalendarEventScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CalendarEventScalarWhereWithAggregatesInput | Prisma.CalendarEventScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"CalendarEvent"> | string
+  slug?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
   title?: Prisma.StringWithAggregatesFilter<"CalendarEvent"> | string
+  titleNe?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
   startDate?: Prisma.DateTimeWithAggregatesFilter<"CalendarEvent"> | Date | string
   endDate?: Prisma.DateTimeWithAggregatesFilter<"CalendarEvent"> | Date | string
+  startBs?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
+  endBs?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
+  kind?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
   category?: Prisma.StringWithAggregatesFilter<"CalendarEvent"> | string
   term?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"CalendarEvent"> | string
@@ -419,10 +479,15 @@ export type CalendarEventScalarWhereWithAggregatesInput = {
 
 export type CalendarEventCreateInput = {
   id?: string
+  slug?: string | null
   title: string
+  titleNe?: string | null
   description?: string | null
   startDate: Date | string
   endDate: Date | string
+  startBs?: string | null
+  endBs?: string | null
+  kind?: string | null
   category: string
   term?: string | null
   status?: string
@@ -440,10 +505,15 @@ export type CalendarEventCreateInput = {
 
 export type CalendarEventUncheckedCreateInput = {
   id?: string
+  slug?: string | null
   title: string
+  titleNe?: string | null
   description?: string | null
   startDate: Date | string
   endDate: Date | string
+  startBs?: string | null
+  endBs?: string | null
+  kind?: string | null
   category: string
   term?: string | null
   status?: string
@@ -461,10 +531,15 @@ export type CalendarEventUncheckedCreateInput = {
 
 export type CalendarEventUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  titleNe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startBs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endBs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kind?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -482,10 +557,15 @@ export type CalendarEventUpdateInput = {
 
 export type CalendarEventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  titleNe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startBs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endBs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kind?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -503,10 +583,15 @@ export type CalendarEventUncheckedUpdateInput = {
 
 export type CalendarEventCreateManyInput = {
   id?: string
+  slug?: string | null
   title: string
+  titleNe?: string | null
   description?: string | null
   startDate: Date | string
   endDate: Date | string
+  startBs?: string | null
+  endBs?: string | null
+  kind?: string | null
   category: string
   term?: string | null
   status?: string
@@ -524,10 +609,15 @@ export type CalendarEventCreateManyInput = {
 
 export type CalendarEventUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  titleNe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startBs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endBs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kind?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -545,10 +635,15 @@ export type CalendarEventUpdateManyMutationInput = {
 
 export type CalendarEventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  titleNe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startBs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endBs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kind?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -566,10 +661,15 @@ export type CalendarEventUncheckedUpdateManyInput = {
 
 export type CalendarEventCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  titleNe?: Prisma.SortOrder
   description?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
+  startBs?: Prisma.SortOrder
+  endBs?: Prisma.SortOrder
+  kind?: Prisma.SortOrder
   category?: Prisma.SortOrder
   term?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -591,10 +691,15 @@ export type CalendarEventAvgOrderByAggregateInput = {
 
 export type CalendarEventMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  titleNe?: Prisma.SortOrder
   description?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
+  startBs?: Prisma.SortOrder
+  endBs?: Prisma.SortOrder
+  kind?: Prisma.SortOrder
   category?: Prisma.SortOrder
   term?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -612,10 +717,15 @@ export type CalendarEventMaxOrderByAggregateInput = {
 
 export type CalendarEventMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  titleNe?: Prisma.SortOrder
   description?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
+  startBs?: Prisma.SortOrder
+  endBs?: Prisma.SortOrder
+  kind?: Prisma.SortOrder
   category?: Prisma.SortOrder
   term?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -639,10 +749,15 @@ export type CalendarEventSumOrderByAggregateInput = {
 
 export type CalendarEventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  slug?: boolean
   title?: boolean
+  titleNe?: boolean
   description?: boolean
   startDate?: boolean
   endDate?: boolean
+  startBs?: boolean
+  endBs?: boolean
+  kind?: boolean
   category?: boolean
   term?: boolean
   status?: boolean
@@ -660,10 +775,15 @@ export type CalendarEventSelect<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type CalendarEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  slug?: boolean
   title?: boolean
+  titleNe?: boolean
   description?: boolean
   startDate?: boolean
   endDate?: boolean
+  startBs?: boolean
+  endBs?: boolean
+  kind?: boolean
   category?: boolean
   term?: boolean
   status?: boolean
@@ -681,10 +801,15 @@ export type CalendarEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types
 
 export type CalendarEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  slug?: boolean
   title?: boolean
+  titleNe?: boolean
   description?: boolean
   startDate?: boolean
   endDate?: boolean
+  startBs?: boolean
+  endBs?: boolean
+  kind?: boolean
   category?: boolean
   term?: boolean
   status?: boolean
@@ -702,10 +827,15 @@ export type CalendarEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
 
 export type CalendarEventSelectScalar = {
   id?: boolean
+  slug?: boolean
   title?: boolean
+  titleNe?: boolean
   description?: boolean
   startDate?: boolean
   endDate?: boolean
+  startBs?: boolean
+  endBs?: boolean
+  kind?: boolean
   category?: boolean
   term?: boolean
   status?: boolean
@@ -721,17 +851,31 @@ export type CalendarEventSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CalendarEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "startDate" | "endDate" | "category" | "term" | "status" | "allDay" | "startTime" | "endTime" | "location" | "coverImage" | "organizerName" | "registrationRequired" | "capacity" | "createdAt" | "updatedAt", ExtArgs["result"]["calendarEvent"]>
+export type CalendarEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "titleNe" | "description" | "startDate" | "endDate" | "startBs" | "endBs" | "kind" | "category" | "term" | "status" | "allDay" | "startTime" | "endTime" | "location" | "coverImage" | "organizerName" | "registrationRequired" | "capacity" | "createdAt" | "updatedAt", ExtArgs["result"]["calendarEvent"]>
 
 export type $CalendarEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CalendarEvent"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    /**
+     * Stable seed/source key (e.g. "e-dashain") for idempotent reseeding.
+     */
+    slug: string | null
     title: string
+    titleNe: string | null
     description: string | null
     startDate: Date
     endDate: Date
+    /**
+     * Authored Bikram Sambat dates ("2083-06-24") — the school's source of truth.
+     */
+    startBs: string | null
+    endBs: string | null
+    /**
+     * Public-page taxonomy: exam | holiday | festival | event | admission.
+     */
+    kind: string | null
     category: string
     term: string | null
     status: string
@@ -1169,10 +1313,15 @@ export interface Prisma__CalendarEventClient<T, Null = never, ExtArgs extends ru
  */
 export interface CalendarEventFieldRefs {
   readonly id: Prisma.FieldRef<"CalendarEvent", 'String'>
+  readonly slug: Prisma.FieldRef<"CalendarEvent", 'String'>
   readonly title: Prisma.FieldRef<"CalendarEvent", 'String'>
+  readonly titleNe: Prisma.FieldRef<"CalendarEvent", 'String'>
   readonly description: Prisma.FieldRef<"CalendarEvent", 'String'>
   readonly startDate: Prisma.FieldRef<"CalendarEvent", 'DateTime'>
   readonly endDate: Prisma.FieldRef<"CalendarEvent", 'DateTime'>
+  readonly startBs: Prisma.FieldRef<"CalendarEvent", 'String'>
+  readonly endBs: Prisma.FieldRef<"CalendarEvent", 'String'>
+  readonly kind: Prisma.FieldRef<"CalendarEvent", 'String'>
   readonly category: Prisma.FieldRef<"CalendarEvent", 'String'>
   readonly term: Prisma.FieldRef<"CalendarEvent", 'String'>
   readonly status: Prisma.FieldRef<"CalendarEvent", 'String'>

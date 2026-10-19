@@ -819,10 +819,18 @@ model Program {
 
 model CalendarEvent {
   id          String   @id @default(cuid())
+  /// Stable seed/source key (e.g. "e-dashain") for idempotent reseeding.
+  slug        String?  @unique
   title       String
+  titleNe     String?
   description String?
   startDate   DateTime
   endDate     DateTime
+  /// Authored Bikram Sambat dates ("2083-06-24") — the school's source of truth.
+  startBs     String?
+  endBs       String?
+  /// Public-page taxonomy: exam | holiday | festival | event | admission.
+  kind        String?
   category    String   // Holiday, Examination, General
   term        String?
 

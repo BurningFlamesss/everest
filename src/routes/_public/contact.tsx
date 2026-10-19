@@ -5,11 +5,15 @@ import { useSearch } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 import { AlertCircle } from "lucide-react";
-import { departments, school } from "#/lib/site";
+import { departments as staticDepartments, school } from "#/lib/site";
 import { Button } from "#/templates/modern/components/kit";
 import { Segmented } from "#/templates/modern/components/Segmented";
 import { Input } from "#/templates/modern/components/Input";
 import { Label } from "#/templates/modern/components/Label";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
+import { str, rows } from "#/components/cms/block-fields";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import type { BlockType } from "#/types";
 
 const kathmandu = () =>
 	new Intl.DateTimeFormat("en-GB", {
@@ -40,6 +44,43 @@ function RouteComponent() {
   const preview = String(cms ?? "") === "1";
   const cmsData = (preview ? previewPage : publishedContent) as any;
 
+  // CMS sections merged over defaults; contact details fall back to school data.
+  const contactSection = { ...sectionDefaults("contact_details"), ...getSectionFields(cmsData?.blocks, "contact_details") } as Record<string, unknown>;
+  const hoursSection = { ...sectionDefaults("office_hours"), ...getSectionFields(cmsData?.blocks, "office_hours") } as Record<string, unknown>;
+  const mapSection = { ...sectionDefaults("map"), ...getSectionFields(cmsData?.blocks, "map") } as Record<string, unknown>;
+  const deptSection = { ...sectionDefaults("department_list"), ...getSectionFields(cmsData?.blocks, "department_list") } as Record<string, unknown>;
+
+  const phoneNtc = str(contactSection, "phone", school.phoneNtc);
+  const phoneNcell = str(contactSection, "secondaryPhone", school.phoneNcell);
+  const mapEmbed = str(mapSection, "embedUrl", "https://www.google.com/maps?q=Butwal-8+Sukkhanagar&output=embed");
+
+  const weekHours: Array<[string, string]> = [
+    ["SUNDAY", str(hoursSection, "sunday", "09:00–16:00")],
+    ["MONDAY", str(hoursSection, "weekdays", "09:00–16:00")],
+    ["TUESDAY", str(hoursSection, "weekdays", "09:00–16:00")],
+    ["WEDNESDAY", str(hoursSection, "weekdays", "09:00–16:00")],
+    ["THURSDAY", str(hoursSection, "weekdays", "09:00–16:00")],
+    ["FRIDAY", str(hoursSection, "weekdays", "09:00–16:00")],
+    ["SATURDAY", str(hoursSection, "saturday", "CLOSED")],
+  ];
+
+  const cmsDepts = rows(deptSection, "departments").map((d, i) => ({
+    id: `dept-${i}`,
+    name: str(d, "name"),
+    contact: str(d, "contact"),
+    email: str(d, "email"),
+    hours: str(d, "hours"),
+    phones: [] as string[],
+  }));
+  const departments = cmsDepts.length > 0 ? cmsDepts : staticDepartments;
+
+  const onSelectSection = (sectionType: BlockType) => {
+    window.parent?.postMessage(
+      { source: "scms-cms", type: "select-section", pageKey: "contact", sectionType },
+      "*",
+    );
+  };
+
 	const [route, setRoute] = useState("Admissions");
 	const [time, setTime] = useState(kathmandu());
 	const [errors, setErrors] = useState<Record<string, string>>({});
@@ -63,50 +104,46 @@ function RouteComponent() {
 				<aside>
 					<p className="devanagari">{school.nepali}</p>
 					<h2 className="t-page-title text-foreground">{school.name}</h2>
-					<p>{school.address}</p>
+					<p>{str(contactSection, "address", school.address)}</p>
+					<CmsSectionBox preview={preview} sectionType="office_hours" onSelect={onSelectSection} testId="cms-section-hit-office_hours">
 					<div className="time-card mt-8 rounded-card border border-border bg-transparent p-6">
 						<div className="flex items-center gap-2 mb-4">
 							<strong data-testid="contact-open-state" className="font-display text-base tracking-wider uppercase text-foreground">
-								OPEN TODAY · 09:00–16:00
+								OPEN TODAY · {str(hoursSection, "weekdays", "09:00–16:00")}
 							</strong>
 						</div>
 						<span data-testid="kathmandu-time" className="block text-base text-muted-foreground mb-6 pb-4 border-b border-rule-soft">
 							{time} · ASIA/KATHMANDU
 						</span>
 						<ul className="space-y-3 mb-6 pb-6 border-b border-rule-soft">
-							{[
-								["SUNDAY", "09:00–16:00"],
-								["MONDAY", "09:00–16:00"],
-								["TUESDAY", "09:00–16:00"],
-								["WEDNESDAY", "09:00–16:00"],
-								["THURSDAY", "09:00–16:00"],
-								["FRIDAY", "09:00–16:00"],
-								["SATURDAY", "CLOSED"],
-							].map(([day, hours]) => (
+							{weekHours.map(([day, hours]) => (
 								<li key={day} className="flex justify-between text-base">
 									<span className="font-medium text-muted-foreground">{day}</span>
 									<span className="text-foreground">{hours}</span>
 								</li>
 							))}
 						</ul>
+						<CmsSectionBox preview={preview} sectionType="contact_details" onSelect={onSelectSection} testId="cms-section-hit-contact_details">
 						<div className="flex flex-col gap-3">
-							<a href={`tel:${school.phoneNtc}`} data-testid="contact-ntc-link" className="flex justify-between items-center text-base font-medium hover:text-accent transition-colors">
-								<span className="text-muted-foreground">NTC</span> 
-								<span>{school.phoneNtc}</span>
+							<a href={`tel:${phoneNtc}`} data-testid="contact-ntc-link" className="flex justify-between items-center text-base font-medium hover:text-accent transition-colors">
+								<span className="text-muted-foreground">NTC</span>
+								<span>{phoneNtc}</span>
 							</a>
-							<a href={`tel:${school.phoneNcell}`} data-testid="contact-ncell-link" className="flex justify-between items-center text-base font-medium hover:text-accent transition-colors">
-								<span className="text-muted-foreground">NCELL</span> 
-								<span>{school.phoneNcell}</span>
+							<a href={`tel:${phoneNcell}`} data-testid="contact-ncell-link" className="flex justify-between items-center text-base font-medium hover:text-accent transition-colors">
+								<span className="text-muted-foreground">NCELL</span>
+								<span>{phoneNcell}</span>
 							</a>
 							<a
-								href="https://maps.google.com/?q=Pokhara+5+Nepal"
+								href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(str(contactSection, "address", "Pokhara 5 Nepal"))}`}
 								data-testid="contact-directions-link"
 								className="inline-flex mt-2 items-center justify-center font-medium text-base text-accent hover:text-accent/80 transition-colors"
 							>
 								GET DIRECTIONS <span className="ml-1 text-lg leading-none">↗</span>
 							</a>
 						</div>
+						</CmsSectionBox>
 					</div>
+					</CmsSectionBox>
 				</aside>
 				<form onSubmit={(e) => e.preventDefault()} data-testid="contact-form">
 					<h2 className="t-h2 text-foreground">DIRECT YOUR ENQUIRY</h2>
@@ -208,23 +245,26 @@ function RouteComponent() {
 					</p>
 				</form>
 			</section>
+			<CmsSectionBox preview={preview} sectionType="map" onSelect={onSelectSection} testId="cms-section-hit-map">
 			<section
 				className="map-panel content"
 				aria-label="School map placeholder"
 				data-testid="school-map"
 			>
-				<iframe 
-					src="https://www.google.com/maps?q=Butwal-8+Sukkhanagar&output=embed" 
-					width="100%" 
-					height="400" 
-					style={{ border: 0 }} 
-					allowFullScreen={true} 
-					loading="lazy" 
+				<iframe
+					src={mapEmbed}
+					width="100%"
+					height="400"
+					style={{ border: 0 }}
+					allowFullScreen={true}
+					loading="lazy"
 					referrerPolicy="no-referrer-when-downgrade"
 				></iframe>
 			</section>
+			</CmsSectionBox>
+			<CmsSectionBox preview={preview} sectionType="department_list" onSelect={onSelectSection} testId="cms-section-hit-department_list">
 			<section className="departments content">
-				<h2 className="t-h2 text-foreground">WHO TO ASK</h2>
+				<h2 className="t-h2 text-foreground">{str(deptSection, "title", "WHO TO ASK")}</h2>
 				<div>
 					{departments.map((d) => (
 						<article key={d.id} data-testid={`department-${d.id}`}>
@@ -236,6 +276,7 @@ function RouteComponent() {
 					))}
 				</div>
 			</section>
+			</CmsSectionBox>
 		</>
 	);
 }
