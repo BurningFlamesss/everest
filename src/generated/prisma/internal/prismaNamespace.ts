@@ -2739,6 +2739,18 @@ export const StudentScalarFieldEnum = {
   grade: 'grade',
   section: 'section',
   joinedAt: 'joinedAt',
+  gender: 'gender',
+  dateOfBirth: 'dateOfBirth',
+  phone: 'phone',
+  address: 'address',
+  city: 'city',
+  bloodGroup: 'bloodGroup',
+  nationality: 'nationality',
+  guardianName: 'guardianName',
+  guardianPhone: 'guardianPhone',
+  guardianEmail: 'guardianEmail',
+  guardianRelation: 'guardianRelation',
+  houseName: 'houseName',
   status: 'status',
   classId: 'classId',
   createdAt: 'createdAt',
@@ -2757,6 +2769,13 @@ export const StaffScalarFieldEnum = {
   designation: 'designation',
   department: 'department',
   joinedAt: 'joinedAt',
+  phone: 'phone',
+  qualification: 'qualification',
+  experienceYears: 'experienceYears',
+  employmentType: 'employmentType',
+  dateOfBirth: 'dateOfBirth',
+  address: 'address',
+  gender: 'gender',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -3129,6 +3148,15 @@ export const CalendarEventScalarFieldEnum = {
   endDate: 'endDate',
   category: 'category',
   term: 'term',
+  status: 'status',
+  allDay: 'allDay',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  location: 'location',
+  coverImage: 'coverImage',
+  organizerName: 'organizerName',
+  registrationRequired: 'registrationRequired',
+  capacity: 'capacity',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3254,6 +3282,20 @@ export type ListEnumStudentStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
  * Reference to a field of type 'StaffStatus'
  */
 export type EnumStaffStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StaffStatus'>
@@ -3292,20 +3334,6 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 

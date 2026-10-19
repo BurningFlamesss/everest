@@ -121,6 +121,7 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
     { key: "label", label: "Location label", kind: "text" },
     { key: "latitude", label: "Latitude", kind: "text" },
     { key: "longitude", label: "Longitude", kind: "text" },
+    { key: "embedUrl", label: "Map embed URL", kind: "url", help: "Google Maps embed URL shown on the page" },
     { key: "directions", label: "Directions", kind: "textarea" },
   ],
   announcements: [
@@ -184,6 +185,102 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
     { key: "eyebrow", label: "Eyebrow", kind: "text" },
     { key: "title", label: "Title", kind: "text" },
     { key: "description", label: "Intro copy", kind: "textarea" },
+  ],
+  // Landing page (/) — the scroll-driven hero and the editorial sections under it.
+  landing_hero: [
+    { key: "frameCount", label: "Hero frame count", kind: "number", help: "Number of scroll frames in the hero canvas sequence" },
+    { key: "text1Title", label: "Overlay 1 headline", kind: "text" },
+    { key: "text1Body", label: "Overlay 1 supporting text", kind: "textarea" },
+    { key: "text2Title", label: "Overlay 2 headline", kind: "text" },
+    { key: "text2Body", label: "Overlay 2 supporting text", kind: "textarea" },
+    { key: "text3Title", label: "Overlay 3 headline", kind: "text" },
+    { key: "text3Body", label: "Overlay 3 supporting text", kind: "textarea" },
+  ],
+  landing_facts: [
+    { key: "title", label: "Section title", kind: "text" },
+    { key: "body", label: "Intro paragraph", kind: "textarea" },
+    {
+      key: "facts",
+      label: "Fact rows",
+      kind: "list",
+      addLabel: "Add fact",
+      itemLabel: "Fact",
+      itemFields: [
+        { key: "label", label: "Label", kind: "text" },
+        { key: "value", label: "Value", kind: "text" },
+      ],
+    },
+  ],
+  discover_cards: [
+    {
+      key: "cards",
+      label: "Cards",
+      kind: "list",
+      addLabel: "Add card",
+      itemLabel: "Card",
+      itemFields: [
+        { key: "eyebrow", label: "Eyebrow", kind: "text" },
+        { key: "title", label: "Title", kind: "text" },
+        { key: "body", label: "Body", kind: "textarea" },
+        { key: "href", label: "Link", kind: "text" },
+        { key: "image", label: "Image", kind: "image" },
+      ],
+    },
+  ],
+  landing_section_headings: [
+    { key: "resultsEyebrow", label: "Results eyebrow", kind: "text" },
+    { key: "resultsTitle", label: "Results title", kind: "text" },
+    { key: "resultsDesc", label: "Results description", kind: "textarea" },
+    { key: "galleryEyebrow", label: "Gallery eyebrow", kind: "text" },
+    { key: "galleryTitle", label: "Gallery title", kind: "text" },
+    { key: "galleryDesc", label: "Gallery description", kind: "textarea" },
+    { key: "updatesEyebrow", label: "Updates eyebrow", kind: "text" },
+    { key: "updatesTitle", label: "Updates title", kind: "text" },
+    { key: "updatesDesc", label: "Updates description", kind: "textarea" },
+    { key: "facultyEyebrow", label: "Faculty eyebrow", kind: "text" },
+    { key: "facultyTitle", label: "Faculty title", kind: "text" },
+    { key: "facultyDesc", label: "Faculty description", kind: "textarea" },
+  ],
+  // About page (/about) — the chapter index cards.
+  chapters: [
+    { key: "eyebrow", label: "Eyebrow", kind: "text" },
+    { key: "title", label: "Title", kind: "text" },
+    { key: "body", label: "Intro copy", kind: "textarea" },
+    {
+      key: "chapters",
+      label: "Chapters",
+      kind: "list",
+      addLabel: "Add chapter",
+      itemLabel: "Chapter",
+      itemFields: [
+        { key: "name", label: "Name", kind: "text" },
+        { key: "category", label: "Category", kind: "text" },
+        { key: "description", label: "Description", kind: "textarea" },
+        { key: "image", label: "Image", kind: "image" },
+        { key: "inCharge", label: "In charge", kind: "text" },
+        { key: "since", label: "Since", kind: "text" },
+        { key: "block", label: "Block", kind: "text" },
+        { key: "studentsLove", label: "Why students love it", kind: "textarea" },
+      ],
+    },
+  ],
+  // Contact page (/contact) — the department contact list.
+  department_list: [
+    { key: "eyebrow", label: "Eyebrow", kind: "text" },
+    { key: "title", label: "Title", kind: "text" },
+    {
+      key: "departments",
+      label: "Departments",
+      kind: "list",
+      addLabel: "Add department",
+      itemLabel: "Department",
+      itemFields: [
+        { key: "name", label: "Name", kind: "text" },
+        { key: "contact", label: "Contact person", kind: "text" },
+        { key: "email", label: "Email", kind: "text" },
+        { key: "hours", label: "Hours", kind: "text" },
+      ],
+    },
   ],
 };
 

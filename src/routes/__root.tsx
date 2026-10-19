@@ -9,12 +9,19 @@ import { Suspense } from "react";
 import NotFoundPage from "#/components/NotFoundPage.tsx";
 import { getSessionFn } from "#/packages/auth/middleware/auth.middleware.ts";
 import {
+	getAlbumsServer,
+	getAllPublishedPagesServer,
+	getBoardResultsServer,
+	getBusRoutesServer,
+	getCalendarEventsServer,
+	getFacilitiesServer,
 	getFacultyMembersServer,
 	getNoticesServer,
+	getProgramsServer,
+	getResourcesServer,
 	getScholarshipsServer,
 	getSchoolConfigServer,
 	getSchoolContentServer,
-	getWebsitePageServer,
 } from "#/packages/content/server/content.ts";
 import { AuthProvider } from "#/providers/AuthProvider";
 import { Sidebar } from "#/templates/modern/components/layout/Sidebar";
@@ -71,49 +78,74 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				),
 			]);
 
+		// Fetch every published CMS page + every public content collection so all
+		// public pages are driven from the database. Each call is independently
+		// fault-tolerant — a single failure falls back to null and the affected page
+		// renders its static placeholder content instead of erroring the whole load.
 		const [
 			configResult,
-			facultyContentResult,
-			loginContentResult,
+			pagesResult,
 			sidebarContentResult,
 			facultyMembersResult,
 			noticesResult,
 			scholarshipsResult,
+			albumsResult,
+			facilitiesResult,
+			resourcesResult,
+			boardResultsResult,
+			programsResult,
+			busRoutesResult,
+			calendarEventsResult,
 		] = await Promise.allSettled([
 			withTimeout(getSchoolConfigServer({ data: { identifier: "everest" } })),
-			withTimeout(getWebsitePageServer({ data: { key: "faculty" } })),
-			withTimeout(getWebsitePageServer({ data: { key: "login" } })),
+			withTimeout(getAllPublishedPagesServer()),
 			withTimeout(getSchoolContentServer({ data: { identifier: "everest" } })),
 			withTimeout(getFacultyMembersServer()),
 			withTimeout(getNoticesServer()),
 			withTimeout(getScholarshipsServer()),
+			withTimeout(getAlbumsServer()),
+			withTimeout(getFacilitiesServer()),
+			withTimeout(getResourcesServer()),
+			withTimeout(getBoardResultsServer()),
+			withTimeout(getProgramsServer()),
+			withTimeout(getBusRoutesServer()),
+			withTimeout(getCalendarEventsServer()),
 		]);
 
-		const config = configResult.status === "fulfilled" && configResult.value ? configResult.value : getSchoolConfig("everest");
-		const facultyContent = facultyContentResult.status === "fulfilled" ? facultyContentResult.value : null;
-		const loginContent = loginContentResult.status === "fulfilled" ? loginContentResult.value : null;
-		const sidebarContent = sidebarContentResult.status === "fulfilled" && sidebarContentResult.value ? sidebarContentResult.value : getSchoolContent("everest");
-		const facultyMembers = facultyMembersResult.status === "fulfilled" ? facultyMembersResult.value : null;
-		const notices = noticesResult.status === "fulfilled" ? noticesResult.value : null;
-		const scholarships = scholarshipsResult.status === "fulfilled" ? scholarshipsResult.value : null;
+		const settled = <T,>(r: PromiseSettledResult<T>): T | null =>
+			r.status === "fulfilled" ? r.value : null;
+
+		const config = settled(configResult) ?? getSchoolConfig("everest");
+		const sidebarContent =
+			settled(sidebarContentResult) ?? getSchoolContent("everest");
+
+		// Key published pages by their WebsitePageKey so useWebsitePageContent(key)
+		// resolves for every managed page, not just a hardcoded few.
+		const pages = settled(pagesResult) ?? [];
 
 		const content: Record<string, unknown> = {
 			sidebar: sidebarContent?.sidebar,
 		};
-		if (facultyContent) {
-			content.faculty = facultyContent;
+		for (const page of pages) {
+			if (page && page.key) content[page.key] = page;
 		}
-		if (loginContent) {
-			content.login = loginContent;
-		}
-		if (facultyMembers && facultyMembers.length > 0) {
-			content.facultyMembers = facultyMembers;
-		}
-		if (notices && notices.length > 0) {
-			content.notices = notices;
-		}
-		if (scholarships && scholarships.length > 0) {
-			content.scholarships = scholarships;
+
+		// Entity collections — only set when non-empty so pages keep their static
+		// fallback when a table has not been seeded yet.
+		const collections: Array<[string, unknown[] | null]> = [
+			["facultyMembers", settled(facultyMembersResult)],
+			["notices", settled(noticesResult)],
+			["scholarships", settled(scholarshipsResult)],
+			["albums", settled(albumsResult)],
+			["facilities", settled(facilitiesResult)],
+			["resources", settled(resourcesResult)],
+			["boardResults", settled(boardResultsResult)],
+			["programs", settled(programsResult)],
+			["busRoutes", settled(busRoutesResult)],
+			["calendarEvents", settled(calendarEventsResult)],
+		];
+		for (const [key, rows] of collections) {
+			if (Array.isArray(rows) && rows.length > 0) content[key] = rows;
 		}
 
 		return {

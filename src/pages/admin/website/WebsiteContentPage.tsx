@@ -58,6 +58,7 @@ const PAGE_KEYS: WebsitePageKey[] = [
 	"home",
 	"about",
 	"courses",
+	"course_finder",
 	"facilities",
 	"gallery",
 	"calendar",

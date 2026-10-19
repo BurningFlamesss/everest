@@ -104,7 +104,8 @@ export const WebsitePageKey = {
   transportation: 'transportation',
   notices: 'notices',
   scholarship: 'scholarship',
-  posts: 'posts'
+  posts: 'posts',
+  course_finder: 'course_finder'
 } as const
 
 export type WebsitePageKey = (typeof WebsitePageKey)[keyof typeof WebsitePageKey]
@@ -147,7 +148,13 @@ export const BlockType = {
   auth_contact: 'auth_contact',
   faculty_header: 'faculty_header',
   faculty_leadership: 'faculty_leadership',
-  faculty_directory: 'faculty_directory'
+  faculty_directory: 'faculty_directory',
+  landing_hero: 'landing_hero',
+  landing_facts: 'landing_facts',
+  discover_cards: 'discover_cards',
+  chapters: 'chapters',
+  department_list: 'department_list',
+  landing_section_headings: 'landing_section_headings'
 } as const
 
 export type BlockType = (typeof BlockType)[keyof typeof BlockType]

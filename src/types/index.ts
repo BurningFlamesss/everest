@@ -543,7 +543,13 @@ export type BlockType =
   | "auth_contact"
   | "faculty_header"
   | "faculty_leadership"
-  | "faculty_directory";
+  | "faculty_directory"
+  | "landing_hero"
+  | "landing_facts"
+  | "discover_cards"
+  | "chapters"
+  | "department_list"
+  | "landing_section_headings";
 
 export interface ContentBlock {
   id: string;
@@ -555,7 +561,7 @@ export interface ContentBlock {
   updatedAt: string;
 }
 
-export type WebsitePageKey = "home" | "about" | "courses" | "facilities" | "gallery" | "calendar" | "contact" | "resources" | "result" | "transportation" | "notices" | "scholarship" | "faculty" | "login" | "activate";
+export type WebsitePageKey = "home" | "about" | "courses" | "facilities" | "gallery" | "calendar" | "contact" | "resources" | "result" | "transportation" | "notices" | "scholarship" | "faculty" | "login" | "activate" | "course_finder";
 
 export type WebsitePageStatus = "draft" | "published";
 

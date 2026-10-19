@@ -20,8 +20,18 @@ export type CalendarEventModel = runtime.Types.Result.DefaultSelection<Prisma.$C
 
 export type AggregateCalendarEvent = {
   _count: CalendarEventCountAggregateOutputType | null
+  _avg: CalendarEventAvgAggregateOutputType | null
+  _sum: CalendarEventSumAggregateOutputType | null
   _min: CalendarEventMinAggregateOutputType | null
   _max: CalendarEventMaxAggregateOutputType | null
+}
+
+export type CalendarEventAvgAggregateOutputType = {
+  capacity: number | null
+}
+
+export type CalendarEventSumAggregateOutputType = {
+  capacity: number | null
 }
 
 export type CalendarEventMinAggregateOutputType = {
@@ -32,6 +42,15 @@ export type CalendarEventMinAggregateOutputType = {
   endDate: Date | null
   category: string | null
   term: string | null
+  status: string | null
+  allDay: boolean | null
+  startTime: string | null
+  endTime: string | null
+  location: string | null
+  coverImage: string | null
+  organizerName: string | null
+  registrationRequired: boolean | null
+  capacity: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,6 +63,15 @@ export type CalendarEventMaxAggregateOutputType = {
   endDate: Date | null
   category: string | null
   term: string | null
+  status: string | null
+  allDay: boolean | null
+  startTime: string | null
+  endTime: string | null
+  location: string | null
+  coverImage: string | null
+  organizerName: string | null
+  registrationRequired: boolean | null
+  capacity: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,11 +84,28 @@ export type CalendarEventCountAggregateOutputType = {
   endDate: number
   category: number
   term: number
+  status: number
+  allDay: number
+  startTime: number
+  endTime: number
+  location: number
+  coverImage: number
+  organizerName: number
+  registrationRequired: number
+  capacity: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type CalendarEventAvgAggregateInputType = {
+  capacity?: true
+}
+
+export type CalendarEventSumAggregateInputType = {
+  capacity?: true
+}
 
 export type CalendarEventMinAggregateInputType = {
   id?: true
@@ -70,6 +115,15 @@ export type CalendarEventMinAggregateInputType = {
   endDate?: true
   category?: true
   term?: true
+  status?: true
+  allDay?: true
+  startTime?: true
+  endTime?: true
+  location?: true
+  coverImage?: true
+  organizerName?: true
+  registrationRequired?: true
+  capacity?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +136,15 @@ export type CalendarEventMaxAggregateInputType = {
   endDate?: true
   category?: true
   term?: true
+  status?: true
+  allDay?: true
+  startTime?: true
+  endTime?: true
+  location?: true
+  coverImage?: true
+  organizerName?: true
+  registrationRequired?: true
+  capacity?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -94,6 +157,15 @@ export type CalendarEventCountAggregateInputType = {
   endDate?: true
   category?: true
   term?: true
+  status?: true
+  allDay?: true
+  startTime?: true
+  endTime?: true
+  location?: true
+  coverImage?: true
+  organizerName?: true
+  registrationRequired?: true
+  capacity?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -137,6 +209,18 @@ export type CalendarEventAggregateArgs<ExtArgs extends runtime.Types.Extensions.
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: CalendarEventAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: CalendarEventSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: CalendarEventMinAggregateInputType
@@ -167,6 +251,8 @@ export type CalendarEventGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   _count?: CalendarEventCountAggregateInputType | true
+  _avg?: CalendarEventAvgAggregateInputType
+  _sum?: CalendarEventSumAggregateInputType
   _min?: CalendarEventMinAggregateInputType
   _max?: CalendarEventMaxAggregateInputType
 }
@@ -179,9 +265,20 @@ export type CalendarEventGroupByOutputType = {
   endDate: Date
   category: string
   term: string | null
+  status: string
+  allDay: boolean
+  startTime: string | null
+  endTime: string | null
+  location: string | null
+  coverImage: string | null
+  organizerName: string | null
+  registrationRequired: boolean
+  capacity: number | null
   createdAt: Date
   updatedAt: Date
   _count: CalendarEventCountAggregateOutputType | null
+  _avg: CalendarEventAvgAggregateOutputType | null
+  _sum: CalendarEventSumAggregateOutputType | null
   _min: CalendarEventMinAggregateOutputType | null
   _max: CalendarEventMaxAggregateOutputType | null
 }
@@ -212,6 +309,15 @@ export type CalendarEventWhereInput = {
   endDate?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
   category?: Prisma.StringFilter<"CalendarEvent"> | string
   term?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  status?: Prisma.StringFilter<"CalendarEvent"> | string
+  allDay?: Prisma.BoolFilter<"CalendarEvent"> | boolean
+  startTime?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  endTime?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  location?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  coverImage?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  organizerName?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  registrationRequired?: Prisma.BoolFilter<"CalendarEvent"> | boolean
+  capacity?: Prisma.IntNullableFilter<"CalendarEvent"> | number | null
   createdAt?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
 }
@@ -224,6 +330,15 @@ export type CalendarEventOrderByWithRelationInput = {
   endDate?: Prisma.SortOrder
   category?: Prisma.SortOrder
   term?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  allDay?: Prisma.SortOrder
+  startTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  endTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  organizerName?: Prisma.SortOrderInput | Prisma.SortOrder
+  registrationRequired?: Prisma.SortOrder
+  capacity?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -239,6 +354,15 @@ export type CalendarEventWhereUniqueInput = Prisma.AtLeast<{
   endDate?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
   category?: Prisma.StringFilter<"CalendarEvent"> | string
   term?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  status?: Prisma.StringFilter<"CalendarEvent"> | string
+  allDay?: Prisma.BoolFilter<"CalendarEvent"> | boolean
+  startTime?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  endTime?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  location?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  coverImage?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  organizerName?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  registrationRequired?: Prisma.BoolFilter<"CalendarEvent"> | boolean
+  capacity?: Prisma.IntNullableFilter<"CalendarEvent"> | number | null
   createdAt?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
 }, "id">
@@ -251,11 +375,22 @@ export type CalendarEventOrderByWithAggregationInput = {
   endDate?: Prisma.SortOrder
   category?: Prisma.SortOrder
   term?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  allDay?: Prisma.SortOrder
+  startTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  endTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  organizerName?: Prisma.SortOrderInput | Prisma.SortOrder
+  registrationRequired?: Prisma.SortOrder
+  capacity?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CalendarEventCountOrderByAggregateInput
+  _avg?: Prisma.CalendarEventAvgOrderByAggregateInput
   _max?: Prisma.CalendarEventMaxOrderByAggregateInput
   _min?: Prisma.CalendarEventMinOrderByAggregateInput
+  _sum?: Prisma.CalendarEventSumOrderByAggregateInput
 }
 
 export type CalendarEventScalarWhereWithAggregatesInput = {
@@ -269,6 +404,15 @@ export type CalendarEventScalarWhereWithAggregatesInput = {
   endDate?: Prisma.DateTimeWithAggregatesFilter<"CalendarEvent"> | Date | string
   category?: Prisma.StringWithAggregatesFilter<"CalendarEvent"> | string
   term?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
+  status?: Prisma.StringWithAggregatesFilter<"CalendarEvent"> | string
+  allDay?: Prisma.BoolWithAggregatesFilter<"CalendarEvent"> | boolean
+  startTime?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
+  endTime?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
+  location?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
+  coverImage?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
+  organizerName?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
+  registrationRequired?: Prisma.BoolWithAggregatesFilter<"CalendarEvent"> | boolean
+  capacity?: Prisma.IntNullableWithAggregatesFilter<"CalendarEvent"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CalendarEvent"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CalendarEvent"> | Date | string
 }
@@ -281,6 +425,15 @@ export type CalendarEventCreateInput = {
   endDate: Date | string
   category: string
   term?: string | null
+  status?: string
+  allDay?: boolean
+  startTime?: string | null
+  endTime?: string | null
+  location?: string | null
+  coverImage?: string | null
+  organizerName?: string | null
+  registrationRequired?: boolean
+  capacity?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -293,6 +446,15 @@ export type CalendarEventUncheckedCreateInput = {
   endDate: Date | string
   category: string
   term?: string | null
+  status?: string
+  allDay?: boolean
+  startTime?: string | null
+  endTime?: string | null
+  location?: string | null
+  coverImage?: string | null
+  organizerName?: string | null
+  registrationRequired?: boolean
+  capacity?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -305,6 +467,15 @@ export type CalendarEventUpdateInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  allDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -317,6 +488,15 @@ export type CalendarEventUncheckedUpdateInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  allDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -329,6 +509,15 @@ export type CalendarEventCreateManyInput = {
   endDate: Date | string
   category: string
   term?: string | null
+  status?: string
+  allDay?: boolean
+  startTime?: string | null
+  endTime?: string | null
+  location?: string | null
+  coverImage?: string | null
+  organizerName?: string | null
+  registrationRequired?: boolean
+  capacity?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -341,6 +530,15 @@ export type CalendarEventUpdateManyMutationInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  allDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -353,6 +551,15 @@ export type CalendarEventUncheckedUpdateManyInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  allDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -365,8 +572,21 @@ export type CalendarEventCountOrderByAggregateInput = {
   endDate?: Prisma.SortOrder
   category?: Prisma.SortOrder
   term?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  allDay?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  endTime?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
+  organizerName?: Prisma.SortOrder
+  registrationRequired?: Prisma.SortOrder
+  capacity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type CalendarEventAvgOrderByAggregateInput = {
+  capacity?: Prisma.SortOrder
 }
 
 export type CalendarEventMaxOrderByAggregateInput = {
@@ -377,6 +597,15 @@ export type CalendarEventMaxOrderByAggregateInput = {
   endDate?: Prisma.SortOrder
   category?: Prisma.SortOrder
   term?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  allDay?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  endTime?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
+  organizerName?: Prisma.SortOrder
+  registrationRequired?: Prisma.SortOrder
+  capacity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -389,8 +618,21 @@ export type CalendarEventMinOrderByAggregateInput = {
   endDate?: Prisma.SortOrder
   category?: Prisma.SortOrder
   term?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  allDay?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  endTime?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
+  organizerName?: Prisma.SortOrder
+  registrationRequired?: Prisma.SortOrder
+  capacity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type CalendarEventSumOrderByAggregateInput = {
+  capacity?: Prisma.SortOrder
 }
 
 
@@ -403,6 +645,15 @@ export type CalendarEventSelect<ExtArgs extends runtime.Types.Extensions.Interna
   endDate?: boolean
   category?: boolean
   term?: boolean
+  status?: boolean
+  allDay?: boolean
+  startTime?: boolean
+  endTime?: boolean
+  location?: boolean
+  coverImage?: boolean
+  organizerName?: boolean
+  registrationRequired?: boolean
+  capacity?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["calendarEvent"]>
@@ -415,6 +666,15 @@ export type CalendarEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   endDate?: boolean
   category?: boolean
   term?: boolean
+  status?: boolean
+  allDay?: boolean
+  startTime?: boolean
+  endTime?: boolean
+  location?: boolean
+  coverImage?: boolean
+  organizerName?: boolean
+  registrationRequired?: boolean
+  capacity?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["calendarEvent"]>
@@ -427,6 +687,15 @@ export type CalendarEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   endDate?: boolean
   category?: boolean
   term?: boolean
+  status?: boolean
+  allDay?: boolean
+  startTime?: boolean
+  endTime?: boolean
+  location?: boolean
+  coverImage?: boolean
+  organizerName?: boolean
+  registrationRequired?: boolean
+  capacity?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["calendarEvent"]>
@@ -439,11 +708,20 @@ export type CalendarEventSelectScalar = {
   endDate?: boolean
   category?: boolean
   term?: boolean
+  status?: boolean
+  allDay?: boolean
+  startTime?: boolean
+  endTime?: boolean
+  location?: boolean
+  coverImage?: boolean
+  organizerName?: boolean
+  registrationRequired?: boolean
+  capacity?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CalendarEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "startDate" | "endDate" | "category" | "term" | "createdAt" | "updatedAt", ExtArgs["result"]["calendarEvent"]>
+export type CalendarEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "startDate" | "endDate" | "category" | "term" | "status" | "allDay" | "startTime" | "endTime" | "location" | "coverImage" | "organizerName" | "registrationRequired" | "capacity" | "createdAt" | "updatedAt", ExtArgs["result"]["calendarEvent"]>
 
 export type $CalendarEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CalendarEvent"
@@ -456,6 +734,15 @@ export type $CalendarEventPayload<ExtArgs extends runtime.Types.Extensions.Inter
     endDate: Date
     category: string
     term: string | null
+    status: string
+    allDay: boolean
+    startTime: string | null
+    endTime: string | null
+    location: string | null
+    coverImage: string | null
+    organizerName: string | null
+    registrationRequired: boolean
+    capacity: number | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["calendarEvent"]>
@@ -888,6 +1175,15 @@ export interface CalendarEventFieldRefs {
   readonly endDate: Prisma.FieldRef<"CalendarEvent", 'DateTime'>
   readonly category: Prisma.FieldRef<"CalendarEvent", 'String'>
   readonly term: Prisma.FieldRef<"CalendarEvent", 'String'>
+  readonly status: Prisma.FieldRef<"CalendarEvent", 'String'>
+  readonly allDay: Prisma.FieldRef<"CalendarEvent", 'Boolean'>
+  readonly startTime: Prisma.FieldRef<"CalendarEvent", 'String'>
+  readonly endTime: Prisma.FieldRef<"CalendarEvent", 'String'>
+  readonly location: Prisma.FieldRef<"CalendarEvent", 'String'>
+  readonly coverImage: Prisma.FieldRef<"CalendarEvent", 'String'>
+  readonly organizerName: Prisma.FieldRef<"CalendarEvent", 'String'>
+  readonly registrationRequired: Prisma.FieldRef<"CalendarEvent", 'Boolean'>
+  readonly capacity: Prisma.FieldRef<"CalendarEvent", 'Int'>
   readonly createdAt: Prisma.FieldRef<"CalendarEvent", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CalendarEvent", 'DateTime'>
 }

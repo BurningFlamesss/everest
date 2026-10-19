@@ -113,3 +113,47 @@ export function useScholarships(): Scholarship[] | null {
 		}) ?? null
 	);
 }
+
+/** Generic loader for a public content collection keyed in the root loader. */
+function useCollection<T>(key: string): T[] | null {
+	return (
+		RootRoute.useLoaderData({
+			select: (data) => data.content[key] as T[] | undefined,
+		}) ?? null
+	);
+}
+
+/** Gallery albums loaded from the database. */
+export function useAlbums<T = unknown>(): T[] | null {
+	return useCollection<T>("albums");
+}
+
+/** Campus facilities loaded from the database. */
+export function useFacilities<T = unknown>(): T[] | null {
+	return useCollection<T>("facilities");
+}
+
+/** Downloadable resources loaded from the database. */
+export function useResources<T = unknown>(): T[] | null {
+	return useCollection<T>("resources");
+}
+
+/** Board (SEE/NEB) results loaded from the database. */
+export function useBoardResults<T = unknown>(): T[] | null {
+	return useCollection<T>("boardResults");
+}
+
+/** Academic programs loaded from the database. */
+export function usePrograms<T = unknown>(): T[] | null {
+	return useCollection<T>("programs");
+}
+
+/** Bus routes loaded from the database. */
+export function useBusRoutes<T = unknown>(): T[] | null {
+	return useCollection<T>("busRoutes");
+}
+
+/** Calendar events loaded from the database. */
+export function useCalendarEvents<T = unknown>(): T[] | null {
+	return useCollection<T>("calendarEvents");
+}

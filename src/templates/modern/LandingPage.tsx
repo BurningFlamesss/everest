@@ -3,13 +3,18 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, Building2, Info, Users, Image as ImageIcon } from "lucide-react";
+import { ArrowRight, BookOpen, Building2, Info } from "lucide-react";
 import { NoticeDialog } from "#/components/common/NoticeDialog";
 import { ResultsChart } from "#/templates/modern/components/utilities/ResultsChart";
 import { albums } from "#/content/gallery";
 import { people } from "#/lib/faculty";
 import { SectionHeading } from "#/templates/modern/components/chrome/PageFrame";
 import { MonogramAvatar } from "#/templates/modern/components/shared/MonogramAvatar";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
+import { rows, str } from "#/components/cms/block-fields";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import type { BlockType } from "#/types";
+import type { WebsitePageContent } from "#/lib/website-content-loader";
 
 import { useQuery } from "@tanstack/react-query";
 import { getFacebookPostsServer } from "#/packages/content/server/facebook.ts";
@@ -26,8 +31,40 @@ import {
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function LandingPage() {
+interface LandingCmsContent {
+	/** Published (or preview) CMS page for the home key; null → static defaults. */
+	page: WebsitePageContent | null;
+	/** True when rendered inside the admin live-preview iframe (?cms=1). */
+	preview: boolean;
+}
+
+/** Merge a section's defaults with any saved CMS overrides. */
+function useSection(page: WebsitePageContent | null, type: BlockType) {
+	return { ...sectionDefaults(type), ...getSectionFields(page?.blocks as never, type) } as Record<string, unknown>;
+}
+
+const DISCOVER_ICONS: Record<string, typeof BookOpen> = {
+	"/courses": BookOpen,
+	"/facilities": Building2,
+	"/about": Info,
+};
+
+export default function LandingPage({ page = null, preview = false }: Partial<LandingCmsContent> = {}) {
 	const containerRef = useRef<HTMLDivElement>(null);
+
+	const hero = useSection(page, "landing_hero");
+	const facts = useSection(page, "landing_facts");
+	const discover = useSection(page, "discover_cards");
+	const headings = useSection(page, "landing_section_headings");
+
+	const onSelectSection = (sectionType: BlockType) => {
+		if (typeof window !== "undefined" && window.parent) {
+			window.parent.postMessage(
+				{ source: "scms-cms", type: "select-section", pageKey: "home", sectionType },
+				"*",
+			);
+		}
+	};
 
 	useEffect(() => {
 		if (!containerRef.current) return;
@@ -66,25 +103,26 @@ export default function LandingPage() {
 						<div className="pointer-events-none absolute inset-0 z-[5] bg-gradient-to-b from-black/40 via-transparent to-black/60" />
 
 						{/* Scroll-triggered Overlays */}
+						<CmsSectionBox preview={preview} sectionType="landing_hero" onSelect={onSelectSection} testId="cms-section-hit-landing_hero">
 						<div className="pointer-events-none absolute inset-0 z-10 flex lg:pl-[var(--nav-w)]">
 							<div className="relative h-full w-full p-8 lg:p-16">
 								{/* Text 1: Visible by default, Appears Top Right */}
 								<div className="scroll-text-1 absolute right-8 top-1/4 max-w-lg text-right text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] lg:right-24">
 									<h2 className="font-display text-5xl font-bold leading-tight md:text-7xl">
-										A place to grow.
+										{str(hero, "text1Title", "A place to grow.")}
 									</h2>
 									<p className="mt-4 text-lg font-medium text-white/95 md:text-xl">
-										Developing character, capability, and curiosity since 2050 BS.
+										{str(hero, "text1Body", "Developing character, capability, and curiosity since 2050 BS.")}
 									</p>
 								</div>
 
 								{/* Text 2: Appears Bottom Left (relative to layout) */}
 								<div className="scroll-text-2 absolute bottom-24 left-8 max-w-xl translate-y-[20px] text-white opacity-0 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] lg:left-24">
 									<h2 className="font-display text-5xl font-bold leading-tight md:text-7xl">
-										Future ready.
+										{str(hero, "text2Title", "Future ready.")}
 									</h2>
 									<p className="mt-4 text-lg font-medium text-white/95 md:text-xl">
-										Our state-of-the-art facilities and modern curriculums empower students to thrive in an evolving world.
+										{str(hero, "text2Body", "Our state-of-the-art facilities and modern curriculums empower students to thrive in an evolving world.")}
 									</p>
 								</div>
 
@@ -92,59 +130,41 @@ export default function LandingPage() {
 								<div className="scroll-text-3 absolute inset-0 flex flex-col items-center justify-center text-center text-white opacity-0 translate-y-[20px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
 									<div className="max-w-3xl px-6">
 										<h2 className="font-display text-5xl font-bold leading-tight md:text-8xl">
-											Everest.
+											{str(hero, "text3Title", "Everest.")}
 										</h2>
 										<p className="mt-4 text-xl font-medium text-white/95 md:text-2xl">
-											The summit of education.
+											{str(hero, "text3Body", "The summit of education.")}
 										</p>
 									</div>
 								</div>
 							</div>
 						</div>
+						</CmsSectionBox>
 					</div>
 
 					<section className="hero-next-section absolute bottom-0 left-0 z-10 w-full overflow-y-auto overflow-x-hidden bg-[#FEF2F2] rounded-t-3xl min-h-[70vh] lg:h-[80vh]">
+						<CmsSectionBox preview={preview} sectionType="landing_facts" onSelect={onSelectSection} testId="cms-section-hit-landing_facts">
 						<div className="grid grid-cols-1 lg:grid-cols-[6fr_5fr] mx-6 md:mx-12 lg:mx-20 pt-10 pb-16 lg:pt-20 lg:pb-0 gap-10 lg:gap-[8%]">
-							<h2 className="text-5xl md:text-6xl lg:text-8xl font-bold text-foreground">
-								Established in purpose.
-								<br />
-								Contemporary in outlook.
+							<h2 className="text-5xl md:text-6xl lg:text-8xl font-bold text-foreground whitespace-pre-line">
+								{str(facts, "title", "Established in purpose.\nContemporary in outlook.")}
 							</h2>
 							<div>
 								<p className="text-base md:text-lg leading-normal mb-8 text-muted-foreground">
-									Everest English Boarding Higher Secondary School is a learning
-									institution in Nepal built around a simple conviction: students
-									thrive when expectations are clear, relationships are strong,
-									and curiosity has room to become practice.
+									{str(facts, "body", "")}
 								</p>
 								<dl className="border-t border-rule-soft">
-									<div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
-										<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">Institution</dt>
-										<dd className="text-sm sm:text-md font-medium text-foreground">
-											Everest English Boarding Higher Secondary School
-										</dd>
-									</div>
-									<div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
-										<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">Learning Spaces</dt>
-										<dd className="text-sm sm:text-md font-medium text-foreground">
-											Everest Building + Canon Building
-										</dd>
-									</div>
-									<div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
-										<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">Streams</dt>
-										<dd className="text-sm sm:text-md font-medium text-foreground">
-											Science (Computer/Biology), Management
-										</dd>
-									</div>
-									<div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
-										<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">Labs</dt>
-										<dd className="text-sm sm:text-md font-medium text-foreground">
-											Computer, Biology, Physics, Chemistry
-										</dd>
-									</div>
+									{rows(facts, "facts").map((fact, i) => (
+										<div key={i} className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft">
+											<dt className="text-[11px] sm:text-xs uppercase text-muted-foreground tracking-wider">{String(fact.label ?? "")}</dt>
+											<dd className="text-sm sm:text-md font-medium text-foreground">
+												{String(fact.value ?? "")}
+											</dd>
+										</div>
+									))}
 								</dl>
 							</div>
 						</div>
+						</CmsSectionBox>
 					</section>
 				</div>
 
@@ -153,9 +173,9 @@ export default function LandingPage() {
 						{/* Result Chart */}
 						<div className="mb-32">
 							<SectionHeading
-								eyebrow="Academic Excellence"
-								title="Board Results"
-								description="Consistent performance across all levels of examination."
+								eyebrow={str(headings, "resultsEyebrow", "Academic Excellence")}
+								title={str(headings, "resultsTitle", "Board Results")}
+								description={str(headings, "resultsDesc", "Consistent performance across all levels of examination.")}
 							/>
 							<div className="mt-12 rounded-card border border-border bg-card p-6 shadow-sm sm:p-10">
 								<ResultsChart />
@@ -164,71 +184,47 @@ export default function LandingPage() {
 
 						{/* Discover / About / Courses / Facilities */}
 						<div className="mb-32">
-							<SectionHeading
-								eyebrow="Explore Everest"
-								title="Discover the school"
-								description="Learn more about our academic programs, state-of-the-art facilities, and the institution's history."
-							/>
+							<CmsSectionBox preview={preview} sectionType="landing_section_headings" onSelect={onSelectSection} testId="cms-section-hit-landing_section_headings">
+								<SectionHeading
+									eyebrow={str(headings, "discoverEyebrow", "Explore Everest")}
+									title={str(headings, "discoverTitle", "Discover the school")}
+									description={str(headings, "discoverDesc", "Learn more about our academic programs, state-of-the-art facilities, and the institution's history.")}
+								/>
+							</CmsSectionBox>
+							<CmsSectionBox preview={preview} sectionType="discover_cards" onSelect={onSelectSection} testId="cms-section-hit-discover_cards">
 							<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-								<Link to="/courses" className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
-									<div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 sm:h-14 sm:w-14">
-										<BookOpen className="h-6 w-6 text-accent" aria-hidden="true" />
-									</div>
-									<p className="t-eyebrow mt-6">Academics</p>
-									<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
-										Courses & Programs
-									</h3>
-									<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground line-clamp-3">
-										Explore subject lists, credit hours, fee structures and weekly routines for every programme from Nursery to Grade 12.
-									</p>
-									<span className="mt-auto pt-6 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
-										View courses
-										<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-									</span>
-								</Link>
-								
-								<Link to="/facilities" className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
-									<div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 sm:h-14 sm:w-14">
-										<Building2 className="h-6 w-6 text-accent" aria-hidden="true" />
-									</div>
-									<p className="t-eyebrow mt-6">Campus</p>
-									<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
-										Facilities
-									</h3>
-									<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground line-clamp-3">
-										Detailed overviews of our laboratories, libraries, spaces, and digital infrastructure across the campus.
-									</p>
-									<span className="mt-auto pt-6 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
-										Tour facilities
-										<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-									</span>
-								</Link>
-
-								<Link to="/about" className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
-									<div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 sm:h-14 sm:w-14">
-										<Info className="h-6 w-6 text-accent" aria-hidden="true" />
-									</div>
-									<p className="t-eyebrow mt-6">The Institution</p>
-									<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
-										About Everest
-									</h3>
-									<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground line-clamp-3">
-										Our history, guiding principles, and the structural vision that builds the foundation of our institution.
-									</p>
-									<span className="mt-auto pt-6 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
-										Read about us
-										<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-									</span>
-								</Link>
+								{rows(discover, "cards").map((card, i) => {
+									const href = str(card, "href", "/");
+									const Icon = DISCOVER_ICONS[href] ?? Info;
+									return (
+										<Link key={i} to={href as never} className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
+											<div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 sm:h-14 sm:w-14">
+												<Icon className="h-6 w-6 text-accent" aria-hidden="true" />
+											</div>
+											<p className="t-eyebrow mt-6">{str(card, "eyebrow")}</p>
+											<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
+												{str(card, "title")}
+											</h3>
+											<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground line-clamp-3">
+												{str(card, "body")}
+											</p>
+											<span className="mt-auto pt-6 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
+												{str(card, "ctaLabel", "Learn more")}
+												<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+											</span>
+										</Link>
+									);
+								})}
 							</div>
+							</CmsSectionBox>
 						</div>
 
 						{/* Gallery */}
 						<div className="mb-32">
 							<SectionHeading
-								eyebrow="Campus Life"
-								title="Gallery Highlights"
-								description="Moments captured around the school grounds and during major events."
+								eyebrow={str(headings, "galleryEyebrow", "Campus Life")}
+								title={str(headings, "galleryTitle", "Gallery Highlights")}
+								description={str(headings, "galleryDesc", "Moments captured around the school grounds and during major events.")}
 							/>
 							<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 								{albums.slice(0, 3).map((album) => (
@@ -256,9 +252,9 @@ export default function LandingPage() {
 						{/* Latest Updates */}
 						<div className="mb-32">
 							<SectionHeading
-								eyebrow="Stay Updated"
-								title="Latest Announcements"
-								description="News and events from our community timeline."
+								eyebrow={str(headings, "updatesEyebrow", "Stay Updated")}
+								title={str(headings, "updatesTitle", "Latest Announcements")}
+								description={str(headings, "updatesDesc", "News and events from our community timeline.")}
 							/>
 							<div className="mt-12">
 								<FacebookCarousel />
@@ -268,9 +264,9 @@ export default function LandingPage() {
 						{/* Faculty */}
 						<div>
 							<SectionHeading
-								eyebrow="Leadership"
-								title="Our Faculty"
-								description="The educators leading our academic departments and steering the school's vision."
+								eyebrow={str(headings, "facultyEyebrow", "Leadership")}
+								title={str(headings, "facultyTitle", "Our Faculty")}
+								description={str(headings, "facultyDesc", "The educators leading our academic departments and steering the school's vision.")}
 							/>
 							<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 								{people.filter((p) => p.leadership).slice(0, 3).map((person) => (

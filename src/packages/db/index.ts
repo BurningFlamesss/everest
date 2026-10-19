@@ -1,17 +1,4 @@
-import { PrismaPg } from "@prisma/adapter-pg";
-import { serverEnv } from "#/env/server.ts";
-import { PrismaClient } from "../../generated/prisma/client.js";
-
-const adapter = new PrismaPg({
-	connectionString: serverEnv.DATABASE_URL,
-});
-
-declare global {
-	var __prisma: PrismaClient | undefined;
-}
-
-export const prisma = globalThis.__prisma || new PrismaClient({ adapter });
-
-if (process.env.NODE_ENV !== "production") {
-	globalThis.__prisma = prisma;
-}
+// Canonical Prisma client lives in `#/lib/prisma` (used by all app/server code).
+// This module re-exports it so both import paths resolve to the SAME instance,
+// avoiding two connection pools (and two `globalThis` caches) against Postgres.
+export { prisma, default } from "#/lib/prisma";

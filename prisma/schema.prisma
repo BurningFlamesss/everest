@@ -200,6 +200,20 @@ model Student {
 
   joinedAt DateTime?
 
+  // Extended profile fields (migrated from the legacy mock layer)
+  gender        String?
+  dateOfBirth   String?
+  phone         String?
+  address       String?
+  city          String?
+  bloodGroup    String?
+  nationality   String?
+  guardianName  String?
+  guardianPhone String?
+  guardianEmail String?
+  guardianRelation String?
+  houseName     String?
+
   status           StudentStatus     @default(ACTIVE)
   guardianStudents GuardianStudent[]
   guardianInvites  GuardianInvite[]
@@ -238,6 +252,15 @@ model Staff {
   department  String?
 
   joinedAt DateTime?
+
+  // Extended profile fields (migrated from the legacy mock layer)
+  phone          String?
+  qualification  String?
+  experienceYears Int?
+  employmentType String?  // full_time | part_time | contract
+  dateOfBirth    String?
+  address        String?
+  gender         String?
 
   status StaffStatus @default(ACTIVE)
 
@@ -506,6 +529,7 @@ enum WebsitePageKey {
   notices
   scholarship
   posts
+  course_finder
 }
 
 enum WebsitePageStatus {
@@ -543,6 +567,12 @@ enum BlockType {
   faculty_header
   faculty_leadership
   faculty_directory
+  landing_hero
+  landing_facts
+  discover_cards
+  chapters
+  department_list
+  landing_section_headings
 }
 
 model WebsitePage {
@@ -795,10 +825,23 @@ model CalendarEvent {
   endDate     DateTime
   category    String   // Holiday, Examination, General
   term        String?
+
+  // Extended fields (migrated from the legacy mock layer)
+  status           String  @default("scheduled") // draft | scheduled | ongoing | completed | cancelled
+  allDay           Boolean @default(true)
+  startTime        String?
+  endTime          String?
+  location         String?
+  coverImage       String?
+  organizerName    String?
+  registrationRequired Boolean @default(false)
+  capacity         Int?
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([startDate])
   @@index([category])
+  @@index([status])
   @@map("calendar_event")
 }

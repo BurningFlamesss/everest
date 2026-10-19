@@ -34,6 +34,18 @@ export type StudentMinAggregateOutputType = {
   grade: string | null
   section: string | null
   joinedAt: Date | null
+  gender: string | null
+  dateOfBirth: string | null
+  phone: string | null
+  address: string | null
+  city: string | null
+  bloodGroup: string | null
+  nationality: string | null
+  guardianName: string | null
+  guardianPhone: string | null
+  guardianEmail: string | null
+  guardianRelation: string | null
+  houseName: string | null
   status: $Enums.StudentStatus | null
   classId: string | null
   createdAt: Date | null
@@ -50,6 +62,18 @@ export type StudentMaxAggregateOutputType = {
   grade: string | null
   section: string | null
   joinedAt: Date | null
+  gender: string | null
+  dateOfBirth: string | null
+  phone: string | null
+  address: string | null
+  city: string | null
+  bloodGroup: string | null
+  nationality: string | null
+  guardianName: string | null
+  guardianPhone: string | null
+  guardianEmail: string | null
+  guardianRelation: string | null
+  houseName: string | null
   status: $Enums.StudentStatus | null
   classId: string | null
   createdAt: Date | null
@@ -66,6 +90,18 @@ export type StudentCountAggregateOutputType = {
   grade: number
   section: number
   joinedAt: number
+  gender: number
+  dateOfBirth: number
+  phone: number
+  address: number
+  city: number
+  bloodGroup: number
+  nationality: number
+  guardianName: number
+  guardianPhone: number
+  guardianEmail: number
+  guardianRelation: number
+  houseName: number
   status: number
   classId: number
   createdAt: number
@@ -84,6 +120,18 @@ export type StudentMinAggregateInputType = {
   grade?: true
   section?: true
   joinedAt?: true
+  gender?: true
+  dateOfBirth?: true
+  phone?: true
+  address?: true
+  city?: true
+  bloodGroup?: true
+  nationality?: true
+  guardianName?: true
+  guardianPhone?: true
+  guardianEmail?: true
+  guardianRelation?: true
+  houseName?: true
   status?: true
   classId?: true
   createdAt?: true
@@ -100,6 +148,18 @@ export type StudentMaxAggregateInputType = {
   grade?: true
   section?: true
   joinedAt?: true
+  gender?: true
+  dateOfBirth?: true
+  phone?: true
+  address?: true
+  city?: true
+  bloodGroup?: true
+  nationality?: true
+  guardianName?: true
+  guardianPhone?: true
+  guardianEmail?: true
+  guardianRelation?: true
+  houseName?: true
   status?: true
   classId?: true
   createdAt?: true
@@ -116,6 +176,18 @@ export type StudentCountAggregateInputType = {
   grade?: true
   section?: true
   joinedAt?: true
+  gender?: true
+  dateOfBirth?: true
+  phone?: true
+  address?: true
+  city?: true
+  bloodGroup?: true
+  nationality?: true
+  guardianName?: true
+  guardianPhone?: true
+  guardianEmail?: true
+  guardianRelation?: true
+  houseName?: true
   status?: true
   classId?: true
   createdAt?: true
@@ -205,6 +277,18 @@ export type StudentGroupByOutputType = {
   grade: string | null
   section: string | null
   joinedAt: Date | null
+  gender: string | null
+  dateOfBirth: string | null
+  phone: string | null
+  address: string | null
+  city: string | null
+  bloodGroup: string | null
+  nationality: string | null
+  guardianName: string | null
+  guardianPhone: string | null
+  guardianEmail: string | null
+  guardianRelation: string | null
+  houseName: string | null
   status: $Enums.StudentStatus
   classId: string | null
   createdAt: Date
@@ -242,6 +326,18 @@ export type StudentWhereInput = {
   grade?: Prisma.StringNullableFilter<"Student"> | string | null
   section?: Prisma.StringNullableFilter<"Student"> | string | null
   joinedAt?: Prisma.DateTimeNullableFilter<"Student"> | Date | string | null
+  gender?: Prisma.StringNullableFilter<"Student"> | string | null
+  dateOfBirth?: Prisma.StringNullableFilter<"Student"> | string | null
+  phone?: Prisma.StringNullableFilter<"Student"> | string | null
+  address?: Prisma.StringNullableFilter<"Student"> | string | null
+  city?: Prisma.StringNullableFilter<"Student"> | string | null
+  bloodGroup?: Prisma.StringNullableFilter<"Student"> | string | null
+  nationality?: Prisma.StringNullableFilter<"Student"> | string | null
+  guardianName?: Prisma.StringNullableFilter<"Student"> | string | null
+  guardianPhone?: Prisma.StringNullableFilter<"Student"> | string | null
+  guardianEmail?: Prisma.StringNullableFilter<"Student"> | string | null
+  guardianRelation?: Prisma.StringNullableFilter<"Student"> | string | null
+  houseName?: Prisma.StringNullableFilter<"Student"> | string | null
   status?: Prisma.EnumStudentStatusFilter<"Student"> | $Enums.StudentStatus
   classId?: Prisma.StringNullableFilter<"Student"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Student"> | Date | string
@@ -266,6 +362,18 @@ export type StudentOrderByWithRelationInput = {
   grade?: Prisma.SortOrderInput | Prisma.SortOrder
   section?: Prisma.SortOrderInput | Prisma.SortOrder
   joinedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  gender?: Prisma.SortOrderInput | Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrderInput | Prisma.SortOrder
+  nationality?: Prisma.SortOrderInput | Prisma.SortOrder
+  guardianName?: Prisma.SortOrderInput | Prisma.SortOrder
+  guardianPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  guardianEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  guardianRelation?: Prisma.SortOrderInput | Prisma.SortOrder
+  houseName?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   classId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -293,6 +401,18 @@ export type StudentWhereUniqueInput = Prisma.AtLeast<{
   grade?: Prisma.StringNullableFilter<"Student"> | string | null
   section?: Prisma.StringNullableFilter<"Student"> | string | null
   joinedAt?: Prisma.DateTimeNullableFilter<"Student"> | Date | string | null
+  gender?: Prisma.StringNullableFilter<"Student"> | string | null
+  dateOfBirth?: Prisma.StringNullableFilter<"Student"> | string | null
+  phone?: Prisma.StringNullableFilter<"Student"> | string | null
+  address?: Prisma.StringNullableFilter<"Student"> | string | null
+  city?: Prisma.StringNullableFilter<"Student"> | string | null
+  bloodGroup?: Prisma.StringNullableFilter<"Student"> | string | null
+  nationality?: Prisma.StringNullableFilter<"Student"> | string | null
+  guardianName?: Prisma.StringNullableFilter<"Student"> | string | null
+  guardianPhone?: Prisma.StringNullableFilter<"Student"> | string | null
+  guardianEmail?: Prisma.StringNullableFilter<"Student"> | string | null
+  guardianRelation?: Prisma.StringNullableFilter<"Student"> | string | null
+  houseName?: Prisma.StringNullableFilter<"Student"> | string | null
   status?: Prisma.EnumStudentStatusFilter<"Student"> | $Enums.StudentStatus
   classId?: Prisma.StringNullableFilter<"Student"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Student"> | Date | string
@@ -317,6 +437,18 @@ export type StudentOrderByWithAggregationInput = {
   grade?: Prisma.SortOrderInput | Prisma.SortOrder
   section?: Prisma.SortOrderInput | Prisma.SortOrder
   joinedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  gender?: Prisma.SortOrderInput | Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrderInput | Prisma.SortOrder
+  nationality?: Prisma.SortOrderInput | Prisma.SortOrder
+  guardianName?: Prisma.SortOrderInput | Prisma.SortOrder
+  guardianPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  guardianEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  guardianRelation?: Prisma.SortOrderInput | Prisma.SortOrder
+  houseName?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   classId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -339,6 +471,18 @@ export type StudentScalarWhereWithAggregatesInput = {
   grade?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
   section?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
   joinedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Student"> | Date | string | null
+  gender?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  dateOfBirth?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  phone?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  address?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  city?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  bloodGroup?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  nationality?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  guardianName?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  guardianPhone?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  guardianEmail?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  guardianRelation?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  houseName?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
   status?: Prisma.EnumStudentStatusWithAggregatesFilter<"Student"> | $Enums.StudentStatus
   classId?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Student"> | Date | string
@@ -352,6 +496,18 @@ export type StudentCreateInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -375,6 +531,18 @@ export type StudentUncheckedCreateInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   classId?: string | null
   createdAt?: Date | string
@@ -392,6 +560,18 @@ export type StudentUpdateInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -415,6 +595,18 @@ export type StudentUncheckedUpdateInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -435,6 +627,18 @@ export type StudentCreateManyInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   classId?: string | null
   createdAt?: Date | string
@@ -448,6 +652,18 @@ export type StudentUpdateManyMutationInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -463,6 +679,18 @@ export type StudentUncheckedUpdateManyInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -494,6 +722,18 @@ export type StudentCountOrderByAggregateInput = {
   grade?: Prisma.SortOrder
   section?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrder
+  nationality?: Prisma.SortOrder
+  guardianName?: Prisma.SortOrder
+  guardianPhone?: Prisma.SortOrder
+  guardianEmail?: Prisma.SortOrder
+  guardianRelation?: Prisma.SortOrder
+  houseName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -510,6 +750,18 @@ export type StudentMaxOrderByAggregateInput = {
   grade?: Prisma.SortOrder
   section?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrder
+  nationality?: Prisma.SortOrder
+  guardianName?: Prisma.SortOrder
+  guardianPhone?: Prisma.SortOrder
+  guardianEmail?: Prisma.SortOrder
+  guardianRelation?: Prisma.SortOrder
+  houseName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -526,6 +778,18 @@ export type StudentMinOrderByAggregateInput = {
   grade?: Prisma.SortOrder
   section?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  bloodGroup?: Prisma.SortOrder
+  nationality?: Prisma.SortOrder
+  guardianName?: Prisma.SortOrder
+  guardianPhone?: Prisma.SortOrder
+  guardianEmail?: Prisma.SortOrder
+  guardianRelation?: Prisma.SortOrder
+  houseName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -766,6 +1030,18 @@ export type StudentCreateWithoutUserInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -787,6 +1063,18 @@ export type StudentUncheckedCreateWithoutUserInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   classId?: string | null
   createdAt?: Date | string
@@ -820,6 +1108,18 @@ export type StudentUpdateWithoutUserInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -841,6 +1141,18 @@ export type StudentUncheckedUpdateWithoutUserInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -858,6 +1170,18 @@ export type StudentCreateWithoutOrganizationInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -879,6 +1203,18 @@ export type StudentUncheckedCreateWithoutOrganizationInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   classId?: string | null
   createdAt?: Date | string
@@ -928,6 +1264,18 @@ export type StudentScalarWhereInput = {
   grade?: Prisma.StringNullableFilter<"Student"> | string | null
   section?: Prisma.StringNullableFilter<"Student"> | string | null
   joinedAt?: Prisma.DateTimeNullableFilter<"Student"> | Date | string | null
+  gender?: Prisma.StringNullableFilter<"Student"> | string | null
+  dateOfBirth?: Prisma.StringNullableFilter<"Student"> | string | null
+  phone?: Prisma.StringNullableFilter<"Student"> | string | null
+  address?: Prisma.StringNullableFilter<"Student"> | string | null
+  city?: Prisma.StringNullableFilter<"Student"> | string | null
+  bloodGroup?: Prisma.StringNullableFilter<"Student"> | string | null
+  nationality?: Prisma.StringNullableFilter<"Student"> | string | null
+  guardianName?: Prisma.StringNullableFilter<"Student"> | string | null
+  guardianPhone?: Prisma.StringNullableFilter<"Student"> | string | null
+  guardianEmail?: Prisma.StringNullableFilter<"Student"> | string | null
+  guardianRelation?: Prisma.StringNullableFilter<"Student"> | string | null
+  houseName?: Prisma.StringNullableFilter<"Student"> | string | null
   status?: Prisma.EnumStudentStatusFilter<"Student"> | $Enums.StudentStatus
   classId?: Prisma.StringNullableFilter<"Student"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Student"> | Date | string
@@ -941,6 +1289,18 @@ export type StudentCreateWithoutBranchInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -962,6 +1322,18 @@ export type StudentUncheckedCreateWithoutBranchInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   classId?: string | null
   createdAt?: Date | string
@@ -1005,6 +1377,18 @@ export type StudentCreateWithoutGuardianStudentsInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1027,6 +1411,18 @@ export type StudentUncheckedCreateWithoutGuardianStudentsInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   classId?: string | null
   createdAt?: Date | string
@@ -1059,6 +1455,18 @@ export type StudentUpdateWithoutGuardianStudentsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1081,6 +1489,18 @@ export type StudentUncheckedUpdateWithoutGuardianStudentsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1097,6 +1517,18 @@ export type StudentCreateWithoutGuardianInvitesInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1119,6 +1551,18 @@ export type StudentUncheckedCreateWithoutGuardianInvitesInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   classId?: string | null
   createdAt?: Date | string
@@ -1151,6 +1595,18 @@ export type StudentUpdateWithoutGuardianInvitesInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1173,6 +1629,18 @@ export type StudentUncheckedUpdateWithoutGuardianInvitesInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1189,6 +1657,18 @@ export type StudentCreateWithoutClassInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1211,6 +1691,18 @@ export type StudentUncheckedCreateWithoutClassInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1253,6 +1745,18 @@ export type StudentCreateWithoutAttendanceInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1275,6 +1779,18 @@ export type StudentUncheckedCreateWithoutAttendanceInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   classId?: string | null
   createdAt?: Date | string
@@ -1307,6 +1823,18 @@ export type StudentUpdateWithoutAttendanceInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1329,6 +1857,18 @@ export type StudentUncheckedUpdateWithoutAttendanceInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1345,6 +1885,18 @@ export type StudentCreateWithoutInvoicesInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1367,6 +1919,18 @@ export type StudentUncheckedCreateWithoutInvoicesInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   classId?: string | null
   createdAt?: Date | string
@@ -1399,6 +1963,18 @@ export type StudentUpdateWithoutInvoicesInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1421,6 +1997,18 @@ export type StudentUncheckedUpdateWithoutInvoicesInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1439,6 +2027,18 @@ export type StudentCreateManyOrganizationInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   classId?: string | null
   createdAt?: Date | string
@@ -1452,6 +2052,18 @@ export type StudentUpdateWithoutOrganizationInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1473,6 +2085,18 @@ export type StudentUncheckedUpdateWithoutOrganizationInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1492,6 +2116,18 @@ export type StudentUncheckedUpdateManyWithoutOrganizationInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1507,6 +2143,18 @@ export type StudentCreateManyBranchInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   classId?: string | null
   createdAt?: Date | string
@@ -1520,6 +2168,18 @@ export type StudentUpdateWithoutBranchInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1541,6 +2201,18 @@ export type StudentUncheckedUpdateWithoutBranchInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1560,6 +2232,18 @@ export type StudentUncheckedUpdateManyWithoutBranchInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1576,6 +2260,18 @@ export type StudentCreateManyClassInput = {
   grade?: string | null
   section?: string | null
   joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
   status?: $Enums.StudentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1588,6 +2284,18 @@ export type StudentUpdateWithoutClassInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1610,6 +2318,18 @@ export type StudentUncheckedUpdateWithoutClassInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1629,6 +2349,18 @@ export type StudentUncheckedUpdateManyWithoutClassInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1702,6 +2434,18 @@ export type StudentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   grade?: boolean
   section?: boolean
   joinedAt?: boolean
+  gender?: boolean
+  dateOfBirth?: boolean
+  phone?: boolean
+  address?: boolean
+  city?: boolean
+  bloodGroup?: boolean
+  nationality?: boolean
+  guardianName?: boolean
+  guardianPhone?: boolean
+  guardianEmail?: boolean
+  guardianRelation?: boolean
+  houseName?: boolean
   status?: boolean
   classId?: boolean
   createdAt?: boolean
@@ -1727,6 +2471,18 @@ export type StudentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   grade?: boolean
   section?: boolean
   joinedAt?: boolean
+  gender?: boolean
+  dateOfBirth?: boolean
+  phone?: boolean
+  address?: boolean
+  city?: boolean
+  bloodGroup?: boolean
+  nationality?: boolean
+  guardianName?: boolean
+  guardianPhone?: boolean
+  guardianEmail?: boolean
+  guardianRelation?: boolean
+  houseName?: boolean
   status?: boolean
   classId?: boolean
   createdAt?: boolean
@@ -1747,6 +2503,18 @@ export type StudentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   grade?: boolean
   section?: boolean
   joinedAt?: boolean
+  gender?: boolean
+  dateOfBirth?: boolean
+  phone?: boolean
+  address?: boolean
+  city?: boolean
+  bloodGroup?: boolean
+  nationality?: boolean
+  guardianName?: boolean
+  guardianPhone?: boolean
+  guardianEmail?: boolean
+  guardianRelation?: boolean
+  houseName?: boolean
   status?: boolean
   classId?: boolean
   createdAt?: boolean
@@ -1767,13 +2535,25 @@ export type StudentSelectScalar = {
   grade?: boolean
   section?: boolean
   joinedAt?: boolean
+  gender?: boolean
+  dateOfBirth?: boolean
+  phone?: boolean
+  address?: boolean
+  city?: boolean
+  bloodGroup?: boolean
+  nationality?: boolean
+  guardianName?: boolean
+  guardianPhone?: boolean
+  guardianEmail?: boolean
+  guardianRelation?: boolean
+  houseName?: boolean
   status?: boolean
   classId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type StudentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "branchId" | "organizationId" | "admissionNo" | "rollNo" | "grade" | "section" | "joinedAt" | "status" | "classId" | "createdAt" | "updatedAt", ExtArgs["result"]["student"]>
+export type StudentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "branchId" | "organizationId" | "admissionNo" | "rollNo" | "grade" | "section" | "joinedAt" | "gender" | "dateOfBirth" | "phone" | "address" | "city" | "bloodGroup" | "nationality" | "guardianName" | "guardianPhone" | "guardianEmail" | "guardianRelation" | "houseName" | "status" | "classId" | "createdAt" | "updatedAt", ExtArgs["result"]["student"]>
 export type StudentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
@@ -1820,6 +2600,18 @@ export type $StudentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     grade: string | null
     section: string | null
     joinedAt: Date | null
+    gender: string | null
+    dateOfBirth: string | null
+    phone: string | null
+    address: string | null
+    city: string | null
+    bloodGroup: string | null
+    nationality: string | null
+    guardianName: string | null
+    guardianPhone: string | null
+    guardianEmail: string | null
+    guardianRelation: string | null
+    houseName: string | null
     status: $Enums.StudentStatus
     classId: string | null
     createdAt: Date
@@ -2264,6 +3056,18 @@ export interface StudentFieldRefs {
   readonly grade: Prisma.FieldRef<"Student", 'String'>
   readonly section: Prisma.FieldRef<"Student", 'String'>
   readonly joinedAt: Prisma.FieldRef<"Student", 'DateTime'>
+  readonly gender: Prisma.FieldRef<"Student", 'String'>
+  readonly dateOfBirth: Prisma.FieldRef<"Student", 'String'>
+  readonly phone: Prisma.FieldRef<"Student", 'String'>
+  readonly address: Prisma.FieldRef<"Student", 'String'>
+  readonly city: Prisma.FieldRef<"Student", 'String'>
+  readonly bloodGroup: Prisma.FieldRef<"Student", 'String'>
+  readonly nationality: Prisma.FieldRef<"Student", 'String'>
+  readonly guardianName: Prisma.FieldRef<"Student", 'String'>
+  readonly guardianPhone: Prisma.FieldRef<"Student", 'String'>
+  readonly guardianEmail: Prisma.FieldRef<"Student", 'String'>
+  readonly guardianRelation: Prisma.FieldRef<"Student", 'String'>
+  readonly houseName: Prisma.FieldRef<"Student", 'String'>
   readonly status: Prisma.FieldRef<"Student", 'StudentStatus'>
   readonly classId: Prisma.FieldRef<"Student", 'String'>
   readonly createdAt: Prisma.FieldRef<"Student", 'DateTime'>
