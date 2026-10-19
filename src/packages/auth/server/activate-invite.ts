@@ -49,6 +49,15 @@ export const activateInvite = createServerFn()
 
 		const hashedPassword = await hashPassword(password);
 
+		const payload = (invite.payload ?? {}) as {
+			grade?: string;
+			section?: string;
+			rollNo?: string;
+			designation?: string;
+			department?: string;
+			employeeId?: string;
+		};
+
 		await prisma.$transaction([
 			prisma.account.create({
 				data: {
@@ -68,6 +77,31 @@ export const activateInvite = createServerFn()
 					emailVerified: true,
 				},
 			}),
+			// Apply any pending profile fields captured at invite time.
+			...(invite.type === "STUDENT"
+				? [
+						prisma.student.updateMany({
+							where: { userId: user.id },
+							data: {
+								grade: payload.grade,
+								section: payload.section,
+								rollNo: payload.rollNo,
+							},
+						}),
+					]
+				: []),
+			...(invite.type === "STAFF"
+				? [
+						prisma.staff.updateMany({
+							where: { userId: user.id },
+							data: {
+								designation: payload.designation,
+								department: payload.department,
+								employeeId: payload.employeeId,
+							},
+						}),
+					]
+				: []),
 			prisma.invite.update({
 				where: { id: invite.id },
 				data: {

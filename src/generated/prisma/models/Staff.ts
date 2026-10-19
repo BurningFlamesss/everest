@@ -233,6 +233,8 @@ export type StaffWhereInput = {
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   branch?: Prisma.XOR<Prisma.BranchScalarRelationFilter, Prisma.BranchWhereInput>
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  taughtClasses?: Prisma.SchoolClassListRelationFilter
+  attendance?: Prisma.AttendanceRecordListRelationFilter
 }
 
 export type StaffOrderByWithRelationInput = {
@@ -250,6 +252,8 @@ export type StaffOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   branch?: Prisma.BranchOrderByWithRelationInput
   organization?: Prisma.OrganizationOrderByWithRelationInput
+  taughtClasses?: Prisma.SchoolClassOrderByRelationAggregateInput
+  attendance?: Prisma.AttendanceRecordOrderByRelationAggregateInput
 }
 
 export type StaffWhereUniqueInput = Prisma.AtLeast<{
@@ -270,6 +274,8 @@ export type StaffWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   branch?: Prisma.XOR<Prisma.BranchScalarRelationFilter, Prisma.BranchWhereInput>
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  taughtClasses?: Prisma.SchoolClassListRelationFilter
+  attendance?: Prisma.AttendanceRecordListRelationFilter
 }, "id" | "userId">
 
 export type StaffOrderByWithAggregationInput = {
@@ -318,6 +324,8 @@ export type StaffCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutStaffInput
   branch: Prisma.BranchCreateNestedOneWithoutStaffsInput
   organization: Prisma.OrganizationCreateNestedOneWithoutStaffsInput
+  taughtClasses?: Prisma.SchoolClassCreateNestedManyWithoutClassTeacherInput
+  attendance?: Prisma.AttendanceRecordCreateNestedManyWithoutStaffInput
 }
 
 export type StaffUncheckedCreateInput = {
@@ -332,6 +340,8 @@ export type StaffUncheckedCreateInput = {
   status?: $Enums.StaffStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  taughtClasses?: Prisma.SchoolClassUncheckedCreateNestedManyWithoutClassTeacherInput
+  attendance?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutStaffInput
 }
 
 export type StaffUpdateInput = {
@@ -346,6 +356,8 @@ export type StaffUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutStaffNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutStaffsNestedInput
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutStaffsNestedInput
+  taughtClasses?: Prisma.SchoolClassUpdateManyWithoutClassTeacherNestedInput
+  attendance?: Prisma.AttendanceRecordUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffUncheckedUpdateInput = {
@@ -360,6 +372,8 @@ export type StaffUncheckedUpdateInput = {
   status?: Prisma.EnumStaffStatusFieldUpdateOperationsInput | $Enums.StaffStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  taughtClasses?: Prisma.SchoolClassUncheckedUpdateManyWithoutClassTeacherNestedInput
+  attendance?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffCreateManyInput = {
@@ -578,6 +592,38 @@ export type EnumStaffStatusFieldUpdateOperationsInput = {
   set?: $Enums.StaffStatus
 }
 
+export type StaffCreateNestedOneWithoutTaughtClassesInput = {
+  create?: Prisma.XOR<Prisma.StaffCreateWithoutTaughtClassesInput, Prisma.StaffUncheckedCreateWithoutTaughtClassesInput>
+  connectOrCreate?: Prisma.StaffCreateOrConnectWithoutTaughtClassesInput
+  connect?: Prisma.StaffWhereUniqueInput
+}
+
+export type StaffUpdateOneWithoutTaughtClassesNestedInput = {
+  create?: Prisma.XOR<Prisma.StaffCreateWithoutTaughtClassesInput, Prisma.StaffUncheckedCreateWithoutTaughtClassesInput>
+  connectOrCreate?: Prisma.StaffCreateOrConnectWithoutTaughtClassesInput
+  upsert?: Prisma.StaffUpsertWithoutTaughtClassesInput
+  disconnect?: Prisma.StaffWhereInput | boolean
+  delete?: Prisma.StaffWhereInput | boolean
+  connect?: Prisma.StaffWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StaffUpdateToOneWithWhereWithoutTaughtClassesInput, Prisma.StaffUpdateWithoutTaughtClassesInput>, Prisma.StaffUncheckedUpdateWithoutTaughtClassesInput>
+}
+
+export type StaffCreateNestedOneWithoutAttendanceInput = {
+  create?: Prisma.XOR<Prisma.StaffCreateWithoutAttendanceInput, Prisma.StaffUncheckedCreateWithoutAttendanceInput>
+  connectOrCreate?: Prisma.StaffCreateOrConnectWithoutAttendanceInput
+  connect?: Prisma.StaffWhereUniqueInput
+}
+
+export type StaffUpdateOneWithoutAttendanceNestedInput = {
+  create?: Prisma.XOR<Prisma.StaffCreateWithoutAttendanceInput, Prisma.StaffUncheckedCreateWithoutAttendanceInput>
+  connectOrCreate?: Prisma.StaffCreateOrConnectWithoutAttendanceInput
+  upsert?: Prisma.StaffUpsertWithoutAttendanceInput
+  disconnect?: Prisma.StaffWhereInput | boolean
+  delete?: Prisma.StaffWhereInput | boolean
+  connect?: Prisma.StaffWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StaffUpdateToOneWithWhereWithoutAttendanceInput, Prisma.StaffUpdateWithoutAttendanceInput>, Prisma.StaffUncheckedUpdateWithoutAttendanceInput>
+}
+
 export type StaffCreateWithoutUserInput = {
   id?: string
   employeeId?: string | null
@@ -589,6 +635,8 @@ export type StaffCreateWithoutUserInput = {
   updatedAt?: Date | string
   branch: Prisma.BranchCreateNestedOneWithoutStaffsInput
   organization: Prisma.OrganizationCreateNestedOneWithoutStaffsInput
+  taughtClasses?: Prisma.SchoolClassCreateNestedManyWithoutClassTeacherInput
+  attendance?: Prisma.AttendanceRecordCreateNestedManyWithoutStaffInput
 }
 
 export type StaffUncheckedCreateWithoutUserInput = {
@@ -602,6 +650,8 @@ export type StaffUncheckedCreateWithoutUserInput = {
   status?: $Enums.StaffStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  taughtClasses?: Prisma.SchoolClassUncheckedCreateNestedManyWithoutClassTeacherInput
+  attendance?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutStaffInput
 }
 
 export type StaffCreateOrConnectWithoutUserInput = {
@@ -631,6 +681,8 @@ export type StaffUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneRequiredWithoutStaffsNestedInput
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutStaffsNestedInput
+  taughtClasses?: Prisma.SchoolClassUpdateManyWithoutClassTeacherNestedInput
+  attendance?: Prisma.AttendanceRecordUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffUncheckedUpdateWithoutUserInput = {
@@ -644,6 +696,8 @@ export type StaffUncheckedUpdateWithoutUserInput = {
   status?: Prisma.EnumStaffStatusFieldUpdateOperationsInput | $Enums.StaffStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  taughtClasses?: Prisma.SchoolClassUncheckedUpdateManyWithoutClassTeacherNestedInput
+  attendance?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffCreateWithoutOrganizationInput = {
@@ -657,6 +711,8 @@ export type StaffCreateWithoutOrganizationInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutStaffInput
   branch: Prisma.BranchCreateNestedOneWithoutStaffsInput
+  taughtClasses?: Prisma.SchoolClassCreateNestedManyWithoutClassTeacherInput
+  attendance?: Prisma.AttendanceRecordCreateNestedManyWithoutStaffInput
 }
 
 export type StaffUncheckedCreateWithoutOrganizationInput = {
@@ -670,6 +726,8 @@ export type StaffUncheckedCreateWithoutOrganizationInput = {
   status?: $Enums.StaffStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  taughtClasses?: Prisma.SchoolClassUncheckedCreateNestedManyWithoutClassTeacherInput
+  attendance?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutStaffInput
 }
 
 export type StaffCreateOrConnectWithoutOrganizationInput = {
@@ -726,6 +784,8 @@ export type StaffCreateWithoutBranchInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutStaffInput
   organization: Prisma.OrganizationCreateNestedOneWithoutStaffsInput
+  taughtClasses?: Prisma.SchoolClassCreateNestedManyWithoutClassTeacherInput
+  attendance?: Prisma.AttendanceRecordCreateNestedManyWithoutStaffInput
 }
 
 export type StaffUncheckedCreateWithoutBranchInput = {
@@ -739,6 +799,8 @@ export type StaffUncheckedCreateWithoutBranchInput = {
   status?: $Enums.StaffStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  taughtClasses?: Prisma.SchoolClassUncheckedCreateNestedManyWithoutClassTeacherInput
+  attendance?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutStaffInput
 }
 
 export type StaffCreateOrConnectWithoutBranchInput = {
@@ -767,6 +829,158 @@ export type StaffUpdateManyWithWhereWithoutBranchInput = {
   data: Prisma.XOR<Prisma.StaffUpdateManyMutationInput, Prisma.StaffUncheckedUpdateManyWithoutBranchInput>
 }
 
+export type StaffCreateWithoutTaughtClassesInput = {
+  id?: string
+  employeeId?: string | null
+  designation: string
+  department?: string | null
+  joinedAt?: Date | string | null
+  status?: $Enums.StaffStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutStaffInput
+  branch: Prisma.BranchCreateNestedOneWithoutStaffsInput
+  organization: Prisma.OrganizationCreateNestedOneWithoutStaffsInput
+  attendance?: Prisma.AttendanceRecordCreateNestedManyWithoutStaffInput
+}
+
+export type StaffUncheckedCreateWithoutTaughtClassesInput = {
+  id?: string
+  userId: string
+  branchId: string
+  organizationId: string
+  employeeId?: string | null
+  designation: string
+  department?: string | null
+  joinedAt?: Date | string | null
+  status?: $Enums.StaffStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attendance?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutStaffInput
+}
+
+export type StaffCreateOrConnectWithoutTaughtClassesInput = {
+  where: Prisma.StaffWhereUniqueInput
+  create: Prisma.XOR<Prisma.StaffCreateWithoutTaughtClassesInput, Prisma.StaffUncheckedCreateWithoutTaughtClassesInput>
+}
+
+export type StaffUpsertWithoutTaughtClassesInput = {
+  update: Prisma.XOR<Prisma.StaffUpdateWithoutTaughtClassesInput, Prisma.StaffUncheckedUpdateWithoutTaughtClassesInput>
+  create: Prisma.XOR<Prisma.StaffCreateWithoutTaughtClassesInput, Prisma.StaffUncheckedCreateWithoutTaughtClassesInput>
+  where?: Prisma.StaffWhereInput
+}
+
+export type StaffUpdateToOneWithWhereWithoutTaughtClassesInput = {
+  where?: Prisma.StaffWhereInput
+  data: Prisma.XOR<Prisma.StaffUpdateWithoutTaughtClassesInput, Prisma.StaffUncheckedUpdateWithoutTaughtClassesInput>
+}
+
+export type StaffUpdateWithoutTaughtClassesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStaffStatusFieldUpdateOperationsInput | $Enums.StaffStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutStaffNestedInput
+  branch?: Prisma.BranchUpdateOneRequiredWithoutStaffsNestedInput
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutStaffsNestedInput
+  attendance?: Prisma.AttendanceRecordUpdateManyWithoutStaffNestedInput
+}
+
+export type StaffUncheckedUpdateWithoutTaughtClassesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStaffStatusFieldUpdateOperationsInput | $Enums.StaffStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attendance?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutStaffNestedInput
+}
+
+export type StaffCreateWithoutAttendanceInput = {
+  id?: string
+  employeeId?: string | null
+  designation: string
+  department?: string | null
+  joinedAt?: Date | string | null
+  status?: $Enums.StaffStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutStaffInput
+  branch: Prisma.BranchCreateNestedOneWithoutStaffsInput
+  organization: Prisma.OrganizationCreateNestedOneWithoutStaffsInput
+  taughtClasses?: Prisma.SchoolClassCreateNestedManyWithoutClassTeacherInput
+}
+
+export type StaffUncheckedCreateWithoutAttendanceInput = {
+  id?: string
+  userId: string
+  branchId: string
+  organizationId: string
+  employeeId?: string | null
+  designation: string
+  department?: string | null
+  joinedAt?: Date | string | null
+  status?: $Enums.StaffStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  taughtClasses?: Prisma.SchoolClassUncheckedCreateNestedManyWithoutClassTeacherInput
+}
+
+export type StaffCreateOrConnectWithoutAttendanceInput = {
+  where: Prisma.StaffWhereUniqueInput
+  create: Prisma.XOR<Prisma.StaffCreateWithoutAttendanceInput, Prisma.StaffUncheckedCreateWithoutAttendanceInput>
+}
+
+export type StaffUpsertWithoutAttendanceInput = {
+  update: Prisma.XOR<Prisma.StaffUpdateWithoutAttendanceInput, Prisma.StaffUncheckedUpdateWithoutAttendanceInput>
+  create: Prisma.XOR<Prisma.StaffCreateWithoutAttendanceInput, Prisma.StaffUncheckedCreateWithoutAttendanceInput>
+  where?: Prisma.StaffWhereInput
+}
+
+export type StaffUpdateToOneWithWhereWithoutAttendanceInput = {
+  where?: Prisma.StaffWhereInput
+  data: Prisma.XOR<Prisma.StaffUpdateWithoutAttendanceInput, Prisma.StaffUncheckedUpdateWithoutAttendanceInput>
+}
+
+export type StaffUpdateWithoutAttendanceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStaffStatusFieldUpdateOperationsInput | $Enums.StaffStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutStaffNestedInput
+  branch?: Prisma.BranchUpdateOneRequiredWithoutStaffsNestedInput
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutStaffsNestedInput
+  taughtClasses?: Prisma.SchoolClassUpdateManyWithoutClassTeacherNestedInput
+}
+
+export type StaffUncheckedUpdateWithoutAttendanceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStaffStatusFieldUpdateOperationsInput | $Enums.StaffStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  taughtClasses?: Prisma.SchoolClassUncheckedUpdateManyWithoutClassTeacherNestedInput
+}
+
 export type StaffCreateManyOrganizationInput = {
   id?: string
   userId: string
@@ -791,6 +1005,8 @@ export type StaffUpdateWithoutOrganizationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutStaffNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutStaffsNestedInput
+  taughtClasses?: Prisma.SchoolClassUpdateManyWithoutClassTeacherNestedInput
+  attendance?: Prisma.AttendanceRecordUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffUncheckedUpdateWithoutOrganizationInput = {
@@ -804,6 +1020,8 @@ export type StaffUncheckedUpdateWithoutOrganizationInput = {
   status?: Prisma.EnumStaffStatusFieldUpdateOperationsInput | $Enums.StaffStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  taughtClasses?: Prisma.SchoolClassUncheckedUpdateManyWithoutClassTeacherNestedInput
+  attendance?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffUncheckedUpdateManyWithoutOrganizationInput = {
@@ -843,6 +1061,8 @@ export type StaffUpdateWithoutBranchInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutStaffNestedInput
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutStaffsNestedInput
+  taughtClasses?: Prisma.SchoolClassUpdateManyWithoutClassTeacherNestedInput
+  attendance?: Prisma.AttendanceRecordUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffUncheckedUpdateWithoutBranchInput = {
@@ -856,6 +1076,8 @@ export type StaffUncheckedUpdateWithoutBranchInput = {
   status?: Prisma.EnumStaffStatusFieldUpdateOperationsInput | $Enums.StaffStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  taughtClasses?: Prisma.SchoolClassUncheckedUpdateManyWithoutClassTeacherNestedInput
+  attendance?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffUncheckedUpdateManyWithoutBranchInput = {
@@ -871,6 +1093,44 @@ export type StaffUncheckedUpdateManyWithoutBranchInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type StaffCountOutputType
+ */
+
+export type StaffCountOutputType = {
+  taughtClasses: number
+  attendance: number
+}
+
+export type StaffCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  taughtClasses?: boolean | StaffCountOutputTypeCountTaughtClassesArgs
+  attendance?: boolean | StaffCountOutputTypeCountAttendanceArgs
+}
+
+/**
+ * StaffCountOutputType without action
+ */
+export type StaffCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StaffCountOutputType
+   */
+  select?: Prisma.StaffCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * StaffCountOutputType without action
+ */
+export type StaffCountOutputTypeCountTaughtClassesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SchoolClassWhereInput
+}
+
+/**
+ * StaffCountOutputType without action
+ */
+export type StaffCountOutputTypeCountAttendanceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceRecordWhereInput
+}
 
 
 export type StaffSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -888,6 +1148,9 @@ export type StaffSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  taughtClasses?: boolean | Prisma.Staff$taughtClassesArgs<ExtArgs>
+  attendance?: boolean | Prisma.Staff$attendanceArgs<ExtArgs>
+  _count?: boolean | Prisma.StaffCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["staff"]>
 
 export type StaffSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -943,6 +1206,9 @@ export type StaffInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  taughtClasses?: boolean | Prisma.Staff$taughtClassesArgs<ExtArgs>
+  attendance?: boolean | Prisma.Staff$attendanceArgs<ExtArgs>
+  _count?: boolean | Prisma.StaffCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type StaffIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -961,6 +1227,8 @@ export type $StaffPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     user: Prisma.$UserPayload<ExtArgs>
     branch: Prisma.$BranchPayload<ExtArgs>
     organization: Prisma.$OrganizationPayload<ExtArgs>
+    taughtClasses: Prisma.$SchoolClassPayload<ExtArgs>[]
+    attendance: Prisma.$AttendanceRecordPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1371,6 +1639,8 @@ export interface Prisma__StaffClient<T, Null = never, ExtArgs extends runtime.Ty
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   branch<T extends Prisma.BranchDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BranchDefaultArgs<ExtArgs>>): Prisma.Prisma__BranchClient<runtime.Types.Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  taughtClasses<T extends Prisma.Staff$taughtClassesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Staff$taughtClassesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SchoolClassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attendance<T extends Prisma.Staff$attendanceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Staff$attendanceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendanceRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1809,6 +2079,54 @@ export type StaffDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Staff to delete.
    */
   limit?: number
+}
+
+/**
+ * Staff.taughtClasses
+ */
+export type Staff$taughtClassesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SchoolClass
+   */
+  select?: Prisma.SchoolClassSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SchoolClass
+   */
+  omit?: Prisma.SchoolClassOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SchoolClassInclude<ExtArgs> | null
+  where?: Prisma.SchoolClassWhereInput
+  orderBy?: Prisma.SchoolClassOrderByWithRelationInput | Prisma.SchoolClassOrderByWithRelationInput[]
+  cursor?: Prisma.SchoolClassWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SchoolClassScalarFieldEnum | Prisma.SchoolClassScalarFieldEnum[]
+}
+
+/**
+ * Staff.attendance
+ */
+export type Staff$attendanceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AttendanceRecord
+   */
+  select?: Prisma.AttendanceRecordSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AttendanceRecord
+   */
+  omit?: Prisma.AttendanceRecordOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceRecordInclude<ExtArgs> | null
+  where?: Prisma.AttendanceRecordWhereInput
+  orderBy?: Prisma.AttendanceRecordOrderByWithRelationInput | Prisma.AttendanceRecordOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceRecordWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceRecordScalarFieldEnum | Prisma.AttendanceRecordScalarFieldEnum[]
 }
 
 /**

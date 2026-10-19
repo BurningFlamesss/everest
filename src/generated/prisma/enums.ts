@@ -48,6 +48,45 @@ export const InviteType = {
 export type InviteType = (typeof InviteType)[keyof typeof InviteType]
 
 
+export const AttendancePersonType = {
+  STUDENT: 'STUDENT',
+  STAFF: 'STAFF'
+} as const
+
+export type AttendancePersonType = (typeof AttendancePersonType)[keyof typeof AttendancePersonType]
+
+
+export const AttendanceState = {
+  PRESENT: 'PRESENT',
+  ABSENT: 'ABSENT',
+  LATE: 'LATE',
+  EXCUSED: 'EXCUSED'
+} as const
+
+export type AttendanceState = (typeof AttendanceState)[keyof typeof AttendanceState]
+
+
+export const ApplicationStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  WAITLISTED: 'WAITLISTED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type ApplicationStatus = (typeof ApplicationStatus)[keyof typeof ApplicationStatus]
+
+
+export const InvoiceStatus = {
+  PAID: 'PAID',
+  PARTIAL: 'PARTIAL',
+  UNPAID: 'UNPAID',
+  OVERDUE: 'OVERDUE',
+  VOID: 'VOID'
+} as const
+
+export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus]
+
+
 export const WebsitePageKey = {
   home: 'home',
   about: 'about',

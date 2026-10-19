@@ -124,15 +124,19 @@ function LoginForm({ fields }: { fields: Record<string, unknown> }) {
         if (result.data?.user) {
 			signedIn = true;
 			userName = result.data.user.name ?? values.email.split("@")[0];
-			isSuperOrAdmin = result.data.user.role === "superadmin" || result.data.user.role === "admin";
+			const userRole = (result.data.user as { role?: string }).role;
+			isSuperOrAdmin = userRole === "super_admin" || userRole === "admin";
         }
 
 		toast.success(`Welcome back, ${userName}`);
 		setStatus("success");
+		// The role is resolved server-side (session middleware). If the client
+		// sign-in payload doesn't carry it, send everyone through /user and let
+		// the route guard bounce admins to the console.
 		if (isSuperOrAdmin) {
 			window.location.href = "/admin/overview";
 		} else {
-			window.location.href = "/";
+			window.location.href = "/user";
 		}
 	};
 

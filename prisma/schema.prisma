@@ -153,6 +153,9 @@ model Branch {
   staffs    Staff[]
   userRoles UserRole[]
 
+  classes      SchoolClass[]
+  applications Application[]
+
   @@unique([organizationId, slug])
   @@index([organizationId])
   @@index([slug])
@@ -201,6 +204,12 @@ model Student {
   guardianStudents GuardianStudent[]
   guardianInvites  GuardianInvite[]
 
+  classId String?
+  class   SchoolClass? @relation(fields: [classId], references: [id], onDelete: SetNull)
+
+  attendance AttendanceRecord[]
+  invoices   Invoice[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -208,6 +217,7 @@ model Student {
   @@index([organizationId, status])
   @@index([grade, section])
   @@index([admissionNo])
+  @@index([classId])
 }
 
 model Staff {
@@ -230,6 +240,9 @@ model Staff {
   joinedAt DateTime?
 
   status StaffStatus @default(ACTIVE)
+
+  taughtClasses    SchoolClass[]      @relation("ClassTeacher")
+  attendance       AttendanceRecord[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -282,6 +295,10 @@ model Invite {
   expiresAt DateTime
   usedAt    DateTime?
 
+  /// Pending profile fields (grade/section/designation/etc.) captured at invite
+  /// time and applied when the invitee activates their account.
+  payload Json?
+
   createdAt DateTime @default(now())
 
   @@index([userId])
@@ -297,6 +314,10 @@ model GuardianInvite {
   studentId String
   student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
+  /// Email the guardian invite was sent to, so activation can attach it to the
+  /// (possibly newly-created) guardian user account.
+  guardianEmail String?
+
   expiresAt DateTime
   usedAt    DateTime?
 
@@ -304,6 +325,167 @@ model GuardianInvite {
 
   @@index([studentId])
   @@index([expiresAt])
+}
+
+// ---------------------------------------------------------------------------
+// Academic structure & operations (migrate the legacy mock layer onto Prisma)
+// ---------------------------------------------------------------------------
+
+/// A homeroom / class section (e.g. "Grade 7 · A").
+model SchoolClass {
+  id String @id @default(cuid())
+
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  name         String
+  grade        String
+  section      String
+  roomNo       String?
+  capacity     Int      @default(40)
+  academicYear String?
+
+  classTeacherId String?
+  classTeacher   Staff?  @relation("ClassTeacher", fields: [classTeacherId], references: [id], onDelete: SetNull)
+
+  order Int @default(0)
+
+  students   Student[]
+  attendance AttendanceRecord[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([branchId])
+  @@index([grade, section])
+  @@map("school_class")
+}
+
+enum AttendancePersonType {
+  STUDENT
+  STAFF
+}
+
+enum AttendanceState {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+/// A single attendance mark for a student or staff member on a given day.
+model AttendanceRecord {
+  id String @id @default(cuid())
+
+  date       DateTime              @db.Date
+  personType AttendancePersonType
+  state      AttendanceState
+  note       String?
+
+  studentId String?
+  student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  staffId String?
+  staff   Staff?  @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  classId String?
+  class   SchoolClass? @relation(fields: [classId], references: [id], onDelete: SetNull)
+
+  markedBy String
+  markedAt DateTime @default(now())
+
+  @@index([classId, date])
+  @@index([studentId, date])
+  @@index([staffId, date])
+  @@index([date])
+  @@map("attendance_record")
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  WAITLISTED
+  REJECTED
+}
+
+/// An admission application submitted by a prospective student.
+model Application {
+  id            String @id @default(cuid())
+  applicationNo String @unique
+
+  applicantName String
+  dateOfBirth   String?
+  gender        String?
+  gradeApplied  String
+
+  email   String?
+  phone   String?
+  address String?
+
+  guardianName  String?
+  guardianPhone String?
+  guardianEmail String?
+
+  previousSchool String?
+  previousGrade  String?
+  entranceScore  Int?
+
+  source String @default("website") // website | walk_in | referral | agent
+
+  status ApplicationStatus @default(PENDING)
+
+  branchId String?
+  branch   Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+
+  documents Json @default("[]") // DocumentFile[]
+  notes     Json @default("[]") // ApplicationNote[]
+  timeline  Json @default("[]") // TimelineEntry[]
+
+  convertedStudentId String?
+
+  submittedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@index([gradeApplied])
+  @@index([branchId])
+  @@map("application")
+}
+
+enum InvoiceStatus {
+  PAID
+  PARTIAL
+  UNPAID
+  OVERDUE
+  VOID
+}
+
+/// A fee invoice issued to a student.
+model Invoice {
+  id        String @id @default(cuid())
+  invoiceNo String @unique
+
+  studentId String?
+  student   Student? @relation(fields: [studentId], references: [id], onDelete: SetNull)
+
+  term   String?
+  amount Int
+  amountPaid Int @default(0)
+
+  items Json @default("[]") // { label, amount }[]
+
+  issuedDate DateTime?
+  dueDate    DateTime?
+
+  status InvoiceStatus @default(UNPAID)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId])
+  @@index([status])
+  @@map("invoice")
 }
 
 enum WebsitePageKey {

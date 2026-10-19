@@ -1,35 +1,53 @@
-import { createFileRoute, notFound, redirect, useNavigate, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import {
+	createFileRoute,
+	Link,
+	notFound,
+	redirect,
+	useNavigate,
+} from "@tanstack/react-router";
 import { AlertCircle, ArrowLeft, LoaderCircle } from "lucide-react";
+import { useState } from "react";
 import { ERROR } from "#/lib/error.ts";
+import { pageCopy } from "#/lib/site";
 import { authClient } from "#/packages/auth/auth-client.ts";
 import { activateInvite } from "#/packages/auth/server/activate-invite.ts";
 import { getInvite } from "#/packages/auth/server/get-invite.ts";
-import { pageCopy } from "#/lib/site";
-import { Label } from "#/templates/modern/components/Label";
-import { Input } from "#/templates/modern/components/Input";
 import { Button } from "#/templates/modern/components/Button.tsx";
-import { ImageReveal, SectionLabel } from "#/templates/modern/components/Editorial.tsx";
+import {
+	ImageReveal,
+	SectionLabel,
+} from "#/templates/modern/components/Editorial.tsx";
+import { Input } from "#/templates/modern/components/Input";
+import { Label } from "#/templates/modern/components/Label";
 
 export const Route = createFileRoute("/_onboard/activate/$token")({
 	beforeLoad: async ({ context, location }) => {
 		const search = location.search as any;
-		if (String(search.cms) === "1" || String(search["allow-when-logged-in"]) === "true") {
-			return; 
+		if (
+			String(search.cms) === "1" ||
+			String(search["allow-when-logged-in"]) === "true"
+		) {
+			return;
 		}
 		if (context.session) {
-			if (context.session.user.role === "admin" || context.session.user.role === "superadmin") {
+			if (
+				context.session.user.role === "admin" ||
+				context.session.user.role === "super_admin"
+			) {
 				throw redirect({ to: "/admin/overview" });
 			}
 			throw redirect({ to: "/user" });
 		}
 	},
 	loader: async ({ params }) => {
-		const clean = decodeURIComponent(params.token || "").trim().replace(/\/+$/, "");
+		const clean = decodeURIComponent(params.token || "")
+			.trim()
+			.replace(/\/+$/, "");
 		const invite = await getInvite({ data: clean });
 		if (!invite) throw notFound();
 		if (invite.usedAt) throw new Error(ERROR.INVITATION_USED);
-		if (invite.expiresAt < new Date()) throw new Error(ERROR.INVITATION_EXPIRED);
+		if (invite.expiresAt < new Date())
+			throw new Error(ERROR.INVITATION_EXPIRED);
 		return invite;
 	},
 	notFoundComponent: () => (
@@ -37,14 +55,21 @@ export const Route = createFileRoute("/_onboard/activate/$token")({
 			<div className="max-w-md p-8 text-center bg-card border border-border shadow-sm rounded-xl">
 				<AlertCircle className="w-12 h-12 mx-auto text-red-500 mb-4" />
 				<h2 className="text-xl font-semibold mb-2">Invite Not Found</h2>
-				<p className="text-muted-foreground mb-6">This activation link appears to be invalid or incorrectly formatted. Please check the URL and try again.</p>
-				<Link to="/" className="text-accent hover:underline font-medium">Return to homepage</Link>
+				<p className="text-muted-foreground mb-6">
+					This activation link appears to be invalid or incorrectly formatted.
+					Please check the URL and try again.
+				</p>
+				<Link to="/" className="text-accent hover:underline font-medium">
+					Return to homepage
+				</Link>
 			</div>
 		</div>
 	),
 	errorComponent: ({ error }) => {
-		if (error.message === ERROR.INVITATION_USED) return <div>This invitation has already been used.</div>;
-		if (error.message === ERROR.INVITATION_EXPIRED) return <div>This invitation has expired.</div>;
+		if (error.message === ERROR.INVITATION_USED)
+			return <div>This invitation has already been used.</div>;
+		if (error.message === ERROR.INVITATION_EXPIRED)
+			return <div>This invitation has expired.</div>;
 		return <div>Something went wrong.</div>;
 	},
 	component: RouteComponent,
@@ -56,7 +81,7 @@ function RouteComponent() {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [error, setError] = useState("");
-    const [busy, setBusy] = useState(false);
+	const [busy, setBusy] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -68,21 +93,37 @@ function RouteComponent() {
 			setError("Password must be at least 8 characters");
 			return;
 		}
-        setBusy(true);
+		setBusy(true);
 		try {
-			const response = await activateInvite({ data: { token: invite.token, password } });
-			if (!response.success) { setError("Failed to activate account"); setBusy(false); return; }
-			const signInRes = await authClient.signIn.email({ email: invite.user.email, password });
-			if (signInRes.error) { setError(signInRes.error.message || "Login failed"); setBusy(false); return; }
+			const response = await activateInvite({
+				data: { token: invite.token, password },
+			});
+			if (!response.success) {
+				setError("Failed to activate account");
+				setBusy(false);
+				return;
+			}
+			const signInRes = await authClient.signIn.email({
+				email: invite.user.email,
+				password,
+			});
+			if (signInRes.error) {
+				setError(signInRes.error.message || "Login failed");
+				setBusy(false);
+				return;
+			}
 			navigate({ to: "/" });
 		} catch (error) {
 			setError("Something went wrong");
-            setBusy(false);
+			setBusy(false);
 		}
 	};
 
 	return (
-			<section className="auth-page overflow-x-hidden min-w-0" aria-labelledby="activate-title">
+		<section
+			className="auth-page overflow-x-hidden min-w-0"
+			aria-labelledby="activate-title"
+		>
 			<div className="auth-visual min-w-0">
 				<ImageReveal
 					src="/schools/everest/landing-footage/frame_0001.jpeg"
@@ -100,53 +141,71 @@ function RouteComponent() {
 			</div>
 			<div className="auth-panel w-full">
 				<Link to="/" className="auth-back" style={{ color: "var(--c-black)" }}>
-				<ArrowLeft aria-hidden="true" style={{ color: "var(--c-red)" }} />
-				Public website
+					<ArrowLeft aria-hidden="true" style={{ color: "var(--c-red)" }} />
+					Public website
 				</Link>
 				<div className="auth-panel__inner">
 					<header>
-						<span className="auth-kicker">
-							{pageCopy.activate.eyebrow}
-						</span>
+						<span className="auth-kicker">{pageCopy.activate.eyebrow}</span>
 						<h1 id="activate-title" className="t-page-title text-foreground">
-						SET YOUR<br />PASSWORD.
+							SET YOUR
+							<br />
+							PASSWORD.
 						</h1>
-						<p className="auth-intro text-foreground mt-4 font-medium break-all">Creating account for {invite.user.email}</p>
+						<p className="auth-intro text-foreground mt-4 font-medium break-all">
+							Creating account for {invite.user.email}
+						</p>
 					</header>
 					<form onSubmit={handleSubmit} className="auth-form" noValidate>
-					<div className={`form-control ${error ? "form-control--error" : ""}`}>
-						<Label htmlFor="password">Password</Label>
-						<Input
-						id="password"
-						type="password"
-						value={password}
-						onChange={(e) => { setPassword(e.target.value); setError(""); }}
-						className="editorial-input text-foreground"
-						/>
-					</div>
-					<div className={`form-control ${error ? "form-control--error" : ""}`}>
-						<Label htmlFor="confirmPassword">Confirm Password</Label>
-						<Input
-						id="confirmPassword"
-						type="password"
-						value={confirmPassword}
-						onChange={(e) => { setConfirmPassword(e.target.value); setError(""); }}
-						className="editorial-input text-foreground"
-						/>
-						{error && (
-							<p className="field-error">
-							<AlertCircle aria-hidden="true" />
-							{error}
-							</p>
-						)}
-					</div>
-					<Button type="submit" disabled={busy} className="institution-button institution-button--full">
-						{busy ? <LoaderCircle className="spin" aria-hidden="true" /> : null}
-						{busy ? "Activating..." : "Activate Account"}
-					</Button>
+						<div
+							className={`form-control ${error ? "form-control--error" : ""}`}
+						>
+							<Label htmlFor="password">Password</Label>
+							<Input
+								id="password"
+								type="password"
+								value={password}
+								onChange={(e) => {
+									setPassword(e.target.value);
+									setError("");
+								}}
+								className="editorial-input text-foreground"
+							/>
+						</div>
+						<div
+							className={`form-control ${error ? "form-control--error" : ""}`}
+						>
+							<Label htmlFor="confirmPassword">Confirm Password</Label>
+							<Input
+								id="confirmPassword"
+								type="password"
+								value={confirmPassword}
+								onChange={(e) => {
+									setConfirmPassword(e.target.value);
+									setError("");
+								}}
+								className="editorial-input text-foreground"
+							/>
+							{error && (
+								<p className="field-error">
+									<AlertCircle aria-hidden="true" />
+									{error}
+								</p>
+							)}
+						</div>
+						<Button
+							type="submit"
+							disabled={busy}
+							className="institution-button institution-button--full"
+						>
+							{busy ? (
+								<LoaderCircle className="spin" aria-hidden="true" />
+							) : null}
+							{busy ? "Activating..." : "Activate Account"}
+						</Button>
 					</form>
 				</div>
 			</div>
-			</section>
-  );
+		</section>
+	);
 }

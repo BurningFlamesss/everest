@@ -64,6 +64,10 @@ export const ModelName = {
   GuardianStudent: 'GuardianStudent',
   Invite: 'Invite',
   GuardianInvite: 'GuardianInvite',
+  SchoolClass: 'SchoolClass',
+  AttendanceRecord: 'AttendanceRecord',
+  Application: 'Application',
+  Invoice: 'Invoice',
   WebsitePage: 'WebsitePage',
   ContentBlock: 'ContentBlock',
   FacultyMember: 'FacultyMember',
@@ -204,6 +208,7 @@ export const StudentScalarFieldEnum = {
   section: 'section',
   joinedAt: 'joinedAt',
   status: 'status',
+  classId: 'classId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -257,6 +262,7 @@ export const InviteScalarFieldEnum = {
   type: 'type',
   expiresAt: 'expiresAt',
   usedAt: 'usedAt',
+  payload: 'payload',
   createdAt: 'createdAt'
 } as const
 
@@ -267,12 +273,96 @@ export const GuardianInviteScalarFieldEnum = {
   id: 'id',
   token: 'token',
   studentId: 'studentId',
+  guardianEmail: 'guardianEmail',
   expiresAt: 'expiresAt',
   usedAt: 'usedAt',
   createdAt: 'createdAt'
 } as const
 
 export type GuardianInviteScalarFieldEnum = (typeof GuardianInviteScalarFieldEnum)[keyof typeof GuardianInviteScalarFieldEnum]
+
+
+export const SchoolClassScalarFieldEnum = {
+  id: 'id',
+  branchId: 'branchId',
+  name: 'name',
+  grade: 'grade',
+  section: 'section',
+  roomNo: 'roomNo',
+  capacity: 'capacity',
+  academicYear: 'academicYear',
+  classTeacherId: 'classTeacherId',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SchoolClassScalarFieldEnum = (typeof SchoolClassScalarFieldEnum)[keyof typeof SchoolClassScalarFieldEnum]
+
+
+export const AttendanceRecordScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  personType: 'personType',
+  state: 'state',
+  note: 'note',
+  studentId: 'studentId',
+  staffId: 'staffId',
+  classId: 'classId',
+  markedBy: 'markedBy',
+  markedAt: 'markedAt'
+} as const
+
+export type AttendanceRecordScalarFieldEnum = (typeof AttendanceRecordScalarFieldEnum)[keyof typeof AttendanceRecordScalarFieldEnum]
+
+
+export const ApplicationScalarFieldEnum = {
+  id: 'id',
+  applicationNo: 'applicationNo',
+  applicantName: 'applicantName',
+  dateOfBirth: 'dateOfBirth',
+  gender: 'gender',
+  gradeApplied: 'gradeApplied',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  guardianName: 'guardianName',
+  guardianPhone: 'guardianPhone',
+  guardianEmail: 'guardianEmail',
+  previousSchool: 'previousSchool',
+  previousGrade: 'previousGrade',
+  entranceScore: 'entranceScore',
+  source: 'source',
+  status: 'status',
+  branchId: 'branchId',
+  documents: 'documents',
+  notes: 'notes',
+  timeline: 'timeline',
+  convertedStudentId: 'convertedStudentId',
+  submittedAt: 'submittedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApplicationScalarFieldEnum = (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum]
+
+
+export const InvoiceScalarFieldEnum = {
+  id: 'id',
+  invoiceNo: 'invoiceNo',
+  studentId: 'studentId',
+  term: 'term',
+  amount: 'amount',
+  amountPaid: 'amountPaid',
+  items: 'items',
+  issuedDate: 'issuedDate',
+  dueDate: 'dueDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
 
 
 export const WebsitePageScalarFieldEnum = {
@@ -522,19 +612,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
-
-
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

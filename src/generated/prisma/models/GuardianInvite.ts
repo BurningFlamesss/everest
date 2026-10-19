@@ -28,6 +28,7 @@ export type GuardianInviteMinAggregateOutputType = {
   id: string | null
   token: string | null
   studentId: string | null
+  guardianEmail: string | null
   expiresAt: Date | null
   usedAt: Date | null
   createdAt: Date | null
@@ -37,6 +38,7 @@ export type GuardianInviteMaxAggregateOutputType = {
   id: string | null
   token: string | null
   studentId: string | null
+  guardianEmail: string | null
   expiresAt: Date | null
   usedAt: Date | null
   createdAt: Date | null
@@ -46,6 +48,7 @@ export type GuardianInviteCountAggregateOutputType = {
   id: number
   token: number
   studentId: number
+  guardianEmail: number
   expiresAt: number
   usedAt: number
   createdAt: number
@@ -57,6 +60,7 @@ export type GuardianInviteMinAggregateInputType = {
   id?: true
   token?: true
   studentId?: true
+  guardianEmail?: true
   expiresAt?: true
   usedAt?: true
   createdAt?: true
@@ -66,6 +70,7 @@ export type GuardianInviteMaxAggregateInputType = {
   id?: true
   token?: true
   studentId?: true
+  guardianEmail?: true
   expiresAt?: true
   usedAt?: true
   createdAt?: true
@@ -75,6 +80,7 @@ export type GuardianInviteCountAggregateInputType = {
   id?: true
   token?: true
   studentId?: true
+  guardianEmail?: true
   expiresAt?: true
   usedAt?: true
   createdAt?: true
@@ -157,6 +163,7 @@ export type GuardianInviteGroupByOutputType = {
   id: string
   token: string
   studentId: string
+  guardianEmail: string | null
   expiresAt: Date
   usedAt: Date | null
   createdAt: Date
@@ -187,6 +194,7 @@ export type GuardianInviteWhereInput = {
   id?: Prisma.StringFilter<"GuardianInvite"> | string
   token?: Prisma.StringFilter<"GuardianInvite"> | string
   studentId?: Prisma.StringFilter<"GuardianInvite"> | string
+  guardianEmail?: Prisma.StringNullableFilter<"GuardianInvite"> | string | null
   expiresAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
   usedAt?: Prisma.DateTimeNullableFilter<"GuardianInvite"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
@@ -197,6 +205,7 @@ export type GuardianInviteOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   token?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
+  guardianEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -210,6 +219,7 @@ export type GuardianInviteWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.GuardianInviteWhereInput[]
   NOT?: Prisma.GuardianInviteWhereInput | Prisma.GuardianInviteWhereInput[]
   studentId?: Prisma.StringFilter<"GuardianInvite"> | string
+  guardianEmail?: Prisma.StringNullableFilter<"GuardianInvite"> | string | null
   expiresAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
   usedAt?: Prisma.DateTimeNullableFilter<"GuardianInvite"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
@@ -220,6 +230,7 @@ export type GuardianInviteOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   token?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
+  guardianEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -235,6 +246,7 @@ export type GuardianInviteScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"GuardianInvite"> | string
   token?: Prisma.StringWithAggregatesFilter<"GuardianInvite"> | string
   studentId?: Prisma.StringWithAggregatesFilter<"GuardianInvite"> | string
+  guardianEmail?: Prisma.StringNullableWithAggregatesFilter<"GuardianInvite"> | string | null
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"GuardianInvite"> | Date | string
   usedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"GuardianInvite"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"GuardianInvite"> | Date | string
@@ -243,6 +255,7 @@ export type GuardianInviteScalarWhereWithAggregatesInput = {
 export type GuardianInviteCreateInput = {
   id?: string
   token: string
+  guardianEmail?: string | null
   expiresAt: Date | string
   usedAt?: Date | string | null
   createdAt?: Date | string
@@ -253,6 +266,7 @@ export type GuardianInviteUncheckedCreateInput = {
   id?: string
   token: string
   studentId: string
+  guardianEmail?: string | null
   expiresAt: Date | string
   usedAt?: Date | string | null
   createdAt?: Date | string
@@ -261,6 +275,7 @@ export type GuardianInviteUncheckedCreateInput = {
 export type GuardianInviteUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -271,6 +286,7 @@ export type GuardianInviteUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -280,6 +296,7 @@ export type GuardianInviteCreateManyInput = {
   id?: string
   token: string
   studentId: string
+  guardianEmail?: string | null
   expiresAt: Date | string
   usedAt?: Date | string | null
   createdAt?: Date | string
@@ -288,6 +305,7 @@ export type GuardianInviteCreateManyInput = {
 export type GuardianInviteUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -297,6 +315,7 @@ export type GuardianInviteUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -316,6 +335,7 @@ export type GuardianInviteCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   token?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
+  guardianEmail?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -325,6 +345,7 @@ export type GuardianInviteMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   token?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
+  guardianEmail?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -334,6 +355,7 @@ export type GuardianInviteMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   token?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
+  guardianEmail?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -384,6 +406,7 @@ export type GuardianInviteUncheckedUpdateManyWithoutStudentNestedInput = {
 export type GuardianInviteCreateWithoutStudentInput = {
   id?: string
   token: string
+  guardianEmail?: string | null
   expiresAt: Date | string
   usedAt?: Date | string | null
   createdAt?: Date | string
@@ -392,6 +415,7 @@ export type GuardianInviteCreateWithoutStudentInput = {
 export type GuardianInviteUncheckedCreateWithoutStudentInput = {
   id?: string
   token: string
+  guardianEmail?: string | null
   expiresAt: Date | string
   usedAt?: Date | string | null
   createdAt?: Date | string
@@ -430,6 +454,7 @@ export type GuardianInviteScalarWhereInput = {
   id?: Prisma.StringFilter<"GuardianInvite"> | string
   token?: Prisma.StringFilter<"GuardianInvite"> | string
   studentId?: Prisma.StringFilter<"GuardianInvite"> | string
+  guardianEmail?: Prisma.StringNullableFilter<"GuardianInvite"> | string | null
   expiresAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
   usedAt?: Prisma.DateTimeNullableFilter<"GuardianInvite"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
@@ -438,6 +463,7 @@ export type GuardianInviteScalarWhereInput = {
 export type GuardianInviteCreateManyStudentInput = {
   id?: string
   token: string
+  guardianEmail?: string | null
   expiresAt: Date | string
   usedAt?: Date | string | null
   createdAt?: Date | string
@@ -446,6 +472,7 @@ export type GuardianInviteCreateManyStudentInput = {
 export type GuardianInviteUpdateWithoutStudentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -454,6 +481,7 @@ export type GuardianInviteUpdateWithoutStudentInput = {
 export type GuardianInviteUncheckedUpdateWithoutStudentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -462,6 +490,7 @@ export type GuardianInviteUncheckedUpdateWithoutStudentInput = {
 export type GuardianInviteUncheckedUpdateManyWithoutStudentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -473,6 +502,7 @@ export type GuardianInviteSelect<ExtArgs extends runtime.Types.Extensions.Intern
   id?: boolean
   token?: boolean
   studentId?: boolean
+  guardianEmail?: boolean
   expiresAt?: boolean
   usedAt?: boolean
   createdAt?: boolean
@@ -483,6 +513,7 @@ export type GuardianInviteSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   id?: boolean
   token?: boolean
   studentId?: boolean
+  guardianEmail?: boolean
   expiresAt?: boolean
   usedAt?: boolean
   createdAt?: boolean
@@ -493,6 +524,7 @@ export type GuardianInviteSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   id?: boolean
   token?: boolean
   studentId?: boolean
+  guardianEmail?: boolean
   expiresAt?: boolean
   usedAt?: boolean
   createdAt?: boolean
@@ -503,12 +535,13 @@ export type GuardianInviteSelectScalar = {
   id?: boolean
   token?: boolean
   studentId?: boolean
+  guardianEmail?: boolean
   expiresAt?: boolean
   usedAt?: boolean
   createdAt?: boolean
 }
 
-export type GuardianInviteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "token" | "studentId" | "expiresAt" | "usedAt" | "createdAt", ExtArgs["result"]["guardianInvite"]>
+export type GuardianInviteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "token" | "studentId" | "guardianEmail" | "expiresAt" | "usedAt" | "createdAt", ExtArgs["result"]["guardianInvite"]>
 export type GuardianInviteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
 }
@@ -528,6 +561,11 @@ export type $GuardianInvitePayload<ExtArgs extends runtime.Types.Extensions.Inte
     id: string
     token: string
     studentId: string
+    /**
+     * Email the guardian invite was sent to, so activation can attach it to the
+     * (possibly newly-created) guardian user account.
+     */
+    guardianEmail: string | null
     expiresAt: Date
     usedAt: Date | null
     createdAt: Date
@@ -958,6 +996,7 @@ export interface GuardianInviteFieldRefs {
   readonly id: Prisma.FieldRef<"GuardianInvite", 'String'>
   readonly token: Prisma.FieldRef<"GuardianInvite", 'String'>
   readonly studentId: Prisma.FieldRef<"GuardianInvite", 'String'>
+  readonly guardianEmail: Prisma.FieldRef<"GuardianInvite", 'String'>
   readonly expiresAt: Prisma.FieldRef<"GuardianInvite", 'DateTime'>
   readonly usedAt: Prisma.FieldRef<"GuardianInvite", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"GuardianInvite", 'DateTime'>

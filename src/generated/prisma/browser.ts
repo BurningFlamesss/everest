@@ -83,6 +83,26 @@ export type Invite = Prisma.InviteModel
  */
 export type GuardianInvite = Prisma.GuardianInviteModel
 /**
+ * Model SchoolClass
+ * A homeroom / class section (e.g. "Grade 7 · A").
+ */
+export type SchoolClass = Prisma.SchoolClassModel
+/**
+ * Model AttendanceRecord
+ * A single attendance mark for a student or staff member on a given day.
+ */
+export type AttendanceRecord = Prisma.AttendanceRecordModel
+/**
+ * Model Application
+ * An admission application submitted by a prospective student.
+ */
+export type Application = Prisma.ApplicationModel
+/**
+ * Model Invoice
+ * A fee invoice issued to a student.
+ */
+export type Invoice = Prisma.InvoiceModel
+/**
  * Model WebsitePage
  * 
  */

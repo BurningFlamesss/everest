@@ -1,49 +1,59 @@
 import { useEffect } from "react";
-import { Route as RootRoute } from "#/routes/__root";
-import { useContentStoreActions, useSchoolConfig as useSchoolConfigStore, useSchoolContent as useSchoolContentStore } from "#/stores/contentStore.ts";
 import type { WebsitePageContent } from "#/lib/website-content-loader";
-import type { SchoolContent } from "#/types/school";
+import { Route as RootRoute } from "#/routes/__root";
+import {
+	useContentStoreActions,
+	useSchoolConfig as useSchoolConfigStore,
+	useSchoolContent as useSchoolContentStore,
+} from "#/stores/contentStore.ts";
 import type { Notice, Person, Scholarship } from "#/types";
+import type { SchoolContent } from "#/types/school";
 
 export function useSyncContentStore() {
-  const loaderData = RootRoute.useLoaderData();
-  const { setSchoolConfig, setSchoolContent, setWebsitePage } = useContentStoreActions();
+	const loaderData = RootRoute.useLoaderData();
+	const { setSchoolConfig, setSchoolContent, setWebsitePage } =
+		useContentStoreActions();
 
-  useEffect(() => {
-    if (loaderData?.config) {
-      setSchoolConfig(loaderData.config);
-    }
-    if (loaderData?.content) {
-      const { sidebar, ...pageContent } = loaderData.content;
-      for (const [key, page] of Object.entries(pageContent)) {
-        // Only managed WebsitePage payloads belong in the websitePages map;
-        // collection arrays (facultyMembers/notices/scholarships) are read
-        // straight from the loader via their dedicated hooks.
-        if (page) {
-          setWebsitePage(key as WebsitePageKey, page as WebsitePageContent);
-        }
-      }
-      if (sidebar) {
-        setSchoolContent(sidebar as SchoolContent["sidebar"]);
-      }
-    }
-  }, [loaderData, setSchoolConfig, setSchoolContent, setWebsitePage]);
+	useEffect(() => {
+		if (loaderData?.config) {
+			setSchoolConfig(loaderData.config);
+		}
+		if (loaderData?.content) {
+			const { sidebar, ...pageContent } = loaderData.content;
+			for (const [key, page] of Object.entries(pageContent)) {
+				// Only managed WebsitePage payloads belong in the websitePages map;
+				// collection arrays (facultyMembers/notices/scholarships) are read
+				// straight from the loader via their dedicated hooks.
+				if (page) {
+					setWebsitePage(key as WebsitePageKey, page as WebsitePageContent);
+				}
+			}
+			if (sidebar) {
+				setSchoolContent(sidebar as SchoolContent["sidebar"]);
+			}
+		}
+	}, [loaderData, setSchoolConfig, setSchoolContent, setWebsitePage]);
 }
 
 export function useSchoolConfig() {
-  const storeConfig = useSchoolConfigStore();
-  const loaderConfig = RootRoute.useLoaderData({ select: (data) => data.config });
-  return storeConfig ?? loaderConfig;
+	const storeConfig = useSchoolConfigStore();
+	const loaderConfig = RootRoute.useLoaderData({
+		select: (data) => data.config,
+	});
+	return storeConfig ?? loaderConfig;
 }
 
 export function useSchoolContent() {
-  const storeContent = useSchoolContentStore();
-  const loaderContent = RootRoute.useLoaderData({
-    select: (data) => data.content as WebsitePageContent & { sidebar?: SchoolContent["sidebar"] },
-  });
-  return {
-    sidebar: storeContent?.sidebar ?? loaderContent?.sidebar,
-  };
+	const storeContent = useSchoolContentStore();
+	const loaderContent = RootRoute.useLoaderData({
+		select: (data) =>
+			data.content as WebsitePageContent & {
+				sidebar?: SchoolContent["sidebar"];
+			},
+	});
+	return {
+		sidebar: storeContent?.sidebar ?? loaderContent?.sidebar,
+	};
 }
 
 import type { WebsitePageKey } from "#/types";
@@ -55,20 +65,22 @@ export type ManagedPageKey = WebsitePageKey;
  * Falls back to null so pages keep their static design until content is
  * published.
  */
-export function useWebsitePageContent(key: ManagedPageKey): WebsitePageContent | null {
-  const loaderContent = RootRoute.useLoaderData({
-    select: (data) => data.content[key] as WebsitePageContent | undefined,
-  });
+export function useWebsitePageContent(
+	key: ManagedPageKey,
+): WebsitePageContent | null {
+	const loaderContent = RootRoute.useLoaderData({
+		select: (data) => data.content[key] as WebsitePageContent | undefined,
+	});
 
-  if (
-    loaderContent &&
-    loaderContent.status === "published" &&
-    Array.isArray(loaderContent.blocks) &&
-    loaderContent.blocks.length > 0
-  ) {
-    return loaderContent;
-  }
-  return null;
+	if (
+		loaderContent &&
+		loaderContent.status === "published" &&
+		Array.isArray(loaderContent.blocks) &&
+		loaderContent.blocks.length > 0
+	) {
+		return loaderContent;
+	}
+	return null;
 }
 
 /**
@@ -77,27 +89,27 @@ export function useWebsitePageContent(key: ManagedPageKey): WebsitePageContent |
  * static data.
  */
 export function useFacultyDirectory(): Person[] | null {
-  return (
-    RootRoute.useLoaderData({
-      select: (data) => data.content.facultyMembers as Person[] | undefined,
-    }) ?? null
-  );
+	return (
+		RootRoute.useLoaderData({
+			select: (data) => data.content.facultyMembers as Person[] | undefined,
+		}) ?? null
+	);
 }
 
 /** Public notice board loaded from the database. */
 export function useNotices(): Notice[] | null {
-  return (
-    RootRoute.useLoaderData({
-      select: (data) => data.content.notices as Notice[] | undefined,
-    }) ?? null
-  );
+	return (
+		RootRoute.useLoaderData({
+			select: (data) => data.content.notices as Notice[] | undefined,
+		}) ?? null
+	);
 }
 
 /** Public scholarship schemes loaded from the database. */
 export function useScholarships(): Scholarship[] | null {
-  return (
-    RootRoute.useLoaderData({
-      select: (data) => data.content.scholarships as Scholarship[] | undefined,
-    }) ?? null
-  );
+	return (
+		RootRoute.useLoaderData({
+			select: (data) => data.content.scholarships as Scholarship[] | undefined,
+		}) ?? null
+	);
 }

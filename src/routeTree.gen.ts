@@ -37,10 +37,12 @@ import { Route as AdminAttendanceRouteImport } from './routes/admin/attendance'
 import { Route as AdminClassesRouteImport } from './routes/admin/classes'
 import { Route as AdminCoursesRouteImport } from './routes/admin/courses'
 import { Route as AdminEventsRouteImport } from './routes/admin/events'
+import { Route as AdminFacultyRouteImport } from './routes/admin/faculty'
 import { Route as AdminGalleryRouteImport } from './routes/admin/gallery'
 import { Route as AdminNoticesRouteImport } from './routes/admin/notices'
 import { Route as AdminOverviewRouteImport } from './routes/admin/overview'
 import { Route as AdminPaymentsRouteImport } from './routes/admin/payments'
+import { Route as AdminResourcesRouteImport } from './routes/admin/resources'
 import { Route as AdminResultsRouteImport } from './routes/admin/results'
 import { Route as AdminScholarshipsRouteImport } from './routes/admin/scholarships'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
@@ -49,6 +51,8 @@ import { Route as AdminStudentsRouteImport } from './routes/admin/students'
 import { Route as AdminTransportationRouteImport } from './routes/admin/transportation'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminWebsiteRouteImport } from './routes/admin/website'
+import { Route as UserIndexRouteImport } from './routes/user/index'
+import { Route as OnboardActivateGuardianTokenRouteImport } from './routes/_onboard/activate-guardian.$token'
 import { Route as OnboardActivateIndexRouteImport } from './routes/_onboard/activate.index'
 import { Route as OnboardActivateTokenRouteImport } from './routes/_onboard/activate.$token'
 import { Route as AdminAdmissionsIdRouteImport } from './routes/admin/admissions.$id'
@@ -210,6 +214,11 @@ const AdminEventsRoute = AdminEventsRouteImport.update({
   path: '/events',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminFacultyRoute = AdminFacultyRouteImport.update({
+  id: '/faculty',
+  path: '/faculty',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminGalleryRoute = AdminGalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
@@ -228,6 +237,11 @@ const AdminOverviewRoute = AdminOverviewRouteImport.update({
 const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminResourcesRoute = AdminResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminResultsRoute = AdminResultsRouteImport.update({
@@ -270,6 +284,17 @@ const AdminWebsiteRoute = AdminWebsiteRouteImport.update({
   path: '/website',
   getParentRoute: () => AdminRoute,
 } as any)
+const UserIndexRoute = UserIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UserRoute,
+} as any)
+const OnboardActivateGuardianTokenRoute =
+  OnboardActivateGuardianTokenRouteImport.update({
+    id: '/activate-guardian/$token',
+    path: '/activate-guardian/$token',
+    getParentRoute: () => OnboardRoute,
+  } as any)
 const OnboardActivateIndexRoute = OnboardActivateIndexRouteImport.update({
   id: '/activate/',
   path: '/activate/',
@@ -390,7 +415,7 @@ export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
-  '/user': typeof UserRoute
+  '/user': typeof UserRouteWithChildren
   '/about': typeof PublicAboutRoute
   '/calendar': typeof PublicCalendarRoute
   '/contact': typeof PublicContactRoute
@@ -412,10 +437,12 @@ export interface FileRoutesByFullPath {
   '/admin/classes': typeof AdminClassesRouteWithChildren
   '/admin/courses': typeof AdminCoursesRouteWithChildren
   '/admin/events': typeof AdminEventsRouteWithChildren
+  '/admin/faculty': typeof AdminFacultyRoute
   '/admin/gallery': typeof AdminGalleryRouteWithChildren
   '/admin/notices': typeof AdminNoticesRouteWithChildren
   '/admin/overview': typeof AdminOverviewRoute
   '/admin/payments': typeof AdminPaymentsRouteWithChildren
+  '/admin/resources': typeof AdminResourcesRoute
   '/admin/results': typeof AdminResultsRoute
   '/admin/scholarships': typeof AdminScholarshipsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -425,6 +452,8 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AdminUsersRoute
   '/admin/website': typeof AdminWebsiteRoute
   '/admin/': typeof AdminIndexRoute
+  '/user/': typeof UserIndexRoute
+  '/activate-guardian/$token': typeof OnboardActivateGuardianTokenRoute
   '/activate/$token': typeof OnboardActivateTokenRoute
   '/admin/admissions/$id': typeof AdminAdmissionsIdRoute
   '/admin/classes/$id': typeof AdminClassesIdRoute
@@ -451,7 +480,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
   '/login': typeof LoginRoute
-  '/user': typeof UserRoute
   '/about': typeof PublicAboutRoute
   '/calendar': typeof PublicCalendarRoute
   '/contact': typeof PublicContactRoute
@@ -473,10 +501,12 @@ export interface FileRoutesByTo {
   '/admin/classes': typeof AdminClassesRouteWithChildren
   '/admin/courses': typeof AdminCoursesRouteWithChildren
   '/admin/events': typeof AdminEventsRouteWithChildren
+  '/admin/faculty': typeof AdminFacultyRoute
   '/admin/gallery': typeof AdminGalleryRouteWithChildren
   '/admin/notices': typeof AdminNoticesRouteWithChildren
   '/admin/overview': typeof AdminOverviewRoute
   '/admin/payments': typeof AdminPaymentsRouteWithChildren
+  '/admin/resources': typeof AdminResourcesRoute
   '/admin/results': typeof AdminResultsRoute
   '/admin/scholarships': typeof AdminScholarshipsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -486,6 +516,8 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AdminUsersRoute
   '/admin/website': typeof AdminWebsiteRoute
   '/admin': typeof AdminIndexRoute
+  '/user': typeof UserIndexRoute
+  '/activate-guardian/$token': typeof OnboardActivateGuardianTokenRoute
   '/activate/$token': typeof OnboardActivateTokenRoute
   '/admin/admissions/$id': typeof AdminAdmissionsIdRoute
   '/admin/classes/$id': typeof AdminClassesIdRoute
@@ -515,7 +547,7 @@ export interface FileRoutesById {
   '/_public': typeof PublicRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
-  '/user': typeof UserRoute
+  '/user': typeof UserRouteWithChildren
   '/_public/about': typeof PublicAboutRoute
   '/_public/calendar': typeof PublicCalendarRoute
   '/_public/contact': typeof PublicContactRoute
@@ -537,10 +569,12 @@ export interface FileRoutesById {
   '/admin/classes': typeof AdminClassesRouteWithChildren
   '/admin/courses': typeof AdminCoursesRouteWithChildren
   '/admin/events': typeof AdminEventsRouteWithChildren
+  '/admin/faculty': typeof AdminFacultyRoute
   '/admin/gallery': typeof AdminGalleryRouteWithChildren
   '/admin/notices': typeof AdminNoticesRouteWithChildren
   '/admin/overview': typeof AdminOverviewRoute
   '/admin/payments': typeof AdminPaymentsRouteWithChildren
+  '/admin/resources': typeof AdminResourcesRoute
   '/admin/results': typeof AdminResultsRoute
   '/admin/scholarships': typeof AdminScholarshipsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -551,6 +585,8 @@ export interface FileRoutesById {
   '/admin/website': typeof AdminWebsiteRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/user/': typeof UserIndexRoute
+  '/_onboard/activate-guardian/$token': typeof OnboardActivateGuardianTokenRoute
   '/_onboard/activate/$token': typeof OnboardActivateTokenRoute
   '/admin/admissions/$id': typeof AdminAdmissionsIdRoute
   '/admin/classes/$id': typeof AdminClassesIdRoute
@@ -602,10 +638,12 @@ export interface FileRouteTypes {
     | '/admin/classes'
     | '/admin/courses'
     | '/admin/events'
+    | '/admin/faculty'
     | '/admin/gallery'
     | '/admin/notices'
     | '/admin/overview'
     | '/admin/payments'
+    | '/admin/resources'
     | '/admin/results'
     | '/admin/scholarships'
     | '/admin/settings'
@@ -615,6 +653,8 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/admin/website'
     | '/admin/'
+    | '/user/'
+    | '/activate-guardian/$token'
     | '/activate/$token'
     | '/admin/admissions/$id'
     | '/admin/classes/$id'
@@ -641,7 +681,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
-    | '/user'
     | '/about'
     | '/calendar'
     | '/contact'
@@ -663,10 +702,12 @@ export interface FileRouteTypes {
     | '/admin/classes'
     | '/admin/courses'
     | '/admin/events'
+    | '/admin/faculty'
     | '/admin/gallery'
     | '/admin/notices'
     | '/admin/overview'
     | '/admin/payments'
+    | '/admin/resources'
     | '/admin/results'
     | '/admin/scholarships'
     | '/admin/settings'
@@ -676,6 +717,8 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/admin/website'
     | '/admin'
+    | '/user'
+    | '/activate-guardian/$token'
     | '/activate/$token'
     | '/admin/admissions/$id'
     | '/admin/classes/$id'
@@ -726,10 +769,12 @@ export interface FileRouteTypes {
     | '/admin/classes'
     | '/admin/courses'
     | '/admin/events'
+    | '/admin/faculty'
     | '/admin/gallery'
     | '/admin/notices'
     | '/admin/overview'
     | '/admin/payments'
+    | '/admin/resources'
     | '/admin/results'
     | '/admin/scholarships'
     | '/admin/settings'
@@ -740,6 +785,8 @@ export interface FileRouteTypes {
     | '/admin/website'
     | '/_public/'
     | '/admin/'
+    | '/user/'
+    | '/_onboard/activate-guardian/$token'
     | '/_onboard/activate/$token'
     | '/admin/admissions/$id'
     | '/admin/classes/$id'
@@ -769,7 +816,7 @@ export interface RootRouteChildren {
   PublicRoute: typeof PublicRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
   LoginRoute: typeof LoginRoute
-  UserRoute: typeof UserRoute
+  UserRoute: typeof UserRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiWebsitePagesRoute: typeof ApiWebsitePagesRouteWithChildren
   ApiWebsitePageKeyRoute: typeof ApiWebsitePageKeyRoute
@@ -973,6 +1020,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEventsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/faculty': {
+      id: '/admin/faculty'
+      path: '/faculty'
+      fullPath: '/admin/faculty'
+      preLoaderRoute: typeof AdminFacultyRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/gallery': {
       id: '/admin/gallery'
       path: '/gallery'
@@ -999,6 +1053,13 @@ declare module '@tanstack/react-router' {
       path: '/payments'
       fullPath: '/admin/payments'
       preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/resources': {
+      id: '/admin/resources'
+      path: '/resources'
+      fullPath: '/admin/resources'
+      preLoaderRoute: typeof AdminResourcesRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/results': {
@@ -1056,6 +1117,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/website'
       preLoaderRoute: typeof AdminWebsiteRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/user/': {
+      id: '/user/'
+      path: '/'
+      fullPath: '/user/'
+      preLoaderRoute: typeof UserIndexRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/_onboard/activate-guardian/$token': {
+      id: '/_onboard/activate-guardian/$token'
+      path: '/activate-guardian/$token'
+      fullPath: '/activate-guardian/$token'
+      preLoaderRoute: typeof OnboardActivateGuardianTokenRouteImport
+      parentRoute: typeof OnboardRoute
     }
     '/_onboard/activate/': {
       id: '/_onboard/activate/'
@@ -1215,11 +1290,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface OnboardRouteChildren {
+  OnboardActivateGuardianTokenRoute: typeof OnboardActivateGuardianTokenRoute
   OnboardActivateTokenRoute: typeof OnboardActivateTokenRoute
   OnboardActivateIndexRoute: typeof OnboardActivateIndexRoute
 }
 
 const OnboardRouteChildren: OnboardRouteChildren = {
+  OnboardActivateGuardianTokenRoute: OnboardActivateGuardianTokenRoute,
   OnboardActivateTokenRoute: OnboardActivateTokenRoute,
   OnboardActivateIndexRoute: OnboardActivateIndexRoute,
 }
@@ -1396,10 +1473,12 @@ interface AdminRouteChildren {
   AdminClassesRoute: typeof AdminClassesRouteWithChildren
   AdminCoursesRoute: typeof AdminCoursesRouteWithChildren
   AdminEventsRoute: typeof AdminEventsRouteWithChildren
+  AdminFacultyRoute: typeof AdminFacultyRoute
   AdminGalleryRoute: typeof AdminGalleryRouteWithChildren
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren
   AdminOverviewRoute: typeof AdminOverviewRoute
   AdminPaymentsRoute: typeof AdminPaymentsRouteWithChildren
+  AdminResourcesRoute: typeof AdminResourcesRoute
   AdminResultsRoute: typeof AdminResultsRoute
   AdminScholarshipsRoute: typeof AdminScholarshipsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
@@ -1419,10 +1498,12 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminClassesRoute: AdminClassesRouteWithChildren,
   AdminCoursesRoute: AdminCoursesRouteWithChildren,
   AdminEventsRoute: AdminEventsRouteWithChildren,
+  AdminFacultyRoute: AdminFacultyRoute,
   AdminGalleryRoute: AdminGalleryRouteWithChildren,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
   AdminOverviewRoute: AdminOverviewRoute,
   AdminPaymentsRoute: AdminPaymentsRouteWithChildren,
+  AdminResourcesRoute: AdminResourcesRoute,
   AdminResultsRoute: AdminResultsRoute,
   AdminScholarshipsRoute: AdminScholarshipsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
@@ -1435,6 +1516,16 @@ const AdminRouteChildren: AdminRouteChildren = {
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface UserRouteChildren {
+  UserIndexRoute: typeof UserIndexRoute
+}
+
+const UserRouteChildren: UserRouteChildren = {
+  UserIndexRoute: UserIndexRoute,
+}
+
+const UserRouteWithChildren = UserRoute._addFileChildren(UserRouteChildren)
 
 interface ApiWebsitePagesKeyBlocksRouteChildren {
   ApiWebsitePagesKeyBlocksBlockIdRoute: typeof ApiWebsitePagesKeyBlocksBlockIdRoute
@@ -1485,7 +1576,7 @@ const rootRouteChildren: RootRouteChildren = {
   PublicRoute: PublicRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
   LoginRoute: LoginRoute,
-  UserRoute: UserRoute,
+  UserRoute: UserRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiWebsitePagesRoute: ApiWebsitePagesRouteWithChildren,
   ApiWebsitePageKeyRoute: ApiWebsitePageKeyRoute,

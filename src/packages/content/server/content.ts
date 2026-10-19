@@ -11,7 +11,7 @@ import type {
 } from "#/types/school";
 
 const PageKeySchema = z.object({
-	key: z.string().transform(v => v as any),
+	key: z.string().transform((v) => v as any),
 });
 
 const StringSchema = z.object({
@@ -165,32 +165,44 @@ export const getSchoolContentServer = createServerFn({ method: "GET" })
 		});
 		if (!org) return null;
 
-	const sidebarContent: SidebarContent = {
-		logo: org.logo ?? "",
-		tagline: org.description ?? "",
-		collapsible: {
-			home: { id: "home", label: "HOME", href: "/" },
-			about: { id: "about", label: "ABOUT", href: "/about" },
-			courses: { id: "courses", label: "COURSES", href: "/courses" },
-			facilities: { id: "facilities", label: "FACILITIES", href: "/facilities" },
-			gallery: { id: "gallery", label: "GALLERY", href: "/gallery" },
-			moreInfo: {
-				id: "moreInfo",
-				label: "More Info",
-				children: [
-					{ id: "faculty", label: "Faculty", href: "/faculty" },
-					{ id: "notices", label: "Notices", href: "/notices" },
-					{ id: "scholarship", label: "Scholarships", href: "/scholarship" },
-					{ id: "calendar", label: "Calendar", href: "/calendar" },
-					{ id: "transportation", label: "Transportation", href: "/transportation" },
-					{ id: "result", label: "Result", href: "/result" },
-					{ id: "course-finder", label: "Course Finder", href: "/course-finder" },
-				{ id: "resources", label: "Resources", href: "/resources" },
-				],
+		const sidebarContent: SidebarContent = {
+			logo: org.logo ?? "",
+			tagline: org.description ?? "",
+			collapsible: {
+				home: { id: "home", label: "HOME", href: "/" },
+				about: { id: "about", label: "ABOUT", href: "/about" },
+				courses: { id: "courses", label: "COURSES", href: "/courses" },
+				facilities: {
+					id: "facilities",
+					label: "FACILITIES",
+					href: "/facilities",
+				},
+				gallery: { id: "gallery", label: "GALLERY", href: "/gallery" },
+				moreInfo: {
+					id: "moreInfo",
+					label: "More Info",
+					children: [
+						{ id: "faculty", label: "Faculty", href: "/faculty" },
+						{ id: "notices", label: "Notices", href: "/notices" },
+						{ id: "scholarship", label: "Scholarships", href: "/scholarship" },
+						{ id: "calendar", label: "Calendar", href: "/calendar" },
+						{
+							id: "transportation",
+							label: "Transportation",
+							href: "/transportation",
+						},
+						{ id: "result", label: "Result", href: "/result" },
+						{
+							id: "course-finder",
+							label: "Course Finder",
+							href: "/course-finder",
+						},
+						{ id: "resources", label: "Resources", href: "/resources" },
+					],
+				},
+				contact: { id: "contact", label: "CONTACT", href: "/contact" },
 			},
-			contact: { id: "contact", label: "CONTACT", href: "/contact" },
-		},
-	};
+		};
 
 		const content: SchoolContent = {
 			sidebar: sidebarContent,
@@ -376,65 +388,85 @@ export const getScholarshipsServer = createServerFn({ method: "GET" }).handler(
 	},
 );
 
-export const getAlbumsServer = createServerFn({ method: "GET" }).handler(async () => {
-	setResponseHeaders(PUBLIC_CACHE_HEADERS);
-	const rows = await prisma.album.findMany({ orderBy: { order: "asc" } });
-	return rows.map((r) => ({ ...r, photos: r.photos as any }));
-});
+export const getAlbumsServer = createServerFn({ method: "GET" }).handler(
+	async () => {
+		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		const rows = await prisma.album.findMany({ orderBy: { order: "asc" } });
+		return rows.map((r) => ({ ...r, photos: r.photos as any }));
+	},
+);
 
-export const getFacilitiesServer = createServerFn({ method: "GET" }).handler(async () => {
-	setResponseHeaders(PUBLIC_CACHE_HEADERS);
-	const rows = await prisma.facility.findMany({ orderBy: { order: "asc" } });
-	return rows.map((r) => ({
-		id: r.id,
-		name: r.name,
-		category: r.category as any,
-		block: r.block,
-		blurb: r.blurb,
-		description: r.description,
-		image: r.image,
-		gallery: Array.isArray(r.gallery) ? r.gallery : [],
-		stats: Array.isArray(r.stats) ? r.stats : [],
-		hours: r.hours,
-		inCharge: r.inCharge,
-		studentsLove: r.studentsLove,
-		since: r.since,
-	}));
-});
+export const getFacilitiesServer = createServerFn({ method: "GET" }).handler(
+	async () => {
+		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		const rows = await prisma.facility.findMany({ orderBy: { order: "asc" } });
+		return rows.map((r) => ({
+			id: r.id,
+			name: r.name,
+			category: r.category as any,
+			block: r.block,
+			blurb: r.blurb,
+			description: r.description,
+			image: r.image,
+			gallery: Array.isArray(r.gallery) ? r.gallery : [],
+			stats: Array.isArray(r.stats) ? r.stats : [],
+			hours: r.hours,
+			inCharge: r.inCharge,
+			studentsLove: r.studentsLove,
+			since: r.since,
+		}));
+	},
+);
 
-export const getResourcesServer = createServerFn({ method: "GET" }).handler(async () => {
-	setResponseHeaders(PUBLIC_CACHE_HEADERS);
-	return await prisma.resource.findMany({ orderBy: { order: "asc" } });
-});
+export const getResourcesServer = createServerFn({ method: "GET" }).handler(
+	async () => {
+		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		return await prisma.resource.findMany({ orderBy: { order: "asc" } });
+	},
+);
 
-export const getBoardResultsServer = createServerFn({ method: "GET" }).handler(async () => {
-	setResponseHeaders(PUBLIC_CACHE_HEADERS);
-	return await prisma.boardResult.findMany({ orderBy: { order: "asc" } });
-});
+export const getBoardResultsServer = createServerFn({ method: "GET" }).handler(
+	async () => {
+		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		return await prisma.boardResult.findMany({ orderBy: { order: "asc" } });
+	},
+);
 
-export const getProgramsServer = createServerFn({ method: "GET" }).handler(async () => {
+export const getProgramsServer = createServerFn({ method: "GET" }).handler(
+	async () => {
+		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		const rows = await prisma.program.findMany({ orderBy: { order: "asc" } });
+		return rows.map((r) => ({
+			...r,
+			level: r.level as any,
+			routineKey: r.routineKey as any,
+			highlights: Array.isArray(r.highlights) ? r.highlights : [],
+			outcomes: Array.isArray(r.outcomes) ? r.outcomes : [],
+			careers: Array.isArray(r.careers) ? r.careers : [],
+			subjects: Array.isArray(r.subjects) ? r.subjects : [],
+			fees: Array.isArray(r.fees) ? r.fees : [],
+		}));
+	},
+);
+
+export const getBusRoutesServer = createServerFn({ method: "GET" }).handler(
+	async () => {
+		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		const rows = await prisma.busRoute.findMany({ orderBy: { order: "asc" } });
+		return rows.map((r) => ({ ...r, stops: r.stops as any }));
+	},
+);
+
+export const getCalendarEventsServer = createServerFn({
+	method: "GET",
+}).handler(async () => {
 	setResponseHeaders(PUBLIC_CACHE_HEADERS);
-	const rows = await prisma.program.findMany({ orderBy: { order: "asc" } });
+	const rows = await prisma.calendarEvent.findMany({
+		orderBy: { startDate: "asc" },
+	});
 	return rows.map((r) => ({
 		...r,
-		level: r.level as any,
-		routineKey: r.routineKey as any,
-		highlights: Array.isArray(r.highlights) ? r.highlights : [],
-		outcomes: Array.isArray(r.outcomes) ? r.outcomes : [],
-		careers: Array.isArray(r.careers) ? r.careers : [],
-		subjects: Array.isArray(r.subjects) ? r.subjects : [],
-		fees: Array.isArray(r.fees) ? r.fees : [],
+		startDate: r.startDate.toISOString(),
+		endDate: r.endDate.toISOString(),
 	}));
-});
-
-export const getBusRoutesServer = createServerFn({ method: "GET" }).handler(async () => {
-	setResponseHeaders(PUBLIC_CACHE_HEADERS);
-	const rows = await prisma.busRoute.findMany({ orderBy: { order: "asc" } });
-	return rows.map((r) => ({ ...r, stops: r.stops as any }));
-});
-
-export const getCalendarEventsServer = createServerFn({ method: "GET" }).handler(async () => {
-	setResponseHeaders(PUBLIC_CACHE_HEADERS);
-	const rows = await prisma.calendarEvent.findMany({ orderBy: { startDate: "asc" } });
-	return rows.map((r) => ({ ...r, startDate: r.startDate.toISOString(), endDate: r.endDate.toISOString() }));
 });
