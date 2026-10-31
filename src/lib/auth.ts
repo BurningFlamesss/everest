@@ -1,6 +1,8 @@
 import { auth } from "#/packages/auth/auth";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import type { Session } from "@/generated/prisma/client";
+import type { Role } from "@/types";
+import { ROLE_PERMISSIONS, type Permission } from "@/lib/permissions";
 
 export interface AuthUser {
   id: string;
@@ -74,4 +76,36 @@ export async function requireAuth(request: Request): Promise<AuthUser> {
     throw new Error("Unauthorized");
   }
   return user;
+}
+
+/**
+ * Server-side permission check that FAILS CLOSED. Unlike the client-side
+ * `can()` (which defaults unknown roles to super_admin for a permissive demo
+ * UX), this only grants the permission when the resolved role explicitly lists
+ * it. Use this on every mutating API route.
+ */
+export function hasPermission(user: AuthUser, permission: Permission): boolean {
+  const role = user.role as Role;
+  const grants = ROLE_PERMISSIONS[role];
+  return Array.isArray(grants) && grants.includes(permission);
+}
+
+/**
+ * Resolve the authenticated user and require a permission, or throw.
+ * Returns the user so the route can build a server-side actor (never trust a
+ * client-supplied `actor` for attribution).
+ */
+export async function requirePermission(
+  request: Request,
+  permission: Permission,
+): Promise<AuthUser> {
+  const user = await getCurrentUser(request);
+  if (!user) throw new Error("Unauthorized");
+  if (!hasPermission(user, permission)) throw new Error("Forbidden");
+  return user;
+}
+
+/** Build the attribution actor from the authenticated session (server-side). */
+export function actorFrom(user: AuthUser): { id: string; name: string; role: string } {
+  return { id: user.id, name: user.name, role: user.role };
 }

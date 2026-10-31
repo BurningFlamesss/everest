@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { getCurrentUser } from '@/lib/auth'
+import { actorFrom, requirePermission } from '@/lib/auth'
 import { publishPage } from '@/lib/website-content'
 import type { WebsitePageKey } from '@/types'
 
@@ -8,24 +8,15 @@ export const Route = createFileRoute('/api/website/pages/$key/publish')({
     handlers: {
       POST: async ({ params, request }) => {
         try {
-          const user = await getCurrentUser(request)
-          if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
-          
+          const user = await requirePermission(request, 'website.manage')
           const { key } = params
-          const body = await request.json()
-          const { actor } = body
-          
-          const actorData = actor || { id: user.id, name: user.name, role: user.role }
-          
-          const page = await publishPage(
-            key as WebsitePageKey,
-            actorData
-          )
-          
+          const page = await publishPage(key as WebsitePageKey, actorFrom(user))
           return Response.json({ page })
         } catch (error) {
-          console.error('Failed to publish page:', error)
-          return Response.json({ error: 'Failed to publish page' }, { status: 500 })
+          const message = error instanceof Error ? error.message : 'Failed to publish page'
+          const status = message === 'Unauthorized' ? 401 : message === 'Forbidden' ? 403 : 500
+          if (status === 500) console.error('Failed to publish page:', error)
+          return Response.json({ error: message }, { status })
         }
       },
     },

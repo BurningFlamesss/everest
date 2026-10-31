@@ -118,11 +118,28 @@ interface Actor {
   role: string;
 }
 
+/**
+ * Mark a page as having unpublished changes after any block/content mutation,
+ * so the "Unpublished changes" chip stays accurate regardless of which write
+ * path (section save, block edit, reorder, visibility, add/duplicate/delete)
+ * was used. Previously only saveSectionFields/updatePageSeo set this.
+ */
+async function markDirty(key: WebsitePageKey, actor?: Actor): Promise<void> {
+  await prisma.websitePage.update({
+    where: { key },
+    data: {
+      updatedAt: new Date(),
+      hasUnpublishedChanges: true,
+      ...(actor ? { updatedBy: actor.name } : {}),
+    },
+  });
+}
+
 export async function updateBlockFields(
   key: WebsitePageKey,
   blockId: string,
   fields: Record<string, unknown>,
-  _actor: Actor,
+  actor?: Actor,
 ): Promise<WebsitePage> {
   const page = await findPage(key);
   const block = page.blocks.find((b) => b.id === blockId);
@@ -132,6 +149,7 @@ export async function updateBlockFields(
     where: { id: blockId },
     data: { fields: fields as any, updatedAt: new Date() },
   });
+  await markDirty(key, actor);
 
   const updatedPage = await getWebsitePage(key);
   if (!updatedPage) throw new Error("Page not found after update");
@@ -141,7 +159,7 @@ export async function updateBlockFields(
 export async function toggleBlockVisibility(
   key: WebsitePageKey,
   blockId: string,
-  _actor: Actor,
+  actor?: Actor,
 ): Promise<WebsitePage> {
   const page = await findPage(key);
   const block = page.blocks.find((b) => b.id === blockId);
@@ -151,6 +169,7 @@ export async function toggleBlockVisibility(
     where: { id: blockId },
     data: { visible: !block.visible, updatedAt: new Date() },
   });
+  await markDirty(key, actor);
 
   const updatedPage = await getWebsitePage(key);
   if (!updatedPage) throw new Error("Page not found after update");
@@ -161,7 +180,7 @@ export async function moveBlock(
   key: WebsitePageKey,
   blockId: string,
   direction: "up" | "down",
-  _actor: Actor,
+  actor?: Actor,
 ): Promise<WebsitePage> {
   const page = await findPage(key);
   const sorted = [...page.blocks].sort((a, b) => a.order - b.order);
@@ -182,6 +201,7 @@ export async function moveBlock(
       })
     )
   );
+  await markDirty(key, actor);
 
   const updatedPage = await getWebsitePage(key);
   if (!updatedPage) throw new Error("Page not found after update");
@@ -191,7 +211,7 @@ export async function moveBlock(
 export async function reorderBlocks(
   key: WebsitePageKey,
   orderedIds: string[],
-  _actor: Actor,
+  actor?: Actor,
 ): Promise<WebsitePage> {
 
   await prisma.$transaction(
@@ -202,6 +222,7 @@ export async function reorderBlocks(
       })
     )
   );
+  await markDirty(key, actor);
 
   const updatedPage = await getWebsitePage(key);
   if (!updatedPage) throw new Error("Page not found after update");
@@ -323,7 +344,7 @@ const BLOCK_LIBRARY_DEFAULTS: Record<BlockType, Record<string, unknown>> = {
   ...SECTION_DEFAULTS,
 };
 
-export async function addBlock(key: WebsitePageKey, type: BlockType, _actor: Actor): Promise<WebsitePage> {
+export async function addBlock(key: WebsitePageKey, type: BlockType, actor?: Actor): Promise<WebsitePage> {
   const page = await findPage(key);
   const defaults = BLOCK_LIBRARY_DEFAULTS[type];
   if (!defaults) throw new Error("Unknown block type");
@@ -340,13 +361,14 @@ export async function addBlock(key: WebsitePageKey, type: BlockType, _actor: Act
       pageId: page.id,
     },
   });
+  await markDirty(key, actor);
 
   const updatedPage = await getWebsitePage(key);
   if (!updatedPage) throw new Error("Page not found after update");
   return updatedPage;
 }
 
-export async function duplicateBlock(key: WebsitePageKey, blockId: string, _actor: Actor): Promise<WebsitePage> {
+export async function duplicateBlock(key: WebsitePageKey, blockId: string, actor?: Actor): Promise<WebsitePage> {
   const page = await findPage(key);
   const block = page.blocks.find((b) => b.id === blockId);
   if (!block) throw new Error("Block not found");
@@ -363,13 +385,14 @@ export async function duplicateBlock(key: WebsitePageKey, blockId: string, _acto
       pageId: page.id,
     },
   });
+  await markDirty(key, actor);
 
   const updatedPage = await getWebsitePage(key);
   if (!updatedPage) throw new Error("Page not found after update");
   return updatedPage;
 }
 
-export async function deleteBlock(key: WebsitePageKey, blockId: string, _actor: Actor): Promise<WebsitePage> {
+export async function deleteBlock(key: WebsitePageKey, blockId: string, actor?: Actor): Promise<WebsitePage> {
   const page = await findPage(key);
   const block = page.blocks.find((b) => b.id === blockId);
   if (!block) throw new Error("Block not found");
@@ -385,6 +408,7 @@ export async function deleteBlock(key: WebsitePageKey, blockId: string, _actor: 
       })
     )
   );
+  await markDirty(key, actor);
 
   const updatedPage = await getWebsitePage(key);
   if (!updatedPage) throw new Error("Page not found after update");

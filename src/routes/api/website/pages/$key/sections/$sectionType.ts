@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getCurrentUser } from "@/lib/auth";
+import { actorFrom, requirePermission } from "@/lib/auth";
 import { saveSectionFields } from "@/lib/website-content";
 import type { BlockType, WebsitePageKey } from "@/types";
 
@@ -10,38 +10,30 @@ export const Route = createFileRoute(
 		handlers: {
 			PATCH: async ({ params, request }) => {
 				try {
-					const user = await getCurrentUser(request);
-					if (!user)
-						return Response.json({ error: "Unauthorized" }, { status: 401 });
+					const user = await requirePermission(request, "website.manage");
 
 					const { key, sectionType } = params;
 					const body = await request.json();
-					const { fields, actor } = body;
+					const { fields } = body;
 
 					if (!fields) {
 						return Response.json({ error: "Invalid request" }, { status: 400 });
 					}
 
-					const actorData = actor || {
-						id: user.id,
-						name: user.name,
-						role: user.role,
-					};
-
 					const page = await saveSectionFields(
 						key as WebsitePageKey,
 						sectionType as BlockType,
 						fields,
-						actorData,
+						actorFrom(user),
 					);
 
 					return Response.json({ page });
 				} catch (error) {
-					console.error("Failed to update section:", error);
-					return Response.json(
-						{ error: "Failed to update section" },
-						{ status: 500 },
-					);
+					const message = error instanceof Error ? error.message : "Failed";
+					const status =
+						message === "Unauthorized" ? 401 : message === "Forbidden" ? 403 : 500;
+					if (status === 500) console.error("Failed to update section:", error);
+					return Response.json({ error: message }, { status });
 				}
 			},
 		},
