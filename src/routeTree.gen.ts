@@ -9,17 +9,58 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as NoticesRouteImport } from './routes/notices'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ClubsRouteImport } from './routes/clubs'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as NoticesIndexRouteImport } from './routes/notices.index'
+import { Route as EventsIndexRouteImport } from './routes/events.index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as NoticesSlugRouteImport } from './routes/notices.$slug'
+import { Route as EventsSlugRouteImport } from './routes/events.$slug'
+import { Route as AdminInvitesRouteImport } from './routes/admin/invites'
+import { Route as AdminDirectoryRouteImport } from './routes/admin/directory'
+import { Route as AdminContentRouteImport } from './routes/admin/content'
 import { Route as OnboardSignupRouteImport } from './routes/_onboard/signup'
+import { Route as OnboardResetPasswordRouteImport } from './routes/_onboard/reset-password'
 import { Route as OnboardLoginRouteImport } from './routes/_onboard/login'
+import { Route as OnboardForgotPasswordRouteImport } from './routes/_onboard/forgot-password'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as OnboardActivateTokenRouteImport } from './routes/_onboard/activate.$token'
+import { Route as OnboardActivateGuardianTokenRouteImport } from './routes/_onboard/activate.guardian.$token'
 
+const NoticesRoute = NoticesRouteImport.update({
+  id: '/notices',
+  path: '/notices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClubsRoute = ClubsRouteImport.update({
+  id: '/clubs',
+  path: '/clubs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -32,14 +73,64 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NoticesIndexRoute = NoticesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => NoticesRoute,
+} as any)
+const EventsIndexRoute = EventsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EventsRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const NoticesSlugRoute = NoticesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => NoticesRoute,
+} as any)
+const EventsSlugRoute = EventsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => EventsRoute,
+} as any)
+const AdminInvitesRoute = AdminInvitesRouteImport.update({
+  id: '/invites',
+  path: '/invites',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDirectoryRoute = AdminDirectoryRouteImport.update({
+  id: '/directory',
+  path: '/directory',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContentRoute = AdminContentRouteImport.update({
+  id: '/content',
+  path: '/content',
+  getParentRoute: () => AdminRoute,
+} as any)
 const OnboardSignupRoute = OnboardSignupRouteImport.update({
   id: '/_onboard/signup',
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardResetPasswordRoute = OnboardResetPasswordRouteImport.update({
+  id: '/_onboard/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardLoginRoute = OnboardLoginRouteImport.update({
   id: '/_onboard/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardForgotPasswordRoute = OnboardForgotPasswordRouteImport.update({
+  id: '/_onboard/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -52,82 +143,221 @@ const OnboardActivateTokenRoute = OnboardActivateTokenRouteImport.update({
   path: '/activate/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardActivateGuardianTokenRoute =
+  OnboardActivateGuardianTokenRouteImport.update({
+    id: '/_onboard/activate/guardian/$token',
+    path: '/activate/guardian/$token',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/clubs': typeof ClubsRoute
   '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/events': typeof EventsRouteWithChildren
+  '/notices': typeof NoticesRouteWithChildren
+  '/forgot-password': typeof OnboardForgotPasswordRoute
   '/login': typeof OnboardLoginRoute
+  '/reset-password': typeof OnboardResetPasswordRoute
   '/signup': typeof OnboardSignupRoute
+  '/admin/content': typeof AdminContentRoute
+  '/admin/directory': typeof AdminDirectoryRoute
+  '/admin/invites': typeof AdminInvitesRoute
+  '/events/$slug': typeof EventsSlugRoute
+  '/notices/$slug': typeof NoticesSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/events/': typeof EventsIndexRoute
+  '/notices/': typeof NoticesIndexRoute
   '/activate/$token': typeof OnboardActivateTokenRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/clubs': typeof ClubsRoute
   '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof OnboardForgotPasswordRoute
   '/login': typeof OnboardLoginRoute
+  '/reset-password': typeof OnboardResetPasswordRoute
   '/signup': typeof OnboardSignupRoute
+  '/admin/content': typeof AdminContentRoute
+  '/admin/directory': typeof AdminDirectoryRoute
+  '/admin/invites': typeof AdminInvitesRoute
+  '/events/$slug': typeof EventsSlugRoute
+  '/notices/$slug': typeof NoticesSlugRoute
+  '/admin': typeof AdminIndexRoute
+  '/events': typeof EventsIndexRoute
+  '/notices': typeof NoticesIndexRoute
   '/activate/$token': typeof OnboardActivateTokenRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/clubs': typeof ClubsRoute
   '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/events': typeof EventsRouteWithChildren
+  '/notices': typeof NoticesRouteWithChildren
+  '/_onboard/forgot-password': typeof OnboardForgotPasswordRoute
   '/_onboard/login': typeof OnboardLoginRoute
+  '/_onboard/reset-password': typeof OnboardResetPasswordRoute
   '/_onboard/signup': typeof OnboardSignupRoute
+  '/admin/content': typeof AdminContentRoute
+  '/admin/directory': typeof AdminDirectoryRoute
+  '/admin/invites': typeof AdminInvitesRoute
+  '/events/$slug': typeof EventsSlugRoute
+  '/notices/$slug': typeof NoticesSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/events/': typeof EventsIndexRoute
+  '/notices/': typeof NoticesIndexRoute
   '/_onboard/activate/$token': typeof OnboardActivateTokenRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_onboard/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
+    | '/clubs'
     | '/contact'
+    | '/dashboard'
+    | '/events'
+    | '/notices'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/signup'
+    | '/admin/content'
+    | '/admin/directory'
+    | '/admin/invites'
+    | '/events/$slug'
+    | '/notices/$slug'
+    | '/admin/'
+    | '/events/'
+    | '/notices/'
     | '/activate/$token'
     | '/api/auth/$'
+    | '/activate/guardian/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/clubs'
     | '/contact'
+    | '/dashboard'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/signup'
+    | '/admin/content'
+    | '/admin/directory'
+    | '/admin/invites'
+    | '/events/$slug'
+    | '/notices/$slug'
+    | '/admin'
+    | '/events'
+    | '/notices'
     | '/activate/$token'
     | '/api/auth/$'
+    | '/activate/guardian/$token'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
+    | '/clubs'
     | '/contact'
+    | '/dashboard'
+    | '/events'
+    | '/notices'
+    | '/_onboard/forgot-password'
     | '/_onboard/login'
+    | '/_onboard/reset-password'
     | '/_onboard/signup'
+    | '/admin/content'
+    | '/admin/directory'
+    | '/admin/invites'
+    | '/events/$slug'
+    | '/notices/$slug'
+    | '/admin/'
+    | '/events/'
+    | '/notices/'
     | '/_onboard/activate/$token'
     | '/api/auth/$'
+    | '/_onboard/activate/guardian/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  ClubsRoute: typeof ClubsRoute
   ContactRoute: typeof ContactRoute
+  DashboardRoute: typeof DashboardRoute
+  EventsRoute: typeof EventsRouteWithChildren
+  NoticesRoute: typeof NoticesRouteWithChildren
+  OnboardForgotPasswordRoute: typeof OnboardForgotPasswordRoute
   OnboardLoginRoute: typeof OnboardLoginRoute
+  OnboardResetPasswordRoute: typeof OnboardResetPasswordRoute
   OnboardSignupRoute: typeof OnboardSignupRoute
   OnboardActivateTokenRoute: typeof OnboardActivateTokenRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  OnboardActivateGuardianTokenRoute: typeof OnboardActivateGuardianTokenRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/notices': {
+      id: '/notices'
+      path: '/notices'
+      fullPath: '/notices'
+      preLoaderRoute: typeof NoticesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clubs': {
+      id: '/clubs'
+      path: '/clubs'
+      fullPath: '/clubs'
+      preLoaderRoute: typeof ClubsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -144,6 +374,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notices/': {
+      id: '/notices/'
+      path: '/'
+      fullPath: '/notices/'
+      preLoaderRoute: typeof NoticesIndexRouteImport
+      parentRoute: typeof NoticesRoute
+    }
+    '/events/': {
+      id: '/events/'
+      path: '/'
+      fullPath: '/events/'
+      preLoaderRoute: typeof EventsIndexRouteImport
+      parentRoute: typeof EventsRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/notices/$slug': {
+      id: '/notices/$slug'
+      path: '/$slug'
+      fullPath: '/notices/$slug'
+      preLoaderRoute: typeof NoticesSlugRouteImport
+      parentRoute: typeof NoticesRoute
+    }
+    '/events/$slug': {
+      id: '/events/$slug'
+      path: '/$slug'
+      fullPath: '/events/$slug'
+      preLoaderRoute: typeof EventsSlugRouteImport
+      parentRoute: typeof EventsRoute
+    }
+    '/admin/invites': {
+      id: '/admin/invites'
+      path: '/invites'
+      fullPath: '/admin/invites'
+      preLoaderRoute: typeof AdminInvitesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/directory': {
+      id: '/admin/directory'
+      path: '/directory'
+      fullPath: '/admin/directory'
+      preLoaderRoute: typeof AdminDirectoryRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/content': {
+      id: '/admin/content'
+      path: '/content'
+      fullPath: '/admin/content'
+      preLoaderRoute: typeof AdminContentRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_onboard/signup': {
       id: '/_onboard/signup'
       path: '/signup'
@@ -151,11 +437,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardSignupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_onboard/reset-password': {
+      id: '/_onboard/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof OnboardResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_onboard/login': {
       id: '/_onboard/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof OnboardLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_onboard/forgot-password': {
+      id: '/_onboard/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof OnboardForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -172,17 +472,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardActivateTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_onboard/activate/guardian/$token': {
+      id: '/_onboard/activate/guardian/$token'
+      path: '/activate/guardian/$token'
+      fullPath: '/activate/guardian/$token'
+      preLoaderRoute: typeof OnboardActivateGuardianTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminContentRoute: typeof AdminContentRoute
+  AdminDirectoryRoute: typeof AdminDirectoryRoute
+  AdminInvitesRoute: typeof AdminInvitesRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminContentRoute: AdminContentRoute,
+  AdminDirectoryRoute: AdminDirectoryRoute,
+  AdminInvitesRoute: AdminInvitesRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface EventsRouteChildren {
+  EventsSlugRoute: typeof EventsSlugRoute
+  EventsIndexRoute: typeof EventsIndexRoute
+}
+
+const EventsRouteChildren: EventsRouteChildren = {
+  EventsSlugRoute: EventsSlugRoute,
+  EventsIndexRoute: EventsIndexRoute,
+}
+
+const EventsRouteWithChildren =
+  EventsRoute._addFileChildren(EventsRouteChildren)
+
+interface NoticesRouteChildren {
+  NoticesSlugRoute: typeof NoticesSlugRoute
+  NoticesIndexRoute: typeof NoticesIndexRoute
+}
+
+const NoticesRouteChildren: NoticesRouteChildren = {
+  NoticesSlugRoute: NoticesSlugRoute,
+  NoticesIndexRoute: NoticesIndexRoute,
+}
+
+const NoticesRouteWithChildren =
+  NoticesRoute._addFileChildren(NoticesRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
+  ClubsRoute: ClubsRoute,
   ContactRoute: ContactRoute,
+  DashboardRoute: DashboardRoute,
+  EventsRoute: EventsRouteWithChildren,
+  NoticesRoute: NoticesRouteWithChildren,
+  OnboardForgotPasswordRoute: OnboardForgotPasswordRoute,
   OnboardLoginRoute: OnboardLoginRoute,
+  OnboardResetPasswordRoute: OnboardResetPasswordRoute,
   OnboardSignupRoute: OnboardSignupRoute,
   OnboardActivateTokenRoute: OnboardActivateTokenRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  OnboardActivateGuardianTokenRoute: OnboardActivateGuardianTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

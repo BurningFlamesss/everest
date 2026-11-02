@@ -46,3 +46,13 @@ export const InviteType = {
 } as const
 
 export type InviteType = (typeof InviteType)[keyof typeof InviteType]
+
+
+export const NoticeAudience = {
+  ALL: 'ALL',
+  STUDENTS: 'STUDENTS',
+  STAFF: 'STAFF',
+  GUARDIANS: 'GUARDIANS'
+} as const
+
+export type NoticeAudience = (typeof NoticeAudience)[keyof typeof NoticeAudience]

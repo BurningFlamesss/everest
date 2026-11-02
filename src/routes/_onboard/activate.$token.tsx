@@ -4,6 +4,9 @@ import {
 	redirect,
 	useNavigate,
 } from "@tanstack/react-router";
+import { KeyRound, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { AuthShell, Field, FormError } from "#/components/auth/AuthShell.tsx";
 import { ERROR } from "#/lib/error.ts";
 import { authClient } from "#/packages/auth/auth-client.ts";
 import { activateInvite } from "#/packages/auth/server/activate-invite.ts";
@@ -35,18 +38,28 @@ export const Route = createFileRoute("/_onboard/activate/$token")({
 		return invite;
 	},
 	notFoundComponent: () => {
-		return <>This invite link doesn't exists.</>;
+		return (
+			<AuthShell title="Invitation not found">
+				<p className="text-sm text-gray-600">
+					This invitation link does not exist. Ask an administrator to send a
+					new one.
+				</p>
+			</AuthShell>
+		);
 	},
 	errorComponent: ({ error }) => {
-		if (error.message === ERROR.INVITATION_USED) {
-			return <div>This invitation has already been used.</div>;
-		}
+		const message =
+			error.message === ERROR.INVITATION_USED
+				? "This invitation has already been used. Try signing in instead."
+				: error.message === ERROR.INVITATION_EXPIRED
+					? "This invitation has expired. Ask an administrator for a new link."
+					: "Something went wrong while loading this invitation.";
 
-		if (error.message === ERROR.INVITATION_EXPIRED) {
-			return <div>This invitation has expired.</div>;
-		}
-
-		return <div>Something went wrong.</div>;
+		return (
+			<AuthShell title="This link can't be used">
+				<p className="text-sm text-gray-600">{message}</p>
+			</AuthShell>
+		);
 	},
 	component: RouteComponent,
 });
@@ -54,19 +67,28 @@ export const Route = createFileRoute("/_onboard/activate/$token")({
 function RouteComponent() {
 	const invite = Route.useLoaderData();
 	const navigate = useNavigate();
+	const [error, setError] = useState("");
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setError("");
 
 		const formData = new FormData(e.currentTarget);
-		const password = formData.get("password") as string;
-		const confirmPassword = formData.get("confirmPassword") as string;
+		const password = String(formData.get("password") ?? "");
+		const confirmPassword = String(formData.get("confirmPassword") ?? "");
 
-		if (password !== confirmPassword) {
-			// TODO: show error in the UI
-			console.log("Password doesnot match");
+		if (password.length < 8) {
+			setError("Use at least 8 characters for your password.");
 			return;
 		}
+
+		if (password !== confirmPassword) {
+			setError("The two passwords do not match.");
+			return;
+		}
+
+		setIsSubmitting(true);
 
 		try {
 			const response = await activateInvite({
@@ -77,7 +99,7 @@ function RouteComponent() {
 			});
 
 			if (!response.success) {
-				console.log("Failed to set password");
+				setError("We could not activate this account. Please try again.");
 				return;
 			}
 
@@ -87,38 +109,84 @@ function RouteComponent() {
 			});
 
 			if (signInRes.error) {
-				console.error(signInRes.error);
+				await navigate({ to: "/login" });
 				return;
 			}
 
-			console.log("Successfully! Activated the account");
+			await navigate({ to: "/" });
+		} catch (activationError) {
+			const message =
+				activationError instanceof Error ? activationError.message : "";
 
-			navigate({ to: "/" });
-		} catch (error) {
-			console.error("CLIENT error:", error);
+			if (message === "INVITE_ALREADY_USED") {
+				setError("This invitation has already been used.");
+			} else if (message === "INVITE_EXPIRED") {
+				setError("This invitation has expired.");
+			} else if (message === "Account already has a password") {
+				setError("This account already has a password. Sign in instead.");
+			} else {
+				setError("Something went wrong. Please try again.");
+			}
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
 	return (
-		<div>
-			<h1>Activate Account:</h1>
+		<AuthShell
+			badge="Activate account"
+			title={`Welcome, ${invite.user.name}`}
+			subtitle="Choose a password to finish setting up your account."
+			footer={
+				<p className="text-xs text-gray-500">
+					This invitation expires{" "}
+					{new Date(invite.expiresAt).toLocaleDateString(undefined, {
+						dateStyle: "medium",
+					})}
+					.
+				</p>
+			}
+		>
+			<form onSubmit={handleSubmit} className="space-y-4">
+				<FormError message={error} />
 
-			<div>
-				<p>{invite.user.name}</p>
-				<p>{invite.user.email}</p>
-			</div>
+				<div className="rounded-xl bg-gray-50 p-4 text-sm">
+					<p className="font-medium text-gray-900">{invite.user.name}</p>
+					<p className="text-gray-500">{invite.user.email}</p>
+				</div>
 
-			<form onSubmit={handleSubmit}>
-				<input type="password" name="password" placeholder="Password" />
-
-				<input
+				<Field
+					label="New password"
+					type="password"
+					name="password"
+					autoComplete="new-password"
+					placeholder="At least 8 characters"
+					minLength={8}
+					required
+				/>
+				<Field
+					label="Confirm password"
 					type="password"
 					name="confirmPassword"
-					placeholder="Confirm Password"
+					autoComplete="new-password"
+					placeholder="Repeat your password"
+					minLength={8}
+					required
 				/>
 
-				<button type="submit">Activate Account</button>
+				<button
+					type="submit"
+					disabled={isSubmitting}
+					className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-red-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
+				>
+					{isSubmitting ? (
+						<Loader2 className="h-4 w-4 animate-spin" />
+					) : (
+						<KeyRound className="h-4 w-4" />
+					)}
+					{isSubmitting ? "Activating…" : "Activate account"}
+				</button>
 			</form>
-		</div>
+		</AuthShell>
 	);
 }

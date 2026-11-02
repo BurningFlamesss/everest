@@ -20,16 +20,32 @@ ScMS is a all-in-one system to manage the operations, events, notices, users, at
 
 ---
 
-### Routes 
+### Routes
 
-The current version have: 
+Public routes:
 
-1. Landing Page (/) with three sections; Hero, Overview, and Footer,
-2. About Page (/about) with one sentence of information related to the school, 
-3. Contact Page (/contact) with two ways to contact (DUMMY),
-4. Signup Page (/signup) with name and email field to generate a invite link (In the next version, except for the server fn, /signup route won't be a thing since invites will be managed by the Admins), also in this version, you can register without any verification but since in future version, it's gonna be carried out on a invite basis only, it shouldn't matter for this moment,
-5. Activate Page (/activate/:token) with validation and activation of the account logic, and 
-6. Login Page (/login) with working login functionality.
+1. Landing Page (`/`) with Hero, Overview, and Footer sections.
+2. About Page (`/about`).
+3. Contact Page (`/contact`).
+4. Notices (`/notices`, `/notices/:slug`).
+5. Events (`/events`, `/events/:slug`).
+6. Clubs (`/clubs`).
+
+Authentication and onboarding:
+
+1. Signup (`/signup`) — public invite request kept for backward compatibility.
+2. Activate (`/activate/:token`) — staff/student account activation.
+3. Guardian activation (`/activate/guardian/:token`).
+4. Login (`/login`).
+5. Forgot password (`/forgot-password`) and reset password (`/reset-password`).
+
+Signed-in area:
+
+1. Dashboard (`/dashboard`) with role-aware summaries.
+2. Admin overview (`/admin`).
+3. Invitations (`/admin/invites`) — staff, student, and guardian invitations, plus CSV bulk import.
+4. Directory (`/admin/directory`) — students, staff, and guardians.
+5. Content management (`/admin/content`) — create and manage notices, events, and clubs.
 
 ## Introduction & Till What I reached
 
@@ -39,17 +55,23 @@ ScMS started as a highly ambitious project, due to the time constraint, and my a
 
 - Modular Architecture (Data consuming logic, Static and Dynamic Data distinction (Json vs Zustand))
 - Schema, Seed, and Docker Config
-- User Signup/Activate/Login flow (with working prototype)
-- Landing Page (With Hero, Overview and Footer)
-- Sidebar (With Proper Layout, Collapsing Logic)
-...many more
+- User Signup/Activate/Login flow, password reset, and email verification
+- Email delivery through Nodemailer with graceful fallback when mail is not configured
+- Admin-driven invitation flow for staff, students, and guardians, including revocation
+- CSV imports for staff and students with column mapping, validation, previews, and bulk creation
+- Admin dashboard, directory, and content management screens
+- Notices, events, and clubs (public pages and admin CRUD)
+- Landing, About, and Contact pages
+- Sidebar (with proper layout and collapsing logic)
+- Unit tests for the CSV import pipeline (`npm test`)
 
 ## What is Incomplete? (or, What is left?)
 
-- Admin driven Invitation Flow
-- Proper Layout and Content in About, Contact Page (Incl. Onboarding Page's UI)
-- Proper Content and Ultimate features like; Club, Events, Notices, etc 
-...a lot more
+- Attendance, transportation, courses, and classroom modules (not yet started; there are no schema models or routes for them)
+- Fine-grained per-role permissions beyond the current admin guards
+- File uploads (images/attachments) for notices, events, and clubs
+- A public invitation-request workflow (the legacy `/signup` route still creates invites directly; admins can use `/admin/invites` instead)
+- Automated database migrations (the project currently uses `npm run db:push`)
 
 ## Tech Stack
 
@@ -62,8 +84,6 @@ ScMS started as a highly ambitious project, due to the time constraint, and my a
 - T3env
 - Biome
 - Docker
-
-// In the Next Version
 - Papaparse
 - Nodemailer
 - Zustand with Immer
@@ -87,7 +107,7 @@ Step 4: Setup local database provider using docker  (OPTIONAL, If you are using 
 docker compose up -d
 ```
 
-Step 5: Generate and Push the prisma schema and then generate seed for SUPERADMIN account (Make sure to update /src/packages/auth/server/create-invite.ts ORGANIZATION_ID & BRANCH_ID with the respective field in your local database. You can see the data via `npm run db:studio`)
+Step 5: Generate and push the Prisma schema, then seed the superadmin account and starter content
 ```bash
 npm run db:generate
 npm run db:push
@@ -98,4 +118,9 @@ Step 6: Run either the dev server or the production server
 ```bash
 npm run dev
 npm run build
+```
+
+Step 7: Run the test suite
+```bash
+npm test
 ```

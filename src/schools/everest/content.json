@@ -1,12 +1,27 @@
 {
 	"sidebar": {
-		"logo": "../../../schools/everest/logo.png",
+		"logo": "/schools/everest/logo.png",
 		"tagline": "Goated Education",
 		"collapsible": {
 			"about": {
 				"id": "about",
 				"label": "About Everest",
 				"href": "/about"
+			},
+			"notices": {
+				"id": "notices",
+				"label": "Notices",
+				"href": "/notices"
+			},
+			"events": {
+				"id": "events",
+				"label": "Events",
+				"href": "/events"
+			},
+			"clubs": {
+				"id": "clubs",
+				"label": "Clubs",
+				"href": "/clubs"
 			},
 			"contact": {
 				"id": "contact",

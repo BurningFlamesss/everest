@@ -51,7 +51,7 @@ async function main() {
     }
   })
 
-  const staff = await prisma.staff.upsert({
+  await prisma.staff.upsert({
     where: {
       userId: user.id
     },
@@ -64,7 +64,7 @@ async function main() {
     }
   })
 
-  const role = await prisma.userRole.upsert({
+  await prisma.userRole.upsert({
     where: {
       userId_organizationId_role: {
         userId: user.id,
@@ -81,7 +81,12 @@ async function main() {
     }
   })
 
-  const invite = await prisma.invite.create({
+  // The super admin should not receive a fresh invite on every seed run.
+  const existingInvite = await prisma.invite.findFirst({
+    where: { userId: user.id, usedAt: null },
+  })
+
+  const invite = existingInvite ?? await prisma.invite.create({
     data: {
 			token: crypto.randomUUID(),
 			userId: user.id,
@@ -90,6 +95,61 @@ async function main() {
 				Date.now() + 1000 * 60 * 60 * 24 * 7,
 			),
 		},
+  })
+
+  // A small set of starter content so the public pages are never empty.
+  await prisma.notice.upsert({
+    where: { slug: "welcome-to-the-new-school-year" },
+    update: {},
+    create: {
+      title: "Welcome to the new school year",
+      slug: "welcome-to-the-new-school-year",
+      summary:
+        "The school office shares the key dates and reminders for the start of the academic session.",
+      body:
+        "Welcome back, everyone.\n\nClasses resume on the first working day of the new session. Students should arrive by 9:00 with their uniforms, notebooks and a completed emergency contact form.\n\nThe office will publish the full calendar, including examination dates and parent meetings, under Events. Please check the Notices page regularly for updates.",
+      category: "General",
+      audience: "ALL",
+      isPublished: true,
+      publishedAt: new Date(),
+      organizationId: organization.id,
+      branchId: branch.id,
+      authorId: user.id,
+    },
+  })
+
+  await prisma.event.upsert({
+    where: { slug: "parent-teacher-meeting" },
+    update: {},
+    create: {
+      title: "Parent–teacher meeting",
+      slug: "parent-teacher-meeting",
+      description:
+        "A chance for guardians to meet class teachers and review the first term's progress.",
+      location: "Main hall",
+      startsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 21),
+      endsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 21 + 1000 * 60 * 60 * 3),
+      isPublished: true,
+      publishedAt: new Date(),
+      organizationId: organization.id,
+      branchId: branch.id,
+      authorId: user.id,
+    },
+  })
+
+  await prisma.club.upsert({
+    where: { slug: "science-club" },
+    update: {},
+    create: {
+      name: "Science Club",
+      slug: "science-club",
+      description:
+        "Student-led experiments, science exhibitions and preparation for regional competitions.",
+      meetingSchedule: "Fridays, 2:00 – 3:00",
+      isActive: true,
+      organizationId: organization.id,
+      branchId: branch.id,
+    },
   })
 
   console.log(`

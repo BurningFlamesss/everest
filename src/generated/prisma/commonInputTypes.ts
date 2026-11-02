@@ -216,6 +216,23 @@ export type EnumInviteTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumInviteTypeFilter<$PrismaModel>
 }
 
+export type EnumNoticeAudienceFilter<$PrismaModel = never> = {
+  equals?: $Enums.NoticeAudience | Prisma.EnumNoticeAudienceFieldRefInput<$PrismaModel>
+  in?: $Enums.NoticeAudience[] | Prisma.ListEnumNoticeAudienceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.NoticeAudience[] | Prisma.ListEnumNoticeAudienceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumNoticeAudienceFilter<$PrismaModel> | $Enums.NoticeAudience
+}
+
+export type EnumNoticeAudienceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.NoticeAudience | Prisma.EnumNoticeAudienceFieldRefInput<$PrismaModel>
+  in?: $Enums.NoticeAudience[] | Prisma.ListEnumNoticeAudienceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.NoticeAudience[] | Prisma.ListEnumNoticeAudienceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumNoticeAudienceWithAggregatesFilter<$PrismaModel> | $Enums.NoticeAudience
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumNoticeAudienceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumNoticeAudienceFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -429,6 +446,23 @@ export type NestedEnumInviteTypeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumInviteTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumInviteTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumNoticeAudienceFilter<$PrismaModel = never> = {
+  equals?: $Enums.NoticeAudience | Prisma.EnumNoticeAudienceFieldRefInput<$PrismaModel>
+  in?: $Enums.NoticeAudience[] | Prisma.ListEnumNoticeAudienceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.NoticeAudience[] | Prisma.ListEnumNoticeAudienceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumNoticeAudienceFilter<$PrismaModel> | $Enums.NoticeAudience
+}
+
+export type NestedEnumNoticeAudienceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.NoticeAudience | Prisma.EnumNoticeAudienceFieldRefInput<$PrismaModel>
+  in?: $Enums.NoticeAudience[] | Prisma.ListEnumNoticeAudienceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.NoticeAudience[] | Prisma.ListEnumNoticeAudienceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumNoticeAudienceWithAggregatesFilter<$PrismaModel> | $Enums.NoticeAudience
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumNoticeAudienceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumNoticeAudienceFilter<$PrismaModel>
 }
 
 

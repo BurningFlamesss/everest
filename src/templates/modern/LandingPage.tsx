@@ -1,10 +1,10 @@
-import { useCanvasVideo } from "#/hooks/useCanvasVideo.ts";
-import { useSchoolContent } from "#/packages/school/hook.tsx";
 import { Link } from "@tanstack/react-router";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { useCanvasVideo } from "#/hooks/useCanvasVideo.ts";
+import { useSchoolContent } from "#/packages/school/hook.tsx";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -113,13 +113,20 @@ export default function LandingPage() {
 							<span className="mb-2 text-[9px] uppercase tracking-[0.12em] text-yellow-400">
 								Explore
 							</span>
-							{["Home", "About", "Contact", "Signup"].map((item) => (
+							{[
+								{ label: "Home", to: "/" },
+								{ label: "About", to: "/about" },
+								{ label: "Notices", to: "/notices" },
+								{ label: "Events", to: "/events" },
+								{ label: "Contact", to: "/contact" },
+								{ label: "Signup", to: "/signup" },
+							].map((item) => (
 								<Link
-									key={item}
-									to={item}
+									key={item.to}
+									to={item.to}
 									className="text-white no-underline transition-colors hover:text-yellow-400"
 								>
-									{item}
+									{item.label}
 								</Link>
 							))}
 						</div>
@@ -145,13 +152,14 @@ export default function LandingPage() {
 	);
 }
 
-export function HeroCanvas({ scrollTrackRef }) {
-	const canvasRef = useRef(null);
+export function HeroCanvas({
+	scrollTrackRef,
+}: {
+	scrollTrackRef: React.RefObject<HTMLDivElement | null>;
+}) {
+	const canvasRef = useRef<HTMLCanvasElement>(null);
 
-	const { drawFrame, frameCount, isLoading, progress } = useCanvasVideo(
-		canvasRef,
-		216,
-	);
+	const { drawFrame, frameCount, isLoading } = useCanvasVideo(canvasRef, 216);
 
 	useEffect(() => {
 		if (isLoading) return;

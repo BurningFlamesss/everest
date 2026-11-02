@@ -82,3 +82,18 @@ export type Invite = Prisma.InviteModel
  * 
  */
 export type GuardianInvite = Prisma.GuardianInviteModel
+/**
+ * Model Notice
+ * 
+ */
+export type Notice = Prisma.NoticeModel
+/**
+ * Model Event
+ * 
+ */
+export type Event = Prisma.EventModel
+/**
+ * Model Club
+ * 
+ */
+export type Club = Prisma.ClubModel

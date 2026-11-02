@@ -1,81 +1,74 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { prisma } from "../../db";
+import {
+	createStaffInvite,
+	createStudentInvite,
+	InviteError,
+} from "#/packages/invite/invite-service.ts";
 
 const createInviteSchema = z.object({
-	name: z.string().min(1),
-	email: z.string().min(1),
+	name: z.string().trim().min(1, "Name is required"),
+	email: z.string().trim().email("Enter a valid email address"),
+	type: z.enum(["STAFF", "STUDENT"]).optional(),
+	designation: z.string().trim().optional(),
+	grade: z.string().trim().optional(),
+	section: z.string().trim().optional(),
+	sendEmail: z.boolean().optional(),
 });
 
-const ORGANIZATION_ID = "cmqkj1y6y00003cfphzpld8wd";
-const BRANCH_ID = "cmqkj1y7c00013cfpgumk851n";
-
+/**
+ * Legacy self-service invitation endpoint used by the onboarding screen.
+ *
+ * The admin console uses the role-protected actions in
+ * `src/packages/invite/server.ts` instead.
+ */
 export const createInvite = createServerFn()
 	.validator(createInviteSchema)
 	.handler(async ({ data }) => {
-		const { email, name } = data;
-
 		try {
-			const user = await prisma.user.upsert({
-				where: {
-					email,
-				},
-				update: {},
-				create: {
-					id: crypto.randomUUID(),
-					name,
-					email,
-					emailVerified: true,
-				},
-			});
-
-			const staff = await prisma.staff.upsert({
-				where: {
-					userId: user.id,
-				},
-				update: {},
-				create: {
-					userId: user.id,
-					organizationId: ORGANIZATION_ID,
-					branchId: BRANCH_ID,
-					designation: "Tester",
-				},
-			});
-
-			const role = await prisma.userRole.upsert({
-				where: {
-					userId_organizationId_role: {
-						userId: user.id,
-						organizationId: ORGANIZATION_ID,
-						role: "STAFF",
-					},
-				},
-				update: {},
-				create: {
-					userId: user.id,
-					organizationId: ORGANIZATION_ID,
-					branchId: BRANCH_ID,
-					role: "STAFF",
-				},
-			});
-
-			const invite = await prisma.invite.create({
-				data: {
-					token: crypto.randomUUID(),
-					userId: user.id,
-					type: "STAFF",
-					expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-				},
-			});
+			const invite =
+				data.type === "STUDENT"
+					? await createStudentInvite({
+							name: data.name,
+							email: data.email,
+							grade: data.grade,
+							section: data.section,
+							sendEmail: data.sendEmail,
+						})
+					: await createStaffInvite({
+							name: data.name,
+							email: data.email,
+							designation: data.designation,
+							sendEmail: data.sendEmail,
+						});
 
 			return {
-				invite,
+				invite: {
+					id: invite.id,
+					token: invite.token,
+					type: invite.type,
+					expiresAt: invite.expiresAt,
+					url: invite.url,
+				},
 				success: true,
 			};
 		} catch (error) {
+			if (error instanceof InviteError) {
+				return {
+					invite: null,
+					success: false,
+					error: error.message,
+					code: error.code,
+				};
+			}
+
+			console.error("Could not create invite:", error);
+
 			return {
 				invite: null,
 				success: false,
+				error: "Could not create the invitation",
+				code: "INTERNAL_ERROR",
 			};
 		}
 	});

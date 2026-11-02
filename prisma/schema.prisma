@@ -56,6 +56,8 @@ model User {
   activatedAt DateTime?
   invites     Invite[]
 
+  guardianInvites GuardianInvite[]
+
   @@unique([email])
   @@map("user")
 }
@@ -272,11 +274,102 @@ model GuardianInvite {
 
   token String @unique
 
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
   studentId String
   student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  relation  String  @default("Guardian")
+  isPrimary Boolean @default(false)
 
   expiresAt DateTime
   usedAt    DateTime?
 
   createdAt DateTime @default(now())
+
+  @@index([studentId])
+  @@index([userId])
+}
+
+enum NoticeAudience {
+  ALL
+  STUDENTS
+  STAFF
+  GUARDIANS
+}
+
+model Notice {
+  id String @id @default(cuid())
+
+  organizationId String?
+  branchId       String?
+
+  title   String
+  slug    String @unique
+  summary String?
+  body    String
+  category String?
+
+  audience NoticeAudience @default(ALL)
+
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+  expiresAt   DateTime?
+
+  authorId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isPublished, publishedAt])
+  @@index([organizationId, branchId])
+}
+
+model Event {
+  id String @id @default(cuid())
+
+  organizationId String?
+  branchId       String?
+
+  title       String
+  slug        String @unique
+  description String?
+  location    String?
+  coverImage  String?
+
+  startsAt DateTime
+  endsAt   DateTime?
+
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+
+  authorId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isPublished, startsAt])
+  @@index([organizationId, branchId])
+}
+
+model Club {
+  id String @id @default(cuid())
+
+  organizationId String?
+  branchId       String?
+
+  name        String
+  slug        String @unique
+  description String?
+  meetingSchedule String?
+  coverImage  String?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([organizationId, branchId])
 }

@@ -31,11 +31,14 @@ export interface SidebarContent {
 	tagline: string;
 	collapsible: {
 		about: ItemDetail;
-		courses: ItemDetail;
-		facilities: ItemDetail;
-		gallery: ItemDetail;
-		moreInfo: ItemDetail;
+		courses?: ItemDetail;
+		facilities?: ItemDetail;
+		gallery?: ItemDetail;
+		moreInfo?: ItemDetail;
 		contact: ItemDetail;
+		notices?: ItemDetail;
+		events?: ItemDetail;
+		clubs?: ItemDetail;
 	};
 }
 

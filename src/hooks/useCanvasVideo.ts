@@ -16,6 +16,9 @@ export function useCanvasVideo(
 	useEffect(() => {
 		const loadedImages: Array<HTMLImageElement> = [];
 		let loadCounter = 0;
+		let cancelled = false;
+
+		setLoadedCount(0);
 
 		for (let index = 1; index <= frameCount; index++) {
 			const img = new Image();
@@ -24,15 +27,31 @@ export function useCanvasVideo(
 			const filename = `${imagePrefix}${padNumber(index)}${imageExtension}`;
 			img.src = `${imageFolder}${filename}`;
 
-			img.onload = () => {
+			const markLoaded = () => {
+				if (cancelled) return;
 				loadCounter++;
 				setLoadedCount(loadCounter);
+			};
+
+			img.onload = markLoaded;
+			img.onerror = () => {
+				console.warn(`[hero] Could not load ${img.src}`);
+				markLoaded();
 			};
 
 			savedImages.current[index - 1] = img;
 
 			loadedImages.push(img);
 		}
+
+		return () => {
+			cancelled = true;
+
+			for (const image of loadedImages) {
+				image.onload = null;
+				image.onerror = null;
+			}
+		};
 	}, [frameCount, imageFolder]);
 
 	const drawFrame = (index: number) => {

@@ -63,7 +63,10 @@ export const ModelName = {
   Guardian: 'Guardian',
   GuardianStudent: 'GuardianStudent',
   Invite: 'Invite',
-  GuardianInvite: 'GuardianInvite'
+  GuardianInvite: 'GuardianInvite',
+  Notice: 'Notice',
+  Event: 'Event',
+  Club: 'Club'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -254,13 +257,75 @@ export type InviteScalarFieldEnum = (typeof InviteScalarFieldEnum)[keyof typeof 
 export const GuardianInviteScalarFieldEnum = {
   id: 'id',
   token: 'token',
+  userId: 'userId',
   studentId: 'studentId',
+  relation: 'relation',
+  isPrimary: 'isPrimary',
   expiresAt: 'expiresAt',
   usedAt: 'usedAt',
   createdAt: 'createdAt'
 } as const
 
 export type GuardianInviteScalarFieldEnum = (typeof GuardianInviteScalarFieldEnum)[keyof typeof GuardianInviteScalarFieldEnum]
+
+
+export const NoticeScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  branchId: 'branchId',
+  title: 'title',
+  slug: 'slug',
+  summary: 'summary',
+  body: 'body',
+  category: 'category',
+  audience: 'audience',
+  isPublished: 'isPublished',
+  publishedAt: 'publishedAt',
+  expiresAt: 'expiresAt',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NoticeScalarFieldEnum = (typeof NoticeScalarFieldEnum)[keyof typeof NoticeScalarFieldEnum]
+
+
+export const EventScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  branchId: 'branchId',
+  title: 'title',
+  slug: 'slug',
+  description: 'description',
+  location: 'location',
+  coverImage: 'coverImage',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  isPublished: 'isPublished',
+  publishedAt: 'publishedAt',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+
+
+export const ClubScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  branchId: 'branchId',
+  name: 'name',
+  slug: 'slug',
+  description: 'description',
+  meetingSchedule: 'meetingSchedule',
+  coverImage: 'coverImage',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClubScalarFieldEnum = (typeof ClubScalarFieldEnum)[keyof typeof ClubScalarFieldEnum]
 
 
 export const SortOrder = {

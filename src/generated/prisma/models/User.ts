@@ -213,6 +213,7 @@ export type UserWhereInput = {
   staff?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
   guardian?: Prisma.XOR<Prisma.GuardianNullableScalarRelationFilter, Prisma.GuardianWhereInput> | null
   invites?: Prisma.InviteListRelationFilter
+  guardianInvites?: Prisma.GuardianInviteListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -231,6 +232,7 @@ export type UserOrderByWithRelationInput = {
   staff?: Prisma.StaffOrderByWithRelationInput
   guardian?: Prisma.GuardianOrderByWithRelationInput
   invites?: Prisma.InviteOrderByRelationAggregateInput
+  guardianInvites?: Prisma.GuardianInviteOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -252,6 +254,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   staff?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
   guardian?: Prisma.XOR<Prisma.GuardianNullableScalarRelationFilter, Prisma.GuardianWhereInput> | null
   invites?: Prisma.InviteListRelationFilter
+  guardianInvites?: Prisma.GuardianInviteListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -298,6 +301,7 @@ export type UserCreateInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -316,6 +320,7 @@ export type UserUncheckedCreateInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -334,6 +339,7 @@ export type UserUpdateInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -352,6 +358,7 @@ export type UserUncheckedUpdateInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -423,6 +430,11 @@ export type UserMinOrderByAggregateInput = {
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -543,6 +555,22 @@ export type UserUpdateOneRequiredWithoutInvitesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInvitesInput, Prisma.UserUpdateWithoutInvitesInput>, Prisma.UserUncheckedUpdateWithoutInvitesInput>
 }
 
+export type UserCreateNestedOneWithoutGuardianInvitesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGuardianInvitesInput, Prisma.UserUncheckedCreateWithoutGuardianInvitesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGuardianInvitesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutGuardianInvitesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGuardianInvitesInput, Prisma.UserUncheckedCreateWithoutGuardianInvitesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGuardianInvitesInput
+  upsert?: Prisma.UserUpsertWithoutGuardianInvitesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGuardianInvitesInput, Prisma.UserUpdateWithoutGuardianInvitesInput>, Prisma.UserUncheckedUpdateWithoutGuardianInvitesInput>
+}
+
 export type UserCreateWithoutSessionsInput = {
   id: string
   name: string
@@ -558,6 +586,7 @@ export type UserCreateWithoutSessionsInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -575,6 +604,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -608,6 +638,7 @@ export type UserUpdateWithoutSessionsInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -625,6 +656,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -642,6 +674,7 @@ export type UserCreateWithoutAccountsInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -659,6 +692,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -692,6 +726,7 @@ export type UserUpdateWithoutAccountsInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -709,6 +744,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUserRolesInput = {
@@ -726,6 +762,7 @@ export type UserCreateWithoutUserRolesInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -743,6 +780,7 @@ export type UserUncheckedCreateWithoutUserRolesInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -776,6 +814,7 @@ export type UserUpdateWithoutUserRolesInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -793,6 +832,7 @@ export type UserUncheckedUpdateWithoutUserRolesInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutStudentInput = {
@@ -810,6 +850,7 @@ export type UserCreateWithoutStudentInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStudentInput = {
@@ -827,6 +868,7 @@ export type UserUncheckedCreateWithoutStudentInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStudentInput = {
@@ -860,6 +902,7 @@ export type UserUpdateWithoutStudentInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStudentInput = {
@@ -877,6 +920,7 @@ export type UserUncheckedUpdateWithoutStudentInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutStaffInput = {
@@ -894,6 +938,7 @@ export type UserCreateWithoutStaffInput = {
   student?: Prisma.StudentCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStaffInput = {
@@ -911,6 +956,7 @@ export type UserUncheckedCreateWithoutStaffInput = {
   student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStaffInput = {
@@ -944,6 +990,7 @@ export type UserUpdateWithoutStaffInput = {
   student?: Prisma.StudentUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStaffInput = {
@@ -961,6 +1008,7 @@ export type UserUncheckedUpdateWithoutStaffInput = {
   student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGuardianInput = {
@@ -978,6 +1026,7 @@ export type UserCreateWithoutGuardianInput = {
   student?: Prisma.StudentCreateNestedOneWithoutUserInput
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGuardianInput = {
@@ -995,6 +1044,7 @@ export type UserUncheckedCreateWithoutGuardianInput = {
   student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGuardianInput = {
@@ -1028,6 +1078,7 @@ export type UserUpdateWithoutGuardianInput = {
   student?: Prisma.StudentUpdateOneWithoutUserNestedInput
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGuardianInput = {
@@ -1045,6 +1096,7 @@ export type UserUncheckedUpdateWithoutGuardianInput = {
   student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutInvitesInput = {
@@ -1062,6 +1114,7 @@ export type UserCreateWithoutInvitesInput = {
   student?: Prisma.StudentCreateNestedOneWithoutUserInput
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInvitesInput = {
@@ -1079,6 +1132,7 @@ export type UserUncheckedCreateWithoutInvitesInput = {
   student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInvitesInput = {
@@ -1112,6 +1166,7 @@ export type UserUpdateWithoutInvitesInput = {
   student?: Prisma.StudentUpdateOneWithoutUserNestedInput
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInvitesInput = {
@@ -1129,6 +1184,95 @@ export type UserUncheckedUpdateWithoutInvitesInput = {
   student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutGuardianInvitesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutGuardianInvitesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutGuardianInvitesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutGuardianInvitesInput, Prisma.UserUncheckedCreateWithoutGuardianInvitesInput>
+}
+
+export type UserUpsertWithoutGuardianInvitesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutGuardianInvitesInput, Prisma.UserUncheckedUpdateWithoutGuardianInvitesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutGuardianInvitesInput, Prisma.UserUncheckedCreateWithoutGuardianInvitesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutGuardianInvitesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutGuardianInvitesInput, Prisma.UserUncheckedUpdateWithoutGuardianInvitesInput>
+}
+
+export type UserUpdateWithoutGuardianInvitesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutGuardianInvitesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1141,6 +1285,7 @@ export type UserCountOutputType = {
   accounts: number
   userRoles: number
   invites: number
+  guardianInvites: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1148,6 +1293,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
   userRoles?: boolean | UserCountOutputTypeCountUserRolesArgs
   invites?: boolean | UserCountOutputTypeCountInvitesArgs
+  guardianInvites?: boolean | UserCountOutputTypeCountGuardianInvitesArgs
 }
 
 /**
@@ -1188,6 +1334,13 @@ export type UserCountOutputTypeCountInvitesArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.InviteWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountGuardianInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GuardianInviteWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1205,6 +1358,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   staff?: boolean | Prisma.User$staffArgs<ExtArgs>
   guardian?: boolean | Prisma.User$guardianArgs<ExtArgs>
   invites?: boolean | Prisma.User$invitesArgs<ExtArgs>
+  guardianInvites?: boolean | Prisma.User$guardianInvitesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1250,6 +1404,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   staff?: boolean | Prisma.User$staffArgs<ExtArgs>
   guardian?: boolean | Prisma.User$guardianArgs<ExtArgs>
   invites?: boolean | Prisma.User$invitesArgs<ExtArgs>
+  guardianInvites?: boolean | Prisma.User$guardianInvitesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1265,6 +1420,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     staff: Prisma.$StaffPayload<ExtArgs> | null
     guardian: Prisma.$GuardianPayload<ExtArgs> | null
     invites: Prisma.$InvitePayload<ExtArgs>[]
+    guardianInvites: Prisma.$GuardianInvitePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1676,6 +1832,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   staff<T extends Prisma.User$staffArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$staffArgs<ExtArgs>>): Prisma.Prisma__StaffClient<runtime.Types.Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   guardian<T extends Prisma.User$guardianArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$guardianArgs<ExtArgs>>): Prisma.Prisma__GuardianClient<runtime.Types.Result.GetResult<Prisma.$GuardianPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   invites<T extends Prisma.User$invitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$invitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  guardianInvites<T extends Prisma.User$guardianInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$guardianInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GuardianInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2256,6 +2413,30 @@ export type User$invitesArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.InviteScalarFieldEnum | Prisma.InviteScalarFieldEnum[]
+}
+
+/**
+ * User.guardianInvites
+ */
+export type User$guardianInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GuardianInvite
+   */
+  select?: Prisma.GuardianInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GuardianInvite
+   */
+  omit?: Prisma.GuardianInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GuardianInviteInclude<ExtArgs> | null
+  where?: Prisma.GuardianInviteWhereInput
+  orderBy?: Prisma.GuardianInviteOrderByWithRelationInput | Prisma.GuardianInviteOrderByWithRelationInput[]
+  cursor?: Prisma.GuardianInviteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GuardianInviteScalarFieldEnum | Prisma.GuardianInviteScalarFieldEnum[]
 }
 
 /**
