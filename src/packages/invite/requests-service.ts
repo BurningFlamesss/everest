@@ -20,25 +20,35 @@ export interface CreateInviteRequestInput {
 export async function createInviteRequest(input: CreateInviteRequestInput) {
 	const email = normalizeEmail(input.email);
 	const name = input.name.trim();
+	const message = input.message?.trim() || null;
 
-	const existing = await prisma.inviteRequest.findFirst({
-		where: { email, type: input.type, status: "PENDING" },
-	});
+	// Two simultaneous submissions for the same address must not both create a
+	// pending request. The advisory lock is scoped to this transaction, so it
+	// serialises the check-and-create pair without needing a schema constraint
+	// that would also block re-requesting after a rejection.
+	const request = await prisma.$transaction(async (tx) => {
+		await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`invite-request:${input.type}:${email}`})::bigint)`;
 
-	if (existing) {
-		throw new InviteError(
-			"A request for this email is already waiting for review.",
-			"REQUEST_ALREADY_PENDING",
-		);
-	}
+		const existing = await tx.inviteRequest.findFirst({
+			where: { email, type: input.type, status: "PENDING" },
+			select: { id: true },
+		});
 
-	const request = await prisma.inviteRequest.create({
-		data: {
-			name,
-			email,
-			type: input.type,
-			message: input.message?.trim() || null,
-		},
+		if (existing) {
+			throw new InviteError(
+				"A request for this email is already waiting for review.",
+				"REQUEST_ALREADY_PENDING",
+			);
+		}
+
+		return tx.inviteRequest.create({
+			data: {
+				name,
+				email,
+				type: input.type,
+				message,
+			},
+		});
 	});
 
 	void sendMail({
@@ -48,7 +58,7 @@ export async function createInviteRequest(input: CreateInviteRequestInput) {
 			title: "New invitation request",
 			body: [
 				`${name} (${email}) requested ${input.type === "STUDENT" ? "student" : "staff"} access.`,
-				input.message?.trim() || "No message was included.",
+				message ?? "No message was included.",
 				"Open the admin invitations page to approve or reject this request.",
 			],
 			actionLabel: "Review requests",

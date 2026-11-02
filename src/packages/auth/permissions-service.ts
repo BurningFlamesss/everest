@@ -42,26 +42,70 @@ export interface RolePermissionSummary {
 	overrides: Array<{ permission: PermissionKey; granted: boolean }>;
 }
 
-export async function listPermissionUsers(): Promise<Array<PermissionUser>> {
-	const [users, roleDefaults] = await Promise.all([
-		prisma.user.findMany({
-			select: {
-				id: true,
-				name: true,
-				email: true,
-				activatedAt: true,
-				userRoles: { select: { role: true, branchId: true } },
-				permissions: {
-					select: { permission: true, granted: true },
-				},
-			},
-			orderBy: { name: "asc" },
-			take: 500,
-		}),
+export interface PermissionUserPage {
+	users: Array<PermissionUser>;
+	total: number;
+	page: number;
+	pageSize: number;
+	pageCount: number;
+}
+
+export const DEFAULT_PERMISSION_PAGE_SIZE = 25;
+export const MAX_PERMISSION_PAGE_SIZE = 100;
+
+/**
+ * Lists users with their effective permissions, one page at a time.
+ *
+ * The search matches name and email so an administrator can find any account
+ * without the list silently stopping at a fixed number of rows.
+ */
+export async function listPermissionUsers(options?: {
+	search?: string;
+	page?: number;
+	pageSize?: number;
+}): Promise<PermissionUserPage> {
+	const search = options?.search?.trim().slice(0, 100) ?? "";
+	const pageSize = Math.min(
+		Math.max(Math.floor(options?.pageSize ?? DEFAULT_PERMISSION_PAGE_SIZE), 1),
+		MAX_PERMISSION_PAGE_SIZE,
+	);
+	const requestedPage = Math.max(Math.floor(options?.page ?? 1), 1);
+
+	const where = search
+		? {
+				OR: [
+					{ name: { contains: search, mode: "insensitive" as const } },
+					{ email: { contains: search, mode: "insensitive" as const } },
+				],
+			}
+		: undefined;
+
+	const [total, roleDefaults] = await Promise.all([
+		prisma.user.count({ where }),
 		getRolePermissionDefaults(),
 	]);
 
-	return users.map((user) => {
+	const pageCount = Math.max(Math.ceil(total / pageSize), 1);
+	const page = Math.min(requestedPage, pageCount);
+
+	const users = await prisma.user.findMany({
+		where,
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			activatedAt: true,
+			userRoles: { select: { role: true, branchId: true } },
+			permissions: {
+				select: { permission: true, granted: true },
+			},
+		},
+		orderBy: [{ name: "asc" }, { id: "asc" }],
+		skip: (page - 1) * pageSize,
+		take: pageSize,
+	});
+
+	const mapped = users.map((user) => {
 		const roles = user.userRoles.map((role) => ({
 			role: role.role,
 			branchId: role.branchId,
@@ -106,6 +150,8 @@ export async function listPermissionUsers(): Promise<Array<PermissionUser>> {
 				})),
 		};
 	});
+
+	return { users: mapped, total, page, pageSize, pageCount };
 }
 
 export async function listRolePermissions(): Promise<

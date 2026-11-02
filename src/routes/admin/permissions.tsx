@@ -1,5 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
+	ChevronLeft,
+	ChevronRight,
 	Loader2,
 	RotateCcw,
 	Search,
@@ -56,6 +58,10 @@ function AdminPermissions() {
 	const [roles, setRoles] = useState<Array<RolePermissionSummary>>([]);
 	const [catalog, setCatalog] = useState<Array<PermissionDefinition>>([]);
 	const [search, setSearch] = useState("");
+	const [total, setTotal] = useState(0);
+	const [page, setPage] = useState(1);
+	const [pageCount, setPageCount] = useState(1);
+	const [pageSize, setPageSize] = useState(25);
 	const [isLoading, setIsLoading] = useState(true);
 	const [busyKey, setBusyKey] = useState("");
 	const [error, setError] = useState("");
@@ -63,7 +69,9 @@ function AdminPermissions() {
 
 	const load = useCallback(async () => {
 		setIsLoading(true);
-		const response = await getPermissionsDataFn();
+		const response = await getPermissionsDataFn({
+			data: { search: search.trim() || undefined, page },
+		});
 
 		if (!response.success) {
 			setError(response.error);
@@ -74,12 +82,21 @@ function AdminPermissions() {
 		setUsers(response.users as Array<PermissionUser>);
 		setRoles(response.roles as Array<RolePermissionSummary>);
 		setCatalog(response.catalog as Array<PermissionDefinition>);
+		setTotal(response.total);
+		setPage(response.page);
+		setPageCount(response.pageCount);
+		setPageSize(response.pageSize);
 		setError("");
 		setIsLoading(false);
-	}, []);
+	}, [search, page]);
 
 	useEffect(() => {
-		void load();
+		// Debounce typing so the list is not refetched on every keystroke.
+		const timer = setTimeout(() => {
+			void load();
+		}, 250);
+
+		return () => clearTimeout(timer);
 	}, [load]);
 
 	const toggle = async (
@@ -190,16 +207,6 @@ function AdminPermissions() {
 		await load();
 	};
 
-	const query = search.trim().toLowerCase();
-	const visibleUsers = query
-		? users.filter(
-				(user) =>
-					user.name.toLowerCase().includes(query) ||
-					user.email.toLowerCase().includes(query) ||
-					(user.primaryRole ?? "").toLowerCase().includes(query),
-			)
-		: users;
-
 	return (
 		<div className="space-y-8">
 			<div className="flex flex-wrap items-end justify-between gap-4">
@@ -214,7 +221,10 @@ function AdminPermissions() {
 					<Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
 					<input
 						value={search}
-						onChange={(event) => setSearch(event.target.value)}
+						onChange={(event) => {
+							setSearch(event.target.value);
+							setPage(1);
+						}}
 						placeholder="Search people…"
 						className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100"
 					/>
@@ -333,13 +343,13 @@ function AdminPermissions() {
 				<p className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-white p-6 text-sm text-gray-500">
 					<Loader2 className="h-4 w-4 animate-spin" /> Loading people…
 				</p>
-			) : visibleUsers.length === 0 ? (
+			) : users.length === 0 ? (
 				<p className="rounded-2xl border border-gray-200 bg-white p-8 text-center text-sm text-gray-500">
-					No matching people.
+					{search.trim() ? "No matching people." : "No people yet."}
 				</p>
 			) : (
 				<div className="space-y-4">
-					{visibleUsers.map((user) => {
+					{users.map((user) => {
 						const hasOverrides = user.overrides.length > 0;
 
 						return (
@@ -431,6 +441,40 @@ function AdminPermissions() {
 							</section>
 						);
 					})}
+
+					<div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm">
+						<p className="text-gray-500">
+							{total === 0
+								? "No people to show."
+								: `Showing ${(page - 1) * pageSize + 1}–${Math.min(
+										page * pageSize,
+										total,
+									)} of ${total}`}
+						</p>
+						<div className="flex items-center gap-2">
+							<button
+								type="button"
+								onClick={() => setPage((current) => Math.max(1, current - 1))}
+								disabled={page <= 1 || isLoading}
+								className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-2.5 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+							>
+								<ChevronLeft className="h-3.5 w-3.5" /> Previous
+							</button>
+							<span className="text-xs text-gray-500">
+								Page {page} of {pageCount}
+							</span>
+							<button
+								type="button"
+								onClick={() =>
+									setPage((current) => Math.min(pageCount, current + 1))
+								}
+								disabled={page >= pageCount || isLoading}
+								className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-2.5 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+							>
+								Next <ChevronRight className="h-3.5 w-3.5" />
+							</button>
+						</div>
+					</div>
 				</div>
 			)}
 		</div>

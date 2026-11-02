@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck, lint, test and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      # The build reads the server environment at import time; no database is
+      # contacted by these steps.
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/scms
+      APP_URL: http://127.0.0.1:3000
+      VITE_APP_URL: http://127.0.0.1:3000
+      BETTER_AUTH_SECRET: ci-only-secret-value
+      SUPER_ADMIN_EMAIL: admin@example.com
+      SUPER_ADMIN_NAME: CI Admin
+      ORGANIZATION_NAME: CI School
+      ORGANIZATION_SLUG: ci-school
+      DEFAULT_BRANCH_NAME: Main Campus
+      DEFAULT_BRANCH_SLUG: main
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npx biome lint src
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build

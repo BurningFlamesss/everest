@@ -16,6 +16,7 @@ import {
 	isEditablePermissionRole,
 	listPermissionUsers,
 	listRolePermissions,
+	MAX_PERMISSION_PAGE_SIZE,
 	resetRolePermissionDefaults,
 	resetUserPermissions,
 	setPermissionOverride,
@@ -54,23 +55,39 @@ function failure(error: unknown) {
 	};
 }
 
-export const getPermissionsDataFn = createServerFn().handler(async () => {
-	try {
-		await requirePermissionManager();
-		const users = await listPermissionUsers();
+const usersQuerySchema = z
+	.object({
+		search: z.string().trim().max(100).optional(),
+		page: z.number().int().min(1).optional(),
+		pageSize: z.number().int().min(1).max(MAX_PERMISSION_PAGE_SIZE).optional(),
+	})
+	.optional();
 
-		const roles = await listRolePermissions();
+export const getPermissionsDataFn = createServerFn()
+	.validator(usersQuerySchema)
+	.handler(async ({ data }) => {
+		try {
+			await requirePermissionManager();
 
-		return {
-			success: true as const,
-			users,
-			roles,
-			catalog: getPermissionCatalog(),
-		};
-	} catch (error) {
-		return failure(error);
-	}
-});
+			const [userPage, roles] = await Promise.all([
+				listPermissionUsers({
+					search: data?.search,
+					page: data?.page,
+					pageSize: data?.pageSize,
+				}),
+				listRolePermissions(),
+			]);
+
+			return {
+				success: true as const,
+				...userPage,
+				roles,
+				catalog: getPermissionCatalog(),
+			};
+		} catch (error) {
+			return failure(error);
+		}
+	});
 
 const permissionSchema = z.object({
 	userId: z.string().min(1),
