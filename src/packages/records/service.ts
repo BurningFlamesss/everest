@@ -72,9 +72,12 @@ export async function getMyRecords(userId: string): Promise<MyRecords> {
 		}),
 	]);
 
-	const studentIds = student
-		? [student.id]
-		: (guardian?.guardianStudents.map((entry) => entry.studentId) ?? []);
+	// A person can be both a student and a guardian (for example an older
+	// sibling), so the two sets are combined rather than one replacing the other.
+	const studentIds = [
+		...(student ? [student.id] : []),
+		...(guardian?.guardianStudents.map((entry) => entry.studentId) ?? []),
+	].filter((id, index, list) => list.indexOf(id) === index);
 
 	const viewer: RecordsViewer = student
 		? "STUDENT"
@@ -143,23 +146,29 @@ export async function getMyRecords(userId: string): Promise<MyRecords> {
 			where: { studentId: { in: studentIds } },
 			_count: { _all: true },
 		}),
-		prisma.attendanceRecord.findMany({
-			where: { studentId: { in: studentIds } },
-			select: {
-				id: true,
-				studentId: true,
-				status: true,
-				note: true,
-				session: {
+		// Fetch the latest rows per student so one busy child cannot push a
+		// sibling's history out of a shared limit.
+		Promise.all(
+			studentIds.map(async (studentId) => ({
+				studentId,
+				rows: await prisma.attendanceRecord.findMany({
+					where: { studentId },
 					select: {
-						date: true,
-						course: { select: { code: true, name: true } },
+						id: true,
+						status: true,
+						note: true,
+						session: {
+							select: {
+								date: true,
+								course: { select: { code: true, name: true } },
+							},
+						},
 					},
-				},
-			},
-			orderBy: { session: { date: "desc" } },
-			take: 100,
-		}),
+					orderBy: { session: { date: "desc" } },
+					take: 10,
+				}),
+			})),
+		),
 	]);
 
 	const summaries = new Map<string, AttendanceSummary>();
@@ -216,17 +225,16 @@ export async function getMyRecords(userId: string): Promise<MyRecords> {
 							.join(" · ")
 					: null,
 			})),
-			recentAttendance: recentRows
-				.filter((row) => row.studentId === entry.id)
-				.slice(0, 10)
-				.map((row) => ({
-					id: row.id,
-					date: row.session.date,
-					status: row.status,
-					note: row.note,
-					courseCode: row.session.course.code,
-					courseName: row.session.course.name,
-				})),
+			recentAttendance: (
+				recentRows.find((group) => group.studentId === entry.id)?.rows ?? []
+			).map((row) => ({
+				id: row.id,
+				date: row.session.date,
+				status: row.status,
+				note: row.note,
+				courseCode: row.session.course.code,
+				courseName: row.session.course.name,
+			})),
 			transport: entry.transportAssignments.map((assignment) => ({
 				id: assignment.id,
 				route: assignment.route.name,

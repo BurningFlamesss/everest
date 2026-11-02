@@ -101,9 +101,11 @@ export const Route = createFileRoute("/api/uploads")({
 						: "content";
 				const key = createObjectKey(prefix, file.name);
 				const body = Buffer.from(await file.arrayBuffer());
+				let stored = false;
 
 				try {
 					await getStorage().put(key, body, file.type);
+					stored = true;
 
 					const asset = await prisma.fileAsset.create({
 						data: {
@@ -118,6 +120,16 @@ export const Route = createFileRoute("/api/uploads")({
 
 					return json({ success: true, asset }, 201);
 				} catch (error) {
+					// Never leave an object behind that no row points at: the cleanup
+					// sweep only knows about uploaded files recorded in the database.
+					if (stored) {
+						try {
+							await getStorage().delete(key);
+						} catch (cleanupError) {
+							console.error("Could not roll back stored object:", cleanupError);
+						}
+					}
+
 					console.error("Upload failed:", error);
 					return json(
 						{ success: false, error: "Could not store this file." },

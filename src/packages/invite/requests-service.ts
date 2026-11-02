@@ -105,28 +105,56 @@ export async function approveInviteRequest(input: {
 		);
 	}
 
-	// The invite itself is created without its own email so the requester
-	// receives exactly one decision message containing the activation link.
-	const invite =
-		request.type === "STUDENT"
-			? await createStudentInvite({
-					name: request.name,
-					email: request.email,
-					sendEmail: false,
-				})
-			: await createStaffInvite({
-					name: request.name,
-					email: request.email,
-					sendEmail: false,
-				});
-
-	const updated = await prisma.inviteRequest.update({
-		where: { id: request.id },
+	// Claim the request atomically so a double click cannot create two invites.
+	const claimed = await prisma.inviteRequest.updateMany({
+		where: { id: request.id, status: "PENDING" },
 		data: {
 			status: "APPROVED",
 			reviewedById: input.reviewerId,
 			reviewedAt: new Date(),
 		},
+	});
+
+	if (claimed.count === 0) {
+		throw new InviteError(
+			"This request has already been reviewed.",
+			"REQUEST_ALREADY_REVIEWED",
+		);
+	}
+
+	// The invite itself is created without its own email so the requester
+	// receives exactly one decision message containing the activation link.
+	let invite: Awaited<ReturnType<typeof createStudentInvite>>;
+
+	try {
+		invite =
+			request.type === "STUDENT"
+				? await createStudentInvite({
+						name: request.name,
+						email: request.email,
+						sendEmail: false,
+					})
+				: await createStaffInvite({
+						name: request.name,
+						email: request.email,
+						sendEmail: false,
+					});
+	} catch (error) {
+		// Release the claim so the reviewer can retry after a failure.
+		await prisma.inviteRequest.updateMany({
+			where: {
+				id: request.id,
+				status: "APPROVED",
+				reviewedById: input.reviewerId,
+			},
+			data: { status: "PENDING", reviewedById: null, reviewedAt: null },
+		});
+
+		throw error;
+	}
+
+	const updated = await prisma.inviteRequest.findUniqueOrThrow({
+		where: { id: request.id },
 	});
 
 	const decision = await sendMail({
@@ -168,14 +196,25 @@ export async function rejectInviteRequest(input: {
 
 	const note = input.note?.trim() || null;
 
-	const updated = await prisma.inviteRequest.update({
-		where: { id: request.id },
+	const claimed = await prisma.inviteRequest.updateMany({
+		where: { id: request.id, status: "PENDING" },
 		data: {
 			status: "REJECTED",
 			reviewedById: input.reviewerId,
 			reviewedAt: new Date(),
 			reviewNote: note,
 		},
+	});
+
+	if (claimed.count === 0) {
+		throw new InviteError(
+			"This request has already been reviewed.",
+			"REQUEST_ALREADY_REVIEWED",
+		);
+	}
+
+	const updated = await prisma.inviteRequest.findUniqueOrThrow({
+		where: { id: request.id },
 	});
 
 	const decision = await sendMail({

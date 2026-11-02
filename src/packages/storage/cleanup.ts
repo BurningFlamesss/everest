@@ -52,14 +52,16 @@ export async function collectOrphanedFileAssets(options?: {
 			prisma.attachment.findMany({ select: { fileAssetId: true } }),
 		]);
 
-	const referenced = new Set<string>();
+	// Cover images are stored as URLs, attachments reference the asset id.
+	const referencedUrls = new Set<string>();
+	const referencedIds = new Set<string>();
 
 	for (const row of [...noticeCovers, ...eventCovers, ...clubCovers]) {
-		if (row.coverImage) referenced.add(row.coverImage);
+		if (row.coverImage) referencedUrls.add(row.coverImage);
 	}
 
 	for (const row of linked) {
-		referenced.add(row.fileAssetId);
+		referencedIds.add(row.fileAssetId);
 	}
 
 	let candidates = 0;
@@ -67,7 +69,13 @@ export async function collectOrphanedFileAssets(options?: {
 	let failed = 0;
 
 	for (const asset of assets) {
-		if (referenced.has(asset.url) || referenced.has(asset.key)) continue;
+		if (
+			referencedUrls.has(asset.url) ||
+			referencedUrls.has(asset.key) ||
+			referencedIds.has(asset.id)
+		) {
+			continue;
+		}
 
 		candidates++;
 
@@ -80,7 +88,9 @@ export async function collectOrphanedFileAssets(options?: {
 		}
 
 		try {
-			await prisma.fileAsset.delete({ where: { id: asset.id } });
+			// `deleteMany` keeps a concurrent cleanup run from failing on a row
+			// that another run already removed.
+			await prisma.fileAsset.deleteMany({ where: { id: asset.id } });
 			deleted++;
 		} catch (error) {
 			failed++;

@@ -21,6 +21,7 @@ import {
 	setPermissionOverride,
 	setRolePermissionDefault,
 } from "#/packages/auth/permissions-service.ts";
+import { prisma } from "#/packages/db/index.ts";
 
 async function requirePermissionManager() {
 	const { getRequestHeaders } = await import("@tanstack/react-start/server");
@@ -83,7 +84,12 @@ export const setPermissionAction = createServerFn()
 		try {
 			const actor = await requirePermissionManager();
 			const permission = data.permission as PermissionKey;
-			const user = await listPermissionUsers();
+			// Check the target directly: the permission screen only lists a page of
+			// users, and a valid account beyond that page must still be editable.
+			const target = await prisma.user.findUnique({
+				where: { id: data.userId },
+				select: { id: true },
+			});
 
 			if (
 				actor.id === data.userId &&
@@ -97,7 +103,7 @@ export const setPermissionAction = createServerFn()
 				};
 			}
 
-			if (!user.some((entry) => entry.id === data.userId)) {
+			if (!target) {
 				return {
 					success: false as const,
 					error: "User not found.",
