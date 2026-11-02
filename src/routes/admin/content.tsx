@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, Plus, RefreshCw, Trash2 } from "lucide-react";
+import { Loader2, Paperclip, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { AttachmentUploadField } from "#/components/content/AttachmentUploadField.tsx";
 import { ImageUploadField } from "#/components/content/ImageUploadField.tsx";
@@ -55,6 +55,15 @@ interface ClubRow {
 	meetingSchedule: string | null;
 	coverImage: string | null;
 	isActive: boolean;
+	attachments: Array<{
+		id: string;
+		fileAssetId: string;
+		label: string | null;
+		fileAsset: {
+			url: string;
+			originalName: string;
+		};
+	}>;
 }
 
 interface AttachmentPayload {
@@ -100,6 +109,11 @@ function AdminContent() {
 	const [error, setError] = useState("");
 	const [noticeMessage, setNoticeMessage] = useState("");
 	const [isCleaning, setIsCleaning] = useState(false);
+	const [formVersion, setFormVersion] = useState(0);
+	const [isUploading, setIsUploading] = useState(false);
+	const [editingClub, setEditingClub] = useState<ClubRow | null>(null);
+	const [isSavingAttachments, setIsSavingAttachments] = useState(false);
+	const [isEditingUpload, setIsEditingUpload] = useState(false);
 
 	const load = useCallback(async () => {
 		setIsLoading(true);
@@ -124,6 +138,7 @@ function AdminContent() {
 
 	const submit = async (event: React.FormEvent<HTMLFormElement>, kind: Tab) => {
 		event.preventDefault();
+		if (isUploading || isSubmitting) return;
 		setError("");
 		setNoticeMessage("");
 		setIsSubmitting(true);
@@ -166,6 +181,7 @@ function AdminContent() {
 									description: String(data.get("description") ?? ""),
 									meetingSchedule: String(data.get("meetingSchedule") ?? ""),
 									coverImage: String(data.get("coverImage") ?? ""),
+									attachments: parseAttachments(data.get("attachments")),
 									isActive: data.get("isActive") === "on",
 								},
 							});
@@ -178,7 +194,7 @@ function AdminContent() {
 			setNoticeMessage(
 				`${kind === "notices" ? "Notice" : kind === "events" ? "Event" : "Club"} created.`,
 			);
-			form.reset();
+			setFormVersion((version) => version + 1);
 			await load();
 		} catch (createError) {
 			setError(
@@ -188,6 +204,44 @@ function AdminContent() {
 			);
 		} finally {
 			setIsSubmitting(false);
+		}
+	};
+
+	const saveClubAttachments = async (
+		event: React.FormEvent<HTMLFormElement>,
+	) => {
+		event.preventDefault();
+		if (!editingClub || isEditingUpload || isSavingAttachments) return;
+
+		setError("");
+		setNoticeMessage("");
+		setIsSavingAttachments(true);
+		const data = new FormData(event.currentTarget);
+
+		try {
+			const response = await updateClubAction({
+				data: {
+					id: editingClub.id,
+					attachments: parseAttachments(data.get("attachments")),
+				},
+			});
+
+			if (!response.success) {
+				setError(response.error);
+				return;
+			}
+
+			setEditingClub(null);
+			setNoticeMessage("Club attachments updated.");
+			await load();
+		} catch (saveError) {
+			setError(
+				saveError instanceof Error
+					? saveError.message
+					: "Could not save club attachments.",
+			);
+		} finally {
+			setIsSavingAttachments(false);
 		}
 	};
 
@@ -226,7 +280,12 @@ function AdminContent() {
 					: await deleteClubAction({ data: { id } });
 
 		if (!response.success) setError(response.error);
-		else await load();
+		else {
+			if (kind === "clubs") {
+				setEditingClub((current) => (current?.id === id ? null : current));
+			}
+			await load();
+		}
 	};
 
 	const runCleanup = async () => {
@@ -281,7 +340,16 @@ function AdminContent() {
 					<button
 						key={item}
 						type="button"
-						onClick={() => setTab(item)}
+						disabled={
+							isUploading ||
+							isSubmitting ||
+							isEditingUpload ||
+							isSavingAttachments
+						}
+						onClick={() => {
+							setTab(item);
+							setEditingClub(null);
+						}}
 						className={cn(
 							"rounded-md px-3 py-1.5 text-sm font-medium capitalize",
 							tab === item
@@ -312,6 +380,7 @@ function AdminContent() {
 				</h2>
 
 				<form
+					key={`${tab}-${formVersion}`}
 					onSubmit={(event) => void submit(event, tab)}
 					className="grid gap-4 md:grid-cols-2"
 				>
@@ -348,6 +417,8 @@ function AdminContent() {
 							/>
 							<AttachmentUploadField
 								name="attachments"
+								disabled={isSubmitting}
+								onUploadingChange={setIsUploading}
 								prefix="notices"
 								className="md:col-span-2"
 							/>
@@ -375,6 +446,8 @@ function AdminContent() {
 							/>
 							<AttachmentUploadField
 								name="attachments"
+								disabled={isSubmitting}
+								onUploadingChange={setIsUploading}
 								prefix="events"
 								className="md:col-span-2"
 							/>
@@ -393,6 +466,13 @@ function AdminContent() {
 								prefix="clubs"
 								className="md:col-span-2"
 							/>
+							<AttachmentUploadField
+								name="attachments"
+								prefix="clubs"
+								disabled={isSubmitting}
+								onUploadingChange={setIsUploading}
+								className="md:col-span-2"
+							/>
 						</>
 					)}
 
@@ -408,7 +488,7 @@ function AdminContent() {
 					<div className="md:col-span-2">
 						<button
 							type="submit"
-							disabled={isSubmitting}
+							disabled={isSubmitting || isUploading}
 							className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
 						>
 							{isSubmitting ? (
@@ -421,6 +501,48 @@ function AdminContent() {
 					</div>
 				</form>
 			</section>
+
+			{tab === "clubs" && editingClub ? (
+				<section className="rounded-2xl border border-gray-200 bg-white p-6">
+					<h2 className="mb-4 text-lg font-semibold text-gray-900">
+						Attachments for {editingClub.name}
+					</h2>
+					<form
+						key={editingClub.id}
+						onSubmit={(event) => void saveClubAttachments(event)}
+						className="space-y-4"
+					>
+						<AttachmentUploadField
+							prefix="clubs"
+							initialEntries={editingClub.attachments.map((attachment) => ({
+								fileAssetId: attachment.fileAssetId,
+								url: attachment.fileAsset.url,
+								name: attachment.fileAsset.originalName,
+								label: attachment.label ?? "",
+							}))}
+							disabled={isSavingAttachments}
+							onUploadingChange={setIsEditingUpload}
+						/>
+						<div className="flex gap-3">
+							<button
+								type="submit"
+								disabled={isSavingAttachments || isEditingUpload}
+								className="rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+							>
+								{isSavingAttachments ? "Saving…" : "Save attachments"}
+							</button>
+							<button
+								type="button"
+								disabled={isSavingAttachments || isEditingUpload}
+								onClick={() => setEditingClub(null)}
+								className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 disabled:opacity-60"
+							>
+								Cancel
+							</button>
+						</div>
+					</form>
+				</section>
+			) : null}
 
 			<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
 				<header className="border-b border-gray-200 px-5 py-4">
@@ -472,15 +594,20 @@ function AdminContent() {
 							title: club.name,
 							subtitle: club.meetingSchedule ?? club.description ?? "",
 							active: club.isActive,
-							meta: "",
+							meta: `${club.attachments.length} attachment${club.attachments.length === 1 ? "" : "s"}`,
 						}))}
 						activeLabel="Active"
 						inactiveLabel="Inactive"
+						disabled={isSavingAttachments || isEditingUpload}
 						onToggle={(id) => {
 							const club = clubs.find((item) => item.id === id);
 							if (club) void toggleClub(club);
 						}}
 						onDelete={(id) => void remove("clubs", id)}
+						onEditAttachments={(id) => {
+							if (isSavingAttachments || isEditingUpload) return;
+							setEditingClub(clubs.find((club) => club.id === id) ?? null);
+						}}
 					/>
 				)}
 			</section>
@@ -527,6 +654,8 @@ function ContentList({
 	inactiveLabel,
 	onToggle,
 	onDelete,
+	onEditAttachments,
+	disabled = false,
 }: {
 	items: Array<{
 		id: string;
@@ -539,6 +668,8 @@ function ContentList({
 	inactiveLabel: string;
 	onToggle: (id: string) => void;
 	onDelete: (id: string) => void;
+	onEditAttachments?: (id: string) => void;
+	disabled?: boolean;
 }) {
 	if (items.length === 0) {
 		return (
@@ -565,6 +696,7 @@ function ContentList({
 					<button
 						type="button"
 						onClick={() => onToggle(item.id)}
+						disabled={disabled}
 						className={cn(
 							"rounded-full px-2.5 py-1 text-xs font-semibold",
 							item.active
@@ -574,9 +706,20 @@ function ContentList({
 					>
 						{item.active ? activeLabel : inactiveLabel}
 					</button>
+					{onEditAttachments ? (
+						<button
+							type="button"
+							onClick={() => onEditAttachments(item.id)}
+							disabled={disabled}
+							className="inline-flex items-center gap-1 text-xs font-medium text-gray-600 hover:text-red-600"
+						>
+							<Paperclip className="h-3.5 w-3.5" /> Edit attachments
+						</button>
+					) : null}
 					<button
 						type="button"
 						onClick={() => onDelete(item.id)}
+						disabled={disabled}
 						className="inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-700"
 					>
 						<Trash2 className="h-3.5 w-3.5" /> Delete

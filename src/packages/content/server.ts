@@ -210,6 +210,7 @@ const clubInputSchema = z.object({
 	description: z.string().trim().optional(),
 	meetingSchedule: z.string().trim().optional(),
 	coverImage: z.string().trim().optional(),
+	attachments: z.array(attachmentSchema).max(10).optional(),
 	isActive: z.boolean().optional(),
 });
 

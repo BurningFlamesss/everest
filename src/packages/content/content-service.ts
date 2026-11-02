@@ -42,6 +42,7 @@ export interface ClubInput {
 	description?: string;
 	meetingSchedule?: string;
 	coverImage?: string;
+	attachments?: Array<AttachmentInput>;
 	isActive?: boolean;
 	organizationId?: string | null;
 	branchId?: string | null;
@@ -405,6 +406,9 @@ export async function createClub(input: ClubInput) {
 			description: input.description?.trim() || null,
 			meetingSchedule: input.meetingSchedule?.trim() || null,
 			coverImage: input.coverImage?.trim() || null,
+			attachments: attachmentCreates(input.attachments)
+				? { create: attachmentCreates(input.attachments) }
+				: undefined,
 			isActive: input.isActive ?? true,
 			organizationId: input.organizationId ?? null,
 			branchId: input.branchId ?? null,
@@ -434,6 +438,14 @@ export async function updateClub(id: string, input: Partial<ClubInput>) {
 				: {}),
 			...(input.coverImage !== undefined
 				? { coverImage: input.coverImage.trim() || null }
+				: {}),
+			...(input.attachments !== undefined
+				? {
+						attachments: {
+							deleteMany: {},
+							create: attachmentCreates(input.attachments) ?? [],
+						},
+					}
 				: {}),
 			...(input.isActive !== undefined ? { isActive: input.isActive } : {}),
 		},
@@ -466,6 +478,24 @@ export async function listClubs(options?: {
 						],
 					}
 				: {}),
+		},
+		include: {
+			attachments: {
+				select: {
+					id: true,
+					fileAssetId: true,
+					label: true,
+					fileAsset: {
+						select: {
+							url: true,
+							originalName: true,
+							mimeType: true,
+							size: true,
+						},
+					},
+				},
+				orderBy: { createdAt: "asc" },
+			},
 		},
 		orderBy: { name: "asc" },
 	});

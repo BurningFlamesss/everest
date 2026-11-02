@@ -90,6 +90,36 @@ describe("collectOrphanedFileAssets", () => {
 		expect(result).toEqual({ candidates: 0, deleted: 0, failed: 0 });
 	});
 
+	it("preserves club-linked document assets until unlinked, then collects them (regression)", async () => {
+		const clubDocument = asset("club-handbook");
+		prismaMock.fileAsset.findMany.mockResolvedValue([clubDocument]);
+		prismaMock.attachment.findMany.mockResolvedValue([
+			{ fileAssetId: clubDocument.id },
+		]);
+
+		const linkedResult = await collectOrphanedFileAssets();
+
+		// The reference scan must include attachments for every parent, including clubs.
+		expect(prismaMock.attachment.findMany).toHaveBeenCalledExactlyOnceWith({
+			select: { fileAssetId: true },
+		});
+		expect(storageMock.delete).not.toHaveBeenCalled();
+		expect(prismaMock.fileAsset.deleteMany).not.toHaveBeenCalled();
+		expect(linkedResult).toEqual({ candidates: 0, deleted: 0, failed: 0 });
+
+		prismaMock.attachment.findMany.mockResolvedValue([]);
+
+		const unlinkedResult = await collectOrphanedFileAssets();
+
+		expect(storageMock.delete).toHaveBeenCalledExactlyOnceWith(
+			clubDocument.key,
+		);
+		expect(prismaMock.fileAsset.deleteMany).toHaveBeenCalledExactlyOnceWith({
+			where: { id: clubDocument.id },
+		});
+		expect(unlinkedResult).toEqual({ candidates: 1, deleted: 1, failed: 0 });
+	});
+
 	it("matches legacy cover values stored as a storage key", async () => {
 		const cover = asset("cover-key");
 		prismaMock.fileAsset.findMany.mockResolvedValue([cover]);

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Clock, Users } from "lucide-react";
+import { Clock, Paperclip, Users } from "lucide-react";
 import { getClubsFn } from "#/packages/content/server.ts";
 
 export const Route = createFileRoute("/clubs")({
@@ -61,6 +61,37 @@ function ClubsPage() {
 										<Clock className="h-3.5 w-3.5" />
 										{club.meetingSchedule}
 									</p>
+								) : null}
+								{club.attachments.length > 0 ? (
+									<div className="mt-5 border-t border-gray-100 pt-4">
+										<h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
+											<Paperclip className="h-4 w-4 text-red-500" /> Attachments
+										</h3>
+										<ul className="mt-2 space-y-2">
+											{club.attachments.map((attachment) => (
+												<li key={attachment.id}>
+													<a
+														href={attachment.fileAsset.url}
+														target="_blank"
+														rel="noreferrer"
+														className="flex items-center justify-between gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-800 hover:bg-gray-100"
+													>
+														<span className="min-w-0 break-words font-medium">
+															{attachment.label ??
+																attachment.fileAsset.originalName}
+														</span>
+														<span className="shrink-0 text-xs text-gray-400">
+															{Math.max(
+																1,
+																Math.round(attachment.fileAsset.size / 1024),
+															)}{" "}
+															KB
+														</span>
+													</a>
+												</li>
+											))}
+										</ul>
+									</div>
 								) : null}
 							</article>
 						))}

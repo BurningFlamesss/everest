@@ -389,6 +389,8 @@ model Club {
   meetingSchedule String?
   coverImage  String?
 
+  attachments Attachment[]
+
   isActive Boolean @default(true)
 
   createdAt DateTime @default(now())
@@ -710,6 +712,9 @@ model Attachment {
   eventId String?
   event   Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
+  clubId String?
+  club   Club? @relation(fields: [clubId], references: [id], onDelete: Cascade)
+
   label String?
 
   createdAt DateTime @default(now())
@@ -717,4 +722,5 @@ model Attachment {
   @@index([fileAssetId])
   @@index([noticeId])
   @@index([eventId])
+  @@index([clubId])
 }

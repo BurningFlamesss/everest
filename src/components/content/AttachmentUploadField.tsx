@@ -2,7 +2,7 @@ import { FileText, Loader2, Paperclip, UploadCloud, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "#/lib/utils.ts";
 
-interface AttachmentEntry {
+export interface AttachmentEntry {
 	fileAssetId: string;
 	url: string;
 	name: string;
@@ -15,6 +15,9 @@ interface AttachmentUploadFieldProps {
 	prefix?: string;
 	className?: string;
 	maxFiles?: number;
+	initialEntries?: Array<AttachmentEntry>;
+	disabled?: boolean;
+	onUploadingChange?: (isUploading: boolean) => void;
 }
 
 /**
@@ -27,14 +30,19 @@ export function AttachmentUploadField({
 	prefix = "attachments",
 	className,
 	maxFiles = 10,
+	initialEntries = [],
+	disabled = false,
+	onUploadingChange,
 }: AttachmentUploadFieldProps) {
-	const [entries, setEntries] = useState<Array<AttachmentEntry>>([]);
+	const [entries, setEntries] =
+		useState<Array<AttachmentEntry>>(initialEntries);
 	const [isUploading, setIsUploading] = useState(false);
 	const [error, setError] = useState("");
 
 	const upload = async (file: File) => {
 		setError("");
 		setIsUploading(true);
+		onUploadingChange?.(true);
 
 		try {
 			const body = new FormData();
@@ -79,6 +87,7 @@ export function AttachmentUploadField({
 			);
 		} finally {
 			setIsUploading(false);
+			onUploadingChange?.(false);
 		}
 	};
 
@@ -116,11 +125,12 @@ export function AttachmentUploadField({
 								rel="noreferrer"
 								className="min-w-0 flex-1 truncate text-xs font-medium text-gray-700 hover:text-red-600"
 							>
-								{entry.name}
+								{entry.label || entry.name}
 							</a>
 							<button
 								type="button"
 								onClick={() => remove(entry.fileAssetId)}
+								disabled={disabled || isUploading}
 								className="rounded-full p-1 text-gray-500 hover:bg-gray-100 hover:text-red-600"
 								aria-label={`Remove ${entry.name}`}
 							>
@@ -154,7 +164,7 @@ export function AttachmentUploadField({
 						type="file"
 						accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt"
 						className="sr-only"
-						disabled={isUploading}
+						disabled={disabled || isUploading}
 						onChange={(event) => {
 							const file = event.target.files?.[0];
 							if (file) void upload(file);

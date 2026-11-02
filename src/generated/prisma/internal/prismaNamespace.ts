@@ -3045,6 +3045,7 @@ export const AttachmentScalarFieldEnum = {
   fileAssetId: 'fileAssetId',
   noticeId: 'noticeId',
   eventId: 'eventId',
+  clubId: 'clubId',
   label: 'label',
   createdAt: 'createdAt'
 } as const

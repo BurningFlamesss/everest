@@ -45,7 +45,7 @@ Signed-in area:
 2. Admin overview (`/admin`).
 3. Invitations (`/admin/invites`) — staff, student, and guardian invitations, CSV bulk import, and the invitation-request review queue.
 4. Directory (`/admin/directory`) — students, staff, and guardians.
-5. Content management (`/admin/content`) — create and manage notices, events, and clubs, including cover-image uploads.
+5. Content management (`/admin/content`) — create and manage notices, events, and clubs, including cover images and document attachments. Existing club attachments can be added or removed using **Edit attachments**.
 6. Academics (`/admin/academics`) — classrooms, courses, teachers, and student enrolments.
 7. Attendance (`/admin/attendance`) — open a daily register per course, mark students, and review per-student summaries.
 8. Transport (`/admin/transport`) — bus routes, stops, drivers, and student route assignments.
@@ -71,20 +71,20 @@ ScMS started as a highly ambitious project, due to the time constraint, and my a
 - Attendance: daily course registers, per-student marks (present/absent/late/excused), and summaries
 - Transport: routes, ordered stops, drivers, and per-student pickup/drop-off assignments
 - Editable role-level permission defaults plus per-user overrides, with a dedicated permissions screen
-- Cover images and document attachments (PDF, Word, Excel, CSV, text) for notices and events, with a pluggable local/S3 storage driver
+- Cover images and document attachments (PDF, Word, Excel, CSV, text) for notices, events, and clubs, with a pluggable local/S3 storage driver
+- Club attachment editing with up to 10 documents per club and public download links on active club cards
 - On-demand cleanup of uploads that are no longer referenced by any content
 - Self-service records for students and guardians: courses, attendance history, and bus route details
 - Landing, About, and Contact pages
 - Sidebar (with proper layout and collapsing logic)
-- Unit tests for the CSV import pipeline (`npm test`)
+- Unit and UI regression tests for CSV imports and document attachments (`npm test`)
 
 ## What is Incomplete? (or, What is left?)
 
 - Orphaned uploads are removed only when an administrator runs the cleanup action on the content screen; there is no scheduled/cron job.
-- Notices and events accept document attachments, but clubs still support a cover image only.
 - Uploads are capped at 5 MB for images and 10 MB for documents, and the allowed document types are fixed in `src/routes/api/uploads.ts`.
 - The permission screen edits role defaults and per-user overrides; there is no per-branch permission scoping yet.
-- Migration history now has two migrations (`init`, then role permissions and attachments); every future schema change needs its own migration.
+- Migration history includes `init`, role permissions and attachments, and club attachments; every future schema change needs its own migration.
 
 ## Tech Stack
 
@@ -126,6 +126,8 @@ npm run db:generate
 npm run db:migrate:deploy
 npm run db:seed
 ```
+
+Upgrading an existing installation requires `npm run db:generate` and `npm run db:migrate:deploy` before starting the updated app. The club attachments migration adds a nullable club relation without changing existing notice/event attachments. Deleting a club removes its attachment links, not the uploaded files; the cleanup action removes files only once they have no remaining references and are past the grace period.
 
 For schema changes during development use `npm run db:migrate` to create a new migration. `npm run db:push` still exists for quick throwaway databases, and `npm run db:migrate:status` shows what is applied.
 
