@@ -4,7 +4,16 @@ import {
 	Outlet,
 	redirect,
 } from "@tanstack/react-router";
-import { FileText, LayoutDashboard, UserPlus, Users } from "lucide-react";
+import {
+	BookOpen,
+	Bus,
+	ClipboardCheck,
+	FileText,
+	LayoutDashboard,
+	ShieldCheck,
+	UserPlus,
+	Users,
+} from "lucide-react";
 import { getViewerFn } from "#/packages/auth/server/viewer.ts";
 
 export const Route = createFileRoute("/admin")({
@@ -25,14 +34,62 @@ export const Route = createFileRoute("/admin")({
 });
 
 const navItems = [
-	{ to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
-	{ to: "/admin/invites", label: "Invitations", icon: UserPlus },
-	{ to: "/admin/directory", label: "Directory", icon: Users },
-	{ to: "/admin/content", label: "Content", icon: FileText },
+	{
+		to: "/admin",
+		label: "Overview",
+		icon: LayoutDashboard,
+		permission: "MANAGE_DASHBOARD",
+		exact: true,
+	},
+	{
+		to: "/admin/invites",
+		label: "Invitations",
+		icon: UserPlus,
+		permission: "MANAGE_INVITES",
+	},
+	{
+		to: "/admin/directory",
+		label: "Directory",
+		icon: Users,
+		permission: "MANAGE_DIRECTORY",
+	},
+	{
+		to: "/admin/content",
+		label: "Content",
+		icon: FileText,
+		permission: "MANAGE_CONTENT",
+	},
+	{
+		to: "/admin/academics",
+		label: "Academics",
+		icon: BookOpen,
+		permission: "MANAGE_ACADEMICS",
+	},
+	{
+		to: "/admin/attendance",
+		label: "Attendance",
+		icon: ClipboardCheck,
+		permission: "MANAGE_ATTENDANCE",
+	},
+	{
+		to: "/admin/transport",
+		label: "Transport",
+		icon: Bus,
+		permission: "MANAGE_TRANSPORT",
+	},
+	{
+		to: "/admin/permissions",
+		label: "Permissions",
+		icon: ShieldCheck,
+		permission: "MANAGE_PERMISSIONS",
+	},
 ] as const;
 
 function AdminLayout() {
 	const { viewer } = Route.useRouteContext();
+	const visibleNavItems = navItems.filter((item) =>
+		viewer.permissions.includes(item.permission),
+	);
 
 	return (
 		<main className="min-h-screen bg-[#f6f1e8] pb-20 pl-0 md:ml-72">
@@ -45,7 +102,7 @@ function AdminLayout() {
 						<p className="font-semibold text-gray-900">{viewer.user.name}</p>
 					</div>
 					<nav className="flex flex-wrap gap-1">
-						{navItems.map((item) => (
+						{visibleNavItems.map((item) => (
 							<Link
 								key={item.to}
 								to={item.to}

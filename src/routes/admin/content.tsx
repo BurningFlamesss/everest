@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { ImageUploadField } from "#/components/content/ImageUploadField.tsx";
 import { cn } from "#/lib/utils.ts";
 import {
 	createClubAction,
@@ -27,6 +28,7 @@ interface NoticeRow {
 	summary: string | null;
 	body: string;
 	category: string | null;
+	coverImage: string | null;
 	audience: string;
 	isPublished: boolean;
 	publishedAt: string | Date | null;
@@ -38,6 +40,7 @@ interface EventRow {
 	title: string;
 	description: string | null;
 	location: string | null;
+	coverImage: string | null;
 	startsAt: string | Date;
 	endsAt: string | Date | null;
 	isPublished: boolean;
@@ -48,6 +51,7 @@ interface ClubRow {
 	name: string;
 	description: string | null;
 	meetingSchedule: string | null;
+	coverImage: string | null;
 	isActive: boolean;
 }
 
@@ -100,6 +104,7 @@ function AdminContent() {
 								summary: String(data.get("summary") ?? ""),
 								body: String(data.get("body") ?? ""),
 								category: String(data.get("category") ?? ""),
+								coverImage: String(data.get("coverImage") ?? ""),
 								audience: String(data.get("audience") ?? "ALL") as "ALL",
 								isPublished: data.get("isPublished") === "on",
 								expiresAt: String(data.get("expiresAt") ?? ""),
@@ -111,6 +116,7 @@ function AdminContent() {
 									title: String(data.get("title") ?? ""),
 									description: String(data.get("description") ?? ""),
 									location: String(data.get("location") ?? ""),
+									coverImage: String(data.get("coverImage") ?? ""),
 									startsAt: String(data.get("startsAt") ?? ""),
 									endsAt: String(data.get("endsAt") ?? ""),
 									isPublished: data.get("isPublished") === "on",
@@ -121,6 +127,7 @@ function AdminContent() {
 									name: String(data.get("name") ?? ""),
 									description: String(data.get("description") ?? ""),
 									meetingSchedule: String(data.get("meetingSchedule") ?? ""),
+									coverImage: String(data.get("coverImage") ?? ""),
 									isActive: data.get("isActive") === "on",
 								},
 							});
@@ -259,6 +266,11 @@ function AdminContent() {
 								</select>
 							</label>
 							<Input label="Expires at" name="expiresAt" type="date" />
+							<ImageUploadField
+								name="coverImage"
+								prefix="notices"
+								className="md:col-span-2"
+							/>
 						</>
 					) : tab === "events" ? (
 						<>
@@ -276,6 +288,11 @@ function AdminContent() {
 								name="description"
 								className="md:col-span-2"
 							/>
+							<ImageUploadField
+								name="coverImage"
+								prefix="events"
+								className="md:col-span-2"
+							/>
 						</>
 					) : (
 						<>
@@ -284,6 +301,11 @@ function AdminContent() {
 							<Textarea
 								label="Description"
 								name="description"
+								className="md:col-span-2"
+							/>
+							<ImageUploadField
+								name="coverImage"
+								prefix="clubs"
 								className="md:col-span-2"
 							/>
 						</>

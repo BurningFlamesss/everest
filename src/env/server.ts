@@ -19,6 +19,18 @@ export const serverEnv = createEnv({
 
 		MAIL_APP_USER: z.string().optional(),
 		MAIL_APP_PASSWORD: z.string().optional(),
+
+		STORAGE_DRIVER: z.enum(["local", "s3"]).default("local"),
+		STORAGE_LOCAL_DIR: z.string().default(".data/uploads"),
+		S3_ENDPOINT: z.string().default("localhost"),
+		S3_PORT: z.coerce.number().int().positive().default(9000),
+		S3_USE_SSL: z
+			.enum(["true", "false"])
+			.default("false")
+			.transform((value) => value === "true"),
+		S3_ACCESS_KEY: z.string().default("scms"),
+		S3_SECRET_KEY: z.string().default("scms-secret"),
+		S3_BUCKET: z.string().default("scms"),
 	},
 
 	runtimeEnv: process.env,

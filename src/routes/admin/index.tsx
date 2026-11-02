@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import {
 	Bell,
 	CalendarDays,
@@ -11,6 +11,11 @@ import {
 import { getAdminStatsFn } from "#/packages/admin/server.ts";
 
 export const Route = createFileRoute("/admin/")({
+	beforeLoad: ({ context }) => {
+		if (!context.viewer.permissions.includes("MANAGE_DASHBOARD")) {
+			throw redirect({ to: "/dashboard" });
+		}
+	},
 	loader: () => getAdminStatsFn(),
 	component: AdminOverview,
 });

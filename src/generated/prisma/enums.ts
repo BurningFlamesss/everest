@@ -56,3 +56,54 @@ export const NoticeAudience = {
 } as const
 
 export type NoticeAudience = (typeof NoticeAudience)[keyof typeof NoticeAudience]
+
+
+export const PermissionKey = {
+  MANAGE_DASHBOARD: 'MANAGE_DASHBOARD',
+  MANAGE_INVITES: 'MANAGE_INVITES',
+  MANAGE_DIRECTORY: 'MANAGE_DIRECTORY',
+  MANAGE_CONTENT: 'MANAGE_CONTENT',
+  MANAGE_ACADEMICS: 'MANAGE_ACADEMICS',
+  MANAGE_ATTENDANCE: 'MANAGE_ATTENDANCE',
+  MANAGE_TRANSPORT: 'MANAGE_TRANSPORT',
+  MANAGE_PERMISSIONS: 'MANAGE_PERMISSIONS'
+} as const
+
+export type PermissionKey = (typeof PermissionKey)[keyof typeof PermissionKey]
+
+
+export const InviteRequestStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type InviteRequestStatus = (typeof InviteRequestStatus)[keyof typeof InviteRequestStatus]
+
+
+export const EnrollmentStatus = {
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED',
+  DROPPED: 'DROPPED'
+} as const
+
+export type EnrollmentStatus = (typeof EnrollmentStatus)[keyof typeof EnrollmentStatus]
+
+
+export const AttendanceStatus = {
+  PRESENT: 'PRESENT',
+  ABSENT: 'ABSENT',
+  LATE: 'LATE',
+  EXCUSED: 'EXCUSED'
+} as const
+
+export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
+
+
+export const TransportDirection = {
+  PICKUP: 'PICKUP',
+  DROPOFF: 'DROPOFF',
+  BOTH: 'BOTH'
+} as const
+
+export type TransportDirection = (typeof TransportDirection)[keyof typeof TransportDirection]

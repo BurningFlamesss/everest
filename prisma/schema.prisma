@@ -58,6 +58,10 @@ model User {
 
   guardianInvites GuardianInvite[]
 
+  permissions            UserPermission[]
+  uploadedFiles          FileAsset[]
+  reviewedInviteRequests InviteRequest[] @relation("InviteRequestReviewer")
+
   @@unique([email])
   @@map("user")
 }
@@ -126,6 +130,10 @@ model Organization {
   userRoles UserRole[]
   students  Student[]
   staffs    Staff[]
+
+  classrooms      Classroom[]
+  courses         Course[]
+  transportRoutes TransportRoute[]
 }
 
 model Branch {
@@ -148,6 +156,10 @@ model Branch {
   students  Student[]
   staffs    Staff[]
   userRoles UserRole[]
+
+  classrooms      Classroom[]
+  courses         Course[]
+  transportRoutes TransportRoute[]
 
   @@unique([organizationId, slug])
 }
@@ -195,6 +207,10 @@ model Student {
   guardianStudents GuardianStudent[]
   guardianInvites  GuardianInvite[]
 
+  enrollments           Enrollment[]
+  attendanceRecords     AttendanceRecord[]
+  transportAssignments  TransportAssignment[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -219,6 +235,9 @@ model Staff {
   joinedAt DateTime?
 
   status StaffStatus @default(ACTIVE)
+
+  courses           Course[]
+  attendanceSessions AttendanceSession[] @relation("AttendanceTakenBy")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -310,6 +329,7 @@ model Notice {
   summary String?
   body    String
   category String?
+  coverImage String?
 
   audience NoticeAudience @default(ALL)
 
@@ -372,4 +392,288 @@ model Club {
 
   @@index([isActive])
   @@index([organizationId, branchId])
+}
+
+enum PermissionKey {
+  MANAGE_DASHBOARD
+  MANAGE_INVITES
+  MANAGE_DIRECTORY
+  MANAGE_CONTENT
+  MANAGE_ACADEMICS
+  MANAGE_ATTENDANCE
+  MANAGE_TRANSPORT
+  MANAGE_PERMISSIONS
+}
+
+model UserPermission {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  permission PermissionKey
+  granted    Boolean       @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, permission])
+  @@index([userId])
+}
+
+enum InviteRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model InviteRequest {
+  id String @id @default(cuid())
+
+  name  String
+  email String
+  type  InviteType
+
+  message String?
+  status  InviteRequestStatus @default(PENDING)
+
+  reviewedById String?
+  reviewedBy   User?   @relation("InviteRequestReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  reviewedAt DateTime?
+  reviewNote String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([email])
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  DROPPED
+}
+
+model Classroom {
+  id String @id @default(cuid())
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  name     String
+  building String?
+  floor    String?
+  capacity Int?
+  notes    String?
+
+  isActive Boolean @default(true)
+
+  courses Course[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([branchId, name])
+  @@index([organizationId, branchId])
+}
+
+model Course {
+  id String @id @default(cuid())
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  code        String
+  name        String
+  description String?
+  grade       String?
+  section     String?
+  schedule    String?
+
+  teacherId String?
+  teacher   Staff? @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+
+  classroomId String?
+  classroom   Classroom? @relation(fields: [classroomId], references: [id], onDelete: SetNull)
+
+  isActive Boolean @default(true)
+
+  enrollments        Enrollment[]
+  attendanceSessions AttendanceSession[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([organizationId, code])
+  @@index([branchId, grade, section])
+}
+
+model Enrollment {
+  id String @id @default(cuid())
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  status     EnrollmentStatus @default(ACTIVE)
+  enrolledAt DateTime         @default(now())
+
+  @@unique([courseId, studentId])
+  @@index([studentId])
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+model AttendanceSession {
+  id String @id @default(cuid())
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  date  DateTime
+  topic String?
+
+  takenById String?
+  takenBy   Staff? @relation("AttendanceTakenBy", fields: [takenById], references: [id], onDelete: SetNull)
+
+  records AttendanceRecord[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([courseId, date])
+  @@index([date])
+}
+
+model AttendanceRecord {
+  id String @id @default(cuid())
+
+  sessionId String
+  session   AttendanceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  status AttendanceStatus @default(PRESENT)
+  note   String?
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([sessionId, studentId])
+  @@index([studentId])
+}
+
+enum TransportDirection {
+  PICKUP
+  DROPOFF
+  BOTH
+}
+
+model TransportRoute {
+  id String @id @default(cuid())
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  name          String
+  code          String?
+  description   String?
+  driverName    String?
+  driverPhone   String?
+  vehicleNumber String?
+  capacity      Int?
+
+  isActive Boolean @default(true)
+
+  stops       TransportStop[]
+  assignments TransportAssignment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([branchId, name])
+  @@index([organizationId, branchId])
+}
+
+model TransportStop {
+  id String @id @default(cuid())
+
+  routeId String
+  route   TransportRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+  name       String
+  sortOrder  Int     @default(0)
+  pickupTime String?
+  dropoffTime String?
+  latitude   Float?
+  longitude  Float?
+
+  assignments TransportAssignment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([routeId, name])
+  @@index([routeId, sortOrder])
+}
+
+model TransportAssignment {
+  id String @id @default(cuid())
+
+  routeId String
+  route   TransportRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+  stopId String?
+  stop   TransportStop? @relation(fields: [stopId], references: [id], onDelete: SetNull)
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  direction TransportDirection @default(BOTH)
+  isActive  Boolean            @default(true)
+
+  activeFrom DateTime?
+  activeTo   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([studentId, routeId, direction])
+  @@index([routeId])
+  @@index([studentId])
+}
+
+model FileAsset {
+  id String @id @default(cuid())
+
+  key          String @unique
+  url          String
+  originalName String
+  mimeType     String
+  size         Int
+
+  uploadedById String?
+  uploadedBy   User? @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([uploadedById])
 }

@@ -8,6 +8,7 @@ export interface NoticeInput {
 	summary?: string;
 	body: string;
 	category?: string;
+	coverImage?: string;
 	audience?: NoticeAudience;
 	isPublished?: boolean;
 	expiresAt?: Date | string | null;
@@ -104,6 +105,7 @@ export async function createNotice(input: NoticeInput) {
 			summary: input.summary?.trim() || null,
 			body: input.body,
 			category: input.category?.trim() || null,
+			coverImage: input.coverImage?.trim() || null,
 			audience: input.audience ?? "ALL",
 			isPublished: input.isPublished ?? false,
 			publishedAt: input.isPublished ? new Date() : null,
@@ -139,6 +141,9 @@ export async function updateNotice(id: string, input: Partial<NoticeInput>) {
 			...(input.body !== undefined ? { body: input.body } : {}),
 			...(input.category !== undefined
 				? { category: input.category.trim() || null }
+				: {}),
+			...(input.coverImage !== undefined
+				? { coverImage: input.coverImage.trim() || null }
 				: {}),
 			...(input.audience !== undefined ? { audience: input.audience } : {}),
 			...(input.isPublished !== undefined

@@ -42,6 +42,13 @@ function NoticesPage() {
 								params={{ slug: notice.slug }}
 								className="group rounded-2xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-lg"
 							>
+								{notice.coverImage ? (
+									<img
+										src={notice.coverImage}
+										alt=""
+										className="mb-5 h-44 w-full rounded-xl object-cover"
+									/>
+								) : null}
 								<div className="flex flex-wrap items-center gap-2 text-xs">
 									{notice.category ? (
 										<span className="rounded-full bg-red-50 px-2.5 py-1 font-semibold text-red-700">

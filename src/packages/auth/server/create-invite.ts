@@ -1,5 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { auth } from "#/packages/auth/auth.ts";
+import {
+	AuthorizationError,
+	requirePermission,
+} from "#/packages/auth/permissions.ts";
 import {
 	createStaffInvite,
 	createStudentInvite,
@@ -17,15 +22,26 @@ const createInviteSchema = z.object({
 });
 
 /**
- * Legacy self-service invitation endpoint used by the onboarding screen.
+ * Legacy invitation endpoint retained for older clients.
  *
- * The admin console uses the role-protected actions in
- * `src/packages/invite/server.ts` instead.
+ * It now requires the same `MANAGE_INVITES` permission as the admin console.
+ * New public requests go through `requestInviteAction` instead.
  */
 export const createInvite = createServerFn()
 	.validator(createInviteSchema)
 	.handler(async ({ data }) => {
 		try {
+			const { getRequestHeaders } = await import("@tanstack/react-start/server");
+			const session = await auth.api.getSession({
+				headers: getRequestHeaders(),
+			});
+
+			if (!session?.user?.id) {
+				throw new AuthorizationError("Please sign in to continue");
+			}
+
+			await requirePermission(session.user.id, "MANAGE_INVITES");
+
 			const invite =
 				data.type === "STUDENT"
 					? await createStudentInvite({
@@ -59,6 +75,15 @@ export const createInvite = createServerFn()
 					success: false,
 					error: error.message,
 					code: error.code,
+				};
+			}
+
+			if (error instanceof AuthorizationError) {
+				return {
+					invite: null,
+					success: false,
+					error: error.message,
+					code: "UNAUTHORIZED",
 				};
 			}
 

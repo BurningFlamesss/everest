@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { auth } from "#/packages/auth/auth.ts";
 import {
 	AuthorizationError,
-	requireManagementUser,
+	requirePermission,
 } from "#/packages/auth/permissions.ts";
 import { prisma } from "#/packages/db/index.ts";
 
@@ -15,7 +15,7 @@ export const getAdminStatsFn = createServerFn().handler(async () => {
 			throw new AuthorizationError("Please sign in to continue");
 		}
 
-		await requireManagementUser(session.user.id);
+		await requirePermission(session.user.id, "MANAGE_DASHBOARD");
 
 		const now = new Date();
 

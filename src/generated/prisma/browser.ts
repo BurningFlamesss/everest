@@ -97,3 +97,58 @@ export type Event = Prisma.EventModel
  * 
  */
 export type Club = Prisma.ClubModel
+/**
+ * Model UserPermission
+ * 
+ */
+export type UserPermission = Prisma.UserPermissionModel
+/**
+ * Model InviteRequest
+ * 
+ */
+export type InviteRequest = Prisma.InviteRequestModel
+/**
+ * Model Classroom
+ * 
+ */
+export type Classroom = Prisma.ClassroomModel
+/**
+ * Model Course
+ * 
+ */
+export type Course = Prisma.CourseModel
+/**
+ * Model Enrollment
+ * 
+ */
+export type Enrollment = Prisma.EnrollmentModel
+/**
+ * Model AttendanceSession
+ * 
+ */
+export type AttendanceSession = Prisma.AttendanceSessionModel
+/**
+ * Model AttendanceRecord
+ * 
+ */
+export type AttendanceRecord = Prisma.AttendanceRecordModel
+/**
+ * Model TransportRoute
+ * 
+ */
+export type TransportRoute = Prisma.TransportRouteModel
+/**
+ * Model TransportStop
+ * 
+ */
+export type TransportStop = Prisma.TransportStopModel
+/**
+ * Model TransportAssignment
+ * 
+ */
+export type TransportAssignment = Prisma.TransportAssignmentModel
+/**
+ * Model FileAsset
+ * 
+ */
+export type FileAsset = Prisma.FileAssetModel

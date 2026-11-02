@@ -3,7 +3,7 @@ import { z } from "zod";
 import { auth } from "#/packages/auth/auth.ts";
 import {
 	AuthorizationError,
-	requireManagementUser,
+	requirePermission,
 } from "#/packages/auth/permissions.ts";
 import {
 	createClub,
@@ -30,7 +30,7 @@ async function requireManager() {
 		throw new AuthorizationError("Please sign in to continue");
 	}
 
-	await requireManagementUser(session.user.id);
+	await requirePermission(session.user.id, "MANAGE_CONTENT");
 
 	return session.user;
 }
@@ -101,6 +101,7 @@ const noticeInputSchema = z.object({
 	summary: z.string().trim().optional(),
 	body: z.string().trim().min(1, "Body is required"),
 	category: z.string().trim().optional(),
+	coverImage: z.string().trim().optional(),
 	audience: z.enum(["ALL", "STUDENTS", "STAFF", "GUARDIANS"]).optional(),
 	isPublished: z.boolean().optional(),
 	expiresAt: z.string().trim().optional(),

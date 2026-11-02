@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, Copy, Loader2, MailPlus } from "lucide-react";
+import { CheckCircle2, Loader2, MailPlus } from "lucide-react";
 import { useState } from "react";
 import {
 	AuthShell,
@@ -7,34 +7,27 @@ import {
 	FormError,
 	FormSuccess,
 } from "#/components/auth/AuthShell.tsx";
-import { createInvite } from "#/packages/auth/server/create-invite.ts";
+import { requestInviteAction } from "#/packages/invite/requests-server.ts";
 
 export const Route = createFileRoute("/_onboard/signup")({
 	component: RouteComponent,
 });
 
-interface InviteResult {
-	token: string;
-	url: string;
-	type: string;
-	expiresAt: Date | string;
-}
-
 function RouteComponent() {
-	const [invite, setInvite] = useState<InviteResult | null>(null);
+	const [submitted, setSubmitted] = useState(false);
+	const [submittedEmail, setSubmittedEmail] = useState("");
 	const [error, setError] = useState("");
-	const [copied, setCopied] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setError("");
-		setInvite(null);
 
 		const formData = new FormData(e.currentTarget);
 		const name = String(formData.get("name") ?? "").trim();
 		const email = String(formData.get("email") ?? "").trim();
 		const type = String(formData.get("type") ?? "STAFF") as "STAFF" | "STUDENT";
+		const message = String(formData.get("message") ?? "").trim();
 
 		if (!name || !email) {
 			setError("Enter your name and email address.");
@@ -44,45 +37,36 @@ function RouteComponent() {
 		setIsSubmitting(true);
 
 		try {
-			const response = await createInvite({ data: { name, email, type } });
+			const response = await requestInviteAction({
+				data: { name, email, type, message: message || undefined },
+			});
 
-			if (!response.success || !response.invite) {
-				setError(response.error ?? "Could not create an invitation.");
+			if (!response.success) {
+				setError(response.error ?? "Could not submit your request.");
 				return;
 			}
 
-			setInvite(response.invite as InviteResult);
-		} catch (inviteError) {
+			setSubmittedEmail(response.request.email);
+			setSubmitted(true);
+		} catch (requestError) {
 			setError(
-				inviteError instanceof Error
-					? inviteError.message
-					: "Could not create an invitation.",
+				requestError instanceof Error
+					? requestError.message
+					: "Could not submit your request.",
 			);
 		} finally {
 			setIsSubmitting(false);
 		}
 	};
 
-	const copyLink = async () => {
-		if (!invite) return;
-
-		try {
-			await navigator.clipboard.writeText(invite.url);
-			setCopied(true);
-			setTimeout(() => setCopied(false), 2000);
-		} catch {
-			setCopied(false);
-		}
-	};
-
 	return (
 		<AuthShell
 			badge="Onboarding"
-			title={invite ? "Your activation link is ready" : "Request an invitation"}
+			title={submitted ? "Request received" : "Request an invitation"}
 			subtitle={
-				invite
-					? "Open the link below to choose a password and activate the account."
-					: "Enter the details of the person who needs access. An administrator can also create invitations from the dashboard."
+				submitted
+					? "A school administrator will review your request and email an activation link if approved."
+					: "Tell us who needs access. An administrator reviews every request before an invitation is created."
 			}
 			footer={
 				<p>
@@ -96,44 +80,31 @@ function RouteComponent() {
 				</p>
 			}
 		>
-			{invite ? (
+			{submitted ? (
 				<div className="space-y-4">
-					<FormSuccess message="Invitation created successfully." />
+					<FormSuccess message="Your invitation request has been submitted." />
 
 					<div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-						<p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
-							{invite.type === "STUDENT" ? "Student" : "Staff"} activation link
+						<CheckCircle2 className="h-6 w-6 text-green-600" />
+						<p className="mt-3 text-sm leading-relaxed text-gray-700">
+							We have recorded the request for{" "}
+							<span className="font-semibold text-gray-900">
+								{submittedEmail}
+							</span>
+							. You do not need to do anything else — the school office will be
+							in touch once your account is approved.
 						</p>
-						<p className="mt-2 break-all text-sm text-gray-800">{invite.url}</p>
-						<div className="mt-4 flex flex-wrap gap-2">
-							<button
-								type="button"
-								onClick={copyLink}
-								className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-							>
-								{copied ? (
-									<Check className="h-4 w-4 text-green-600" />
-								) : (
-									<Copy className="h-4 w-4" />
-								)}
-								{copied ? "Copied" : "Copy link"}
-							</button>
-							<Link
-								to="/activate/$token"
-								params={{ token: invite.token }}
-								className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-3 py-2 text-sm font-semibold text-white hover:bg-red-600"
-							>
-								Open activation page
-							</Link>
-						</div>
 					</div>
 
 					<button
 						type="button"
-						onClick={() => setInvite(null)}
+						onClick={() => {
+							setSubmitted(false);
+							setSubmittedEmail("");
+						}}
 						className="text-sm font-medium text-gray-600 hover:text-gray-900"
 					>
-						Create another invitation
+						Submit another request
 					</button>
 				</div>
 			) : (
@@ -171,6 +142,19 @@ function RouteComponent() {
 						</select>
 					</label>
 
+					<label className="block">
+						<span className="mb-1.5 block text-sm font-medium text-gray-700">
+							Message <span className="text-gray-400">(optional)</span>
+						</span>
+						<textarea
+							name="message"
+							rows={3}
+							maxLength={1000}
+							placeholder="Anything the school office should know…"
+							className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100"
+						/>
+					</label>
+
 					<button
 						type="submit"
 						disabled={isSubmitting}
@@ -181,7 +165,7 @@ function RouteComponent() {
 						) : (
 							<MailPlus className="h-4 w-4" />
 						)}
-						{isSubmitting ? "Creating invitation…" : "Generate activation link"}
+						{isSubmitting ? "Submitting request…" : "Request an invitation"}
 					</button>
 				</form>
 			)}

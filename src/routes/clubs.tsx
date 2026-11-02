@@ -38,6 +38,13 @@ function ClubsPage() {
 								key={club.id}
 								className="flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-6"
 							>
+								{club.coverImage ? (
+									<img
+										src={club.coverImage}
+										alt=""
+										className="mb-4 h-40 w-full rounded-xl object-cover"
+									/>
+								) : null}
 								<div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600">
 									<Users className="h-5 w-5" />
 								</div>

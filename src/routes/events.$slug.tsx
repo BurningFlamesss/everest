@@ -46,6 +46,14 @@ function EventDetail() {
 					{event.title}
 				</h1>
 
+				{event.coverImage ? (
+					<img
+						src={event.coverImage}
+						alt=""
+						className="mt-8 h-72 w-full rounded-2xl object-cover"
+					/>
+				) : null}
+
 				<dl className="mt-6 grid gap-4 rounded-2xl border border-gray-200 bg-white p-5 sm:grid-cols-2">
 					<div>
 						<dt className="flex items-center gap-1 text-xs font-semibold uppercase text-gray-500">

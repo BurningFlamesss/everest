@@ -40,6 +40,13 @@ function EventsPage() {
 								params={{ slug: event.slug }}
 								className="group rounded-2xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-lg"
 							>
+								{event.coverImage ? (
+									<img
+										src={event.coverImage}
+										alt=""
+										className="mb-5 h-44 w-full rounded-xl object-cover"
+									/>
+								) : null}
 								<div className="flex items-start justify-between gap-4">
 									<div className="rounded-xl bg-red-50 px-4 py-3 text-center">
 										<p className="text-xs font-semibold uppercase text-red-600">

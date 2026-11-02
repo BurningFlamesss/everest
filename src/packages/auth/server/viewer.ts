@@ -2,8 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { auth } from "#/packages/auth/auth.ts";
 import {
 	getPrimaryRole,
+	getUserPermissions,
 	getUserRoles,
-	isManagementUser,
+	type PermissionKey,
 } from "#/packages/auth/permissions.ts";
 import { prisma } from "#/packages/db/index.ts";
 
@@ -16,17 +17,22 @@ export const getViewerFn = createServerFn().handler(async () => {
 			user: null,
 			roles: [] as Array<{ role: string; branchId: string | null }>,
 			primaryRole: null,
+			permissions: [] as Array<PermissionKey>,
 			isManagement: false,
+			isSuperAdmin: false,
 		};
 	}
 
-	const [roles, profile] = await Promise.all([
+	const [roles, profile, permissionSet] = await Promise.all([
 		getUserRoles(session.user.id),
 		prisma.user.findUnique({
 			where: { id: session.user.id },
 			select: { activatedAt: true },
 		}),
+		getUserPermissions(session.user.id),
 	]);
+
+	const permissions = [...permissionSet];
 
 	return {
 		user: {
@@ -41,6 +47,8 @@ export const getViewerFn = createServerFn().handler(async () => {
 			branchId: role.branchId,
 		})),
 		primaryRole: getPrimaryRole(roles),
-		isManagement: await isManagementUser(session.user.id),
+		permissions,
+		isManagement: permissions.length > 0,
+		isSuperAdmin: roles.some((role) => role.role === "SUPERADMIN"),
 	};
 });

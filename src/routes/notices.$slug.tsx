@@ -59,6 +59,13 @@ function NoticeDetail() {
 				<h1 className="mt-4 text-4xl font-bold leading-tight text-gray-900">
 					{notice.title}
 				</h1>
+				{notice.coverImage ? (
+					<img
+						src={notice.coverImage}
+						alt=""
+						className="mt-8 h-72 w-full rounded-2xl object-cover"
+					/>
+				) : null}
 				{notice.summary ? (
 					<p className="mt-4 text-lg leading-relaxed text-gray-600">
 						{notice.summary}

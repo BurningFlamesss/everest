@@ -1,14 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
+	Check,
 	Copy,
 	Loader2,
 	MailPlus,
 	RefreshCw,
 	Trash2,
 	UploadCloud,
+	X,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "#/lib/utils.ts";
+import {
+	approveInviteRequestAction,
+	listInviteRequestsAction,
+	rejectInviteRequestAction,
+} from "#/packages/invite/requests-server.ts";
 import {
 	createGuardianInviteAction,
 	createStaffInviteAction,
@@ -56,11 +63,26 @@ interface StudentOption {
 	section: string | null;
 }
 
+interface InviteRequestRow {
+	id: string;
+	name: string;
+	email: string;
+	type: InviteType;
+	message: string | null;
+	status: "PENDING" | "APPROVED" | "REJECTED";
+	reviewNote: string | null;
+	reviewedAt: string | Date | null;
+	createdAt: string | Date;
+	reviewedBy: { name: string; email: string } | null;
+}
+
 function AdminInvites() {
-	const [tab, setTab] = useState<"single" | "import">("single");
+	const [tab, setTab] = useState<"single" | "import" | "requests">("single");
 	const [type, setType] = useState<InviteType>("STAFF");
 	const [invites, setInvites] = useState<Array<InviteEntry>>([]);
 	const [students, setStudents] = useState<Array<StudentOption>>([]);
+	const [requests, setRequests] = useState<Array<InviteRequestRow>>([]);
+	const [isLoadingRequests, setIsLoadingRequests] = useState(true);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
@@ -85,6 +107,21 @@ function AdminInvites() {
 	useEffect(() => {
 		void loadInvites();
 	}, [loadInvites]);
+
+	const loadRequests = useCallback(async () => {
+		setIsLoadingRequests(true);
+		const response = await listInviteRequestsAction({ data: {} });
+
+		if (response.success) {
+			setRequests(response.requests as Array<InviteRequestRow>);
+		}
+
+		setIsLoadingRequests(false);
+	}, []);
+
+	useEffect(() => {
+		void loadRequests();
+	}, [loadRequests]);
 
 	useEffect(() => {
 		if (type !== "GUARDIAN" || students.length > 0) return;
@@ -190,6 +227,55 @@ function AdminInvites() {
 		await loadInvites();
 	};
 
+	const approveRequest = async (request: InviteRequestRow) => {
+		setError("");
+		setNotice("");
+		setCreatedLink("");
+
+		const response = await approveInviteRequestAction({
+			data: { id: request.id, sendEmail: true },
+		});
+
+		if (!response.success) {
+			setError(response.error);
+			return;
+		}
+
+		setCreatedLink(response.invite.url);
+		setNotice(
+			`Approved ${request.name}. Invitation created. Email ${
+				response.invite.emailSent ? "sent" : "not sent"
+			}.`,
+		);
+		await Promise.all([loadRequests(), loadInvites()]);
+	};
+
+	const rejectRequest = async (request: InviteRequestRow) => {
+		const note = window.prompt(
+			`Reason for rejecting ${request.name}? (optional)`,
+			"",
+		);
+
+		if (note === null) return;
+
+		setError("");
+		const response = await rejectInviteRequestAction({
+			data: { id: request.id, note: note.trim() || undefined },
+		});
+
+		if (!response.success) {
+			setError(response.error);
+			return;
+		}
+
+		setNotice(`Rejected the request from ${request.name}.`);
+		await loadRequests();
+	};
+
+	const pendingRequests = requests.filter(
+		(request) => request.status === "PENDING",
+	);
+
 	const copy = async (url: string) => {
 		try {
 			await navigator.clipboard.writeText(url);
@@ -235,6 +321,30 @@ function AdminInvites() {
 					>
 						CSV import
 					</button>
+					<button
+						type="button"
+						onClick={() => setTab("requests")}
+						className={cn(
+							"inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium",
+							tab === "requests"
+								? "bg-red-500 text-white"
+								: "text-gray-600 hover:bg-gray-100",
+						)}
+					>
+						Requests
+						{pendingRequests.length > 0 ? (
+							<span
+								className={cn(
+									"rounded-full px-1.5 py-0.5 text-[10px] font-bold",
+									tab === "requests"
+										? "bg-white/20 text-white"
+										: "bg-red-100 text-red-700",
+								)}
+							>
+								{pendingRequests.length}
+							</span>
+						) : null}
+					</button>
 				</div>
 			</div>
 
@@ -271,6 +381,112 @@ function AdminInvites() {
 						<StaffImport />
 					</div>
 				</div>
+			) : tab === "requests" ? (
+				<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+					<header className="flex items-center justify-between gap-3 border-b border-gray-200 px-5 py-4">
+						<div>
+							<h2 className="font-semibold text-gray-900">
+								Invitation requests
+							</h2>
+							<p className="text-xs text-gray-500">
+								{pendingRequests.length} pending · {requests.length} total
+							</p>
+						</div>
+						<button
+							type="button"
+							onClick={() => void loadRequests()}
+							className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
+						>
+							<RefreshCw
+								className={cn(
+									"h-3.5 w-3.5",
+									isLoadingRequests && "animate-spin",
+								)}
+							/>
+							Refresh
+						</button>
+					</header>
+
+					{isLoadingRequests ? (
+						<p className="p-5 text-sm text-gray-500">Loading requests…</p>
+					) : requests.length === 0 ? (
+						<div className="p-8 text-center">
+							<MailPlus className="mx-auto h-8 w-8 text-gray-300" />
+							<p className="mt-3 text-sm text-gray-500">
+								No invitation requests yet. Public requests from the signup page
+								appear here.
+							</p>
+						</div>
+					) : (
+						<ul className="divide-y divide-gray-100">
+							{requests.map((request) => (
+								<li key={request.id} className="px-5 py-4">
+									<div className="flex flex-wrap items-start justify-between gap-3">
+										<div className="min-w-0">
+											<p className="font-medium text-gray-900">
+												{request.name}{" "}
+												<span className="ml-1 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
+													{request.type}
+												</span>
+											</p>
+											<p className="text-xs text-gray-500">{request.email}</p>
+											{request.message ? (
+												<p className="mt-2 max-w-2xl text-sm text-gray-600">
+													{request.message}
+												</p>
+											) : null}
+											<p className="mt-2 text-[11px] text-gray-400">
+												Requested{" "}
+												{new Date(request.createdAt).toLocaleString()}
+												{request.reviewedBy
+													? ` · reviewed by ${request.reviewedBy.name}`
+													: ""}
+											</p>
+											{request.reviewNote ? (
+												<p className="mt-1 text-[11px] text-gray-500">
+													Note: {request.reviewNote}
+												</p>
+											) : null}
+										</div>
+
+										<div className="flex items-center gap-2">
+											<span
+												className={cn(
+													"rounded-full px-2.5 py-1 text-xs font-semibold",
+													request.status === "PENDING"
+														? "bg-amber-100 text-amber-700"
+														: request.status === "APPROVED"
+															? "bg-green-100 text-green-700"
+															: "bg-gray-100 text-gray-600",
+												)}
+											>
+												{request.status}
+											</span>
+											{request.status === "PENDING" ? (
+												<>
+													<button
+														type="button"
+														onClick={() => void approveRequest(request)}
+														className="inline-flex items-center gap-1 rounded-md bg-green-600 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-green-700"
+													>
+														<Check className="h-3.5 w-3.5" /> Approve
+													</button>
+													<button
+														type="button"
+														onClick={() => void rejectRequest(request)}
+														className="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50"
+													>
+														<X className="h-3.5 w-3.5" /> Reject
+													</button>
+												</>
+											) : null}
+										</div>
+									</div>
+								</li>
+							))}
+						</ul>
+					)}
+				</section>
 			) : (
 				<>
 					<section className="rounded-2xl border border-gray-200 bg-white p-6">

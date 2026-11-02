@@ -4,7 +4,7 @@ import { auth } from "#/packages/auth/auth.ts";
 import {
 	AuthorizationError,
 	MANAGEMENT_ROLES,
-	requireManagementUser,
+	requirePermission,
 } from "#/packages/auth/permissions.ts";
 import { prisma } from "#/packages/db/index.ts";
 import {
@@ -24,7 +24,7 @@ async function getCurrentUser() {
 		throw new AuthorizationError("Please sign in to continue");
 	}
 
-	await requireManagementUser(session.user.id);
+	await requirePermission(session.user.id, "MANAGE_INVITES");
 
 	return session.user;
 }
