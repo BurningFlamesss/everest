@@ -31,6 +31,7 @@ export const serverEnv = createEnv({
 		S3_ACCESS_KEY: z.string().default("scms"),
 		S3_SECRET_KEY: z.string().default("scms-secret"),
 		S3_BUCKET: z.string().default("scms"),
+		S3_REGION: z.string().trim().min(1).optional(),
 	},
 
 	runtimeEnv: process.env,

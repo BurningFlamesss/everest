@@ -48,10 +48,11 @@ export const Route = createFileRoute("/_onboard/activate/$token")({
 		);
 	},
 	errorComponent: ({ error }) => {
+		const errorMessage = error instanceof Error ? error.message : "";
 		const message =
-			error.message === ERROR.INVITATION_USED
+			errorMessage === ERROR.INVITATION_USED
 				? "This invitation has already been used. Try signing in instead."
-				: error.message === ERROR.INVITATION_EXPIRED
+				: errorMessage === ERROR.INVITATION_EXPIRED
 					? "This invitation has expired. Ask an administrator for a new link."
 					: "Something went wrong while loading this invitation.";
 

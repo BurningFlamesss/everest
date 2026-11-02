@@ -1,0 +1,36 @@
+# Dependencies and generated build artifacts
+**/node_modules
+**/.output
+**/dist
+**/dist-ssr
+src/generated/prisma
+
+# Build, tooling, and test caches
+**/.cache
+**/.npm
+**/.nitro
+**/.tanstack
+**/.vite
+**/.vinxi
+**/.wrangler
+**/coverage
+**/playwright-report
+**/test-results
+**/*.tsbuildinfo
+**/*.log
+
+# Local data and secrets; keep environment templates available
+**/.data
+**/.env*
+!**/.env.example
+!**/.env.*.example
+!**/.env.sample
+!**/.env.*.sample
+**/.npmrc
+
+# Version control and local editor/agent metadata
+**/.git
+**/.DS_Store
+.vscode
+.idea
+.freebuff

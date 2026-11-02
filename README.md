@@ -85,6 +85,7 @@ ScMS started as a highly ambitious project, due to the time constraint, and my a
 - Uploads are capped at 5 MB for images and 10 MB for documents, and the allowed document types are fixed in `src/routes/api/uploads.ts`.
 - The permission screen edits role defaults and per-user overrides; there is no per-branch permission scoping yet.
 - Migration history includes `init`, role permissions and attachments, and club attachments; every future schema change needs its own migration.
+- The dependency audit currently reports unresolved high/critical advisories. Review `npm audit --omit=dev` and validate targeted updates before public deployment; a successful build is not a security clearance.
 
 ## Tech Stack
 
@@ -134,10 +135,57 @@ For schema changes during development use `npm run db:migrate` to create a new m
 Step 6: Run either the dev server or the production server
 ```bash
 npm run dev
+# Or build and run the standalone production server:
 npm run build
+npx dotenv -e .env.local -- node .output/server/index.mjs
 ```
 
-Step 7: Run the test suite
+Step 7: Run the unit and UI regression suite (no database required)
 ```bash
 npm test
 ```
+
+### Production Docker image
+
+Start the Compose services and apply migrations as described above before starting the app. The image does not run migrations automatically and does not contain the Prisma CLI.
+
+```bash
+docker build --build-arg VITE_APP_URL=http://localhost:3000 -t scms:local .
+docker run --rm --name scms-app --network scms_default \
+  --env-file .env.local \
+  -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/scms \
+  -e S3_ENDPOINT=minio \
+  -e STORAGE_LOCAL_DIR=/app/.data/uploads \
+  -p 127.0.0.1:3000:3000 \
+  --mount type=volume,source=scms_uploads,target=/app/.data/uploads \
+  scms:local
+```
+
+`scms_default` is the default Compose network for this repository; adjust it if using a different Compose project name. The PostgreSQL credentials above are the local Compose defaults, not production credentials. `VITE_APP_URL` is embedded at build time and must match the runtime `APP_URL`. Server secrets are supplied at runtime and excluded from the build context. The server runs as UID 1000; bind-mounted upload directories must be writable by that user. The named volume keeps local uploads across container replacements; S3 uploads instead use the configured bucket.
+
+Behind a reverse proxy, forward the actual client IP using a trusted header and configure Better Auth's IP-header handling to match the deployment. Direct container requests without such a header can log a shared rate-limit-bucket warning. Do not suppress it by blindly trusting client-supplied forwarding headers; restrict direct access to the app when relying on a proxy.
+
+### PostgreSQL integration tests
+
+Use only a **disposable** database. The suite requires `SCMS_TEST_DATABASE_URL` explicitly, refuses database names not ending in `_test` or `_verification`, and never falls back to the application's `DATABASE_URL`. It deletes content and file-asset rows in that database and uses a temporary local upload directory.
+
+With the default Compose PostgreSQL service running:
+
+```bash
+docker compose exec postgres createdb -U postgres scms_test
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/scms_test npm run db:migrate:deploy
+SCMS_TEST_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/scms_test npm run test:integration
+```
+
+These tests exercise real attachment foreign keys, atomic replacement rollback, partial updates, club cascades, shared notice/event assets, grace periods, and physical-file cleanup.
+
+### Chromium end-to-end tests
+
+Run an app instance against a **separate disposable database**, such as `scms_browser_test`, with migrations applied. Do not use a live installation: the test exercises the administrator cleanup action, which scans all old, unreferenced uploads. Set the app's `APP_URL` and build-time `VITE_APP_URL` to the tested origin.
+
+```bash
+npx playwright install chromium
+SCMS_E2E_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/scms_browser_test npm run test:e2e
+```
+
+The default origin is `http://localhost:3000`; override it with `SCMS_E2E_BASE_URL`. If Chromium is already installed, set `SCMS_CHROMIUM_EXECUTABLE` to its executable path instead of downloading another copy. Tests create their own manager/viewer accounts and cover invitation activation, the permissions screen, club document upload/edit/download, active/inactive visibility, deletion and cleanup, and anonymous/unauthorized upload denial. Failed traces are stored under `.data/playwright-results`.

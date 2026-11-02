@@ -82,7 +82,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 						Something went wrong
 					</h1>
 					<p className="mt-2 text-sm text-gray-600">
-						{error.message || "An unexpected error occurred."}
+						{(error instanceof Error && error.message) ||
+							"An unexpected error occurred."}
 					</p>
 					<button
 						type="button"

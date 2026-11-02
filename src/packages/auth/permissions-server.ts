@@ -2,7 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { auth } from "#/packages/auth/auth.ts";
 import {
-	ALL_PERMISSIONS,
 	AuthorizationError,
 	isPermissionKey,
 	type PermissionKey,
@@ -233,5 +232,3 @@ export const resetRolePermissionsAction = createServerFn()
 			return failure(error);
 		}
 	});
-
-export { ALL_PERMISSIONS };

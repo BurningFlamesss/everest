@@ -45,9 +45,9 @@ export const Route = createFileRoute("/_onboard/activate/guardian/$token")({
 	errorComponent: ({ error }) => (
 		<AuthShell title="This link can't be used">
 			<p className="text-sm text-gray-600">
-				{error.message === "INVITE_ALREADY_USED"
+				{error instanceof Error && error.message === "INVITE_ALREADY_USED"
 					? "This invitation has already been used. Try signing in instead."
-					: error.message === "INVITE_EXPIRED"
+					: error instanceof Error && error.message === "INVITE_EXPIRED"
 						? "This invitation has expired. Ask the school office for a new link."
 						: "Something went wrong while loading this invitation."}
 			</p>

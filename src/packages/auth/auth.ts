@@ -32,7 +32,7 @@ export const auth = betterAuth({
 				}),
 			});
 		},
-		resetPasswordTokenExpiresIn: 1000 * 60 * 20,
+		resetPasswordTokenExpiresIn: 20 * 60,
 
 		onExistingUserSignUp: async ({ user }) => {
 			await sendMail({
@@ -67,7 +67,7 @@ export const auth = betterAuth({
 				}),
 			});
 		},
-		expiresIn: 1000 * 60 * 20,
+		expiresIn: 20 * 60,
 	},
 
 	baseURL: serverEnv.APP_URL,
