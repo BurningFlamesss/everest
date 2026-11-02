@@ -243,8 +243,10 @@ function AdminInvites() {
 
 		setCreatedLink(response.invite.url);
 		setNotice(
-			`Approved ${request.name}. Invitation created. Email ${
-				response.invite.emailSent ? "sent" : "not sent"
+			`Approved ${request.name}. Invitation created. Decision email ${
+				response.decisionEmailSent
+					? "sent"
+					: "not sent (mail may not be configured)"
 			}.`,
 		);
 		await Promise.all([loadRequests(), loadInvites()]);
@@ -436,8 +438,7 @@ function AdminInvites() {
 												</p>
 											) : null}
 											<p className="mt-2 text-[11px] text-gray-400">
-												Requested{" "}
-												{new Date(request.createdAt).toLocaleString()}
+												Requested {new Date(request.createdAt).toLocaleString()}
 												{request.reviewedBy
 													? ` · reviewed by ${request.reviewedBy.name}`
 													: ""}

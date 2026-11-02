@@ -14,7 +14,8 @@ export const PERMISSION_DEFINITIONS = [
 	{
 		key: "MANAGE_INVITES",
 		label: "Invitations",
-		description: "Create and revoke invitations, and review invitation requests.",
+		description:
+			"Create and revoke invitations, and review invitation requests.",
 	},
 	{
 		key: "MANAGE_DIRECTORY",
@@ -124,28 +125,74 @@ export function getPrimaryRole(roles: Array<{ role: string }>): string | null {
 }
 
 /**
+ * Resolves the editable role defaults.
+ *
+ * The hard-coded map is the starting point; `RolePermission` rows let an
+ * administrator change the baseline for a whole role. SUPERADMIN is always
+ * granted every permission so the system can never be locked out completely.
+ */
+export async function getRolePermissionDefaults(): Promise<
+	Record<string, Set<PermissionKey>>
+> {
+	const overrides = await prisma.rolePermission.findMany({
+		select: { role: true, permission: true, granted: true },
+	});
+
+	const result: Record<string, Set<PermissionKey>> = {};
+
+	for (const [role, permissions] of Object.entries(DEFAULT_ROLE_PERMISSIONS)) {
+		result[role] = new Set(permissions);
+	}
+
+	result.SUPERADMIN = new Set(ALL_PERMISSIONS);
+
+	for (const override of overrides) {
+		if (!isPermissionKey(override.permission)) continue;
+
+		let permissions = result[override.role];
+
+		if (!permissions) {
+			permissions = new Set<PermissionKey>();
+			result[override.role] = permissions;
+		}
+
+		if (override.granted) {
+			permissions.add(override.permission);
+		} else {
+			permissions.delete(override.permission);
+		}
+	}
+
+	result.SUPERADMIN = new Set(ALL_PERMISSIONS);
+
+	return result;
+}
+
+/**
  * Resolves the effective permission set for a user.
  *
- * Roles provide a baseline and `UserPermission` rows act as explicit
- * allow/deny overrides. This keeps administration simple while still
- * allowing individual exceptions (for example, a staff member who should
- * manage transport but not take attendance).
+ * Roles provide a baseline (editable through `RolePermission`) and
+ * `UserPermission` rows act as explicit allow/deny overrides. This keeps
+ * administration simple while still allowing individual exceptions (for
+ * example, a staff member who should manage transport but not take
+ * attendance).
  */
 export async function getUserPermissions(
 	userId: string,
 ): Promise<Set<PermissionKey>> {
-	const [roles, overrides] = await Promise.all([
+	const [roles, overrides, roleDefaults] = await Promise.all([
 		getUserRoles(userId),
 		prisma.userPermission.findMany({
 			where: { userId },
 			select: { permission: true, granted: true },
 		}),
+		getRolePermissionDefaults(),
 	]);
 
 	const permissions = new Set<PermissionKey>();
 
 	for (const role of roles) {
-		for (const permission of DEFAULT_ROLE_PERMISSIONS[role.role] ?? []) {
+		for (const permission of roleDefaults[role.role] ?? []) {
 			permissions.add(permission);
 		}
 	}

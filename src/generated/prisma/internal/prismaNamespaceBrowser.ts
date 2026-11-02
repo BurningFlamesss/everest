@@ -77,7 +77,9 @@ export const ModelName = {
   TransportRoute: 'TransportRoute',
   TransportStop: 'TransportStop',
   TransportAssignment: 'TransportAssignment',
-  FileAsset: 'FileAsset'
+  FileAsset: 'FileAsset',
+  RolePermission: 'RolePermission',
+  Attachment: 'Attachment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -505,6 +507,30 @@ export const FileAssetScalarFieldEnum = {
 } as const
 
 export type FileAssetScalarFieldEnum = (typeof FileAssetScalarFieldEnum)[keyof typeof FileAssetScalarFieldEnum]
+
+
+export const RolePermissionScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  permission: 'permission',
+  granted: 'granted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnum)[keyof typeof RolePermissionScalarFieldEnum]
+
+
+export const AttachmentScalarFieldEnum = {
+  id: 'id',
+  fileAssetId: 'fileAssetId',
+  noticeId: 'noticeId',
+  eventId: 'eventId',
+  label: 'label',
+  createdAt: 'createdAt'
+} as const
+
+export type AttachmentScalarFieldEnum = (typeof AttachmentScalarFieldEnum)[keyof typeof AttachmentScalarFieldEnum]
 
 
 export const SortOrder = {

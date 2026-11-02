@@ -33,7 +33,7 @@ Public routes:
 
 Authentication and onboarding:
 
-1. Signup (`/signup`) — public invite request kept for backward compatibility.
+1. Signup (`/signup`) — public invitation request. Requests are queued for an administrator to review; no account or invite is created until it is approved.
 2. Activate (`/activate/:token`) — staff/student account activation.
 3. Guardian activation (`/activate/guardian/:token`).
 4. Login (`/login`).
@@ -43,35 +43,48 @@ Signed-in area:
 
 1. Dashboard (`/dashboard`) with role-aware summaries.
 2. Admin overview (`/admin`).
-3. Invitations (`/admin/invites`) — staff, student, and guardian invitations, plus CSV bulk import.
+3. Invitations (`/admin/invites`) — staff, student, and guardian invitations, CSV bulk import, and the invitation-request review queue.
 4. Directory (`/admin/directory`) — students, staff, and guardians.
-5. Content management (`/admin/content`) — create and manage notices, events, and clubs.
+5. Content management (`/admin/content`) — create and manage notices, events, and clubs, including cover-image uploads.
+6. Academics (`/admin/academics`) — classrooms, courses, teachers, and student enrolments.
+7. Attendance (`/admin/attendance`) — open a daily register per course, mark students, and review per-student summaries.
+8. Transport (`/admin/transport`) — bus routes, stops, drivers, and student route assignments.
+9. Permissions (`/admin/permissions`) — edit role-level defaults and grant or revoke individual permissions.
+10. My records (`/my-records`) — students and guardians see their own courses, attendance, and transport; staff see an empty state.
 
 ## Introduction & Till What I reached
 
-ScMS started as a highly ambitious project, due to the time constraint, and my academics; needs to seriously compromise on the probable greatness of the project while still making sure the started features were completed without any stone unturned. 
+ScMS started as a highly ambitious project, due to the time constraint, and my academics; needs to seriously compromise on the probable greatness of the project while still making sure the started features were completed without any stone unturned.
 
 ## What is Completed?
 
 - Modular Architecture (Data consuming logic, Static and Dynamic Data distinction (Json vs Zustand))
-- Schema, Seed, and Docker Config
+- Schema, seed, Docker config, and versioned Prisma migrations
 - User Signup/Activate/Login flow, password reset, and email verification
 - Email delivery through Nodemailer with graceful fallback when mail is not configured
+- Public invitation requests with an admin approve/reject review queue, including a decision email to the requester
 - Admin-driven invitation flow for staff, students, and guardians, including revocation
 - CSV imports for staff and students with column mapping, validation, previews, and bulk creation
 - Admin dashboard, directory, and content management screens
 - Notices, events, and clubs (public pages and admin CRUD)
+- Academics: classrooms, courses with teacher/classroom assignment, and student enrolments
+- Attendance: daily course registers, per-student marks (present/absent/late/excused), and summaries
+- Transport: routes, ordered stops, drivers, and per-student pickup/drop-off assignments
+- Editable role-level permission defaults plus per-user overrides, with a dedicated permissions screen
+- Cover images and document attachments (PDF, Word, Excel, CSV, text) for notices and events, with a pluggable local/S3 storage driver
+- On-demand cleanup of uploads that are no longer referenced by any content
+- Self-service records for students and guardians: courses, attendance history, and bus route details
 - Landing, About, and Contact pages
 - Sidebar (with proper layout and collapsing logic)
 - Unit tests for the CSV import pipeline (`npm test`)
 
 ## What is Incomplete? (or, What is left?)
 
-- Attendance, transportation, courses, and classroom modules (not yet started; there are no schema models or routes for them)
-- Fine-grained per-role permissions beyond the current admin guards
-- File uploads (images/attachments) for notices, events, and clubs
-- A public invitation-request workflow (the legacy `/signup` route still creates invites directly; admins can use `/admin/invites` instead)
-- Automated database migrations (the project currently uses `npm run db:push`)
+- Orphaned uploads are removed only when an administrator runs the cleanup action on the content screen; there is no scheduled/cron job.
+- Notices and events accept document attachments, but clubs still support a cover image only.
+- Uploads are capped at 5 MB for images and 10 MB for documents, and the allowed document types are fixed in `src/routes/api/uploads.ts`.
+- The permission screen edits role defaults and per-user overrides; there is no per-branch permission scoping yet.
+- Migration history now has two migrations (`init`, then role permissions and attachments); every future schema change needs its own migration.
 
 ## Tech Stack
 
@@ -100,19 +113,21 @@ Step 2: Install deps
 npm i
 ```
 
-Step 3: Rename `.env.example` to `.env.local` and change the variables
+Step 3: Rename `.env.example` to `.env.local` and change the variables. For uploads, keep `STORAGE_DRIVER=local` to write into `STORAGE_LOCAL_DIR`, or set `STORAGE_DRIVER=s3` to use MinIO/any S3-compatible service (`S3_*` variables).
 
-Step 4: Setup local database provider using docker  (OPTIONAL, If you are using some other postgresql provider)
+Step 4: Setup local database and object storage using docker (OPTIONAL, if you are using another PostgreSQL or S3 provider). Compose starts PostgreSQL plus a MinIO service used when `STORAGE_DRIVER=s3`.
 ```bash
 docker compose up -d
 ```
 
-Step 5: Generate and push the Prisma schema, then seed the superadmin account and starter content
+Step 5: Generate the Prisma client, apply the migrations, then seed the superadmin account and starter content
 ```bash
 npm run db:generate
-npm run db:push
+npm run db:migrate:deploy
 npm run db:seed
 ```
+
+For schema changes during development use `npm run db:migrate` to create a new migration. `npm run db:push` still exists for quick throwaway databases, and `npm run db:migrate:status` shows what is applied.
 
 Step 6: Run either the dev server or the production server
 ```bash

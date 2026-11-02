@@ -21,6 +21,7 @@ import {
 	updateEvent,
 	updateNotice,
 } from "#/packages/content/content-service.ts";
+import { collectOrphanedFileAssets } from "#/packages/storage/cleanup.ts";
 
 async function requireManager() {
 	const { getRequestHeaders } = await import("@tanstack/react-start/server");
@@ -96,12 +97,18 @@ export const getClubsFn = createServerFn()
 		return listClubs({ search: data?.search });
 	});
 
+const attachmentSchema = z.object({
+	fileAssetId: z.string().min(1),
+	label: z.string().trim().max(200).optional(),
+});
+
 const noticeInputSchema = z.object({
 	title: z.string().trim().min(1, "Title is required"),
 	summary: z.string().trim().optional(),
 	body: z.string().trim().min(1, "Body is required"),
 	category: z.string().trim().optional(),
 	coverImage: z.string().trim().optional(),
+	attachments: z.array(attachmentSchema).max(10).optional(),
 	audience: z.enum(["ALL", "STUDENTS", "STAFF", "GUARDIANS"]).optional(),
 	isPublished: z.boolean().optional(),
 	expiresAt: z.string().trim().optional(),
@@ -152,6 +159,7 @@ const eventInputSchema = z.object({
 	description: z.string().trim().optional(),
 	location: z.string().trim().optional(),
 	coverImage: z.string().trim().optional(),
+	attachments: z.array(attachmentSchema).max(10).optional(),
 	startsAt: z.string().trim().min(1, "Start date is required"),
 	endsAt: z.string().trim().optional(),
 	isPublished: z.boolean().optional(),
@@ -244,6 +252,19 @@ export const deleteClubAction = createServerFn()
 			return failure(error);
 		}
 	});
+
+export const collectOrphanedAssetsAction = createServerFn().handler(
+	async () => {
+		try {
+			await requireManager();
+			const result = await collectOrphanedFileAssets();
+
+			return { success: true as const, ...result };
+		} catch (error) {
+			return failure(error);
+		}
+	},
+);
 
 export const getContentAdminDataFn = createServerFn().handler(async () => {
 	try {

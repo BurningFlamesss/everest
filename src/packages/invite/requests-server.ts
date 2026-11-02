@@ -127,13 +127,13 @@ export const rejectInviteRequestAction = createServerFn()
 	.handler(async ({ data }) => {
 		try {
 			const user = await requireManager();
-			const request = await rejectInviteRequest({
+			const result = await rejectInviteRequest({
 				id: data.id,
 				reviewerId: user.id,
 				note: data.note,
 			});
 
-			return { success: true as const, request };
+			return { success: true as const, ...result };
 		} catch (error) {
 			return failure(error);
 		}

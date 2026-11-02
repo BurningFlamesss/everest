@@ -10,10 +10,16 @@ import {
 } from "#/packages/auth/permissions.ts";
 import {
 	clearPermissionOverride,
+	clearRolePermissionDefault,
+	type EditablePermissionRole,
 	getPermissionCatalog,
+	isEditablePermissionRole,
 	listPermissionUsers,
+	listRolePermissions,
+	resetRolePermissionDefaults,
 	resetUserPermissions,
 	setPermissionOverride,
+	setRolePermissionDefault,
 } from "#/packages/auth/permissions-service.ts";
 
 async function requirePermissionManager() {
@@ -52,9 +58,12 @@ export const getPermissionsDataFn = createServerFn().handler(async () => {
 		await requirePermissionManager();
 		const users = await listPermissionUsers();
 
+		const roles = await listRolePermissions();
+
 		return {
 			success: true as const,
 			users,
+			roles,
 			catalog: getPermissionCatalog(),
 		};
 	} catch (error) {
@@ -136,6 +145,65 @@ export const resetUserPermissionsAction = createServerFn()
 		try {
 			await requirePermissionManager();
 			await resetUserPermissions(data.userId);
+
+			return { success: true as const };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+const roleSchema = z.object({
+	role: z
+		.string()
+		.refine(isEditablePermissionRole, "That role cannot be edited"),
+	permission: z.string().refine(isPermissionKey, "Unknown permission"),
+});
+
+export const setRolePermissionAction = createServerFn()
+	.validator(roleSchema.extend({ granted: z.boolean() }))
+	.handler(async ({ data }) => {
+		try {
+			await requirePermissionManager();
+			await setRolePermissionDefault({
+				role: data.role as EditablePermissionRole,
+				permission: data.permission as PermissionKey,
+				granted: data.granted,
+			});
+
+			return { success: true as const };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+export const clearRolePermissionAction = createServerFn()
+	.validator(roleSchema)
+	.handler(async ({ data }) => {
+		try {
+			await requirePermissionManager();
+			await clearRolePermissionDefault({
+				role: data.role as EditablePermissionRole,
+				permission: data.permission as PermissionKey,
+			});
+
+			return { success: true as const };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+export const resetRolePermissionsAction = createServerFn()
+	.validator(
+		z.object({
+			role: z
+				.string()
+				.refine(isEditablePermissionRole, "That role cannot be edited"),
+		}),
+	)
+	.handler(async ({ data }) => {
+		try {
+			await requirePermissionManager();
+			await resetRolePermissionDefaults(data.role);
 
 			return { success: true as const };
 		} catch (error) {

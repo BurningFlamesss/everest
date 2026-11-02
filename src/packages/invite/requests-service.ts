@@ -1,9 +1,6 @@
 import { serverEnv } from "#/env/server.ts";
 import { prisma } from "#/packages/db/index.ts";
-import {
-	renderMailTemplate,
-	sendMail,
-} from "#/packages/notifications/mail.ts";
+import { renderMailTemplate, sendMail } from "#/packages/notifications/mail.ts";
 import {
 	createStaffInvite,
 	createStudentInvite,
@@ -80,6 +77,14 @@ export async function countPendingInviteRequests() {
 	return prisma.inviteRequest.count({ where: { status: "PENDING" } });
 }
 
+function escapeHtml(value: string) {
+	return value
+		.replaceAll("&", "&amp;")
+		.replaceAll("<", "&lt;")
+		.replaceAll(">", "&gt;")
+		.replaceAll('"', "&quot;");
+}
+
 export async function approveInviteRequest(input: {
 	id: string;
 	reviewerId: string;
@@ -100,17 +105,19 @@ export async function approveInviteRequest(input: {
 		);
 	}
 
+	// The invite itself is created without its own email so the requester
+	// receives exactly one decision message containing the activation link.
 	const invite =
 		request.type === "STUDENT"
 			? await createStudentInvite({
 					name: request.name,
 					email: request.email,
-					sendEmail: input.sendEmail,
+					sendEmail: false,
 				})
 			: await createStaffInvite({
 					name: request.name,
 					email: request.email,
-					sendEmail: input.sendEmail,
+					sendEmail: false,
 				});
 
 	const updated = await prisma.inviteRequest.update({
@@ -122,7 +129,21 @@ export async function approveInviteRequest(input: {
 		},
 	});
 
-	return { request: updated, invite };
+	const decision = await sendMail({
+		to: request.email,
+		subject: `Your ${serverEnv.ORGANIZATION_NAME} invitation request was approved`,
+		html: renderMailTemplate({
+			title: "You're approved",
+			body: [
+				`Hi ${escapeHtml(request.name)}, the school office approved your ${request.type === "STUDENT" ? "student" : "staff"} access request.`,
+				"Choose a password with the button below to activate your account. The link expires in 7 days.",
+			],
+			actionLabel: "Activate my account",
+			actionUrl: invite.url,
+		}),
+	});
+
+	return { request: updated, invite, decisionEmailSent: decision.success };
 }
 
 export async function rejectInviteRequest(input: {
@@ -145,13 +166,31 @@ export async function rejectInviteRequest(input: {
 		);
 	}
 
-	return prisma.inviteRequest.update({
+	const note = input.note?.trim() || null;
+
+	const updated = await prisma.inviteRequest.update({
 		where: { id: request.id },
 		data: {
 			status: "REJECTED",
 			reviewedById: input.reviewerId,
 			reviewedAt: new Date(),
-			reviewNote: input.note?.trim() || null,
+			reviewNote: note,
 		},
 	});
+
+	const decision = await sendMail({
+		to: request.email,
+		subject: `Your ${serverEnv.ORGANIZATION_NAME} invitation request was not approved`,
+		html: renderMailTemplate({
+			title: "Request not approved",
+			body: [
+				`Hi ${escapeHtml(request.name)}, the school office reviewed your ${request.type === "STUDENT" ? "student" : "staff"} access request and could not approve it.`,
+				...(note
+					? [`Note from the school office: ${escapeHtml(note)}`]
+					: ["Contact the school office if you believe this was a mistake."]),
+			],
+		}),
+	});
+
+	return { request: updated, decisionEmailSent: decision.success };
 }

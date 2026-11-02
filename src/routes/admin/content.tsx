@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, Plus, Trash2 } from "lucide-react";
+import { Loader2, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { AttachmentUploadField } from "#/components/content/AttachmentUploadField.tsx";
 import { ImageUploadField } from "#/components/content/ImageUploadField.tsx";
 import { cn } from "#/lib/utils.ts";
 import {
+	collectOrphanedAssetsAction,
 	createClubAction,
 	createEventAction,
 	createNoticeAction,
@@ -55,6 +57,39 @@ interface ClubRow {
 	isActive: boolean;
 }
 
+interface AttachmentPayload {
+	fileAssetId: string;
+	label?: string;
+}
+
+function parseAttachments(
+	raw: FormDataEntryValue | null,
+): Array<AttachmentPayload> {
+	if (typeof raw !== "string" || raw.trim() === "") return [];
+
+	try {
+		const parsed: unknown = JSON.parse(raw);
+
+		if (!Array.isArray(parsed)) return [];
+
+		return parsed
+			.filter(
+				(entry: unknown): entry is { fileAssetId: string; label?: unknown } =>
+					Boolean(entry) &&
+					typeof entry === "object" &&
+					typeof (entry as { fileAssetId?: unknown }).fileAssetId === "string",
+			)
+			.map((entry) => ({
+				fileAssetId: entry.fileAssetId,
+				...(typeof entry.label === "string" && entry.label.trim()
+					? { label: entry.label.trim() }
+					: {}),
+			}));
+	} catch {
+		return [];
+	}
+}
+
 function AdminContent() {
 	const [tab, setTab] = useState<Tab>("notices");
 	const [notices, setNotices] = useState<Array<NoticeRow>>([]);
@@ -64,6 +99,7 @@ function AdminContent() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
 	const [noticeMessage, setNoticeMessage] = useState("");
+	const [isCleaning, setIsCleaning] = useState(false);
 
 	const load = useCallback(async () => {
 		setIsLoading(true);
@@ -105,6 +141,7 @@ function AdminContent() {
 								body: String(data.get("body") ?? ""),
 								category: String(data.get("category") ?? ""),
 								coverImage: String(data.get("coverImage") ?? ""),
+								attachments: parseAttachments(data.get("attachments")),
 								audience: String(data.get("audience") ?? "ALL") as "ALL",
 								isPublished: data.get("isPublished") === "on",
 								expiresAt: String(data.get("expiresAt") ?? ""),
@@ -117,6 +154,7 @@ function AdminContent() {
 									description: String(data.get("description") ?? ""),
 									location: String(data.get("location") ?? ""),
 									coverImage: String(data.get("coverImage") ?? ""),
+									attachments: parseAttachments(data.get("attachments")),
 									startsAt: String(data.get("startsAt") ?? ""),
 									endsAt: String(data.get("endsAt") ?? ""),
 									isPublished: data.get("isPublished") === "on",
@@ -191,14 +229,51 @@ function AdminContent() {
 		else await load();
 	};
 
+	const runCleanup = async () => {
+		setError("");
+		setNoticeMessage("");
+		setIsCleaning(true);
+
+		const response = await collectOrphanedAssetsAction();
+
+		setIsCleaning(false);
+
+		if (!response.success) {
+			setError(response.error);
+			return;
+		}
+
+		setNoticeMessage(
+			`Removed ${response.deleted} unused upload${response.deleted === 1 ? "" : "s"}${
+				response.failed > 0 ? ` (${response.failed} could not be removed)` : ""
+			}.`,
+		);
+		await load();
+	};
+
 	return (
 		<div className="space-y-8">
-			<div>
-				<h1 className="text-3xl font-bold text-gray-900">Website content</h1>
-				<p className="mt-1 text-sm text-gray-500">
-					Publish notices, add calendar events and manage the clubs shown to
-					families.
-				</p>
+			<div className="flex flex-wrap items-end justify-between gap-4">
+				<div>
+					<h1 className="text-3xl font-bold text-gray-900">Website content</h1>
+					<p className="mt-1 text-sm text-gray-500">
+						Publish notices, add calendar events and manage the clubs shown to
+						families.
+					</p>
+				</div>
+				<button
+					type="button"
+					onClick={() => void runCleanup()}
+					disabled={isCleaning}
+					className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+				>
+					{isCleaning ? (
+						<Loader2 className="h-3.5 w-3.5 animate-spin" />
+					) : (
+						<RefreshCw className="h-3.5 w-3.5" />
+					)}
+					Clean up unused uploads
+				</button>
 			</div>
 
 			<div className="flex gap-1 rounded-lg border border-gray-200 bg-white p-1">
@@ -271,6 +346,11 @@ function AdminContent() {
 								prefix="notices"
 								className="md:col-span-2"
 							/>
+							<AttachmentUploadField
+								name="attachments"
+								prefix="notices"
+								className="md:col-span-2"
+							/>
 						</>
 					) : tab === "events" ? (
 						<>
@@ -290,6 +370,11 @@ function AdminContent() {
 							/>
 							<ImageUploadField
 								name="coverImage"
+								prefix="events"
+								className="md:col-span-2"
+							/>
+							<AttachmentUploadField
+								name="attachments"
 								prefix="events"
 								className="md:col-span-2"
 							/>

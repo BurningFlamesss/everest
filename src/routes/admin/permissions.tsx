@@ -1,12 +1,20 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Loader2, RotateCcw, Search, ShieldCheck, ShieldOff } from "lucide-react";
+import {
+	Loader2,
+	RotateCcw,
+	Search,
+	ShieldCheck,
+	ShieldOff,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "#/lib/utils.ts";
 import {
 	clearPermissionAction,
 	getPermissionsDataFn,
+	resetRolePermissionsAction,
 	resetUserPermissionsAction,
 	setPermissionAction,
+	setRolePermissionAction,
 } from "#/packages/auth/permissions-server.ts";
 
 export const Route = createFileRoute("/admin/permissions")({
@@ -36,8 +44,16 @@ interface PermissionUser {
 	overrides: Array<{ permission: string; granted: boolean }>;
 }
 
+interface RolePermissionSummary {
+	role: string;
+	editable: boolean;
+	effective: Array<string>;
+	overrides: Array<{ permission: string; granted: boolean }>;
+}
+
 function AdminPermissions() {
 	const [users, setUsers] = useState<Array<PermissionUser>>([]);
+	const [roles, setRoles] = useState<Array<RolePermissionSummary>>([]);
 	const [catalog, setCatalog] = useState<Array<PermissionDefinition>>([]);
 	const [search, setSearch] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
@@ -56,6 +72,7 @@ function AdminPermissions() {
 		}
 
 		setUsers(response.users as Array<PermissionUser>);
+		setRoles(response.roles as Array<RolePermissionSummary>);
 		setCatalog(response.catalog as Array<PermissionDefinition>);
 		setError("");
 		setIsLoading(false);
@@ -123,6 +140,56 @@ function AdminPermissions() {
 		await load();
 	};
 
+	const toggleRole = async (
+		role: RolePermissionSummary,
+		permission: PermissionDefinition,
+		next: boolean,
+	) => {
+		setError("");
+		setNotice("");
+		setBusyKey(`role:${role.role}:${permission.key}`);
+
+		const response = await setRolePermissionAction({
+			data: {
+				role: role.role,
+				permission: permission.key,
+				granted: next,
+			},
+		});
+
+		setBusyKey("");
+
+		if (!response.success) {
+			setError(response.error);
+			return;
+		}
+
+		setNotice(
+			`${permission.label} ${next ? "enabled" : "disabled"} for the ${role.role.toLowerCase()} role.`,
+		);
+		await load();
+	};
+
+	const resetRole = async (role: RolePermissionSummary) => {
+		if (!confirm(`Reset ${role.role} permissions to the built-in defaults?`)) {
+			return;
+		}
+
+		setBusyKey(`role:${role.role}:reset`);
+		const response = await resetRolePermissionsAction({
+			data: { role: role.role },
+		});
+		setBusyKey("");
+
+		if (!response.success) {
+			setError(response.error);
+			return;
+		}
+
+		setNotice(`${role.role} permissions reset to the built-in defaults.`);
+		await load();
+	};
+
 	const query = search.trim().toLowerCase();
 	const visibleUsers = query
 		? users.filter(
@@ -139,8 +206,8 @@ function AdminPermissions() {
 				<div>
 					<h1 className="text-3xl font-bold text-gray-900">Permissions</h1>
 					<p className="mt-1 text-sm text-gray-500">
-						Roles provide a baseline. Toggle a permission to grant or deny it for
-						one person.
+						Roles provide a baseline. Toggle a permission to grant or deny it
+						for one person.
 					</p>
 				</div>
 				<label className="relative block w-full max-w-xs">
@@ -177,6 +244,90 @@ function AdminPermissions() {
 					{notice}
 				</div>
 			) : null}
+
+			<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+				<header className="border-b border-gray-200 px-5 py-4">
+					<h2 className="font-semibold text-gray-900">Role defaults</h2>
+					<p className="mt-1 text-sm text-gray-500">
+						Change the baseline every person with a role receives. Individual
+						overrides still win. SUPERADMIN always keeps every permission.
+					</p>
+				</header>
+
+				<div className="divide-y divide-gray-100">
+					{roles.map((role) => (
+						<div key={role.role} className="p-4">
+							<div className="flex flex-wrap items-center justify-between gap-2">
+								<div className="flex items-center gap-2">
+									<span className="rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700">
+										{role.role}
+									</span>
+									{role.overrides.length > 0 ? (
+										<span className="text-xs text-gray-500">
+											{role.overrides.length} customised
+										</span>
+									) : null}
+								</div>
+								{role.editable ? (
+									<button
+										type="button"
+										onClick={() => void resetRole(role)}
+										disabled={busyKey === `role:${role.role}:reset`}
+										className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-2.5 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+									>
+										{busyKey === `role:${role.role}:reset` ? (
+											<Loader2 className="h-3.5 w-3.5 animate-spin" />
+										) : (
+											<RotateCcw className="h-3.5 w-3.5" />
+										)}
+										Reset
+									</button>
+								) : (
+									<span className="text-xs font-medium text-gray-400">
+										Fixed
+									</span>
+								)}
+							</div>
+
+							<div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+								{catalog.map((permission) => {
+									const allowed = role.effective.includes(permission.key);
+									const isBusy =
+										busyKey === `role:${role.role}:${permission.key}`;
+
+									return (
+										<button
+											key={permission.key}
+											type="button"
+											disabled={!role.editable || isBusy}
+											onClick={() =>
+												void toggleRole(role, permission, !allowed)
+											}
+											className={cn(
+												"flex items-center gap-2 rounded-xl border px-3 py-2 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-60",
+												allowed
+													? "border-green-200 bg-green-50/60 hover:bg-green-50"
+													: "border-gray-200 bg-gray-50 hover:bg-gray-100",
+											)}
+										>
+											{isBusy ? (
+												<Loader2 className="h-4 w-4 shrink-0 animate-spin text-gray-500" />
+											) : allowed ? (
+												<ShieldCheck className="h-4 w-4 shrink-0 text-green-600" />
+											) : (
+												<ShieldOff className="h-4 w-4 shrink-0 text-gray-400" />
+											)}
+											<span className="text-xs font-medium text-gray-900">
+												{permission.label}
+											</span>
+										</button>
+									);
+								})}
+							</div>
+						</div>
+					))}
+				</div>
+			</section>
 
 			{isLoading ? (
 				<p className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-white p-6 text-sm text-gray-500">
@@ -242,8 +393,7 @@ function AdminPermissions() {
 											permission.key,
 										);
 										const isOverride = allowed !== roleAllows;
-										const isBusy =
-											busyKey === `${user.id}:${permission.key}`;
+										const isBusy = busyKey === `${user.id}:${permission.key}`;
 
 										return (
 											<button

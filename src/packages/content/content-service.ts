@@ -3,12 +3,18 @@ import { slugify } from "#/packages/invite/invite-service.ts";
 
 export type NoticeAudience = "ALL" | "STUDENTS" | "STAFF" | "GUARDIANS";
 
+export interface AttachmentInput {
+	fileAssetId: string;
+	label?: string;
+}
+
 export interface NoticeInput {
 	title: string;
 	summary?: string;
 	body: string;
 	category?: string;
 	coverImage?: string;
+	attachments?: Array<AttachmentInput>;
 	audience?: NoticeAudience;
 	isPublished?: boolean;
 	expiresAt?: Date | string | null;
@@ -22,6 +28,7 @@ export interface EventInput {
 	description?: string;
 	location?: string;
 	coverImage?: string;
+	attachments?: Array<AttachmentInput>;
 	startsAt: Date | string;
 	endsAt?: Date | string | null;
 	isPublished?: boolean;
@@ -38,6 +45,17 @@ export interface ClubInput {
 	isActive?: boolean;
 	organizationId?: string | null;
 	branchId?: string | null;
+}
+
+function attachmentCreates(
+	attachments?: Array<AttachmentInput>,
+): Array<{ fileAssetId: string; label: string | null }> | undefined {
+	if (!attachments?.length) return undefined;
+
+	return attachments.map((attachment) => ({
+		fileAssetId: attachment.fileAssetId,
+		label: attachment.label?.trim() || null,
+	}));
 }
 
 function toDate(value: Date | string | null | undefined): Date | null {
@@ -106,6 +124,9 @@ export async function createNotice(input: NoticeInput) {
 			body: input.body,
 			category: input.category?.trim() || null,
 			coverImage: input.coverImage?.trim() || null,
+			attachments: attachmentCreates(input.attachments)
+				? { create: attachmentCreates(input.attachments) }
+				: undefined,
 			audience: input.audience ?? "ALL",
 			isPublished: input.isPublished ?? false,
 			publishedAt: input.isPublished ? new Date() : null,
@@ -144,6 +165,14 @@ export async function updateNotice(id: string, input: Partial<NoticeInput>) {
 				: {}),
 			...(input.coverImage !== undefined
 				? { coverImage: input.coverImage.trim() || null }
+				: {}),
+			...(input.attachments !== undefined
+				? {
+						attachments: {
+							deleteMany: {},
+							create: attachmentCreates(input.attachments) ?? [],
+						},
+					}
 				: {}),
 			...(input.audience !== undefined ? { audience: input.audience } : {}),
 			...(input.isPublished !== undefined
@@ -204,7 +233,24 @@ export async function listNotices(options?: {
 }
 
 export async function getNoticeBySlug(slug: string, includeDrafts = false) {
-	const notice = await prisma.notice.findUnique({ where: { slug } });
+	const notice = await prisma.notice.findUnique({
+		where: { slug },
+		include: {
+			attachments: {
+				include: {
+					fileAsset: {
+						select: {
+							url: true,
+							originalName: true,
+							mimeType: true,
+							size: true,
+						},
+					},
+				},
+				orderBy: { createdAt: "asc" },
+			},
+		},
+	});
 
 	if (!notice) return null;
 	if (!includeDrafts) {
@@ -228,6 +274,9 @@ export async function createEvent(input: EventInput) {
 			description: input.description?.trim() || null,
 			location: input.location?.trim() || null,
 			coverImage: input.coverImage?.trim() || null,
+			attachments: attachmentCreates(input.attachments)
+				? { create: attachmentCreates(input.attachments) }
+				: undefined,
 			startsAt,
 			endsAt,
 			isPublished: input.isPublished ?? false,
@@ -261,6 +310,14 @@ export async function updateEvent(id: string, input: Partial<EventInput>) {
 				: {}),
 			...(input.coverImage !== undefined
 				? { coverImage: input.coverImage.trim() || null }
+				: {}),
+			...(input.attachments !== undefined
+				? {
+						attachments: {
+							deleteMany: {},
+							create: attachmentCreates(input.attachments) ?? [],
+						},
+					}
 				: {}),
 			...(input.startsAt !== undefined
 				? { startsAt: toDate(input.startsAt) ?? existing.startsAt }
@@ -315,7 +372,24 @@ export async function listEvents(options?: {
 }
 
 export async function getEventBySlug(slug: string, includeDrafts = false) {
-	const event = await prisma.event.findUnique({ where: { slug } });
+	const event = await prisma.event.findUnique({
+		where: { slug },
+		include: {
+			attachments: {
+				include: {
+					fileAsset: {
+						select: {
+							url: true,
+							originalName: true,
+							mimeType: true,
+							size: true,
+						},
+					},
+				},
+				orderBy: { createdAt: "asc" },
+			},
+		},
+	});
 
 	if (!event) return null;
 	if (!includeDrafts && !event.isPublished) return null;

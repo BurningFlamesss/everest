@@ -176,3 +176,13 @@ export type TransportAssignment = Prisma.TransportAssignmentModel
  * 
  */
 export type FileAsset = Prisma.FileAssetModel
+/**
+ * Model RolePermission
+ * 
+ */
+export type RolePermission = Prisma.RolePermissionModel
+/**
+ * Model Attachment
+ * 
+ */
+export type Attachment = Prisma.AttachmentModel

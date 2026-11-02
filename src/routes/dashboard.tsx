@@ -4,6 +4,7 @@ import {
 	Bell,
 	BookOpen,
 	CalendarDays,
+	ClipboardCheck,
 	LayoutDashboard,
 	Users,
 } from "lucide-react";
@@ -40,6 +41,13 @@ const shortcuts = [
 		description: "Explore the clubs students can join.",
 		to: "/clubs",
 		icon: BookOpen,
+	},
+	{
+		label: "My records",
+		description:
+			"Courses, attendance and bus details for you or your children.",
+		to: "/my-records",
+		icon: ClipboardCheck,
 	},
 ] as const;
 

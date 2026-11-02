@@ -8,12 +8,22 @@ import {
 	getStorage,
 } from "#/packages/storage/index.ts";
 
-const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const MAX_DOCUMENT_BYTES = 10 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set([
 	"image/png",
 	"image/jpeg",
 	"image/webp",
 	"image/gif",
+]);
+const ALLOWED_DOCUMENT_TYPES = new Set([
+	"application/pdf",
+	"application/msword",
+	"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+	"application/vnd.ms-excel",
+	"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+	"text/csv",
+	"text/plain",
 ]);
 
 function json(body: unknown, status = 200) {
@@ -56,19 +66,30 @@ export const Route = createFileRoute("/api/uploads")({
 					return json({ success: false, error: "Choose a file first." }, 400);
 				}
 
-				if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+				const isImage = ALLOWED_IMAGE_TYPES.has(file.type);
+				const isDocument = ALLOWED_DOCUMENT_TYPES.has(file.type);
+
+				if (!isImage && !isDocument) {
 					return json(
 						{
 							success: false,
-							error: "Only PNG, JPEG, WebP and GIF images are supported.",
+							error:
+								"Supported files are images (PNG, JPEG, WebP, GIF), PDF, Word, Excel, CSV and plain text.",
 						},
 						415,
 					);
 				}
 
-				if (file.size <= 0 || file.size > MAX_UPLOAD_BYTES) {
+				const maxBytes = isImage ? MAX_IMAGE_BYTES : MAX_DOCUMENT_BYTES;
+
+				if (file.size <= 0 || file.size > maxBytes) {
 					return json(
-						{ success: false, error: "Images must be smaller than 5 MB." },
+						{
+							success: false,
+							error: isImage
+								? "Images must be smaller than 5 MB."
+								: "Documents must be smaller than 10 MB.",
+						},
 						413,
 					);
 				}

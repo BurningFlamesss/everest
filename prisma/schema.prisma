@@ -331,6 +331,8 @@ model Notice {
   category String?
   coverImage String?
 
+  attachments Attachment[]
+
   audience NoticeAudience @default(ALL)
 
   isPublished Boolean   @default(false)
@@ -357,6 +359,8 @@ model Event {
   description String?
   location    String?
   coverImage  String?
+
+  attachments Attachment[]
 
   startsAt DateTime
   endsAt   DateTime?
@@ -673,7 +677,44 @@ model FileAsset {
   uploadedById String?
   uploadedBy   User? @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
 
+  attachments Attachment[]
+
   createdAt DateTime @default(now())
 
   @@index([uploadedById])
+}
+
+model RolePermission {
+  id String @id @default(cuid())
+
+  role       Role
+  permission PermissionKey
+  granted    Boolean       @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([role, permission])
+  @@index([role])
+}
+
+model Attachment {
+  id String @id @default(cuid())
+
+  fileAssetId String
+  fileAsset   FileAsset @relation(fields: [fileAssetId], references: [id], onDelete: Cascade)
+
+  noticeId String?
+  notice   Notice? @relation(fields: [noticeId], references: [id], onDelete: Cascade)
+
+  eventId String?
+  event   Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  label String?
+
+  createdAt DateTime @default(now())
+
+  @@index([fileAssetId])
+  @@index([noticeId])
+  @@index([eventId])
 }

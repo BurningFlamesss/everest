@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as NoticesRouteImport } from './routes/notices'
+import { Route as MyRecordsRouteImport } from './routes/my-records'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -20,11 +21,17 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as NoticesIndexRouteImport } from './routes/notices.index'
 import { Route as EventsIndexRouteImport } from './routes/events.index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as UploadsSplatRouteImport } from './routes/uploads/$'
 import { Route as NoticesSlugRouteImport } from './routes/notices.$slug'
 import { Route as EventsSlugRouteImport } from './routes/events.$slug'
+import { Route as ApiUploadsRouteImport } from './routes/api/uploads'
+import { Route as AdminTransportRouteImport } from './routes/admin/transport'
+import { Route as AdminPermissionsRouteImport } from './routes/admin/permissions'
 import { Route as AdminInvitesRouteImport } from './routes/admin/invites'
 import { Route as AdminDirectoryRouteImport } from './routes/admin/directory'
 import { Route as AdminContentRouteImport } from './routes/admin/content'
+import { Route as AdminAttendanceRouteImport } from './routes/admin/attendance'
+import { Route as AdminAcademicsRouteImport } from './routes/admin/academics'
 import { Route as OnboardSignupRouteImport } from './routes/_onboard/signup'
 import { Route as OnboardResetPasswordRouteImport } from './routes/_onboard/reset-password'
 import { Route as OnboardLoginRouteImport } from './routes/_onboard/login'
@@ -36,6 +43,11 @@ import { Route as OnboardActivateGuardianTokenRouteImport } from './routes/_onbo
 const NoticesRoute = NoticesRouteImport.update({
   id: '/notices',
   path: '/notices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyRecordsRoute = MyRecordsRouteImport.update({
+  id: '/my-records',
+  path: '/my-records',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -88,6 +100,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const UploadsSplatRoute = UploadsSplatRouteImport.update({
+  id: '/uploads/$',
+  path: '/uploads/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NoticesSlugRoute = NoticesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -97,6 +114,21 @@ const EventsSlugRoute = EventsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => EventsRoute,
+} as any)
+const ApiUploadsRoute = ApiUploadsRouteImport.update({
+  id: '/api/uploads',
+  path: '/api/uploads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminTransportRoute = AdminTransportRouteImport.update({
+  id: '/transport',
+  path: '/transport',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPermissionsRoute = AdminPermissionsRouteImport.update({
+  id: '/permissions',
+  path: '/permissions',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminInvitesRoute = AdminInvitesRouteImport.update({
   id: '/invites',
@@ -111,6 +143,16 @@ const AdminDirectoryRoute = AdminDirectoryRouteImport.update({
 const AdminContentRoute = AdminContentRouteImport.update({
   id: '/content',
   path: '/content',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAttendanceRoute = AdminAttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAcademicsRoute = AdminAcademicsRouteImport.update({
+  id: '/academics',
+  path: '/academics',
   getParentRoute: () => AdminRoute,
 } as any)
 const OnboardSignupRoute = OnboardSignupRouteImport.update({
@@ -158,16 +200,23 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/events': typeof EventsRouteWithChildren
+  '/my-records': typeof MyRecordsRoute
   '/notices': typeof NoticesRouteWithChildren
   '/forgot-password': typeof OnboardForgotPasswordRoute
   '/login': typeof OnboardLoginRoute
   '/reset-password': typeof OnboardResetPasswordRoute
   '/signup': typeof OnboardSignupRoute
+  '/admin/academics': typeof AdminAcademicsRoute
+  '/admin/attendance': typeof AdminAttendanceRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/directory': typeof AdminDirectoryRoute
   '/admin/invites': typeof AdminInvitesRoute
+  '/admin/permissions': typeof AdminPermissionsRoute
+  '/admin/transport': typeof AdminTransportRoute
+  '/api/uploads': typeof ApiUploadsRoute
   '/events/$slug': typeof EventsSlugRoute
   '/notices/$slug': typeof NoticesSlugRoute
+  '/uploads/$': typeof UploadsSplatRoute
   '/admin/': typeof AdminIndexRoute
   '/events/': typeof EventsIndexRoute
   '/notices/': typeof NoticesIndexRoute
@@ -181,15 +230,22 @@ export interface FileRoutesByTo {
   '/clubs': typeof ClubsRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/my-records': typeof MyRecordsRoute
   '/forgot-password': typeof OnboardForgotPasswordRoute
   '/login': typeof OnboardLoginRoute
   '/reset-password': typeof OnboardResetPasswordRoute
   '/signup': typeof OnboardSignupRoute
+  '/admin/academics': typeof AdminAcademicsRoute
+  '/admin/attendance': typeof AdminAttendanceRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/directory': typeof AdminDirectoryRoute
   '/admin/invites': typeof AdminInvitesRoute
+  '/admin/permissions': typeof AdminPermissionsRoute
+  '/admin/transport': typeof AdminTransportRoute
+  '/api/uploads': typeof ApiUploadsRoute
   '/events/$slug': typeof EventsSlugRoute
   '/notices/$slug': typeof NoticesSlugRoute
+  '/uploads/$': typeof UploadsSplatRoute
   '/admin': typeof AdminIndexRoute
   '/events': typeof EventsIndexRoute
   '/notices': typeof NoticesIndexRoute
@@ -206,16 +262,23 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/events': typeof EventsRouteWithChildren
+  '/my-records': typeof MyRecordsRoute
   '/notices': typeof NoticesRouteWithChildren
   '/_onboard/forgot-password': typeof OnboardForgotPasswordRoute
   '/_onboard/login': typeof OnboardLoginRoute
   '/_onboard/reset-password': typeof OnboardResetPasswordRoute
   '/_onboard/signup': typeof OnboardSignupRoute
+  '/admin/academics': typeof AdminAcademicsRoute
+  '/admin/attendance': typeof AdminAttendanceRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/directory': typeof AdminDirectoryRoute
   '/admin/invites': typeof AdminInvitesRoute
+  '/admin/permissions': typeof AdminPermissionsRoute
+  '/admin/transport': typeof AdminTransportRoute
+  '/api/uploads': typeof ApiUploadsRoute
   '/events/$slug': typeof EventsSlugRoute
   '/notices/$slug': typeof NoticesSlugRoute
+  '/uploads/$': typeof UploadsSplatRoute
   '/admin/': typeof AdminIndexRoute
   '/events/': typeof EventsIndexRoute
   '/notices/': typeof NoticesIndexRoute
@@ -233,16 +296,23 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/events'
+    | '/my-records'
     | '/notices'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
     | '/signup'
+    | '/admin/academics'
+    | '/admin/attendance'
     | '/admin/content'
     | '/admin/directory'
     | '/admin/invites'
+    | '/admin/permissions'
+    | '/admin/transport'
+    | '/api/uploads'
     | '/events/$slug'
     | '/notices/$slug'
+    | '/uploads/$'
     | '/admin/'
     | '/events/'
     | '/notices/'
@@ -256,15 +326,22 @@ export interface FileRouteTypes {
     | '/clubs'
     | '/contact'
     | '/dashboard'
+    | '/my-records'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
     | '/signup'
+    | '/admin/academics'
+    | '/admin/attendance'
     | '/admin/content'
     | '/admin/directory'
     | '/admin/invites'
+    | '/admin/permissions'
+    | '/admin/transport'
+    | '/api/uploads'
     | '/events/$slug'
     | '/notices/$slug'
+    | '/uploads/$'
     | '/admin'
     | '/events'
     | '/notices'
@@ -280,16 +357,23 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/events'
+    | '/my-records'
     | '/notices'
     | '/_onboard/forgot-password'
     | '/_onboard/login'
     | '/_onboard/reset-password'
     | '/_onboard/signup'
+    | '/admin/academics'
+    | '/admin/attendance'
     | '/admin/content'
     | '/admin/directory'
     | '/admin/invites'
+    | '/admin/permissions'
+    | '/admin/transport'
+    | '/api/uploads'
     | '/events/$slug'
     | '/notices/$slug'
+    | '/uploads/$'
     | '/admin/'
     | '/events/'
     | '/notices/'
@@ -306,11 +390,14 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
   EventsRoute: typeof EventsRouteWithChildren
+  MyRecordsRoute: typeof MyRecordsRoute
   NoticesRoute: typeof NoticesRouteWithChildren
   OnboardForgotPasswordRoute: typeof OnboardForgotPasswordRoute
   OnboardLoginRoute: typeof OnboardLoginRoute
   OnboardResetPasswordRoute: typeof OnboardResetPasswordRoute
   OnboardSignupRoute: typeof OnboardSignupRoute
+  ApiUploadsRoute: typeof ApiUploadsRoute
+  UploadsSplatRoute: typeof UploadsSplatRoute
   OnboardActivateTokenRoute: typeof OnboardActivateTokenRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   OnboardActivateGuardianTokenRoute: typeof OnboardActivateGuardianTokenRoute
@@ -323,6 +410,13 @@ declare module '@tanstack/react-router' {
       path: '/notices'
       fullPath: '/notices'
       preLoaderRoute: typeof NoticesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-records': {
+      id: '/my-records'
+      path: '/my-records'
+      fullPath: '/my-records'
+      preLoaderRoute: typeof MyRecordsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -395,6 +489,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/uploads/$': {
+      id: '/uploads/$'
+      path: '/uploads/$'
+      fullPath: '/uploads/$'
+      preLoaderRoute: typeof UploadsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/notices/$slug': {
       id: '/notices/$slug'
       path: '/$slug'
@@ -408,6 +509,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/events/$slug'
       preLoaderRoute: typeof EventsSlugRouteImport
       parentRoute: typeof EventsRoute
+    }
+    '/api/uploads': {
+      id: '/api/uploads'
+      path: '/api/uploads'
+      fullPath: '/api/uploads'
+      preLoaderRoute: typeof ApiUploadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/transport': {
+      id: '/admin/transport'
+      path: '/transport'
+      fullPath: '/admin/transport'
+      preLoaderRoute: typeof AdminTransportRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/permissions': {
+      id: '/admin/permissions'
+      path: '/permissions'
+      fullPath: '/admin/permissions'
+      preLoaderRoute: typeof AdminPermissionsRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/invites': {
       id: '/admin/invites'
@@ -428,6 +550,20 @@ declare module '@tanstack/react-router' {
       path: '/content'
       fullPath: '/admin/content'
       preLoaderRoute: typeof AdminContentRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/attendance': {
+      id: '/admin/attendance'
+      path: '/attendance'
+      fullPath: '/admin/attendance'
+      preLoaderRoute: typeof AdminAttendanceRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/academics': {
+      id: '/admin/academics'
+      path: '/academics'
+      fullPath: '/admin/academics'
+      preLoaderRoute: typeof AdminAcademicsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_onboard/signup': {
@@ -483,16 +619,24 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAcademicsRoute: typeof AdminAcademicsRoute
+  AdminAttendanceRoute: typeof AdminAttendanceRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminDirectoryRoute: typeof AdminDirectoryRoute
   AdminInvitesRoute: typeof AdminInvitesRoute
+  AdminPermissionsRoute: typeof AdminPermissionsRoute
+  AdminTransportRoute: typeof AdminTransportRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAcademicsRoute: AdminAcademicsRoute,
+  AdminAttendanceRoute: AdminAttendanceRoute,
   AdminContentRoute: AdminContentRoute,
   AdminDirectoryRoute: AdminDirectoryRoute,
   AdminInvitesRoute: AdminInvitesRoute,
+  AdminPermissionsRoute: AdminPermissionsRoute,
+  AdminTransportRoute: AdminTransportRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -532,11 +676,14 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
   EventsRoute: EventsRouteWithChildren,
+  MyRecordsRoute: MyRecordsRoute,
   NoticesRoute: NoticesRouteWithChildren,
   OnboardForgotPasswordRoute: OnboardForgotPasswordRoute,
   OnboardLoginRoute: OnboardLoginRoute,
   OnboardResetPasswordRoute: OnboardResetPasswordRoute,
   OnboardSignupRoute: OnboardSignupRoute,
+  ApiUploadsRoute: ApiUploadsRoute,
+  UploadsSplatRoute: UploadsSplatRoute,
   OnboardActivateTokenRoute: OnboardActivateTokenRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   OnboardActivateGuardianTokenRoute: OnboardActivateGuardianTokenRoute,
