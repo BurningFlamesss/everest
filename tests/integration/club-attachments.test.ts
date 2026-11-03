@@ -64,6 +64,7 @@ beforeAll(async () => {
 			s3Environment[key] = value;
 		}
 		s3Environment.S3_USE_SSL = process.env.SCMS_TEST_S3_USE_SSL ?? "false";
+		s3Environment.S3_REGION = process.env.SCMS_TEST_S3_REGION?.trim() ?? "";
 		s3Environment.S3_BUCKET = `scms-test-${randomUUID()}`;
 	}
 
@@ -105,7 +106,7 @@ beforeAll(async () => {
 		);
 		const client = new S3Client({
 			endpoint: `${s3Environment.S3_USE_SSL === "true" ? "https" : "http"}://${s3Environment.S3_ENDPOINT}:${s3Environment.S3_PORT}`,
-			region: "us-east-1",
+			region: s3Environment.S3_REGION || "us-east-1",
 			forcePathStyle: true,
 			credentials: {
 				accessKeyId: s3Environment.S3_ACCESS_KEY,

@@ -215,6 +215,52 @@ describe("S3StorageDriver", () => {
 		expect(clientMock.headBucket).toHaveBeenCalledTimes(3);
 	});
 
+	it("shares a failed region retry across concurrent operations and recovers on the next initialization", async () => {
+		const error = {
+			name: "AuthorizationHeaderMalformed",
+			Region: "ap-south-1",
+		};
+		let failRetry = (_error: unknown) => {};
+		clientMock.headBucket
+			.mockRejectedValueOnce({
+				name: "AuthorizationHeaderMalformed",
+				Region: "eu-west-1",
+			})
+			.mockReturnValueOnce(
+				new Promise<never>((_resolve, reject) => {
+					failRetry = reject;
+				}),
+			);
+		const driver = new S3StorageDriver();
+		const pending = Promise.allSettled([
+			driver.put("content/a.pdf", Buffer.from("a"), "application/pdf"),
+			driver.get("content/a.pdf"),
+			driver.delete("content/a.pdf"),
+		]);
+
+		await vi.waitFor(() => {
+			expect(clientMock.headBucket).toHaveBeenCalledTimes(2);
+		});
+		failRetry(error);
+		expect(await pending).toEqual([
+			{ status: "rejected", reason: error },
+			{ status: "rejected", reason: error },
+			{ status: "rejected", reason: error },
+		]);
+		expect(clientMock.headBucket).toHaveBeenCalledTimes(2);
+		expect(vi.mocked(S3Client)).toHaveBeenCalledTimes(2);
+		expect(clientMock.createBucket).not.toHaveBeenCalled();
+		expect(clientMock.putObject).not.toHaveBeenCalled();
+		expect(clientMock.getObject).not.toHaveBeenCalled();
+		expect(clientMock.deleteObject).not.toHaveBeenCalled();
+
+		clientMock.headBucket.mockResolvedValueOnce({ BucketRegion: "eu-west-1" });
+		await driver.put("content/a.pdf", Buffer.from("a"), "application/pdf");
+		expect(clientMock.headBucket).toHaveBeenCalledTimes(3);
+		expect(vi.mocked(S3Client)).toHaveBeenCalledTimes(2);
+		expect(clientMock.putObject).toHaveBeenCalledTimes(1);
+	});
+
 	it.each([
 		{ name: "AuthorizationHeaderMalformed" },
 		{ name: "AuthorizationHeaderMalformed", Region: " " },
