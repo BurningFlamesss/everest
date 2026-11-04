@@ -83,13 +83,6 @@ export function isAuthenticated(
 	return Boolean(session?.user?.id);
 }
 
-export async function getUserRoles(userId: string) {
-	return prisma.userRole.findMany({
-		where: { userId },
-		orderBy: { createdAt: "asc" },
-	});
-}
-
 export async function hasAnyRole(
 	userId: string,
 	roles: Array<string>,
@@ -169,26 +162,16 @@ export async function getRolePermissionDefaults(): Promise<
 }
 
 /**
- * Resolves the effective permission set for a user.
+ * Applies role defaults and per-user overrides to produce an effective set.
  *
- * Roles provide a baseline (editable through `RolePermission`) and
- * `UserPermission` rows act as explicit allow/deny overrides. This keeps
- * administration simple while still allowing individual exceptions (for
- * example, a staff member who should manage transport but not take
- * attendance).
+ * Pure, so callers that already loaded roles and overrides (for example the
+ * viewer loader) can avoid querying the same rows twice.
  */
-export async function getUserPermissions(
-	userId: string,
-): Promise<Set<PermissionKey>> {
-	const [roles, overrides, roleDefaults] = await Promise.all([
-		getUserRoles(userId),
-		prisma.userPermission.findMany({
-			where: { userId },
-			select: { permission: true, granted: true },
-		}),
-		getRolePermissionDefaults(),
-	]);
-
+export function resolvePermissions(
+	roles: Array<{ role: string }>,
+	overrides: Array<{ permission: string; granted: boolean }>,
+	roleDefaults: Record<string, Set<PermissionKey>>,
+): Set<PermissionKey> {
 	const permissions = new Set<PermissionKey>();
 
 	for (const role of roles) {
@@ -208,6 +191,37 @@ export async function getUserPermissions(
 	}
 
 	return permissions;
+}
+
+/**
+ * Resolves the effective permission set for a user.
+ *
+ * Roles provide a baseline (editable through `RolePermission`) and
+ * `UserPermission` rows act as explicit allow/deny overrides. This keeps
+ * administration simple while still allowing individual exceptions (for
+ * example, a staff member who should manage transport but not take
+ * attendance).
+ *
+ * Roles and overrides are read in one user query and combined in memory, so a
+ * permission check costs two statements instead of three.
+ */
+export async function getUserPermissions(
+	userId: string,
+): Promise<Set<PermissionKey>> {
+	const [user, roleDefaults] = await Promise.all([
+		prisma.user.findUnique({
+			where: { id: userId },
+			select: {
+				userRoles: { select: { role: true } },
+				permissions: { select: { permission: true, granted: true } },
+			},
+		}),
+		getRolePermissionDefaults(),
+	]);
+
+	if (!user) return new Set<PermissionKey>();
+
+	return resolvePermissions(user.userRoles, user.permissions, roleDefaults);
 }
 
 export async function hasPermission(

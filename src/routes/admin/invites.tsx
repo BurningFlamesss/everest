@@ -10,6 +10,7 @@ import {
 	X,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { StudentSearchInput } from "#/components/people/StudentSearchInput.tsx";
 import { cn } from "#/lib/utils.ts";
 import {
 	approveInviteRequestAction,
@@ -20,7 +21,6 @@ import {
 	createGuardianInviteAction,
 	createStaffInviteAction,
 	createStudentInviteAction,
-	listDirectoryAction,
 	listInvitesAction,
 	revokeInviteAction,
 } from "#/packages/invite/server.ts";
@@ -55,14 +55,6 @@ interface InviteEntry {
 	} | null;
 }
 
-interface StudentOption {
-	id: string;
-	name: string;
-	email: string;
-	grade: string | null;
-	section: string | null;
-}
-
 interface InviteRequestRow {
 	id: string;
 	name: string;
@@ -80,7 +72,7 @@ function AdminInvites() {
 	const [tab, setTab] = useState<"single" | "import" | "requests">("single");
 	const [type, setType] = useState<InviteType>("STAFF");
 	const [invites, setInvites] = useState<Array<InviteEntry>>([]);
-	const [students, setStudents] = useState<Array<StudentOption>>([]);
+	const [formVersion, setFormVersion] = useState(0);
 	const [requests, setRequests] = useState<Array<InviteRequestRow>>([]);
 	const [isLoadingRequests, setIsLoadingRequests] = useState(true);
 	const [isLoading, setIsLoading] = useState(true);
@@ -122,24 +114,6 @@ function AdminInvites() {
 	useEffect(() => {
 		void loadRequests();
 	}, [loadRequests]);
-
-	useEffect(() => {
-		if (type !== "GUARDIAN" || students.length > 0) return;
-
-		void listDirectoryAction({ data: {} }).then((response) => {
-			if (response.success) {
-				setStudents(
-					response.students.map((student) => ({
-						id: student.id,
-						name: student.name,
-						email: student.email,
-						grade: student.grade,
-						section: student.section,
-					})),
-				);
-			}
-		});
-	}, [type, students.length]);
 
 	const handleCreate = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -198,7 +172,8 @@ function AdminInvites() {
 					response.invite.emailSent ? "sent" : "not sent"
 				}.`,
 			);
-			form.reset();
+			// Remount the form so the searchable picker and every input reset.
+			setFormVersion((version) => version + 1);
 			await loadInvites();
 		} catch (createError) {
 			setError(
@@ -514,7 +489,11 @@ function AdminInvites() {
 							)}
 						</div>
 
-						<form onSubmit={handleCreate} className="grid gap-4 md:grid-cols-2">
+						<form
+							key={formVersion}
+							onSubmit={handleCreate}
+							className="grid gap-4 md:grid-cols-2"
+						>
 							<label className="text-sm">
 								<span className="mb-1 block font-medium text-gray-700">
 									Full name
@@ -615,24 +594,17 @@ function AdminInvites() {
 
 							{type === "GUARDIAN" ? (
 								<>
-									<label className="text-sm md:col-span-2">
+									<div className="text-sm md:col-span-2">
 										<span className="mb-1 block font-medium text-gray-700">
 											Student
 										</span>
-										<select
+										<StudentSearchInput
 											name="studentId"
 											required
-											className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-										>
-											<option value="">Select a student…</option>
-											{students.map((student) => (
-												<option key={student.id} value={student.id}>
-													{student.name} ({student.grade ?? "no grade"}
-													{student.section ? `-${student.section}` : ""})
-												</option>
-											))}
-										</select>
-									</label>
+											ariaLabel="Student"
+											placeholder="Search by name, admission or email…"
+										/>
+									</div>
 									<label className="text-sm">
 										<span className="mb-1 block font-medium text-gray-700">
 											Relationship

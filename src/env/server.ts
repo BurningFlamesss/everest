@@ -32,6 +32,10 @@ export const serverEnv = createEnv({
 		S3_SECRET_KEY: z.string().default("scms-secret"),
 		S3_BUCKET: z.string().default("scms"),
 		S3_REGION: z.string().trim().min(1).optional(),
+
+		// Required to call the scheduled upload-cleanup endpoint. Leave unset to
+		// disable the endpoint entirely.
+		CRON_SECRET: z.string().trim().min(16).optional(),
 	},
 
 	runtimeEnv: process.env,

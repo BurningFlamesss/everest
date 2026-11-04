@@ -208,11 +208,3 @@ export async function saveTransportAssignment(input: TransportAssignmentInput) {
 export async function deleteTransportAssignment(id: string) {
 	return prisma.transportAssignment.delete({ where: { id } });
 }
-
-export async function listStudentsForTransport() {
-	return prisma.student.findMany({
-		where: { status: "ACTIVE" },
-		include: { user: { select: { name: true, email: true } } },
-		orderBy: { user: { name: "asc" } },
-	});
-}

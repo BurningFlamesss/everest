@@ -11,7 +11,6 @@ import {
 	deleteTransportAssignment,
 	deleteTransportRoute,
 	deleteTransportStop,
-	listStudentsForTransport,
 	listTransportAssignments,
 	listTransportRoutes,
 	saveTransportAssignment,
@@ -54,13 +53,12 @@ export const getTransportDataFn = createServerFn().handler(async () => {
 	try {
 		await requireManager();
 
-		const [routes, assignments, students] = await Promise.all([
+		const [routes, assignments] = await Promise.all([
 			listTransportRoutes({ includeInactive: true }),
 			listTransportAssignments(),
-			listStudentsForTransport(),
 		]);
 
-		return { success: true as const, routes, assignments, students };
+		return { success: true as const, routes, assignments };
 	} catch (error) {
 		return failure(error);
 	}

@@ -195,15 +195,15 @@ export async function updateCourse(id: string, input: Partial<CourseInput>) {
 	return prisma.course.update({
 		where: { id },
 		data: {
-			...(input.code !== undefined ? { code: input.code.trim().toUpperCase() } : {}),
+			...(input.code !== undefined
+				? { code: input.code.trim().toUpperCase() }
+				: {}),
 			...(input.name !== undefined ? { name: input.name.trim() } : {}),
 			...(input.description !== undefined
 				? { description: clean(input.description) }
 				: {}),
 			...(input.grade !== undefined ? { grade: clean(input.grade) } : {}),
-			...(input.section !== undefined
-				? { section: clean(input.section) }
-				: {}),
+			...(input.section !== undefined ? { section: clean(input.section) } : {}),
 			...(input.schedule !== undefined
 				? { schedule: clean(input.schedule) }
 				: {}),
@@ -222,14 +222,6 @@ export async function deleteCourse(id: string) {
 	return prisma.course.delete({ where: { id } });
 }
 
-export async function listStudentsForCourses() {
-	return prisma.student.findMany({
-		where: { status: "ACTIVE" },
-		include: { user: { select: { name: true, email: true } } },
-		orderBy: { user: { name: "asc" } },
-	});
-}
-
 export async function listStaffForCourses() {
 	return prisma.staff.findMany({
 		where: { status: "ACTIVE" },
@@ -238,7 +230,10 @@ export async function listStaffForCourses() {
 	});
 }
 
-export async function enrollStudents(courseId: string, studentIds: Array<string>) {
+export async function enrollStudents(
+	courseId: string,
+	studentIds: Array<string>,
+) {
 	const course = await prisma.course.findUnique({
 		where: { id: courseId },
 		select: { id: true },
@@ -246,17 +241,24 @@ export async function enrollStudents(courseId: string, studentIds: Array<string>
 
 	if (!course) throw new Error("COURSE_NOT_FOUND");
 
-	await prisma.$transaction(
-		studentIds.map((studentId) =>
-			prisma.enrollment.upsert({
-				where: {
-					courseId_studentId: { courseId, studentId },
-				},
-				update: { status: "ACTIVE" },
-				create: { courseId, studentId },
-			}),
-		),
-	);
+	const uniqueStudentIds = [...new Set(studentIds)];
+
+	// Re-activate existing enrolments in one statement and insert the new ones
+	// in another, instead of one `upsert` round-trip per student.
+	await prisma.$transaction([
+		prisma.enrollment.updateMany({
+			where: {
+				courseId,
+				studentId: { in: uniqueStudentIds },
+				status: { not: "ACTIVE" },
+			},
+			data: { status: "ACTIVE" },
+		}),
+		prisma.enrollment.createMany({
+			data: uniqueStudentIds.map((studentId) => ({ courseId, studentId })),
+			skipDuplicates: true,
+		}),
+	]);
 
 	return prisma.enrollment.count({ where: { courseId } });
 }

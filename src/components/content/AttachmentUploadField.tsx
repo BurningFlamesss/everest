@@ -1,6 +1,7 @@
 import { FileText, Loader2, Paperclip, UploadCloud, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "#/lib/utils.ts";
+import { DOCUMENT_ACCEPT, MAX_DOCUMENT_MB } from "#/packages/storage/policy.ts";
 
 export interface AttachmentEntry {
 	fileAssetId: string;
@@ -158,11 +159,11 @@ export function AttachmentUploadField({
 							: "Add a PDF, Word, Excel, CSV or text file"}
 					</span>
 					<span className="inline-flex items-center gap-1 text-[11px] text-gray-400">
-						<Paperclip className="h-3 w-3" /> max 10 MB each
+						<Paperclip className="h-3 w-3" /> max {MAX_DOCUMENT_MB} MB each
 					</span>
 					<input
 						type="file"
-						accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt"
+						accept={DOCUMENT_ACCEPT}
 						className="sr-only"
 						disabled={disabled || isUploading}
 						onChange={(event) => {

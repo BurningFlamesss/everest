@@ -1,6 +1,7 @@
 import { FileImage, Loader2, UploadCloud, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "#/lib/utils.ts";
+import { IMAGE_ACCEPT, MAX_IMAGE_MB } from "#/packages/storage/policy.ts";
 
 interface ImageUploadFieldProps {
 	name: string;
@@ -90,14 +91,16 @@ export function ImageUploadField({
 						<UploadCloud className="h-6 w-6 text-gray-400" />
 					)}
 					<span className="text-xs font-medium text-gray-600">
-						{isUploading ? "Uploading…" : "Choose an image (max 5 MB)"}
+						{isUploading
+							? "Uploading…"
+							: `Choose an image (max ${MAX_IMAGE_MB} MB)`}
 					</span>
 					<span className="inline-flex items-center gap-1 text-[11px] text-gray-400">
 						<FileImage className="h-3 w-3" /> PNG, JPEG, WebP or GIF
 					</span>
 					<input
 						type="file"
-						accept="image/png,image/jpeg,image/webp,image/gif"
+						accept={IMAGE_ACCEPT}
 						className="sr-only"
 						disabled={isUploading}
 						onChange={(event) => {

@@ -52,6 +52,10 @@ Signed-in area:
 9. Permissions (`/admin/permissions`) — edit role-level defaults and grant or revoke individual permissions.
 10. My records (`/my-records`) — students and guardians see their own courses, attendance, and transport; staff see an empty state.
 
+Operations:
+
+1. Scheduled maintenance (`/api/cron/cleanup`) — token-protected orphan-upload cleanup for an external scheduler; disabled unless `CRON_SECRET` is set.
+
 ## Introduction & Till What I reached
 
 ScMS started as a highly ambitious project, due to the time constraint, and my academics; needs to seriously compromise on the probable greatness of the project while still making sure the started features were completed without any stone unturned.
@@ -77,12 +81,16 @@ ScMS started as a highly ambitious project, due to the time constraint, and my a
 - Self-service records for students and guardians: courses, attendance history, and bus route details
 - Landing, About, and Contact pages
 - Sidebar (with proper layout and collapsing logic)
+- Scalable admin lists: the directory is paginated and loads one tab per request, and student pickers search on the server instead of downloading the whole student body
+- SQL-side attendance summaries, diffed attendance saves, and set-based enrolment writes
+- Token-protected `/api/cron/cleanup` endpoint for scheduled orphan-upload removal
+- A single upload policy module shared by the upload API and the admin upload fields
 - Unit and UI regression tests for CSV imports and document attachments (`npm test`)
 
 ## What is Incomplete? (or, What is left?)
 
-- Orphaned uploads are removed only when an administrator runs the cleanup action on the content screen; there is no scheduled/cron job.
-- Uploads are capped at 5 MB for images and 10 MB for documents, and the allowed document types are fixed in `src/routes/api/uploads.ts`.
+- Scheduled cleanup still needs an external scheduler (cron, systemd timer, platform cron job) to call `/api/cron/cleanup`; the app deliberately runs no in-process timers so it stays safe with multiple instances. Without `CRON_SECRET` the endpoint is disabled and cleanup stays manual.
+- Upload limits (5 MB for images, 10 MB for documents) and allowed types live in `src/packages/storage/policy.ts`; changing the policy means editing that module, not setting environment variables.
 - The permission screen edits role defaults and per-user overrides; there is no per-branch permission scoping yet.
 - Migration history includes `init`, role permissions and attachments, and club attachments; every future schema change needs its own migration.
 
@@ -165,6 +173,7 @@ Optional variables and defaults:
 | `S3_ACCESS_KEY`, `S3_SECRET_KEY` | `scms`, `scms-secret`; local Compose defaults only, not production credentials. |
 | `S3_BUCKET` | `scms`; use the existing bucket when upgrading. |
 | `S3_REGION` | Optional; explicit region is authoritative. See region discovery below. |
+| `CRON_SECRET` | Optional; at least 16 characters. Enables `GET`/`POST /api/cron/cleanup` when set. Leave unset to disable the endpoint. |
 
 For `STORAGE_DRIVER=s3`, configure the endpoint, port, TLS setting, credentials, and bucket for your service rather than relying on development defaults. The driver checks the bucket and creates it if missing; credentials must permit the required bucket check/object operations and, if needed, bucket creation.
 
@@ -215,6 +224,18 @@ Step 7: Run the unit and UI regression suite (no database required)
 ```bash
 npm test
 ```
+
+### Scheduled upload cleanup
+
+An administrator can remove unreferenced uploads from the content screen, but a production deployment should also run the cleanup unattended. Set `CRON_SECRET` and let any scheduler call the endpoint:
+
+```bash
+curl -fsS -X POST \
+  -H "Authorization: Bearer $CRON_SECRET" \
+  https://school.example.edu/api/cron/cleanup
+```
+
+`GET` is accepted as well (`?token=…` works for schedulers that cannot set headers; the header is preferred). The endpoint is safe to call from several app instances: each run takes at most five batches of 200 assets, only removes files older than the 24-hour grace period, and leaves rows behind when storage deletion fails so a later run can retry. It returns JSON with `deleted`, `failed`, `candidates`, `batches`, and `durationMs`; it answers `503` when `CRON_SECRET` is unset and `401` for a wrong token. A 15-minute schedule is plenty for a school-sized content library.
 
 ### Production Docker image
 

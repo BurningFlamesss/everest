@@ -9,6 +9,7 @@ import {
 	UserPlus,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { StudentSearchInput } from "#/components/people/StudentSearchInput.tsx";
 import { cn } from "#/lib/utils.ts";
 import {
 	createTransportRouteAction,
@@ -63,16 +64,11 @@ interface AssignmentRow {
 	student: { id: string; user: { name: string; email: string } };
 }
 
-interface StudentRow {
-	id: string;
-	user: { name: string; email: string };
-}
-
 function AdminTransport() {
 	const [tab, setTab] = useState<Tab>("routes");
 	const [routes, setRoutes] = useState<Array<RouteRow>>([]);
 	const [assignments, setAssignments] = useState<Array<AssignmentRow>>([]);
-	const [students, setStudents] = useState<Array<StudentRow>>([]);
+	const [studentPickerKey, setStudentPickerKey] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
@@ -91,7 +87,6 @@ function AdminTransport() {
 
 		setRoutes(response.routes as Array<RouteRow>);
 		setAssignments(response.assignments as Array<AssignmentRow>);
-		setStudents(response.students as Array<StudentRow>);
 		setError("");
 		setIsLoading(false);
 	}, []);
@@ -220,6 +215,7 @@ function AdminTransport() {
 
 		setNotice("Student assignment saved.");
 		form.reset();
+		setStudentPickerKey((key) => key + 1);
 		setAssignmentRouteId("");
 		await load();
 	};
@@ -303,7 +299,10 @@ function AdminTransport() {
 								<input type="checkbox" name="isActive" defaultChecked /> Active
 							</label>
 							<div className="md:col-span-2">
-								<SubmitButton isSubmitting={isSubmitting} label="Create route" />
+								<SubmitButton
+									isSubmitting={isSubmitting}
+									label="Create route"
+								/>
 							</div>
 						</form>
 					</section>
@@ -383,7 +382,9 @@ function AdminTransport() {
 													className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm"
 												>
 													<MapPin className="h-3.5 w-3.5 text-red-500" />
-													<span className="flex-1 text-gray-800">{stop.name}</span>
+													<span className="flex-1 text-gray-800">
+														{stop.name}
+													</span>
 													<span className="text-xs text-gray-500">
 														{[stop.pickupTime, stop.dropoffTime]
 															.filter(Boolean)
@@ -464,7 +465,9 @@ function AdminTransport() {
 								</select>
 							</label>
 							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">Stop</span>
+								<span className="mb-1 block font-medium text-gray-700">
+									Stop
+								</span>
 								<select
 									name="stopId"
 									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
@@ -477,23 +480,18 @@ function AdminTransport() {
 									))}
 								</select>
 							</label>
-							<label className="text-sm">
+							<div className="text-sm">
 								<span className="mb-1 block font-medium text-gray-700">
 									Student
 								</span>
-								<select
+								<StudentSearchInput
+									key={studentPickerKey}
 									name="studentId"
 									required
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								>
-									<option value="">Select a student…</option>
-									{students.map((student) => (
-										<option key={student.id} value={student.id}>
-											{student.user.name} · {student.user.email}
-										</option>
-									))}
-								</select>
-							</label>
+									ariaLabel="Student"
+									placeholder="Search by name, admission or email…"
+								/>
+							</div>
 							<label className="text-sm">
 								<span className="mb-1 block font-medium text-gray-700">
 									Direction

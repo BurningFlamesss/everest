@@ -4,10 +4,13 @@ import {
 	Loader2,
 	Plus,
 	School,
+	Search,
 	Trash2,
 	Users,
+	X,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useStudentSearch } from "#/components/people/useStudentSearch.ts";
 import { cn } from "#/lib/utils.ts";
 import {
 	createClassroomAction,
@@ -19,6 +22,7 @@ import {
 	getCourseDetailsAction,
 	removeEnrollmentAction,
 } from "#/packages/academics/server.ts";
+import type { StudentOption } from "#/packages/people/directory-service.ts";
 
 export const Route = createFileRoute("/admin/academics")({
 	beforeLoad: ({ context }) => {
@@ -56,14 +60,6 @@ interface ClassroomRow {
 	_count: { courses: number };
 }
 
-interface StudentRow {
-	id: string;
-	admissionNo: string | null;
-	grade: string | null;
-	section: string | null;
-	user: { name: string; email: string };
-}
-
 interface StaffRow {
 	id: string;
 	designation: string;
@@ -85,8 +81,15 @@ function AdminAcademics() {
 	const [tab, setTab] = useState<Tab>("courses");
 	const [courses, setCourses] = useState<Array<CourseRow>>([]);
 	const [classrooms, setClassrooms] = useState<Array<ClassroomRow>>([]);
-	const [students, setStudents] = useState<Array<StudentRow>>([]);
 	const [staff, setStaff] = useState<Array<StaffRow>>([]);
+	const [studentQuery, setStudentQuery] = useState("");
+	const [selectedStudents, setSelectedStudents] = useState<
+		Record<string, string>
+	>({});
+	const { students, isLoading: isLoadingStudents } = useStudentSearch(
+		studentQuery,
+		{ enabled: tab === "enrolments", limit: 30 },
+	);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
@@ -111,7 +114,6 @@ function AdminAcademics() {
 
 		setCourses(response.courses as Array<CourseRow>);
 		setClassrooms(response.classrooms as Array<ClassroomRow>);
-		setStudents(response.students as Array<StudentRow>);
 		setStaff(response.staff as Array<StaffRow>);
 		setError("");
 		setIsLoading(false);
@@ -125,6 +127,7 @@ function AdminAcademics() {
 		if (!courseId) {
 			setEnrollments([]);
 			setSelectedStudentIds([]);
+			setSelectedStudents({});
 			return;
 		}
 
@@ -136,7 +139,17 @@ function AdminAcademics() {
 				enrollments: Array<CourseEnrollment>;
 			};
 			setEnrollments(course.enrollments);
-			setSelectedStudentIds(course.enrollments.map((entry) => entry.student.id));
+			setSelectedStudentIds(
+				course.enrollments.map((entry) => entry.student.id),
+			);
+			setSelectedStudents(
+				Object.fromEntries(
+					course.enrollments.map((entry) => [
+						entry.student.id,
+						entry.student.user.name,
+					]),
+				),
+			);
 		} else {
 			setError(response.error);
 		}
@@ -238,6 +251,34 @@ function AdminAcademics() {
 			setNotice("Classroom deleted.");
 			await load();
 		}
+	};
+
+	const toggleStudent = (student: StudentOption, checked: boolean) => {
+		setSelectedStudentIds((current) =>
+			checked
+				? [...new Set([...current, student.id])]
+				: current.filter((id) => id !== student.id),
+		);
+		setSelectedStudents((current) => {
+			if (!checked) {
+				const next = { ...current };
+				delete next[student.id];
+				return next;
+			}
+
+			return { ...current, [student.id]: student.name };
+		});
+	};
+
+	const clearStudent = (studentId: string) => {
+		setSelectedStudentIds((current) =>
+			current.filter((id) => id !== studentId),
+		);
+		setSelectedStudents((current) => {
+			const next = { ...current };
+			delete next[studentId];
+			return next;
+		});
 	};
 
 	const saveEnrolments = async () => {
@@ -374,7 +415,10 @@ function AdminAcademics() {
 								<input type="checkbox" name="isActive" defaultChecked /> Active
 							</label>
 							<div className="md:col-span-2">
-								<SubmitButton isSubmitting={isSubmitting} label="Create course" />
+								<SubmitButton
+									isSubmitting={isSubmitting}
+									label="Create course"
+								/>
 							</div>
 						</form>
 					</section>
@@ -494,12 +538,18 @@ function AdminAcademics() {
 										<div className="min-w-0 flex-1">
 											<p className="font-medium text-gray-900">{room.name}</p>
 											<p className="text-xs text-gray-500">
-												{[room.building, room.floor, room.capacity && `${room.capacity} seats`]
+												{[
+													room.building,
+													room.floor,
+													room.capacity && `${room.capacity} seats`,
+												]
 													.filter(Boolean)
 													.join(" · ") || "No location details"}
 											</p>
 											{room.notes ? (
-												<p className="mt-1 text-xs text-gray-400">{room.notes}</p>
+												<p className="mt-1 text-xs text-gray-400">
+													{room.notes}
+												</p>
 											) : null}
 										</div>
 										<span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">
@@ -592,13 +642,54 @@ function AdminAcademics() {
 							</div>
 
 							<div>
-								<h3 className="mb-2 text-sm font-semibold text-gray-900">
-									Select students
-								</h3>
+								<div className="mb-2 flex items-center justify-between gap-2">
+									<h3 className="text-sm font-semibold text-gray-900">
+										Select students
+									</h3>
+									<span className="text-xs text-gray-500">
+										{selectedStudentIds.length} selected
+									</span>
+								</div>
+
+								{selectedStudentIds.length > 0 ? (
+									<div className="mb-2 flex flex-wrap gap-1">
+										{selectedStudentIds.map((studentId) => (
+											<span
+												key={studentId}
+												className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700"
+											>
+												{selectedStudents[studentId] ?? "Student"}
+												<button
+													type="button"
+													onClick={() => clearStudent(studentId)}
+													className="rounded-full p-0.5 hover:bg-red-100"
+													aria-label="Remove student from selection"
+												>
+													<X className="h-3 w-3" />
+												</button>
+											</span>
+										))}
+									</div>
+								) : null}
+
+								<label className="relative mb-2 block">
+									<Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+									<input
+										value={studentQuery}
+										onChange={(event) => setStudentQuery(event.target.value)}
+										placeholder="Search by name, admission or email…"
+										className="w-full rounded-lg border border-gray-300 px-3 py-2 pl-9 text-sm"
+									/>
+								</label>
+
 								<div className="max-h-80 overflow-y-auto rounded-lg border border-gray-200">
-									{students.length === 0 ? (
+									{isLoadingStudents ? (
+										<p className="flex items-center gap-2 p-4 text-sm text-gray-500">
+											<Loader2 className="h-4 w-4 animate-spin" /> Searching…
+										</p>
+									) : students.length === 0 ? (
 										<p className="p-4 text-sm text-gray-500">
-											No active students found.
+											No active students match that search.
 										</p>
 									) : (
 										students.map((student) => {
@@ -613,21 +704,19 @@ function AdminAcademics() {
 														type="checkbox"
 														checked={checked}
 														onChange={(event) =>
-															setSelectedStudentIds((current) =>
-																event.target.checked
-																	? [...current, student.id]
-																	: current.filter((id) => id !== student.id),
-															)
+															toggleStudent(student, event.target.checked)
 														}
 													/>
 													<span className="min-w-0">
 														<span className="block text-sm font-medium text-gray-900">
-															{student.user.name}
+															{student.name}
 														</span>
 														<span className="block text-xs text-gray-500">
 															{[student.grade, student.section]
 																.filter(Boolean)
-																.join(" · ") || student.user.email}
+																.join(" · ") ||
+																student.admissionNo ||
+																"Active student"}
 														</span>
 													</span>
 												</label>

@@ -2,9 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { auth } from "#/packages/auth/auth.ts";
 import {
 	getPrimaryRole,
-	getUserPermissions,
-	getUserRoles,
+	getRolePermissionDefaults,
 	type PermissionKey,
+	resolvePermissions,
 } from "#/packages/auth/permissions.ts";
 import { prisma } from "#/packages/db/index.ts";
 
@@ -23,16 +23,28 @@ export const getViewerFn = createServerFn().handler(async () => {
 		};
 	}
 
-	const [roles, profile, permissionSet] = await Promise.all([
-		getUserRoles(session.user.id),
+	// This runs on every page load, so roles, overrides and the activation
+	// flag come from one user query. `getUserRoles` previously ran separately
+	// and then again inside `getUserPermissions`, reading the same rows twice.
+	const [profile, roleDefaults] = await Promise.all([
 		prisma.user.findUnique({
 			where: { id: session.user.id },
-			select: { activatedAt: true },
+			select: {
+				activatedAt: true,
+				userRoles: {
+					select: { role: true, branchId: true },
+					orderBy: { createdAt: "asc" },
+				},
+				permissions: { select: { permission: true, granted: true } },
+			},
 		}),
-		getUserPermissions(session.user.id),
+		getRolePermissionDefaults(),
 	]);
 
-	const permissions = [...permissionSet];
+	const roles = profile?.userRoles ?? [];
+	const permissions = [
+		...resolvePermissions(roles, profile?.permissions ?? [], roleDefaults),
+	];
 
 	return {
 		user: {

@@ -38,6 +38,7 @@ import { Route as NoticesSlugRouteImport } from './routes/notices.$slug'
 import { Route as UploadsSplatRouteImport } from './routes/uploads/$'
 import { Route as OnboardActivateTokenRouteImport } from './routes/_onboard/activate.$token'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiCronCleanupRouteImport } from './routes/api/cron/cleanup'
 import { Route as OnboardActivateGuardianTokenRouteImport } from './routes/_onboard/activate.guardian.$token'
 
 const IndexRoute = IndexRouteImport.update({
@@ -185,6 +186,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronCleanupRoute = ApiCronCleanupRouteImport.update({
+  id: '/api/cron/cleanup',
+  path: '/api/cron/cleanup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardActivateGuardianTokenRoute =
   OnboardActivateGuardianTokenRouteImport.update({
     id: '/_onboard/activate/guardian/$token',
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/notices/': typeof NoticesIndexRoute
   '/activate/$token': typeof OnboardActivateTokenRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/cleanup': typeof ApiCronCleanupRoute
   '/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
 }
 export interface FileRoutesByTo {
@@ -251,6 +258,7 @@ export interface FileRoutesByTo {
   '/notices': typeof NoticesIndexRoute
   '/activate/$token': typeof OnboardActivateTokenRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/cleanup': typeof ApiCronCleanupRoute
   '/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
 }
 export interface FileRoutesById {
@@ -284,6 +292,7 @@ export interface FileRoutesById {
   '/notices/': typeof NoticesIndexRoute
   '/_onboard/activate/$token': typeof OnboardActivateTokenRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/cleanup': typeof ApiCronCleanupRoute
   '/_onboard/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
 }
 export interface FileRouteTypes {
@@ -318,6 +327,7 @@ export interface FileRouteTypes {
     | '/notices/'
     | '/activate/$token'
     | '/api/auth/$'
+    | '/api/cron/cleanup'
     | '/activate/guardian/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -347,6 +357,7 @@ export interface FileRouteTypes {
     | '/notices'
     | '/activate/$token'
     | '/api/auth/$'
+    | '/api/cron/cleanup'
     | '/activate/guardian/$token'
   id:
     | '__root__'
@@ -379,6 +390,7 @@ export interface FileRouteTypes {
     | '/notices/'
     | '/_onboard/activate/$token'
     | '/api/auth/$'
+    | '/api/cron/cleanup'
     | '/_onboard/activate/guardian/$token'
   fileRoutesById: FileRoutesById
 }
@@ -400,6 +412,7 @@ export interface RootRouteChildren {
   UploadsSplatRoute: typeof UploadsSplatRoute
   OnboardActivateTokenRoute: typeof OnboardActivateTokenRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiCronCleanupRoute: typeof ApiCronCleanupRoute
   OnboardActivateGuardianTokenRoute: typeof OnboardActivateGuardianTokenRoute
 }
 
@@ -608,6 +621,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/cleanup': {
+      id: '/api/cron/cleanup'
+      path: '/api/cron/cleanup'
+      fullPath: '/api/cron/cleanup'
+      preLoaderRoute: typeof ApiCronCleanupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_onboard/activate/guardian/$token': {
       id: '/_onboard/activate/guardian/$token'
       path: '/activate/guardian/$token'
@@ -686,6 +706,7 @@ const rootRouteChildren: RootRouteChildren = {
   UploadsSplatRoute: UploadsSplatRoute,
   OnboardActivateTokenRoute: OnboardActivateTokenRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiCronCleanupRoute: ApiCronCleanupRoute,
   OnboardActivateGuardianTokenRoute: OnboardActivateGuardianTokenRoute,
 }
 export const routeTree = rootRouteImport

@@ -28,7 +28,6 @@ interface NoticeRow {
 	id: string;
 	title: string;
 	summary: string | null;
-	body: string;
 	category: string | null;
 	coverImage: string | null;
 	audience: string;

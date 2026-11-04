@@ -1,81 +1,89 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Loader2, Search, UploadCloud } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import {
+	ChevronLeft,
+	ChevronRight,
+	Loader2,
+	Search,
+	UploadCloud,
+} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "#/lib/utils.ts";
 import { listDirectoryAction } from "#/packages/invite/server.ts";
+import type {
+	DirectoryGuardianRow,
+	DirectoryPage,
+	DirectoryStaffRow,
+	DirectoryStudentRow,
+	DirectoryTab,
+} from "#/packages/people/directory-service.ts";
 
 export const Route = createFileRoute("/admin/directory")({
 	component: AdminDirectory,
 });
 
-type Tab = "students" | "staff" | "guardians";
-
-interface StudentRow {
-	id: string;
-	name: string;
-	email: string;
-	admissionNo: string | null;
-	rollNo: string | null;
-	grade: string | null;
-	section: string | null;
-	status: string;
-	activatedAt: string | Date | null;
-}
-
-interface StaffRow {
-	id: string;
-	name: string;
-	email: string;
-	employeeId: string | null;
-	designation: string;
-	department: string | null;
-	status: string;
-	activatedAt: string | Date | null;
-}
-
-interface GuardianRow {
-	id: string;
-	name: string;
-	email: string;
-	activatedAt: string | Date | null;
-	students: Array<{ id: string; name: string; relation: string }>;
-}
+const TABS: Array<DirectoryTab> = ["students", "staff", "guardians"];
 
 function AdminDirectory() {
-	const [tab, setTab] = useState<Tab>("students");
+	const [tab, setTab] = useState<DirectoryTab>("students");
 	const [search, setSearch] = useState("");
+	const [page, setPage] = useState(1);
+	const [result, setResult] = useState<DirectoryPage | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState("");
-	const [students, setStudents] = useState<Array<StudentRow>>([]);
-	const [staff, setStaff] = useState<Array<StaffRow>>([]);
-	const [guardians, setGuardians] = useState<Array<GuardianRow>>([]);
+	const requestId = useRef(0);
 
-	const load = useCallback(async (query: string) => {
-		setIsLoading(true);
-		const response = await listDirectoryAction({
-			data: { search: query.trim() || undefined },
-		});
+	const load = useCallback(
+		async (params: { tab: DirectoryTab; search: string; page: number }) => {
+			const currentRequest = ++requestId.current;
+			setIsLoading(true);
 
-		if (!response.success) {
-			setError(response.error);
+			const response = await listDirectoryAction({
+				data: {
+					tab: params.tab,
+					search: params.search.trim() || undefined,
+					page: params.page,
+				},
+			});
+
+			// Ignore responses that arrive after a newer request.
+			if (currentRequest !== requestId.current) return;
+
+			if (!response.success) {
+				setError(response.error);
+				setIsLoading(false);
+				return;
+			}
+
+			setResult(response);
+			// The server clamps out-of-range pages; keep the pager in sync so the
+			// Previous button moves instead of asking for another invalid page.
+			if (response.page !== params.page) setPage(response.page);
+			setError("");
 			setIsLoading(false);
-			return;
-		}
-
-		setStudents(response.students as Array<StudentRow>);
-		setStaff(response.staff as Array<StaffRow>);
-		setGuardians(response.guardians as Array<GuardianRow>);
-		setError("");
-		setIsLoading(false);
-	}, []);
+		},
+		[],
+	);
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
-			void load(search);
+			void load({ tab, search, page });
 		}, 250);
 
 		return () => clearTimeout(timer);
-	}, [load, search]);
+	}, [load, search, tab, page]);
+
+	const changeTab = (next: DirectoryTab) => {
+		setTab(next);
+		setPage(1);
+	};
+
+	const rows = result?.rows ?? [];
+	const students =
+		result?.tab === "students" ? (rows as Array<DirectoryStudentRow>) : [];
+	const staff =
+		result?.tab === "staff" ? (rows as Array<DirectoryStaffRow>) : [];
+	const guardians =
+		result?.tab === "guardians" ? (rows as Array<DirectoryGuardianRow>) : [];
 
 	return (
 		<div className="space-y-8">
@@ -95,12 +103,12 @@ function AdminDirectory() {
 			</div>
 
 			<div className="flex flex-wrap items-center justify-between gap-3">
-				<div className="flex gap-1 rounded-lg border border-gray-200 bg-white p-1">
-					{(["students", "staff", "guardians"] as Array<Tab>).map((item) => (
+				<div className="flex items-center gap-1 rounded-lg border border-gray-200 bg-white p-1">
+					{TABS.map((item) => (
 						<button
 							key={item}
 							type="button"
-							onClick={() => setTab(item)}
+							onClick={() => changeTab(item)}
 							className={cn(
 								"rounded-md px-3 py-1.5 text-sm font-medium capitalize",
 								tab === item
@@ -111,13 +119,19 @@ function AdminDirectory() {
 							{item}
 						</button>
 					))}
+					{isLoading ? (
+						<Loader2 className="mx-2 h-4 w-4 animate-spin text-gray-400" />
+					) : null}
 				</div>
 
 				<label className="relative block w-full max-w-xs">
 					<Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
 					<input
 						value={search}
-						onChange={(event) => setSearch(event.target.value)}
+						onChange={(event) => {
+							setSearch(event.target.value);
+							setPage(1);
+						}}
 						placeholder="Search name, email, ID…"
 						className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100"
 					/>
@@ -131,7 +145,7 @@ function AdminDirectory() {
 			) : null}
 
 			<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-				{isLoading ? (
+				{isLoading && !result ? (
 					<p className="flex items-center gap-2 p-6 text-sm text-gray-500">
 						<Loader2 className="h-4 w-4 animate-spin" /> Loading…
 					</p>
@@ -203,6 +217,39 @@ function AdminDirectory() {
 						empty="No guardians found."
 					/>
 				)}
+
+				{result && result.total > 0 ? (
+					<div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 px-5 py-3 text-xs text-gray-500">
+						<span>
+							Showing {(result.page - 1) * result.pageSize + 1}–
+							{Math.min(result.page * result.pageSize, result.total)} of{" "}
+							{result.total}
+						</span>
+						<div className="flex items-center gap-2">
+							<button
+								type="button"
+								onClick={() => setPage((current) => Math.max(current - 1, 1))}
+								disabled={result.page <= 1 || isLoading}
+								className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-2.5 py-1.5 font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+							>
+								<ChevronLeft className="h-3.5 w-3.5" /> Previous
+							</button>
+							<span>
+								Page {result.page} of {result.pageCount}
+							</span>
+							<button
+								type="button"
+								onClick={() =>
+									setPage((current) => Math.min(current + 1, result.pageCount))
+								}
+								disabled={result.page >= result.pageCount || isLoading}
+								className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-2.5 py-1.5 font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+							>
+								Next <ChevronRight className="h-3.5 w-3.5" />
+							</button>
+						</div>
+					</div>
+				) : null}
 			</section>
 		</div>
 	);

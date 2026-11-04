@@ -230,6 +230,22 @@ export async function listNotices(options?: {
 		},
 		orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
 		take: Math.min(Math.max(options?.limit ?? 100, 1), 200),
+		// List views never render the article body; selecting it would send a
+		// large payload for every card on the public notices page.
+		select: {
+			id: true,
+			title: true,
+			slug: true,
+			summary: true,
+			category: true,
+			coverImage: true,
+			audience: true,
+			isPublished: true,
+			publishedAt: true,
+			expiresAt: true,
+			createdAt: true,
+			updatedAt: true,
+		},
 	});
 }
 

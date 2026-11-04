@@ -3,10 +3,8 @@ import { z } from "zod";
 import { auth } from "#/packages/auth/auth.ts";
 import {
 	AuthorizationError,
-	MANAGEMENT_ROLES,
 	requirePermission,
 } from "#/packages/auth/permissions.ts";
-import { prisma } from "#/packages/db/index.ts";
 import {
 	createGuardianInvite,
 	createStaffInvite,
@@ -15,6 +13,10 @@ import {
 	listInvites,
 	revokeInvite,
 } from "#/packages/invite/invite-service.ts";
+import {
+	listDirectoryPage,
+	MAX_DIRECTORY_PAGE_SIZE,
+} from "#/packages/people/directory-service.ts";
 
 async function getCurrentUser() {
 	const { getRequestHeaders } = await import("@tanstack/react-start/server");
@@ -332,8 +334,10 @@ export const importStaffAction = createServerFn()
 
 const directorySchema = z
 	.object({
-		search: z.string().trim().optional(),
-		status: z.string().trim().optional(),
+		tab: z.enum(["students", "staff", "guardians"]).optional(),
+		search: z.string().trim().max(100).optional(),
+		page: z.number().int().min(1).optional(),
+		pageSize: z.number().int().min(1).max(MAX_DIRECTORY_PAGE_SIZE).optional(),
 	})
 	.optional();
 
@@ -343,149 +347,9 @@ export const listDirectoryAction = createServerFn()
 		try {
 			await getCurrentUser();
 
-			const search = data?.search?.trim();
-			const status = data?.status?.trim();
+			const page = await listDirectoryPage(data ?? {});
 
-			const [students, staff, guardians] = await Promise.all([
-				prisma.student.findMany({
-					where: {
-						...(status ? { status: status as "ACTIVE" } : {}),
-						...(search
-							? {
-									OR: [
-										{
-											user: {
-												name: {
-													contains: search,
-													mode: "insensitive" as const,
-												},
-											},
-										},
-										{
-											user: {
-												email: {
-													contains: search,
-													mode: "insensitive" as const,
-												},
-											},
-										},
-										{
-											admissionNo: {
-												contains: search,
-												mode: "insensitive" as const,
-											},
-										},
-									],
-								}
-							: {}),
-					},
-					include: { user: true },
-					orderBy: { createdAt: "desc" },
-					take: 200,
-				}),
-				prisma.staff.findMany({
-					where: {
-						...(status ? { status: status as "ACTIVE" } : {}),
-						...(search
-							? {
-									OR: [
-										{
-											user: {
-												name: {
-													contains: search,
-													mode: "insensitive" as const,
-												},
-											},
-										},
-										{
-											user: {
-												email: {
-													contains: search,
-													mode: "insensitive" as const,
-												},
-											},
-										},
-										{
-											employeeId: {
-												contains: search,
-												mode: "insensitive" as const,
-											},
-										},
-									],
-								}
-							: {}),
-					},
-					include: { user: true },
-					orderBy: { createdAt: "desc" },
-					take: 200,
-				}),
-				prisma.guardian.findMany({
-					where: search
-						? {
-								user: {
-									OR: [
-										{
-											name: { contains: search, mode: "insensitive" as const },
-										},
-										{
-											email: {
-												contains: search,
-												mode: "insensitive" as const,
-											},
-										},
-									],
-								},
-							}
-						: undefined,
-					include: {
-						user: true,
-						guardianStudents: {
-							include: {
-								student: { include: { user: true } },
-							},
-						},
-					},
-					orderBy: { createdAt: "desc" },
-					take: 200,
-				}),
-			]);
-
-			return {
-				success: true as const,
-				students: students.map((student) => ({
-					id: student.id,
-					name: student.user.name,
-					email: student.user.email,
-					admissionNo: student.admissionNo,
-					rollNo: student.rollNo,
-					grade: student.grade,
-					section: student.section,
-					status: student.status,
-					activatedAt: student.user.activatedAt,
-				})),
-				staff: staff.map((member) => ({
-					id: member.id,
-					name: member.user.name,
-					email: member.user.email,
-					employeeId: member.employeeId,
-					designation: member.designation,
-					department: member.department,
-					status: member.status,
-					activatedAt: member.user.activatedAt,
-				})),
-				guardians: guardians.map((guardian) => ({
-					id: guardian.id,
-					name: guardian.user.name,
-					email: guardian.user.email,
-					activatedAt: guardian.user.activatedAt,
-					students: guardian.guardianStudents.map((link) => ({
-						id: link.student.id,
-						name: link.student.user.name,
-						relation: link.relation,
-					})),
-				})),
-				roles: [...MANAGEMENT_ROLES],
-			};
+			return { success: true as const, ...page };
 		} catch (error) {
 			return toActionError(error);
 		}

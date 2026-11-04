@@ -15,7 +15,6 @@ import {
 	listClassrooms,
 	listCourses,
 	listStaffForCourses,
-	listStudentsForCourses,
 	removeEnrollment,
 	updateClassroom,
 	updateCourse,
@@ -45,7 +44,8 @@ function failure(error: unknown) {
 
 	console.error("Academics action failed:", error);
 
-	const message = error instanceof Error ? error.message : "Something went wrong";
+	const message =
+		error instanceof Error ? error.message : "Something went wrong";
 
 	return {
 		success: false as const,
@@ -61,14 +61,13 @@ export const getAcademicsDataFn = createServerFn().handler(async () => {
 	try {
 		await requireManager();
 
-		const [courses, classrooms, students, staff] = await Promise.all([
+		const [courses, classrooms, staff] = await Promise.all([
 			listCourses({ includeInactive: true }),
 			listClassrooms({ includeInactive: true }),
-			listStudentsForCourses(),
 			listStaffForCourses(),
 		]);
 
-		return { success: true as const, courses, classrooms, students, staff };
+		return { success: true as const, courses, classrooms, staff };
 	} catch (error) {
 		return failure(error);
 	}
