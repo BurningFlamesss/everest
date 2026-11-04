@@ -85,7 +85,6 @@ ScMS started as a highly ambitious project, due to the time constraint, and my a
 - Uploads are capped at 5 MB for images and 10 MB for documents, and the allowed document types are fixed in `src/routes/api/uploads.ts`.
 - The permission screen edits role defaults and per-user overrides; there is no per-branch permission scoping yet.
 - Migration history includes `init`, role permissions and attachments, and club attachments; every future schema change needs its own migration.
-- Container, real-storage, browser, and legacy-session upgrade verification remain pending; see the dependency migration notes below.
 
 ## Tech Stack
 
@@ -104,9 +103,18 @@ ScMS started as a highly ambitious project, due to the time constraint, and my a
 
 ## Security and dependency migration notes
 
-The dependency security upgrades include TanStack, Better Auth 1.7.15, Prisma 7.10.1, Nodemailer 10.3.1, Zod 4.6.7, and updated Vite/Vitest tooling. On **2026-11-03**, `npm audit` and `npm audit --omit=dev` both reported **zero vulnerabilities**, and the unit/UI suite, TypeScript, scoped Biome checks, and host production build passed. No forced dependency fixes were used; the dependency override is limited to `@tailwindcss/typography@0.5.20`'s selector parser. Audit results are a point-in-time check, not a security guarantee.
+The dependency security upgrades include TanStack, Better Auth 1.7.15, Prisma 7.10.1, Nodemailer 10.3.1, Zod 4.6.7, and updated Vite/Vitest tooling. On **2026-11-04**, `npm audit` and `npm audit --omit=dev` both reported **zero vulnerabilities**. No forced dependency fixes were used; the dependency override is limited to `@tailwindcss/typography@0.5.20`'s selector parser. Audit results are a point-in-time check, not a security guarantee.
 
-**Release verification is not complete:** the Docker production build, fresh migrations, real local/S3 integration runs, browser runs against the rebuilt app with both storage drivers, and the legacy-session-cookie upgrade check still need to be rerun. In the current verification environment Docker socket access is denied and no disposable test database URLs are configured for the suites. Integration/browser safety guards stop before accessing a database. Previous handoff results do not substitute for these final checks.
+Final verification completed on **2026-11-03–04**:
+
+- **194 unit/UI tests** across 13 files, including 59 S3-driver tests; TypeScript and scoped Biome checks passed.
+- **8 local-storage and 8 real MinIO integration tests** passed. The MinIO run used an explicitly configured `eu-west-1` region for the driver and bucket cleanup.
+- **5 Chromium tests with local storage and 5 with S3 storage** passed against the rebuilt production Docker image. The S3 browser run used an existing `eu-west-1` bucket with the app's `S3_REGION` unset, exercising region discovery.
+- A signed session cookie issued by **Better Auth 1.6.19** remained valid with **1.7.15**, and logout revoked it on both versions. The verification request sent a JSON body (`data: {}`).
+- The host production build and a **no-cache production Docker build** passed without build warnings; the Docker image is tagged `scms:security-verification`.
+- All three versioned migrations applied successfully from scratch to three disposable PostgreSQL 17 databases.
+
+These checks validate the patch's tested paths, not every production S3 provider or deployment configuration. The temporary verification containers, dedicated PostgreSQL volume/network, env file, and legacy-auth scripts were removed after the successful runs; normal development resources were left untouched.
 
 - The S3 driver now uses `@aws-sdk/client-s3` instead of the `minio` JavaScript SDK. This does not change the storage provider: MinIO and compatible S3 services remain supported. Existing bucket/object keys, `/uploads/...` URLs, database asset references, and the storage `put`/`get`/`delete` API are preserved; **no object migration or re-upload is required** when retaining the same storage configuration.
 - Deploy the committed `package-lock.json` with `npm ci`, regenerate Prisma, apply versioned migrations, and rebuild/redeploy the app (`npm run build` or rebuild the production Docker image). Do not reuse an old `node_modules` directory or `.output` bundle with the upgraded dependencies. See the database upgrade instructions below.
@@ -162,12 +170,27 @@ For `STORAGE_DRIVER=s3`, configure the endpoint, port, TLS setting, credentials,
 
 **S3 region discovery:** an explicit `S3_REGION` is authoritative and is not overwritten by discovery. If absent, the client initially uses `us-east-1` and discovers an existing bucket's region through `HeadBucket`. A compatible server's `AuthorizationHeaderMalformed` region hint can trigger one additional `HeadBucket` attempt; this fallback is bounded, not an infinite retry loop. A new bucket defaults to `us-east-1` unless a region was explicitly configured. Set `S3_REGION` to the actual region when your provider requires it; it is not a mandatory new variable for existing deployments.
 
-Step 4: Setup local database and object storage using docker (OPTIONAL, if you are using another PostgreSQL or S3 provider). Compose starts PostgreSQL plus a MinIO service used when `STORAGE_DRIVER=s3`.
+Step 4: Start local PostgreSQL using Docker (optional if you already have a database). The default Compose file starts **only PostgreSQL**, matching the app's default `STORAGE_DRIVER=local`. It does not pull or require MinIO, an AWS account, or any S3 service.
 ```bash
 docker compose --env-file .env.local up -d
 ```
 
-Compose defaults to `minio/minio:latest`. If that image is unavailable, explicitly set **`MINIO_IMAGE`** to a trusted, compatible MinIO image with a chosen tag or digest, then repeat the command. Supply it in the shell environment or `.env.local` (via `--env-file`); Compose does not automatically read `.env.local`. This is an opt-in image override, not an automatic fallback or permission to silently switch storage providers. Keep the existing MinIO command, credentials, ports, and `/data` volume compatible, and verify the chosen image before use. `MINIO_IMAGE` is Compose-only, not an application environment variable.
+With local storage, uploads live in `STORAGE_LOCAL_DIR`; persist that directory when running the app in Docker (see the production image instructions below). Keep backups of both uploads and the database.
+
+**Optional self-hosted MinIO:** set `STORAGE_DRIVER=s3`, configure `S3_*`, and explicitly set **`MINIO_IMAGE`** to a vetted, compatible MinIO image pinned to a release or digest. Then include the optional Compose file:
+
+```bash
+docker compose --env-file .env.local \
+  -f docker-compose.yml -f docker-compose.minio.yml up -d
+```
+
+There is deliberately **no default MinIO image**: this opt-in command fails with an actionable message if `MINIO_IMAGE` is missing, rather than pulling the unavailable `minio/minio:latest` image. Supply the variable in the shell environment or `.env.local` (via `--env-file`); Compose does not automatically read `.env.local`. `MINIO_IMAGE` is Compose-only, not an application environment variable. Keep the MinIO command, credentials, ports, and `/data` volume compatible; images with different entrypoints, licensing requirements, or data-directory ownership need an explicit additional Compose override. External S3 providers do not need the optional Compose file.
+
+**Existing MinIO installations:** include both `-f` files for MinIO lifecycle commands. The service/container names and `minio_data` volume key are unchanged, so using the same Compose project preserves the existing volume. Neither this split nor changing `STORAGE_DRIVER` copies, moves, or deletes existing uploads. Back up data and plan a migration before changing providers or pointing an incompatible server at an existing volume; do not use `down -v` unless you intend to delete its volumes.
+
+The upstream [MinIO community repository](https://github.com/minio/minio) is no longer maintained; a different tag or mirror does not fix that support/security issue. The vendor's maintained [AIStor container](https://docs.min.io/aistor/installation/container/install/) requires a license (including for its free tier) and different startup configuration; it is **not** selected automatically or offered here as a drop-in replacement.
+
+For the isolated release tests, the explicitly selected image was `bitnamilegacy/minio:2025.7.23-debian-12-r5` (digest `sha256:6dabb4a2088c9a79908de3bc05f4586c23ad2182c8908e7e3acbf61c1467fb20`), launched with its MinIO binary entrypoint (`/opt/bitnami/minio/bin/minio`) and disposable storage. This unmaintained legacy image is **test-only, not a production recommendation or a drop-in Compose replacement**. No production provider or default image was automatically replaced.
 
 Step 5: Generate the Prisma client, apply the migrations, then seed the superadmin account and starter content
 ```bash
@@ -242,7 +265,7 @@ For S3 integration tests, **all four** `SCMS_TEST_S3_ENDPOINT`, `SCMS_TEST_S3_PO
 
 Use a dedicated disposable S3 test service/account with permissions to check, create, and delete buckets and read/write/delete objects. The suite chooses a unique `scms-test-<UUID>` bucket, tracks uploaded keys, and attempts object/bucket teardown; it does not use an app bucket or accept a `SCMS_TEST_S3_BUCKET` override. Check for leftovers after failed runs. Configure `SCMS_TEST_S3_REGION` when the test service requires a non-default region; real MinIO tests are not a substitute for validation against your production provider.
 
-These tests exercise binary round-trips, missing-key/idempotent deletion, real attachment foreign keys, atomic replacement rollback, partial updates, club cascades, shared notice/event assets, grace periods, and physical-object cleanup. These are run instructions, not a claim that final integration runs have passed.
+These tests exercise binary round-trips, missing-key/idempotent deletion, real attachment foreign keys, atomic replacement rollback, partial updates, club cascades, shared notice/event assets, grace periods, and physical-object cleanup. For the completed release-verification results, see the security notes above.
 
 ### Chromium end-to-end tests: local AND S3
 
@@ -299,4 +322,4 @@ SCMS_E2E_BASE_URL=http://localhost:3000 npm run test:e2e
 
 `SCMS_E2E_DATABASE_URL` is mandatory, must name a database ending in `_test` or `_verification`, and must identify the running app's database. The default `SCMS_E2E_BASE_URL` is `http://localhost:3000`; the auth-security tests require a loopback host (`localhost`, `127.0.0.1`, or `[::1]`). For another origin, set **all three** of `APP_URL`, build-time `VITE_APP_URL`, and `SCMS_E2E_BASE_URL` identically and rebuild. Browser tests use the app's ordinary `STORAGE_DRIVER`/`S3_*` settings, **not** the integration suite's `SCMS_TEST_*` variables; setting runner storage variables alone does not reconfigure the app.
 
-If Chromium is already installed, set `SCMS_CHROMIUM_EXECUTABLE` to its executable path instead of downloading another copy. The suite covers legacy auth credentials, login persistence/logout revocation, invitation activation, 20-minute single-use password resets/session revocation, expired-reset rejection, the permissions screen, club document upload/edit/download, active/inactive visibility, deletion/cleanup, and anonymous/unauthorized upload denial. Failed traces are stored under `.data/playwright-results`. Inspect and remove only the dedicated test databases, local upload directory, and S3 bucket/objects when finished; browser tests do not tear down the S3 bucket. Both final browser runs remain pending. The tracked auth browser test covers legacy password hashes, not a session cookie issued by the old server. The separate legacy-cookie upgrade check requires the same disposable database and auth secret in old/new app instances; its logout request must send JSON (`data: {}` in Playwright) to avoid HTTP 415. The temporary handoff script's logout request has been corrected. Its rerun failed with Prisma `P1001` because the verification database at `127.0.0.1:35057` is unreachable; the old/new app ports are also unavailable. Keep the temporary script/env file until this check can complete, then remove only the security-verification containers, network, env file, and script—not normal development resources.
+If Chromium is already installed, set `SCMS_CHROMIUM_EXECUTABLE` to its executable path instead of downloading another copy. The suite covers legacy auth credentials, login persistence/logout revocation, invitation activation, 20-minute single-use password resets/session revocation, expired-reset rejection, the permissions screen, club document upload/edit/download, active/inactive visibility, deletion/cleanup, and anonymous/unauthorized upload denial. Failed traces are stored under `.data/playwright-results`. Inspect and remove only the dedicated test databases, local upload directory, and S3 bucket/objects when finished; browser tests do not tear down the S3 bucket. Both storage modes passed in the final release verification. The tracked auth browser test covers legacy password hashes; a separate, successfully completed check verified a session cookie issued by the old server. To repeat that cross-version check, use the same disposable database and auth secret in old/new app instances; the logout request must send JSON (`data: {}` in Playwright) to avoid HTTP 415. After verification, remove only the dedicated security-verification resources—not normal development resources.
