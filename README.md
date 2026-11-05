@@ -45,11 +45,11 @@ Signed-in area:
 2. Admin overview (`/admin`).
 3. Invitations (`/admin/invites`) — staff, student, and guardian invitations, CSV bulk import, and the invitation-request review queue.
 4. Directory (`/admin/directory`) — students, staff, and guardians.
-5. Content management (`/admin/content`) — create and manage notices, events, and clubs, including cover images and document attachments. Existing club attachments can be added or removed using **Edit attachments**.
-6. Academics (`/admin/academics`) — classrooms, courses, teachers, and student enrolments.
+5. Content management (`/admin/content`) — create and edit notices, events, and clubs, including cover images and document attachments. Existing club attachments can also be managed on their own with **Edit attachments**.
+6. Academics (`/admin/academics`) — classrooms, courses, teachers, and student enrolments, with editing for courses and classrooms.
 7. Attendance (`/admin/attendance`) — open a daily register per course, mark students, and review per-student summaries.
-8. Transport (`/admin/transport`) — bus routes, stops, drivers, and student route assignments.
-9. Permissions (`/admin/permissions`) — edit role-level defaults and grant or revoke individual permissions.
+8. Transport (`/admin/transport`) — bus routes, stops, drivers, and student route assignments, with editing for routes and stops (including stop order).
+9. Permissions (`/admin/permissions`) — edit role-level defaults and grant or revoke individual permissions; returning a role permission to its built-in default removes the stored override.
 10. My records (`/my-records`) — students and guardians see their own courses, attendance, and transport; staff see an empty state.
 
 Operations:
@@ -70,11 +70,11 @@ ScMS started as a highly ambitious project, due to the time constraint, and my a
 - Admin-driven invitation flow for staff, students, and guardians, including revocation
 - CSV imports for staff and students with column mapping, validation, previews, and bulk creation
 - Admin dashboard, directory, and content management screens
-- Notices, events, and clubs (public pages and admin CRUD)
-- Academics: classrooms, courses with teacher/classroom assignment, and student enrolments
-- Attendance: daily course registers, per-student marks (present/absent/late/excused), and summaries
-- Transport: routes, ordered stops, drivers, and per-student pickup/drop-off assignments
-- Editable role-level permission defaults plus per-user overrides, with a dedicated permissions screen
+- Notices, events, and clubs (public pages and admin create/edit/delete)
+- Academics: classrooms, courses with teacher/classroom assignment, and student enrolments, including course and classroom editing
+- Attendance: daily course registers, per-student marks (present/absent/late/excused), and per-course summaries with attendance rates
+- Transport: routes, ordered stops, drivers, and per-student pickup/drop-off assignments, including route and stop editing
+- Editable role-level permission defaults plus per-user overrides, with a dedicated permissions screen that clears redundant overrides when a role returns to its built-in default
 - Cover images and document attachments (PDF, Word, Excel, CSV, text) for notices, events, and clubs, with a pluggable local/S3 storage driver
 - Club attachment editing with up to 10 documents per club and public download links on active club cards
 - On-demand cleanup of uploads that are no longer referenced by any content

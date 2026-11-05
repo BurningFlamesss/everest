@@ -2,6 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
 	BookOpen,
 	Loader2,
+	Pencil,
 	Plus,
 	School,
 	Search,
@@ -21,6 +22,8 @@ import {
 	getAcademicsDataFn,
 	getCourseDetailsAction,
 	removeEnrollmentAction,
+	updateClassroomAction,
+	updateCourseAction,
 } from "#/packages/academics/server.ts";
 import type { StudentOption } from "#/packages/people/directory-service.ts";
 
@@ -94,6 +97,10 @@ function AdminAcademics() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
 	const [notice, setNotice] = useState("");
+	const [editingCourse, setEditingCourse] = useState<CourseRow | null>(null);
+	const [editingClassroom, setEditingClassroom] = useState<ClassroomRow | null>(
+		null,
+	);
 
 	const [selectedCourseId, setSelectedCourseId] = useState("");
 	const [enrollments, setEnrollments] = useState<Array<CourseEnrollment>>([]);
@@ -226,6 +233,76 @@ function AdminAcademics() {
 
 		setNotice("Classroom added.");
 		form.reset();
+		await load();
+	};
+
+	const saveCourse = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (!editingCourse) return;
+
+		setError("");
+		setNotice("");
+		setIsSubmitting(true);
+
+		const data = new FormData(event.currentTarget);
+		const response = await updateCourseAction({
+			data: {
+				id: editingCourse.id,
+				code: String(data.get("code") ?? ""),
+				name: String(data.get("name") ?? ""),
+				description: String(data.get("description") ?? ""),
+				grade: String(data.get("grade") ?? ""),
+				section: String(data.get("section") ?? ""),
+				schedule: String(data.get("schedule") ?? ""),
+				teacherId: String(data.get("teacherId") ?? "") || null,
+				classroomId: String(data.get("classroomId") ?? "") || null,
+				isActive: data.get("isActive") === "on",
+			},
+		});
+
+		setIsSubmitting(false);
+
+		if (!response.success) {
+			setError(response.error);
+			return;
+		}
+
+		setNotice("Course updated.");
+		setEditingCourse(null);
+		await load();
+	};
+
+	const saveClassroom = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (!editingClassroom) return;
+
+		setError("");
+		setNotice("");
+		setIsSubmitting(true);
+
+		const data = new FormData(event.currentTarget);
+		const capacity = String(data.get("capacity") ?? "").trim();
+		const response = await updateClassroomAction({
+			data: {
+				id: editingClassroom.id,
+				name: String(data.get("name") ?? ""),
+				building: String(data.get("building") ?? ""),
+				floor: String(data.get("floor") ?? ""),
+				capacity: capacity ? Number(capacity) : null,
+				notes: String(data.get("notes") ?? ""),
+				isActive: data.get("isActive") === "on",
+			},
+		});
+
+		setIsSubmitting(false);
+
+		if (!response.success) {
+			setError(response.error);
+			return;
+		}
+
+		setNotice("Classroom updated.");
+		setEditingClassroom(null);
 		await load();
 	};
 
@@ -423,6 +500,117 @@ function AdminAcademics() {
 						</form>
 					</section>
 
+					{editingCourse ? (
+						<section className="rounded-2xl border border-gray-200 bg-white p-6">
+							<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
+								<Pencil className="h-5 w-5 text-red-500" /> Edit course
+							</h2>
+							<form
+								key={editingCourse.id}
+								onSubmit={(event) => void saveCourse(event)}
+								className="grid gap-4 md:grid-cols-2"
+							>
+								<Input
+									label="Course code"
+									name="code"
+									defaultValue={editingCourse.code}
+									required
+								/>
+								<Input
+									label="Course name"
+									name="name"
+									defaultValue={editingCourse.name}
+									required
+								/>
+								<Input
+									label="Grade / class"
+									name="grade"
+									defaultValue={editingCourse.grade ?? ""}
+								/>
+								<Input
+									label="Section"
+									name="section"
+									defaultValue={editingCourse.section ?? ""}
+								/>
+								<Input
+									label="Schedule"
+									name="schedule"
+									defaultValue={editingCourse.schedule ?? ""}
+								/>
+								<label className="text-sm">
+									<span className="mb-1 block font-medium text-gray-700">
+										Teacher
+									</span>
+									<select
+										name="teacherId"
+										defaultValue={editingCourse.teacher?.id ?? ""}
+										className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+									>
+										<option value="">Unassigned</option>
+										{staff.map((member) => (
+											<option key={member.id} value={member.id}>
+												{member.user.name} · {member.designation}
+											</option>
+										))}
+									</select>
+								</label>
+								<label className="text-sm">
+									<span className="mb-1 block font-medium text-gray-700">
+										Classroom
+									</span>
+									<select
+										name="classroomId"
+										defaultValue={editingCourse.classroom?.id ?? ""}
+										className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+									>
+										<option value="">Unassigned</option>
+										{classrooms.map((room) => (
+											<option key={room.id} value={room.id}>
+												{room.name}
+												{room.building ? ` · ${room.building}` : ""}
+											</option>
+										))}
+									</select>
+								</label>
+								<Textarea
+									label="Description"
+									name="description"
+									defaultValue={editingCourse.description ?? ""}
+									className="md:col-span-2"
+								/>
+								<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
+									<input
+										type="checkbox"
+										name="isActive"
+										defaultChecked={editingCourse.isActive}
+									/>{" "}
+									Active
+								</label>
+								<div className="flex gap-2 md:col-span-2">
+									<button
+										type="submit"
+										disabled={isSubmitting}
+										className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+									>
+										{isSubmitting ? (
+											<Loader2 className="h-4 w-4 animate-spin" />
+										) : (
+											<Pencil className="h-4 w-4" />
+										)}
+										{isSubmitting ? "Saving…" : "Save changes"}
+									</button>
+									<button
+										type="button"
+										onClick={() => setEditingCourse(null)}
+										className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+									>
+										Cancel
+									</button>
+								</div>
+							</form>
+						</section>
+					) : null}
+
 					<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
 						<header className="border-b border-gray-200 px-5 py-4">
 							<h2 className="font-semibold text-gray-900">Courses</h2>
@@ -473,14 +661,23 @@ function AdminAcademics() {
 												<td className="px-5 py-3 text-gray-600">
 													{course._count.enrollments}
 												</td>
-												<td className="px-5 py-3 text-right">
-													<button
-														type="button"
-														onClick={() => void removeCourse(course)}
-														className="inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-700"
-													>
-														<Trash2 className="h-3.5 w-3.5" /> Delete
-													</button>
+												<td className="px-5 py-3">
+													<div className="flex items-center justify-end gap-3">
+														<button
+															type="button"
+															onClick={() => setEditingCourse(course)}
+															className="inline-flex items-center gap-1 text-xs font-medium text-gray-700 hover:text-gray-900"
+														>
+															<Pencil className="h-3.5 w-3.5" /> Edit
+														</button>
+														<button
+															type="button"
+															onClick={() => void removeCourse(course)}
+															className="inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-700"
+														>
+															<Trash2 className="h-3.5 w-3.5" /> Delete
+														</button>
+													</div>
 												</td>
 											</tr>
 										))}
@@ -516,6 +713,78 @@ function AdminAcademics() {
 							</div>
 						</form>
 					</section>
+
+					{editingClassroom ? (
+						<section className="rounded-2xl border border-gray-200 bg-white p-6">
+							<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
+								<Pencil className="h-5 w-5 text-red-500" /> Edit classroom
+							</h2>
+							<form
+								key={editingClassroom.id}
+								onSubmit={(event) => void saveClassroom(event)}
+								className="grid gap-4 md:grid-cols-2"
+							>
+								<Input
+									label="Name"
+									name="name"
+									defaultValue={editingClassroom.name}
+									required
+								/>
+								<Input
+									label="Building"
+									name="building"
+									defaultValue={editingClassroom.building ?? ""}
+								/>
+								<Input
+									label="Floor"
+									name="floor"
+									defaultValue={editingClassroom.floor ?? ""}
+								/>
+								<Input
+									label="Capacity"
+									name="capacity"
+									type="number"
+									min={1}
+									defaultValue={editingClassroom.capacity ?? ""}
+								/>
+								<Textarea
+									label="Notes"
+									name="notes"
+									defaultValue={editingClassroom.notes ?? ""}
+									className="md:col-span-2"
+								/>
+								<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
+									<input
+										type="checkbox"
+										name="isActive"
+										defaultChecked={editingClassroom.isActive}
+									/>{" "}
+									Active
+								</label>
+								<div className="flex gap-2 md:col-span-2">
+									<button
+										type="submit"
+										disabled={isSubmitting}
+										className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+									>
+										{isSubmitting ? (
+											<Loader2 className="h-4 w-4 animate-spin" />
+										) : (
+											<Pencil className="h-4 w-4" />
+										)}
+										{isSubmitting ? "Saving…" : "Save changes"}
+									</button>
+									<button
+										type="button"
+										onClick={() => setEditingClassroom(null)}
+										className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+									>
+										Cancel
+									</button>
+								</div>
+							</form>
+						</section>
+					) : null}
 
 					<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
 						<header className="border-b border-gray-200 px-5 py-4">
@@ -556,6 +825,13 @@ function AdminAcademics() {
 											{room._count.courses} course
 											{room._count.courses === 1 ? "" : "s"}
 										</span>
+										<button
+											type="button"
+											onClick={() => setEditingClassroom(room)}
+											className="inline-flex items-center gap-1 text-xs font-medium text-gray-700 hover:text-gray-900"
+										>
+											<Pencil className="h-3.5 w-3.5" /> Edit
+										</button>
 										<button
 											type="button"
 											onClick={() => void removeClassroom(room)}

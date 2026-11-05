@@ -157,6 +157,9 @@ model Branch {
   staffs    Staff[]
   userRoles UserRole[]
 
+  rolePermissions RolePermission[]
+  userPermissions UserPermission[]
+
   classrooms      Classroom[]
   courses         Course[]
   transportRoutes TransportRoute[]
@@ -417,14 +420,22 @@ model UserPermission {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  branchId String?
+  branch   Branch? @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  // "global" or the branch id; PostgreSQL unique indexes treat NULLs as
+  // distinct, so this key makes the scope part of the uniqueness constraint.
+  scopeKey String @default("global")
+
   permission PermissionKey
   granted    Boolean       @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, permission])
+  @@unique([userId, permission, scopeKey])
   @@index([userId])
+  @@index([branchId])
 }
 
 enum InviteRequestStatus {
@@ -689,15 +700,23 @@ model FileAsset {
 model RolePermission {
   id String @id @default(cuid())
 
-  role       Role
+  role Role
+
+  branchId String?
+  branch   Branch? @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  // "global" or the branch id; see UserPermission.scopeKey.
+  scopeKey String @default("global")
+
   permission PermissionKey
   granted    Boolean       @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([role, permission])
+  @@unique([role, permission, scopeKey])
   @@index([role])
+  @@index([branchId])
 }
 
 model Attachment {

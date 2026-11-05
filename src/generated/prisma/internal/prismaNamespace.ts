@@ -2877,6 +2877,8 @@ export type ClubScalarFieldEnum = (typeof ClubScalarFieldEnum)[keyof typeof Club
 export const UserPermissionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  branchId: 'branchId',
+  scopeKey: 'scopeKey',
   permission: 'permission',
   granted: 'granted',
   createdAt: 'createdAt',
@@ -3044,6 +3046,8 @@ export type FileAssetScalarFieldEnum = (typeof FileAssetScalarFieldEnum)[keyof t
 export const RolePermissionScalarFieldEnum = {
   id: 'id',
   role: 'role',
+  branchId: 'branchId',
+  scopeKey: 'scopeKey',
   permission: 'permission',
   granted: 'granted',
   createdAt: 'createdAt',

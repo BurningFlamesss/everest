@@ -1,6 +1,7 @@
 import { prisma } from "#/packages/db/index.ts";
 import {
 	ALL_PERMISSIONS,
+	DEFAULT_ROLE_PERMISSIONS,
 	getPrimaryRole,
 	getRolePermissionDefaults,
 	isPermissionKey,
@@ -38,6 +39,7 @@ export function isEditablePermissionRole(
 export interface RolePermissionSummary {
 	role: string;
 	editable: boolean;
+	defaults: Array<PermissionKey>;
 	effective: Array<PermissionKey>;
 	overrides: Array<{ permission: PermissionKey; granted: boolean }>;
 }
@@ -170,6 +172,9 @@ export async function listRolePermissions(): Promise<
 	return roles.map((role) => ({
 		role,
 		editable: isEditablePermissionRole(role),
+		defaults: ALL_PERMISSIONS.filter((permission) =>
+			DEFAULT_ROLE_PERMISSIONS[role]?.includes(permission),
+		),
 		effective: ALL_PERMISSIONS.filter((permission) =>
 			defaults[role]?.has(permission),
 		),

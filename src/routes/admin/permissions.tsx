@@ -12,6 +12,7 @@ import { useCallback, useEffect, useState } from "react";
 import { cn } from "#/lib/utils.ts";
 import {
 	clearPermissionAction,
+	clearRolePermissionAction,
 	getPermissionsDataFn,
 	resetRolePermissionsAction,
 	resetUserPermissionsAction,
@@ -49,6 +50,7 @@ interface PermissionUser {
 interface RolePermissionSummary {
 	role: string;
 	editable: boolean;
+	defaults: Array<string>;
 	effective: Array<string>;
 	overrides: Array<{ permission: string; granted: boolean }>;
 }
@@ -166,13 +168,19 @@ function AdminPermissions() {
 		setNotice("");
 		setBusyKey(`role:${role.role}:${permission.key}`);
 
-		const response = await setRolePermissionAction({
-			data: {
-				role: role.role,
-				permission: permission.key,
-				granted: next,
-			},
-		});
+		const defaultAllows = role.defaults.includes(permission.key);
+		const response =
+			next === defaultAllows
+				? await clearRolePermissionAction({
+						data: { role: role.role, permission: permission.key },
+					})
+				: await setRolePermissionAction({
+						data: {
+							role: role.role,
+							permission: permission.key,
+							granted: next,
+						},
+					});
 
 		setBusyKey("");
 
@@ -182,7 +190,9 @@ function AdminPermissions() {
 		}
 
 		setNotice(
-			`${permission.label} ${next ? "enabled" : "disabled"} for the ${role.role.toLowerCase()} role.`,
+			next === defaultAllows
+				? `${permission.label} reset to the built-in default for the ${role.role.toLowerCase()} role.`
+				: `${permission.label} ${next ? "enabled" : "disabled"} for the ${role.role.toLowerCase()} role.`,
 		);
 		await load();
 	};

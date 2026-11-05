@@ -231,7 +231,8 @@ export async function listNotices(options?: {
 		orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
 		take: Math.min(Math.max(options?.limit ?? 100, 1), 200),
 		// List views never render the article body; selecting it would send a
-		// large payload for every card on the public notices page.
+		// large payload for every card on the public notices page. The admin
+		// editor uses listNoticesForAdmin, which does include it.
 		select: {
 			id: true,
 			title: true,
@@ -246,6 +247,22 @@ export async function listNotices(options?: {
 			createdAt: true,
 			updatedAt: true,
 		},
+	});
+}
+
+/** Admin editor variant: includes the article body and attachments. */
+export async function listNoticesForAdmin() {
+	return prisma.notice.findMany({
+		include: {
+			attachments: {
+				include: {
+					fileAsset: { select: { url: true, originalName: true } },
+				},
+				orderBy: { createdAt: "asc" },
+			},
+		},
+		orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+		take: 200,
 	});
 }
 
@@ -385,6 +402,22 @@ export async function listEvents(options?: {
 		},
 		orderBy: { startsAt: "asc" },
 		take: Math.min(Math.max(options?.limit ?? 100, 1), 200),
+	});
+}
+
+/** Admin editor variant: includes event attachments. */
+export async function listEventsForAdmin() {
+	return prisma.event.findMany({
+		include: {
+			attachments: {
+				include: {
+					fileAsset: { select: { url: true, originalName: true } },
+				},
+				orderBy: { createdAt: "asc" },
+			},
+		},
+		orderBy: { startsAt: "asc" },
+		take: 200,
 	});
 }
 

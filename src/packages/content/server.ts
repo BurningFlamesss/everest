@@ -16,7 +16,9 @@ import {
 	getNoticeBySlug,
 	listClubs,
 	listEvents,
+	listEventsForAdmin,
 	listNotices,
+	listNoticesForAdmin,
 	updateClub,
 	updateEvent,
 	updateNotice,
@@ -272,8 +274,8 @@ export const getContentAdminDataFn = createServerFn().handler(async () => {
 		await requireManager();
 
 		const [notices, events, clubs] = await Promise.all([
-			listNotices({ includeDrafts: true }),
-			listEvents({ includeDrafts: true }),
+			listNoticesForAdmin(),
+			listEventsForAdmin(),
 			listClubs({ includeInactive: true }),
 		]);
 

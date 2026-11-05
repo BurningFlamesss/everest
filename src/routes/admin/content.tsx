@@ -1,5 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, Paperclip, Plus, RefreshCw, Trash2 } from "lucide-react";
+import {
+	Loader2,
+	Paperclip,
+	Pencil,
+	Plus,
+	RefreshCw,
+	Trash2,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { AttachmentUploadField } from "#/components/content/AttachmentUploadField.tsx";
 import { ImageUploadField } from "#/components/content/ImageUploadField.tsx";
@@ -24,16 +31,28 @@ export const Route = createFileRoute("/admin/content")({
 
 type Tab = "notices" | "events" | "clubs";
 
+interface ContentAttachment {
+	id: string;
+	fileAssetId: string;
+	label: string | null;
+	fileAsset: {
+		url: string;
+		originalName: string;
+	};
+}
+
 interface NoticeRow {
 	id: string;
 	title: string;
 	summary: string | null;
+	body: string;
 	category: string | null;
 	coverImage: string | null;
 	audience: string;
 	isPublished: boolean;
 	publishedAt: string | Date | null;
 	expiresAt: string | Date | null;
+	attachments: Array<ContentAttachment>;
 }
 
 interface EventRow {
@@ -45,6 +64,7 @@ interface EventRow {
 	startsAt: string | Date;
 	endsAt: string | Date | null;
 	isPublished: boolean;
+	attachments: Array<ContentAttachment>;
 }
 
 interface ClubRow {
@@ -54,20 +74,40 @@ interface ClubRow {
 	meetingSchedule: string | null;
 	coverImage: string | null;
 	isActive: boolean;
-	attachments: Array<{
-		id: string;
-		fileAssetId: string;
-		label: string | null;
-		fileAsset: {
-			url: string;
-			originalName: string;
-		};
-	}>;
+	attachments: Array<ContentAttachment>;
 }
 
 interface AttachmentPayload {
 	fileAssetId: string;
 	label?: string;
+}
+
+function pad(value: number) {
+	return String(value).padStart(2, "0");
+}
+
+function toDateInput(value: string | Date | null | undefined): string {
+	if (!value) return "";
+	const date = new Date(value);
+
+	if (Number.isNaN(date.getTime())) return "";
+
+	// Date-only fields are stored as UTC midnight, so use UTC parts to avoid
+	// showing the previous day in timezones behind UTC.
+	return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(
+		date.getUTCDate(),
+	)}`;
+}
+
+function toDateTimeLocal(value: string | Date | null | undefined): string {
+	if (!value) return "";
+	const date = new Date(value);
+
+	if (Number.isNaN(date.getTime())) return "";
+
+	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+		date.getDate(),
+	)}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
 function parseAttachments(
@@ -111,7 +151,13 @@ function AdminContent() {
 	const [formVersion, setFormVersion] = useState(0);
 	const [isUploading, setIsUploading] = useState(false);
 	const [editingClub, setEditingClub] = useState<ClubRow | null>(null);
+	const [editingNotice, setEditingNotice] = useState<NoticeRow | null>(null);
+	const [editingEvent, setEditingEvent] = useState<EventRow | null>(null);
+	const [editingClubDetails, setEditingClubDetails] = useState<ClubRow | null>(
+		null,
+	);
 	const [isSavingAttachments, setIsSavingAttachments] = useState(false);
+	const [isSavingContent, setIsSavingContent] = useState(false);
 	const [isEditingUpload, setIsEditingUpload] = useState(false);
 
 	const load = useCallback(async () => {
@@ -244,6 +290,134 @@ function AdminContent() {
 		}
 	};
 
+	const saveNotice = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (!editingNotice || isSavingContent || isEditingUpload) return;
+
+		setError("");
+		setNoticeMessage("");
+		setIsSavingContent(true);
+		const data = new FormData(event.currentTarget);
+
+		try {
+			const response = await updateNoticeAction({
+				data: {
+					id: editingNotice.id,
+					title: String(data.get("title") ?? ""),
+					summary: String(data.get("summary") ?? ""),
+					body: String(data.get("body") ?? ""),
+					category: String(data.get("category") ?? ""),
+					coverImage: String(data.get("coverImage") ?? ""),
+					attachments: parseAttachments(data.get("attachments")),
+					audience: String(data.get("audience") ?? "ALL") as "ALL",
+					isPublished: data.get("isPublished") === "on",
+					expiresAt: String(data.get("expiresAt") ?? ""),
+				},
+			});
+
+			if (!response.success) {
+				setError(response.error);
+				return;
+			}
+
+			setEditingNotice(null);
+			setNoticeMessage("Notice updated.");
+			await load();
+		} catch (saveError) {
+			setError(
+				saveError instanceof Error
+					? saveError.message
+					: "Could not update this notice.",
+			);
+		} finally {
+			setIsSavingContent(false);
+		}
+	};
+
+	const saveEvent = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (!editingEvent || isSavingContent || isEditingUpload) return;
+
+		setError("");
+		setNoticeMessage("");
+		setIsSavingContent(true);
+		const data = new FormData(event.currentTarget);
+
+		try {
+			const response = await updateEventAction({
+				data: {
+					id: editingEvent.id,
+					title: String(data.get("title") ?? ""),
+					description: String(data.get("description") ?? ""),
+					location: String(data.get("location") ?? ""),
+					coverImage: String(data.get("coverImage") ?? ""),
+					attachments: parseAttachments(data.get("attachments")),
+					startsAt: String(data.get("startsAt") ?? ""),
+					endsAt: String(data.get("endsAt") ?? ""),
+					isPublished: data.get("isPublished") === "on",
+				},
+			});
+
+			if (!response.success) {
+				setError(response.error);
+				return;
+			}
+
+			setEditingEvent(null);
+			setNoticeMessage("Event updated.");
+			await load();
+		} catch (saveError) {
+			setError(
+				saveError instanceof Error
+					? saveError.message
+					: "Could not update this event.",
+			);
+		} finally {
+			setIsSavingContent(false);
+		}
+	};
+
+	const saveClubDetails = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (!editingClubDetails || isSavingContent || isEditingUpload) return;
+
+		setError("");
+		setNoticeMessage("");
+		setIsSavingContent(true);
+		const data = new FormData(event.currentTarget);
+
+		try {
+			const response = await updateClubAction({
+				data: {
+					id: editingClubDetails.id,
+					name: String(data.get("name") ?? ""),
+					description: String(data.get("description") ?? ""),
+					meetingSchedule: String(data.get("meetingSchedule") ?? ""),
+					coverImage: String(data.get("coverImage") ?? ""),
+					attachments: parseAttachments(data.get("attachments")),
+					isActive: data.get("isActive") === "on",
+				},
+			});
+
+			if (!response.success) {
+				setError(response.error);
+				return;
+			}
+
+			setEditingClubDetails(null);
+			setNoticeMessage("Club updated.");
+			await load();
+		} catch (saveError) {
+			setError(
+				saveError instanceof Error
+					? saveError.message
+					: "Could not update this club.",
+			);
+		} finally {
+			setIsSavingContent(false);
+		}
+	};
+
 	const toggleNotice = async (notice: NoticeRow) => {
 		const response = await updateNoticeAction({
 			data: { id: notice.id, isPublished: !notice.isPublished },
@@ -280,9 +454,10 @@ function AdminContent() {
 
 		if (!response.success) setError(response.error);
 		else {
-			if (kind === "clubs") {
-				setEditingClub((current) => (current?.id === id ? null : current));
-			}
+			setEditingClub((current) => (current?.id === id ? null : current));
+			setEditingNotice((current) => (current?.id === id ? null : current));
+			setEditingEvent((current) => (current?.id === id ? null : current));
+			setEditingClubDetails((current) => (current?.id === id ? null : current));
 			await load();
 		}
 	};
@@ -343,11 +518,15 @@ function AdminContent() {
 							isUploading ||
 							isSubmitting ||
 							isEditingUpload ||
-							isSavingAttachments
+							isSavingAttachments ||
+							isSavingContent
 						}
 						onClick={() => {
 							setTab(item);
 							setEditingClub(null);
+							setEditingNotice(null);
+							setEditingEvent(null);
+							setEditingClubDetails(null);
 						}}
 						className={cn(
 							"rounded-md px-3 py-1.5 text-sm font-medium capitalize",
@@ -501,6 +680,289 @@ function AdminContent() {
 				</form>
 			</section>
 
+			{tab === "notices" && editingNotice ? (
+				<section className="rounded-2xl border border-gray-200 bg-white p-6">
+					<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
+						<Pencil className="h-5 w-5 text-red-500" /> Edit notice
+					</h2>
+					<form
+						key={editingNotice.id}
+						onSubmit={(event) => void saveNotice(event)}
+						className="grid gap-4 md:grid-cols-2"
+					>
+						<Input
+							label="Title"
+							name="title"
+							defaultValue={editingNotice.title}
+							required
+						/>
+						<Input
+							label="Category"
+							name="category"
+							defaultValue={editingNotice.category ?? ""}
+						/>
+						<Input
+							label="Summary"
+							name="summary"
+							defaultValue={editingNotice.summary ?? ""}
+							className="md:col-span-2"
+						/>
+						<Textarea
+							label="Body"
+							name="body"
+							defaultValue={editingNotice.body}
+							required
+							className="md:col-span-2"
+						/>
+						<label className="text-sm">
+							<span className="mb-1 block font-medium text-gray-700">
+								Audience
+							</span>
+							<select
+								name="audience"
+								defaultValue={editingNotice.audience}
+								className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+							>
+								<option value="ALL">Everyone</option>
+								<option value="STUDENTS">Students</option>
+								<option value="STAFF">Staff</option>
+								<option value="GUARDIANS">Guardians</option>
+							</select>
+						</label>
+						<Input
+							label="Expires at"
+							name="expiresAt"
+							type="date"
+							defaultValue={toDateInput(editingNotice.expiresAt)}
+						/>
+						<ImageUploadField
+							name="coverImage"
+							prefix="notices"
+							defaultUrl={editingNotice.coverImage}
+							className="md:col-span-2"
+						/>
+						<AttachmentUploadField
+							name="attachments"
+							prefix="notices"
+							initialEntries={editingNotice.attachments.map((attachment) => ({
+								fileAssetId: attachment.fileAssetId,
+								url: attachment.fileAsset.url,
+								name: attachment.fileAsset.originalName,
+								label: attachment.label ?? "",
+							}))}
+							disabled={isSavingContent}
+							onUploadingChange={setIsEditingUpload}
+							className="md:col-span-2"
+						/>
+						<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
+							<input
+								type="checkbox"
+								name="isPublished"
+								defaultChecked={editingNotice.isPublished}
+							/>{" "}
+							Published
+						</label>
+						<div className="flex gap-3 md:col-span-2">
+							<button
+								type="submit"
+								disabled={isSavingContent || isEditingUpload}
+								className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+							>
+								{isSavingContent ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : (
+									<Pencil className="h-4 w-4" />
+								)}
+								{isSavingContent ? "Saving…" : "Save changes"}
+							</button>
+							<button
+								type="button"
+								disabled={isSavingContent || isEditingUpload}
+								onClick={() => setEditingNotice(null)}
+								className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-60"
+							>
+								Cancel
+							</button>
+						</div>
+					</form>
+				</section>
+			) : null}
+
+			{tab === "events" && editingEvent ? (
+				<section className="rounded-2xl border border-gray-200 bg-white p-6">
+					<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
+						<Pencil className="h-5 w-5 text-red-500" /> Edit event
+					</h2>
+					<form
+						key={editingEvent.id}
+						onSubmit={(event) => void saveEvent(event)}
+						className="grid gap-4 md:grid-cols-2"
+					>
+						<Input
+							label="Title"
+							name="title"
+							defaultValue={editingEvent.title}
+							required
+						/>
+						<Input
+							label="Location"
+							name="location"
+							defaultValue={editingEvent.location ?? ""}
+						/>
+						<Input
+							label="Starts at"
+							name="startsAt"
+							type="datetime-local"
+							defaultValue={toDateTimeLocal(editingEvent.startsAt)}
+							required
+						/>
+						<Input
+							label="Ends at"
+							name="endsAt"
+							type="datetime-local"
+							defaultValue={toDateTimeLocal(editingEvent.endsAt)}
+						/>
+						<Textarea
+							label="Description"
+							name="description"
+							defaultValue={editingEvent.description ?? ""}
+							className="md:col-span-2"
+						/>
+						<ImageUploadField
+							name="coverImage"
+							prefix="events"
+							defaultUrl={editingEvent.coverImage}
+							className="md:col-span-2"
+						/>
+						<AttachmentUploadField
+							name="attachments"
+							prefix="events"
+							initialEntries={editingEvent.attachments.map((attachment) => ({
+								fileAssetId: attachment.fileAssetId,
+								url: attachment.fileAsset.url,
+								name: attachment.fileAsset.originalName,
+								label: attachment.label ?? "",
+							}))}
+							disabled={isSavingContent}
+							onUploadingChange={setIsEditingUpload}
+							className="md:col-span-2"
+						/>
+						<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
+							<input
+								type="checkbox"
+								name="isPublished"
+								defaultChecked={editingEvent.isPublished}
+							/>{" "}
+							Published
+						</label>
+						<div className="flex gap-3 md:col-span-2">
+							<button
+								type="submit"
+								disabled={isSavingContent || isEditingUpload}
+								className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+							>
+								{isSavingContent ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : (
+									<Pencil className="h-4 w-4" />
+								)}
+								{isSavingContent ? "Saving…" : "Save changes"}
+							</button>
+							<button
+								type="button"
+								disabled={isSavingContent || isEditingUpload}
+								onClick={() => setEditingEvent(null)}
+								className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-60"
+							>
+								Cancel
+							</button>
+						</div>
+					</form>
+				</section>
+			) : null}
+
+			{tab === "clubs" && editingClubDetails ? (
+				<section className="rounded-2xl border border-gray-200 bg-white p-6">
+					<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
+						<Pencil className="h-5 w-5 text-red-500" /> Edit club
+					</h2>
+					<form
+						key={editingClubDetails.id}
+						onSubmit={(event) => void saveClubDetails(event)}
+						className="grid gap-4 md:grid-cols-2"
+					>
+						<Input
+							label="Name"
+							name="name"
+							defaultValue={editingClubDetails.name}
+							required
+						/>
+						<Input
+							label="Meeting schedule"
+							name="meetingSchedule"
+							defaultValue={editingClubDetails.meetingSchedule ?? ""}
+						/>
+						<Textarea
+							label="Description"
+							name="description"
+							defaultValue={editingClubDetails.description ?? ""}
+							className="md:col-span-2"
+						/>
+						<ImageUploadField
+							name="coverImage"
+							prefix="clubs"
+							defaultUrl={editingClubDetails.coverImage}
+							className="md:col-span-2"
+						/>
+						<AttachmentUploadField
+							name="attachments"
+							prefix="clubs"
+							initialEntries={editingClubDetails.attachments.map(
+								(attachment) => ({
+									fileAssetId: attachment.fileAssetId,
+									url: attachment.fileAsset.url,
+									name: attachment.fileAsset.originalName,
+									label: attachment.label ?? "",
+								}),
+							)}
+							disabled={isSavingContent}
+							onUploadingChange={setIsEditingUpload}
+							className="md:col-span-2"
+						/>
+						<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
+							<input
+								type="checkbox"
+								name="isActive"
+								defaultChecked={editingClubDetails.isActive}
+							/>{" "}
+							Active
+						</label>
+						<div className="flex gap-3 md:col-span-2">
+							<button
+								type="submit"
+								disabled={isSavingContent || isEditingUpload}
+								className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+							>
+								{isSavingContent ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : (
+									<Pencil className="h-4 w-4" />
+								)}
+								{isSavingContent ? "Saving…" : "Save changes"}
+							</button>
+							<button
+								type="button"
+								disabled={isSavingContent || isEditingUpload}
+								onClick={() => setEditingClubDetails(null)}
+								className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-60"
+							>
+								Cancel
+							</button>
+						</div>
+					</form>
+				</section>
+			) : null}
+
 			{tab === "clubs" && editingClub ? (
 				<section className="rounded-2xl border border-gray-200 bg-white p-6">
 					<h2 className="mb-4 text-lg font-semibold text-gray-900">
@@ -568,6 +1030,9 @@ function AdminContent() {
 							if (notice) void toggleNotice(notice);
 						}}
 						onDelete={(id) => void remove("notices", id)}
+						onEdit={(id) =>
+							setEditingNotice(notices.find((item) => item.id === id) ?? null)
+						}
 					/>
 				) : tab === "events" ? (
 					<ContentList
@@ -585,6 +1050,9 @@ function AdminContent() {
 							if (event) void toggleEvent(event);
 						}}
 						onDelete={(id) => void remove("events", id)}
+						onEdit={(id) =>
+							setEditingEvent(events.find((item) => item.id === id) ?? null)
+						}
 					/>
 				) : (
 					<ContentList
@@ -603,9 +1071,16 @@ function AdminContent() {
 							if (club) void toggleClub(club);
 						}}
 						onDelete={(id) => void remove("clubs", id)}
+						onEdit={(id) => {
+							setEditingClubDetails(
+								clubs.find((club) => club.id === id) ?? null,
+							);
+							setEditingClub(null);
+						}}
 						onEditAttachments={(id) => {
 							if (isSavingAttachments || isEditingUpload) return;
 							setEditingClub(clubs.find((club) => club.id === id) ?? null);
+							setEditingClubDetails(null);
 						}}
 					/>
 				)}
@@ -653,6 +1128,7 @@ function ContentList({
 	inactiveLabel,
 	onToggle,
 	onDelete,
+	onEdit,
 	onEditAttachments,
 	disabled = false,
 }: {
@@ -667,6 +1143,7 @@ function ContentList({
 	inactiveLabel: string;
 	onToggle: (id: string) => void;
 	onDelete: (id: string) => void;
+	onEdit?: (id: string) => void;
 	onEditAttachments?: (id: string) => void;
 	disabled?: boolean;
 }) {
@@ -705,6 +1182,16 @@ function ContentList({
 					>
 						{item.active ? activeLabel : inactiveLabel}
 					</button>
+					{onEdit ? (
+						<button
+							type="button"
+							onClick={() => onEdit(item.id)}
+							disabled={disabled}
+							className="inline-flex items-center gap-1 text-xs font-medium text-gray-700 hover:text-red-600"
+						>
+							<Pencil className="h-3.5 w-3.5" /> Edit
+						</button>
+					) : null}
 					{onEditAttachments ? (
 						<button
 							type="button"

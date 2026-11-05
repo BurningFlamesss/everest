@@ -3,6 +3,7 @@ import {
 	Bus,
 	Loader2,
 	MapPin,
+	Pencil,
 	Plus,
 	RefreshCw,
 	Trash2,
@@ -19,6 +20,8 @@ import {
 	deleteTransportStopAction,
 	getTransportDataFn,
 	saveTransportAssignmentAction,
+	updateTransportRouteAction,
+	updateTransportStopAction,
 } from "#/packages/transport/server.ts";
 
 export const Route = createFileRoute("/admin/transport")({
@@ -74,6 +77,8 @@ function AdminTransport() {
 	const [error, setError] = useState("");
 	const [notice, setNotice] = useState("");
 	const [assignmentRouteId, setAssignmentRouteId] = useState("");
+	const [editingRoute, setEditingRoute] = useState<RouteRow | null>(null);
+	const [editingStop, setEditingStop] = useState<StopRow | null>(null);
 
 	const load = useCallback(async () => {
 		setIsLoading(true);
@@ -157,6 +162,72 @@ function AdminTransport() {
 		}
 
 		form.reset();
+		await load();
+	};
+
+	const saveRoute = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (!editingRoute) return;
+
+		setError("");
+		setNotice("");
+		setIsSubmitting(true);
+
+		const data = new FormData(event.currentTarget);
+		const capacity = String(data.get("capacity") ?? "").trim();
+		const response = await updateTransportRouteAction({
+			data: {
+				id: editingRoute.id,
+				name: String(data.get("name") ?? ""),
+				code: String(data.get("code") ?? ""),
+				description: String(data.get("description") ?? ""),
+				driverName: String(data.get("driverName") ?? ""),
+				driverPhone: String(data.get("driverPhone") ?? ""),
+				vehicleNumber: String(data.get("vehicleNumber") ?? ""),
+				capacity: capacity ? Number(capacity) : null,
+				isActive: data.get("isActive") === "on",
+			},
+		});
+
+		setIsSubmitting(false);
+
+		if (!response.success) {
+			setError(response.error);
+			return;
+		}
+
+		setNotice("Route updated.");
+		setEditingRoute(null);
+		await load();
+	};
+
+	const saveStop = async (
+		event: React.FormEvent<HTMLFormElement>,
+		stop: StopRow,
+	) => {
+		event.preventDefault();
+		setError("");
+		setNotice("");
+
+		const data = new FormData(event.currentTarget);
+		const sortOrder = Number(data.get("sortOrder"));
+		const response = await updateTransportStopAction({
+			data: {
+				id: stop.id,
+				name: String(data.get("name") ?? ""),
+				sortOrder: Number.isFinite(sortOrder) ? sortOrder : stop.sortOrder,
+				pickupTime: String(data.get("pickupTime") ?? ""),
+				dropoffTime: String(data.get("dropoffTime") ?? ""),
+			},
+		});
+
+		if (!response.success) {
+			setError(response.error);
+			return;
+		}
+
+		setNotice("Stop updated.");
+		setEditingStop(null);
 		await load();
 	};
 
@@ -307,6 +378,88 @@ function AdminTransport() {
 						</form>
 					</section>
 
+					{editingRoute ? (
+						<section className="rounded-2xl border border-gray-200 bg-white p-6">
+							<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
+								<Pencil className="h-5 w-5 text-red-500" /> Edit route
+							</h2>
+							<form
+								key={editingRoute.id}
+								onSubmit={(event) => void saveRoute(event)}
+								className="grid gap-4 md:grid-cols-2"
+							>
+								<Input
+									label="Route name"
+									name="name"
+									defaultValue={editingRoute.name}
+									required
+								/>
+								<Input
+									label="Route code"
+									name="code"
+									defaultValue={editingRoute.code ?? ""}
+								/>
+								<Input
+									label="Driver name"
+									name="driverName"
+									defaultValue={editingRoute.driverName ?? ""}
+								/>
+								<Input
+									label="Driver phone"
+									name="driverPhone"
+									defaultValue={editingRoute.driverPhone ?? ""}
+								/>
+								<Input
+									label="Vehicle number"
+									name="vehicleNumber"
+									defaultValue={editingRoute.vehicleNumber ?? ""}
+								/>
+								<Input
+									label="Capacity"
+									name="capacity"
+									type="number"
+									min={1}
+									defaultValue={editingRoute.capacity ?? ""}
+								/>
+								<Textarea
+									label="Description"
+									name="description"
+									defaultValue={editingRoute.description ?? ""}
+									className="md:col-span-2"
+								/>
+								<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
+									<input
+										type="checkbox"
+										name="isActive"
+										defaultChecked={editingRoute.isActive}
+									/>{" "}
+									Active
+								</label>
+								<div className="flex gap-2 md:col-span-2">
+									<button
+										type="submit"
+										disabled={isSubmitting}
+										className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+									>
+										{isSubmitting ? (
+											<Loader2 className="h-4 w-4 animate-spin" />
+										) : (
+											<Pencil className="h-4 w-4" />
+										)}
+										{isSubmitting ? "Saving…" : "Save changes"}
+									</button>
+									<button
+										type="button"
+										onClick={() => setEditingRoute(null)}
+										className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+									>
+										Cancel
+									</button>
+								</div>
+							</form>
+						</section>
+					) : null}
+
 					<section className="space-y-4">
 						<header className="flex items-center justify-between gap-3">
 							<h2 className="text-lg font-semibold text-gray-900">Routes</h2>
@@ -360,13 +513,22 @@ function AdminTransport() {
 													{route._count.assignments === 1 ? "" : "s"}
 												</p>
 											</div>
-											<button
-												type="button"
-												onClick={() => void removeRoute(route)}
-												className="inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-700"
-											>
-												<Trash2 className="h-3.5 w-3.5" /> Delete
-											</button>
+											<div className="flex items-center gap-3">
+												<button
+													type="button"
+													onClick={() => setEditingRoute(route)}
+													className="inline-flex items-center gap-1 text-xs font-medium text-gray-700 hover:text-gray-900"
+												>
+													<Pencil className="h-3.5 w-3.5" /> Edit
+												</button>
+												<button
+													type="button"
+													onClick={() => void removeRoute(route)}
+													className="inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-700"
+												>
+													<Trash2 className="h-3.5 w-3.5" /> Delete
+												</button>
+											</div>
 										</div>
 
 										{route.description ? (
@@ -376,30 +538,92 @@ function AdminTransport() {
 										) : null}
 
 										<ul className="mt-4 space-y-2">
-											{route.stops.map((stop) => (
-												<li
-													key={stop.id}
-													className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm"
-												>
-													<MapPin className="h-3.5 w-3.5 text-red-500" />
-													<span className="flex-1 text-gray-800">
-														{stop.name}
-													</span>
-													<span className="text-xs text-gray-500">
-														{[stop.pickupTime, stop.dropoffTime]
-															.filter(Boolean)
-															.join(" / ") || "No times"}
-													</span>
-													<button
-														type="button"
-														onClick={() => void removeStop(stop)}
-														className="rounded p-1 text-red-500 hover:bg-red-50"
-														aria-label="Remove stop"
+											{route.stops.map((stop) =>
+												editingStop?.id === stop.id ? (
+													<li
+														key={stop.id}
+														className="rounded-lg bg-gray-50 p-3"
 													>
-														<Trash2 className="h-3.5 w-3.5" />
-													</button>
-												</li>
-											))}
+														<form
+															onSubmit={(event) => void saveStop(event, stop)}
+															className="grid gap-2 sm:grid-cols-[1fr_auto_auto_auto_auto]"
+														>
+															<input
+																name="name"
+																required
+																defaultValue={stop.name}
+																aria-label="Stop name"
+																className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm"
+															/>
+															<input
+																name="sortOrder"
+																type="number"
+																min={0}
+																defaultValue={stop.sortOrder}
+																aria-label="Stop order"
+																title="Stop order"
+																className="w-16 rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
+															/>
+															<input
+																name="pickupTime"
+																defaultValue={stop.pickupTime ?? ""}
+																placeholder="Pickup"
+																className="w-24 rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
+															/>
+															<input
+																name="dropoffTime"
+																defaultValue={stop.dropoffTime ?? ""}
+																placeholder="Drop-off"
+																className="w-24 rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
+															/>
+															<button
+																type="submit"
+																className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-600"
+															>
+																Save changes
+															</button>
+															<button
+																type="button"
+																onClick={() => setEditingStop(null)}
+																className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
+															>
+																Cancel
+															</button>
+														</form>
+													</li>
+												) : (
+													<li
+														key={stop.id}
+														className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm"
+													>
+														<MapPin className="h-3.5 w-3.5 text-red-500" />
+														<span className="flex-1 text-gray-800">
+															{stop.name}
+														</span>
+														<span className="text-xs text-gray-500">
+															{[stop.pickupTime, stop.dropoffTime]
+																.filter(Boolean)
+																.join(" / ") || "No times"}
+														</span>
+														<button
+															type="button"
+															onClick={() => setEditingStop(stop)}
+															className="rounded p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-700"
+															aria-label="Edit stop"
+														>
+															<Pencil className="h-3.5 w-3.5" />
+														</button>
+														<button
+															type="button"
+															onClick={() => void removeStop(stop)}
+															className="rounded p-1 text-red-500 hover:bg-red-50"
+															aria-label="Remove stop"
+														>
+															<Trash2 className="h-3.5 w-3.5" />
+														</button>
+													</li>
+												),
+											)}
 										</ul>
 
 										<form

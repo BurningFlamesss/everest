@@ -218,6 +218,8 @@ export type BranchWhereInput = {
   students?: Prisma.StudentListRelationFilter
   staffs?: Prisma.StaffListRelationFilter
   userRoles?: Prisma.UserRoleListRelationFilter
+  rolePermissions?: Prisma.RolePermissionListRelationFilter
+  userPermissions?: Prisma.UserPermissionListRelationFilter
   classrooms?: Prisma.ClassroomListRelationFilter
   courses?: Prisma.CourseListRelationFilter
   transportRoutes?: Prisma.TransportRouteListRelationFilter
@@ -237,6 +239,8 @@ export type BranchOrderByWithRelationInput = {
   students?: Prisma.StudentOrderByRelationAggregateInput
   staffs?: Prisma.StaffOrderByRelationAggregateInput
   userRoles?: Prisma.UserRoleOrderByRelationAggregateInput
+  rolePermissions?: Prisma.RolePermissionOrderByRelationAggregateInput
+  userPermissions?: Prisma.UserPermissionOrderByRelationAggregateInput
   classrooms?: Prisma.ClassroomOrderByRelationAggregateInput
   courses?: Prisma.CourseOrderByRelationAggregateInput
   transportRoutes?: Prisma.TransportRouteOrderByRelationAggregateInput
@@ -260,6 +264,8 @@ export type BranchWhereUniqueInput = Prisma.AtLeast<{
   students?: Prisma.StudentListRelationFilter
   staffs?: Prisma.StaffListRelationFilter
   userRoles?: Prisma.UserRoleListRelationFilter
+  rolePermissions?: Prisma.RolePermissionListRelationFilter
+  userPermissions?: Prisma.UserPermissionListRelationFilter
   classrooms?: Prisma.ClassroomListRelationFilter
   courses?: Prisma.CourseListRelationFilter
   transportRoutes?: Prisma.TransportRouteListRelationFilter
@@ -308,6 +314,8 @@ export type BranchCreateInput = {
   students?: Prisma.StudentCreateNestedManyWithoutBranchInput
   staffs?: Prisma.StaffCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutBranchInput
@@ -326,6 +334,8 @@ export type BranchUncheckedCreateInput = {
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutBranchInput
   staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionUncheckedCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutBranchInput
@@ -344,6 +354,8 @@ export type BranchUpdateInput = {
   students?: Prisma.StudentUpdateManyWithoutBranchNestedInput
   staffs?: Prisma.StaffUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUpdateManyWithoutBranchNestedInput
@@ -362,6 +374,8 @@ export type BranchUncheckedUpdateInput = {
   students?: Prisma.StudentUncheckedUpdateManyWithoutBranchNestedInput
   staffs?: Prisma.StaffUncheckedUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUncheckedUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUncheckedUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutBranchNestedInput
@@ -549,6 +563,22 @@ export type BranchUpdateOneRequiredWithoutStaffsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutStaffsInput, Prisma.BranchUpdateWithoutStaffsInput>, Prisma.BranchUncheckedUpdateWithoutStaffsInput>
 }
 
+export type BranchCreateNestedOneWithoutUserPermissionsInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutUserPermissionsInput, Prisma.BranchUncheckedCreateWithoutUserPermissionsInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutUserPermissionsInput
+  connect?: Prisma.BranchWhereUniqueInput
+}
+
+export type BranchUpdateOneWithoutUserPermissionsNestedInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutUserPermissionsInput, Prisma.BranchUncheckedCreateWithoutUserPermissionsInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutUserPermissionsInput
+  upsert?: Prisma.BranchUpsertWithoutUserPermissionsInput
+  disconnect?: Prisma.BranchWhereInput | boolean
+  delete?: Prisma.BranchWhereInput | boolean
+  connect?: Prisma.BranchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutUserPermissionsInput, Prisma.BranchUpdateWithoutUserPermissionsInput>, Prisma.BranchUncheckedUpdateWithoutUserPermissionsInput>
+}
+
 export type BranchCreateNestedOneWithoutClassroomsInput = {
   create?: Prisma.XOR<Prisma.BranchCreateWithoutClassroomsInput, Prisma.BranchUncheckedCreateWithoutClassroomsInput>
   connectOrCreate?: Prisma.BranchCreateOrConnectWithoutClassroomsInput
@@ -591,6 +621,22 @@ export type BranchUpdateOneRequiredWithoutTransportRoutesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutTransportRoutesInput, Prisma.BranchUpdateWithoutTransportRoutesInput>, Prisma.BranchUncheckedUpdateWithoutTransportRoutesInput>
 }
 
+export type BranchCreateNestedOneWithoutRolePermissionsInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutRolePermissionsInput, Prisma.BranchUncheckedCreateWithoutRolePermissionsInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutRolePermissionsInput
+  connect?: Prisma.BranchWhereUniqueInput
+}
+
+export type BranchUpdateOneWithoutRolePermissionsNestedInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutRolePermissionsInput, Prisma.BranchUncheckedCreateWithoutRolePermissionsInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutRolePermissionsInput
+  upsert?: Prisma.BranchUpsertWithoutRolePermissionsInput
+  disconnect?: Prisma.BranchWhereInput | boolean
+  delete?: Prisma.BranchWhereInput | boolean
+  connect?: Prisma.BranchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutRolePermissionsInput, Prisma.BranchUpdateWithoutRolePermissionsInput>, Prisma.BranchUncheckedUpdateWithoutRolePermissionsInput>
+}
+
 export type BranchCreateWithoutOrganizationInput = {
   id?: string
   name: string
@@ -603,6 +649,8 @@ export type BranchCreateWithoutOrganizationInput = {
   students?: Prisma.StudentCreateNestedManyWithoutBranchInput
   staffs?: Prisma.StaffCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutBranchInput
@@ -620,6 +668,8 @@ export type BranchUncheckedCreateWithoutOrganizationInput = {
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutBranchInput
   staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionUncheckedCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutBranchInput
@@ -678,6 +728,8 @@ export type BranchCreateWithoutUserRolesInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutBranchesInput
   students?: Prisma.StudentCreateNestedManyWithoutBranchInput
   staffs?: Prisma.StaffCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutBranchInput
@@ -695,6 +747,8 @@ export type BranchUncheckedCreateWithoutUserRolesInput = {
   updatedAt?: Date | string
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutBranchInput
   staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionUncheckedCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutBranchInput
@@ -728,6 +782,8 @@ export type BranchUpdateWithoutUserRolesInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutBranchesNestedInput
   students?: Prisma.StudentUpdateManyWithoutBranchNestedInput
   staffs?: Prisma.StaffUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUpdateManyWithoutBranchNestedInput
@@ -745,6 +801,8 @@ export type BranchUncheckedUpdateWithoutUserRolesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   students?: Prisma.StudentUncheckedUpdateManyWithoutBranchNestedInput
   staffs?: Prisma.StaffUncheckedUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUncheckedUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUncheckedUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutBranchNestedInput
@@ -762,6 +820,8 @@ export type BranchCreateWithoutStudentsInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutBranchesInput
   staffs?: Prisma.StaffCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutBranchInput
@@ -779,6 +839,8 @@ export type BranchUncheckedCreateWithoutStudentsInput = {
   updatedAt?: Date | string
   staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionUncheckedCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutBranchInput
@@ -812,6 +874,8 @@ export type BranchUpdateWithoutStudentsInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutBranchesNestedInput
   staffs?: Prisma.StaffUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUpdateManyWithoutBranchNestedInput
@@ -829,6 +893,8 @@ export type BranchUncheckedUpdateWithoutStudentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   staffs?: Prisma.StaffUncheckedUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUncheckedUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUncheckedUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutBranchNestedInput
@@ -846,6 +912,8 @@ export type BranchCreateWithoutStaffsInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutBranchesInput
   students?: Prisma.StudentCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutBranchInput
@@ -863,6 +931,8 @@ export type BranchUncheckedCreateWithoutStaffsInput = {
   updatedAt?: Date | string
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionUncheckedCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutBranchInput
@@ -896,6 +966,8 @@ export type BranchUpdateWithoutStaffsInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutBranchesNestedInput
   students?: Prisma.StudentUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUpdateManyWithoutBranchNestedInput
@@ -913,6 +985,100 @@ export type BranchUncheckedUpdateWithoutStaffsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   students?: Prisma.StudentUncheckedUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUncheckedUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutBranchNestedInput
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutBranchNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutBranchNestedInput
+  transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchCreateWithoutUserPermissionsInput = {
+  id?: string
+  name: string
+  slug: string
+  address?: string | null
+  phone?: string | null
+  email?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutBranchesInput
+  students?: Prisma.StudentCreateNestedManyWithoutBranchInput
+  staffs?: Prisma.StaffCreateNestedManyWithoutBranchInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionCreateNestedManyWithoutBranchInput
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutBranchInput
+  courses?: Prisma.CourseCreateNestedManyWithoutBranchInput
+  transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutBranchInput
+}
+
+export type BranchUncheckedCreateWithoutUserPermissionsInput = {
+  id?: string
+  organizationId: string
+  name: string
+  slug: string
+  address?: string | null
+  phone?: string | null
+  email?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  students?: Prisma.StudentUncheckedCreateNestedManyWithoutBranchInput
+  staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutBranchInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionUncheckedCreateNestedManyWithoutBranchInput
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutBranchInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBranchInput
+  transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutBranchInput
+}
+
+export type BranchCreateOrConnectWithoutUserPermissionsInput = {
+  where: Prisma.BranchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BranchCreateWithoutUserPermissionsInput, Prisma.BranchUncheckedCreateWithoutUserPermissionsInput>
+}
+
+export type BranchUpsertWithoutUserPermissionsInput = {
+  update: Prisma.XOR<Prisma.BranchUpdateWithoutUserPermissionsInput, Prisma.BranchUncheckedUpdateWithoutUserPermissionsInput>
+  create: Prisma.XOR<Prisma.BranchCreateWithoutUserPermissionsInput, Prisma.BranchUncheckedCreateWithoutUserPermissionsInput>
+  where?: Prisma.BranchWhereInput
+}
+
+export type BranchUpdateToOneWithWhereWithoutUserPermissionsInput = {
+  where?: Prisma.BranchWhereInput
+  data: Prisma.XOR<Prisma.BranchUpdateWithoutUserPermissionsInput, Prisma.BranchUncheckedUpdateWithoutUserPermissionsInput>
+}
+
+export type BranchUpdateWithoutUserPermissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutBranchesNestedInput
+  students?: Prisma.StudentUpdateManyWithoutBranchNestedInput
+  staffs?: Prisma.StaffUpdateManyWithoutBranchNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUpdateManyWithoutBranchNestedInput
+  classrooms?: Prisma.ClassroomUpdateManyWithoutBranchNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutBranchNestedInput
+  transportRoutes?: Prisma.TransportRouteUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateWithoutUserPermissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  students?: Prisma.StudentUncheckedUpdateManyWithoutBranchNestedInput
+  staffs?: Prisma.StaffUncheckedUpdateManyWithoutBranchNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUncheckedUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUncheckedUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutBranchNestedInput
@@ -931,6 +1097,8 @@ export type BranchCreateWithoutClassroomsInput = {
   students?: Prisma.StudentCreateNestedManyWithoutBranchInput
   staffs?: Prisma.StaffCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutBranchInput
 }
@@ -948,6 +1116,8 @@ export type BranchUncheckedCreateWithoutClassroomsInput = {
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutBranchInput
   staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionUncheckedCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutBranchInput
 }
@@ -981,6 +1151,8 @@ export type BranchUpdateWithoutClassroomsInput = {
   students?: Prisma.StudentUpdateManyWithoutBranchNestedInput
   staffs?: Prisma.StaffUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUpdateManyWithoutBranchNestedInput
 }
@@ -998,6 +1170,8 @@ export type BranchUncheckedUpdateWithoutClassroomsInput = {
   students?: Prisma.StudentUncheckedUpdateManyWithoutBranchNestedInput
   staffs?: Prisma.StaffUncheckedUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUncheckedUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUncheckedUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutBranchNestedInput
 }
@@ -1015,6 +1189,8 @@ export type BranchCreateWithoutCoursesInput = {
   students?: Prisma.StudentCreateNestedManyWithoutBranchInput
   staffs?: Prisma.StaffCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutBranchInput
 }
@@ -1032,6 +1208,8 @@ export type BranchUncheckedCreateWithoutCoursesInput = {
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutBranchInput
   staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionUncheckedCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutBranchInput
   transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutBranchInput
 }
@@ -1065,6 +1243,8 @@ export type BranchUpdateWithoutCoursesInput = {
   students?: Prisma.StudentUpdateManyWithoutBranchNestedInput
   staffs?: Prisma.StaffUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUpdateManyWithoutBranchNestedInput
 }
@@ -1082,6 +1262,8 @@ export type BranchUncheckedUpdateWithoutCoursesInput = {
   students?: Prisma.StudentUncheckedUpdateManyWithoutBranchNestedInput
   staffs?: Prisma.StaffUncheckedUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUncheckedUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutBranchNestedInput
 }
@@ -1099,6 +1281,8 @@ export type BranchCreateWithoutTransportRoutesInput = {
   students?: Prisma.StudentCreateNestedManyWithoutBranchInput
   staffs?: Prisma.StaffCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseCreateNestedManyWithoutBranchInput
 }
@@ -1116,6 +1300,8 @@ export type BranchUncheckedCreateWithoutTransportRoutesInput = {
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutBranchInput
   staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutBranchInput
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutBranchInput
+  rolePermissions?: Prisma.RolePermissionUncheckedCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutBranchInput
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutBranchInput
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBranchInput
 }
@@ -1149,6 +1335,8 @@ export type BranchUpdateWithoutTransportRoutesInput = {
   students?: Prisma.StudentUpdateManyWithoutBranchNestedInput
   staffs?: Prisma.StaffUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUpdateManyWithoutBranchNestedInput
 }
@@ -1166,8 +1354,102 @@ export type BranchUncheckedUpdateWithoutTransportRoutesInput = {
   students?: Prisma.StudentUncheckedUpdateManyWithoutBranchNestedInput
   staffs?: Prisma.StaffUncheckedUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUncheckedUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUncheckedUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchCreateWithoutRolePermissionsInput = {
+  id?: string
+  name: string
+  slug: string
+  address?: string | null
+  phone?: string | null
+  email?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutBranchesInput
+  students?: Prisma.StudentCreateNestedManyWithoutBranchInput
+  staffs?: Prisma.StaffCreateNestedManyWithoutBranchInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionCreateNestedManyWithoutBranchInput
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutBranchInput
+  courses?: Prisma.CourseCreateNestedManyWithoutBranchInput
+  transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutBranchInput
+}
+
+export type BranchUncheckedCreateWithoutRolePermissionsInput = {
+  id?: string
+  organizationId: string
+  name: string
+  slug: string
+  address?: string | null
+  phone?: string | null
+  email?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  students?: Prisma.StudentUncheckedCreateNestedManyWithoutBranchInput
+  staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutBranchInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutBranchInput
+  userPermissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutBranchInput
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutBranchInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBranchInput
+  transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutBranchInput
+}
+
+export type BranchCreateOrConnectWithoutRolePermissionsInput = {
+  where: Prisma.BranchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BranchCreateWithoutRolePermissionsInput, Prisma.BranchUncheckedCreateWithoutRolePermissionsInput>
+}
+
+export type BranchUpsertWithoutRolePermissionsInput = {
+  update: Prisma.XOR<Prisma.BranchUpdateWithoutRolePermissionsInput, Prisma.BranchUncheckedUpdateWithoutRolePermissionsInput>
+  create: Prisma.XOR<Prisma.BranchCreateWithoutRolePermissionsInput, Prisma.BranchUncheckedCreateWithoutRolePermissionsInput>
+  where?: Prisma.BranchWhereInput
+}
+
+export type BranchUpdateToOneWithWhereWithoutRolePermissionsInput = {
+  where?: Prisma.BranchWhereInput
+  data: Prisma.XOR<Prisma.BranchUpdateWithoutRolePermissionsInput, Prisma.BranchUncheckedUpdateWithoutRolePermissionsInput>
+}
+
+export type BranchUpdateWithoutRolePermissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutBranchesNestedInput
+  students?: Prisma.StudentUpdateManyWithoutBranchNestedInput
+  staffs?: Prisma.StaffUpdateManyWithoutBranchNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUpdateManyWithoutBranchNestedInput
+  classrooms?: Prisma.ClassroomUpdateManyWithoutBranchNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutBranchNestedInput
+  transportRoutes?: Prisma.TransportRouteUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateWithoutRolePermissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  students?: Prisma.StudentUncheckedUpdateManyWithoutBranchNestedInput
+  staffs?: Prisma.StaffUncheckedUpdateManyWithoutBranchNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutBranchNestedInput
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutBranchNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutBranchNestedInput
+  transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateManyOrganizationInput = {
@@ -1193,6 +1475,8 @@ export type BranchUpdateWithoutOrganizationInput = {
   students?: Prisma.StudentUpdateManyWithoutBranchNestedInput
   staffs?: Prisma.StaffUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUpdateManyWithoutBranchNestedInput
@@ -1210,6 +1494,8 @@ export type BranchUncheckedUpdateWithoutOrganizationInput = {
   students?: Prisma.StudentUncheckedUpdateManyWithoutBranchNestedInput
   staffs?: Prisma.StaffUncheckedUpdateManyWithoutBranchNestedInput
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutBranchNestedInput
+  rolePermissions?: Prisma.RolePermissionUncheckedUpdateManyWithoutBranchNestedInput
+  userPermissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutBranchNestedInput
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutBranchNestedInput
   courses?: Prisma.CourseUncheckedUpdateManyWithoutBranchNestedInput
   transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutBranchNestedInput
@@ -1235,6 +1521,8 @@ export type BranchCountOutputType = {
   students: number
   staffs: number
   userRoles: number
+  rolePermissions: number
+  userPermissions: number
   classrooms: number
   courses: number
   transportRoutes: number
@@ -1244,6 +1532,8 @@ export type BranchCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   students?: boolean | BranchCountOutputTypeCountStudentsArgs
   staffs?: boolean | BranchCountOutputTypeCountStaffsArgs
   userRoles?: boolean | BranchCountOutputTypeCountUserRolesArgs
+  rolePermissions?: boolean | BranchCountOutputTypeCountRolePermissionsArgs
+  userPermissions?: boolean | BranchCountOutputTypeCountUserPermissionsArgs
   classrooms?: boolean | BranchCountOutputTypeCountClassroomsArgs
   courses?: boolean | BranchCountOutputTypeCountCoursesArgs
   transportRoutes?: boolean | BranchCountOutputTypeCountTransportRoutesArgs
@@ -1283,6 +1573,20 @@ export type BranchCountOutputTypeCountUserRolesArgs<ExtArgs extends runtime.Type
 /**
  * BranchCountOutputType without action
  */
+export type BranchCountOutputTypeCountRolePermissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RolePermissionWhereInput
+}
+
+/**
+ * BranchCountOutputType without action
+ */
+export type BranchCountOutputTypeCountUserPermissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserPermissionWhereInput
+}
+
+/**
+ * BranchCountOutputType without action
+ */
 export type BranchCountOutputTypeCountClassroomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ClassroomWhereInput
 }
@@ -1316,6 +1620,8 @@ export type BranchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   students?: boolean | Prisma.Branch$studentsArgs<ExtArgs>
   staffs?: boolean | Prisma.Branch$staffsArgs<ExtArgs>
   userRoles?: boolean | Prisma.Branch$userRolesArgs<ExtArgs>
+  rolePermissions?: boolean | Prisma.Branch$rolePermissionsArgs<ExtArgs>
+  userPermissions?: boolean | Prisma.Branch$userPermissionsArgs<ExtArgs>
   classrooms?: boolean | Prisma.Branch$classroomsArgs<ExtArgs>
   courses?: boolean | Prisma.Branch$coursesArgs<ExtArgs>
   transportRoutes?: boolean | Prisma.Branch$transportRoutesArgs<ExtArgs>
@@ -1366,6 +1672,8 @@ export type BranchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   students?: boolean | Prisma.Branch$studentsArgs<ExtArgs>
   staffs?: boolean | Prisma.Branch$staffsArgs<ExtArgs>
   userRoles?: boolean | Prisma.Branch$userRolesArgs<ExtArgs>
+  rolePermissions?: boolean | Prisma.Branch$rolePermissionsArgs<ExtArgs>
+  userPermissions?: boolean | Prisma.Branch$userPermissionsArgs<ExtArgs>
   classrooms?: boolean | Prisma.Branch$classroomsArgs<ExtArgs>
   courses?: boolean | Prisma.Branch$coursesArgs<ExtArgs>
   transportRoutes?: boolean | Prisma.Branch$transportRoutesArgs<ExtArgs>
@@ -1385,6 +1693,8 @@ export type $BranchPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     students: Prisma.$StudentPayload<ExtArgs>[]
     staffs: Prisma.$StaffPayload<ExtArgs>[]
     userRoles: Prisma.$UserRolePayload<ExtArgs>[]
+    rolePermissions: Prisma.$RolePermissionPayload<ExtArgs>[]
+    userPermissions: Prisma.$UserPermissionPayload<ExtArgs>[]
     classrooms: Prisma.$ClassroomPayload<ExtArgs>[]
     courses: Prisma.$CoursePayload<ExtArgs>[]
     transportRoutes: Prisma.$TransportRoutePayload<ExtArgs>[]
@@ -1797,6 +2107,8 @@ export interface Prisma__BranchClient<T, Null = never, ExtArgs extends runtime.T
   students<T extends Prisma.Branch$studentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   staffs<T extends Prisma.Branch$staffsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$staffsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userRoles<T extends Prisma.Branch$userRolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$userRolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  rolePermissions<T extends Prisma.Branch$rolePermissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$rolePermissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RolePermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userPermissions<T extends Prisma.Branch$userPermissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$userPermissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   classrooms<T extends Prisma.Branch$classroomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$classroomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassroomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   courses<T extends Prisma.Branch$coursesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$coursesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transportRoutes<T extends Prisma.Branch$transportRoutesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$transportRoutesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransportRoutePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2308,6 +2620,54 @@ export type Branch$userRolesArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.UserRoleScalarFieldEnum | Prisma.UserRoleScalarFieldEnum[]
+}
+
+/**
+ * Branch.rolePermissions
+ */
+export type Branch$rolePermissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RolePermission
+   */
+  select?: Prisma.RolePermissionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RolePermission
+   */
+  omit?: Prisma.RolePermissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RolePermissionInclude<ExtArgs> | null
+  where?: Prisma.RolePermissionWhereInput
+  orderBy?: Prisma.RolePermissionOrderByWithRelationInput | Prisma.RolePermissionOrderByWithRelationInput[]
+  cursor?: Prisma.RolePermissionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RolePermissionScalarFieldEnum | Prisma.RolePermissionScalarFieldEnum[]
+}
+
+/**
+ * Branch.userPermissions
+ */
+export type Branch$userPermissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserPermission
+   */
+  select?: Prisma.UserPermissionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserPermission
+   */
+  omit?: Prisma.UserPermissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserPermissionInclude<ExtArgs> | null
+  where?: Prisma.UserPermissionWhereInput
+  orderBy?: Prisma.UserPermissionOrderByWithRelationInput | Prisma.UserPermissionOrderByWithRelationInput[]
+  cursor?: Prisma.UserPermissionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserPermissionScalarFieldEnum | Prisma.UserPermissionScalarFieldEnum[]
 }
 
 /**
