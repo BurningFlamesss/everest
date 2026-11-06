@@ -5,16 +5,26 @@ import {
 	redirect,
 } from "@tanstack/react-router";
 import {
+	Bell,
 	BookOpen,
 	Bus,
+	CalendarRange,
 	ClipboardCheck,
+	Clock3,
 	FileText,
+	GraduationCap,
+	Images,
+	Inbox,
 	LayoutDashboard,
+	Mail,
+	NotebookPen,
 	ShieldCheck,
 	UserPlus,
 	Users,
+	Wallet,
 } from "lucide-react";
 import { getViewerFn } from "#/packages/auth/server/viewer.ts";
+import { getUnreadNotificationCountFn } from "#/packages/notifications/server.ts";
 
 export const Route = createFileRoute("/admin")({
 	beforeLoad: async () => {
@@ -28,7 +38,9 @@ export const Route = createFileRoute("/admin")({
 			throw redirect({ to: "/dashboard" });
 		}
 
-		return { viewer };
+		const unreadNotifications = await getUnreadNotificationCountFn();
+
+		return { viewer, unreadNotifications };
 	},
 	component: AdminLayout,
 });
@@ -66,6 +78,30 @@ const navItems = [
 		permission: "MANAGE_ACADEMICS",
 	},
 	{
+		to: "/admin/calendar",
+		label: "Calendar",
+		icon: CalendarRange,
+		permission: "MANAGE_ACADEMICS",
+	},
+	{
+		to: "/admin/timetable",
+		label: "Timetable",
+		icon: Clock3,
+		permission: "MANAGE_TIMETABLE",
+	},
+	{
+		to: "/admin/exams",
+		label: "Exams",
+		icon: GraduationCap,
+		permission: "MANAGE_EXAMS",
+	},
+	{
+		to: "/admin/homework",
+		label: "Homework",
+		icon: NotebookPen,
+		permission: "MANAGE_ACADEMICS",
+	},
+	{
 		to: "/admin/attendance",
 		label: "Attendance",
 		icon: ClipboardCheck,
@@ -78,6 +114,30 @@ const navItems = [
 		permission: "MANAGE_TRANSPORT",
 	},
 	{
+		to: "/admin/fees",
+		label: "Fees",
+		icon: Wallet,
+		permission: "MANAGE_FEES",
+	},
+	{
+		to: "/admin/gallery",
+		label: "Gallery",
+		icon: Images,
+		permission: "MANAGE_CONTENT",
+	},
+	{
+		to: "/admin/inbox",
+		label: "Inbox",
+		icon: Inbox,
+		permission: "MANAGE_INBOX",
+	},
+	{
+		to: "/admin/mail",
+		label: "Mail log",
+		icon: Mail,
+		permission: "MANAGE_DASHBOARD",
+	},
+	{
 		to: "/admin/permissions",
 		label: "Permissions",
 		icon: ShieldCheck,
@@ -86,30 +146,43 @@ const navItems = [
 ] as const;
 
 function AdminLayout() {
-	const { viewer } = Route.useRouteContext();
+	const { viewer, unreadNotifications } = Route.useRouteContext();
 	const visibleNavItems = navItems.filter((item) =>
 		viewer.permissions.includes(item.permission),
 	);
 
 	return (
-		<main className="min-h-screen bg-[#f6f1e8] pb-20 pl-0 md:ml-72">
-			<header className="border-b border-gray-200 bg-white/80 px-6 py-4 backdrop-blur md:px-10">
+		<main className="min-h-screen bg-background pb-20 pl-0 md:ml-72">
+			<header className="border-b border-border bg-card/80 px-6 py-4 backdrop-blur md:px-10">
 				<div className="flex flex-wrap items-center justify-between gap-4">
 					<div>
-						<p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-600">
+						<p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
 							Admin console
 						</p>
-						<p className="font-semibold text-gray-900">{viewer.user.name}</p>
+						<p className="font-semibold text-foreground">{viewer.user.name}</p>
+					</div>
+					<div className="flex items-center gap-2">
+						<Link
+							to="/notifications"
+							className="relative inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+						>
+							<Bell className="h-4 w-4" /> Notifications
+							{unreadNotifications > 0 ? (
+								<span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground">
+									{unreadNotifications}
+								</span>
+							) : null}
+						</Link>
 					</div>
 					<nav className="flex flex-wrap gap-1">
 						{visibleNavItems.map((item) => (
 							<Link
 								key={item.to}
 								to={item.to}
-								className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+								className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
 								activeProps={{
 									className:
-										"inline-flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-semibold text-red-700",
+										"inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-sm font-semibold text-primary",
 								}}
 								activeOptions={{ exact: "exact" in item ? item.exact : false }}
 							>

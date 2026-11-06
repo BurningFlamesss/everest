@@ -54,3 +54,62 @@ jobs:
 
       - name: Production build
         run: npm run build
+
+  integration:
+    name: Migrations and database integration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: scms_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/scms_test
+      SCMS_TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/scms_test
+      SCMS_TEST_STORAGE_DRIVER: local
+      APP_URL: http://127.0.0.1:3000
+      VITE_APP_URL: http://127.0.0.1:3000
+      BETTER_AUTH_SECRET: ci-only-secret-value
+      SUPER_ADMIN_EMAIL: admin@example.com
+      SUPER_ADMIN_NAME: CI Admin
+      ORGANIZATION_NAME: CI School
+      ORGANIZATION_SLUG: ci-school
+      DEFAULT_BRANCH_NAME: Main Campus
+      DEFAULT_BRANCH_SLUG: main
+      STORAGE_DRIVER: local
+      STORAGE_LOCAL_DIR: .data/uploads
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Apply migrations to a fresh database
+        run: npx prisma migrate deploy
+
+      - name: Seed the database
+        run: npx prisma db seed
+
+      - name: Integration tests (local storage)
+        run: npm run test:integration

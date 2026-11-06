@@ -1,4 +1,5 @@
 import { serverEnv } from "#/env/server.ts";
+import { ERROR_CODES } from "#/lib/error-codes.ts";
 import { prisma } from "#/packages/db/index.ts";
 import { renderMailTemplate, sendMail } from "#/packages/notifications/mail.ts";
 
@@ -120,7 +121,7 @@ export async function getDefaultInviteContext(): Promise<InviteContext> {
 	if (!organization) {
 		throw new InviteError(
 			"No organization exists. Run `npm run db:seed` first.",
-			"ORGANIZATION_NOT_FOUND",
+			ERROR_CODES.ORGANIZATION_NOT_FOUND,
 		);
 	}
 
@@ -143,7 +144,7 @@ export async function getDefaultInviteContext(): Promise<InviteContext> {
 	if (!branch) {
 		throw new InviteError(
 			"No branch exists for the organization. Run `npm run db:seed` first.",
-			"BRANCH_NOT_FOUND",
+			ERROR_CODES.BRANCH_NOT_FOUND,
 		);
 	}
 
@@ -205,13 +206,16 @@ function assertCanBeInvited(
 	user: Awaited<ReturnType<typeof findActivatedUser>>,
 ) {
 	if (!user) {
-		throw new InviteError("User could not be created", "USER_NOT_FOUND");
+		throw new InviteError(
+			"User could not be created",
+			ERROR_CODES.USER_NOT_FOUND,
+		);
 	}
 
 	if (user.activatedAt || user.accounts.length > 0) {
 		throw new InviteError(
 			`${user.email} already has an activated account.`,
-			"USER_ALREADY_ACTIVATED",
+			ERROR_CODES.USER_ALREADY_ACTIVATED,
 		);
 	}
 }
@@ -448,7 +452,7 @@ export async function createGuardianInvite(
 	});
 
 	if (!student) {
-		throw new InviteError("Student not found", "STUDENT_NOT_FOUND");
+		throw new InviteError("Student not found", ERROR_CODES.STUDENT_NOT_FOUND);
 	}
 
 	const user = await prisma.user.upsert({
@@ -677,7 +681,7 @@ export async function revokeInvite(input: {
 		if (result.count === 0) {
 			throw new InviteError(
 				"Invitation was not found or is already inactive",
-				"INVITE_NOT_ACTIVE",
+				ERROR_CODES.INVITE_NOT_ACTIVE,
 			);
 		}
 
@@ -697,23 +701,6 @@ export async function revokeInvite(input: {
 	}
 
 	return { success: true };
-}
-
-export async function getInviteByToken(token: string) {
-	return prisma.invite.findUnique({
-		where: { token },
-		include: { user: true },
-	});
-}
-
-export async function getGuardianInviteByToken(token: string) {
-	return prisma.guardianInvite.findUnique({
-		where: { token },
-		include: {
-			user: true,
-			student: { include: { user: true } },
-		},
-	});
 }
 
 export type InviteListEntry = Awaited<ReturnType<typeof listInvites>>[number];

@@ -1,5 +1,31 @@
+import { ERROR_CODES } from "#/lib/error-codes.ts";
 import { prisma } from "#/packages/db/index.ts";
 import { slugify } from "#/packages/invite/invite-service.ts";
+import { notifyRoles } from "#/packages/notifications/notification-service.ts";
+
+async function notifyNoticeAudience(
+	audience: NoticeAudience,
+	noticeId: string,
+	title: string,
+) {
+	const roles =
+		audience === "STUDENTS"
+			? ["STUDENT"]
+			: audience === "STAFF"
+				? ["STAFF"]
+				: audience === "GUARDIANS"
+					? ["GUARDIAN"]
+					: ["SUPERADMIN", "ADMIN", "STAFF", "STUDENT", "GUARDIAN"];
+
+	await notifyRoles({
+		roles,
+		type: "NOTICE_PUBLISHED",
+		title: `New notice: ${title}`,
+		body: "Open the dashboard to read it.",
+		refType: "notice",
+		refId: noticeId,
+	});
+}
 
 export type NoticeAudience = "ALL" | "STUDENTS" | "STAFF" | "GUARDIANS";
 
@@ -117,7 +143,7 @@ async function uniqueClubSlug(name: string, ignoreId?: string) {
 }
 
 export async function createNotice(input: NoticeInput) {
-	return prisma.notice.create({
+	const notice = await prisma.notice.create({
 		data: {
 			title: input.title.trim(),
 			slug: await uniqueNoticeSlug(input.title),
@@ -137,18 +163,24 @@ export async function createNotice(input: NoticeInput) {
 			authorId: input.authorId ?? null,
 		},
 	});
+
+	if (notice.isPublished) {
+		await notifyNoticeAudience(notice.audience, notice.id, notice.title);
+	}
+
+	return notice;
 }
 
 export async function updateNotice(id: string, input: Partial<NoticeInput>) {
 	const existing = await prisma.notice.findUnique({ where: { id } });
 
-	if (!existing) throw new Error("NOTICE_NOT_FOUND");
+	if (!existing) throw new Error(ERROR_CODES.NOTICE_NOT_FOUND);
 
 	const publishChanged =
 		input.isPublished !== undefined &&
 		input.isPublished !== existing.isPublished;
 
-	return prisma.notice.update({
+	const updated = await prisma.notice.update({
 		where: { id },
 		data: {
 			...(input.title !== undefined
@@ -192,6 +224,12 @@ export async function updateNotice(id: string, input: Partial<NoticeInput>) {
 				: {}),
 		},
 	});
+
+	if (publishChanged && updated.isPublished) {
+		await notifyNoticeAudience(updated.audience, updated.id, updated.title);
+	}
+
+	return updated;
 }
 
 export async function deleteNotice(id: string) {
@@ -299,7 +337,7 @@ export async function createEvent(input: EventInput) {
 	const startsAt = toDate(input.startsAt);
 	const endsAt = toDate(input.endsAt);
 
-	if (!startsAt) throw new Error("EVENT_START_REQUIRED");
+	if (!startsAt) throw new Error(ERROR_CODES.EVENT_START_REQUIRED);
 
 	return prisma.event.create({
 		data: {
@@ -325,7 +363,7 @@ export async function createEvent(input: EventInput) {
 export async function updateEvent(id: string, input: Partial<EventInput>) {
 	const existing = await prisma.event.findUnique({ where: { id } });
 
-	if (!existing) throw new Error("EVENT_NOT_FOUND");
+	if (!existing) throw new Error(ERROR_CODES.EVENT_NOT_FOUND);
 
 	return prisma.event.update({
 		where: { id },
@@ -468,7 +506,7 @@ export async function createClub(input: ClubInput) {
 export async function updateClub(id: string, input: Partial<ClubInput>) {
 	const existing = await prisma.club.findUnique({ where: { id } });
 
-	if (!existing) throw new Error("CLUB_NOT_FOUND");
+	if (!existing) throw new Error(ERROR_CODES.CLUB_NOT_FOUND);
 
 	return prisma.club.update({
 		where: { id },

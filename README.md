@@ -165,6 +165,8 @@ Optional variables and defaults:
 | --- | --- |
 | `VITE_APP_TITLE` | Optional public client title. |
 | `MAIL_APP_USER`, `MAIL_APP_PASSWORD` | Optional mail credentials; configure both for email delivery. Leave both unset for isolated browser tests. |
+| `MAIL_SMTP_HOST`, `MAIL_SMTP_PORT`, `MAIL_SMTP_SECURE` | SMTP transport; defaults `smtp.gmail.com`, `587`, `false`. Point these at any provider (SES/Mailgun/Postmark/school mail server). |
+| `MAIL_FROM` | Optional From header; falls back to `MAIL_APP_USER`. |
 | `STORAGE_DRIVER` | `local`; set to `s3` for MinIO or another compatible S3 service. |
 | `STORAGE_LOCAL_DIR` | `.data/uploads`; local storage directory, relative to the app's working directory unless absolute. |
 | `S3_ENDPOINT` | `localhost`; hostname only, without scheme or port. |

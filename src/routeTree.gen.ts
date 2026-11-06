@@ -12,12 +12,21 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdmissionsRouteImport } from './routes/admissions'
 import { Route as ClubsRouteImport } from './routes/clubs'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as MyClassesRouteImport } from './routes/my-classes'
+import { Route as MyFeesRouteImport } from './routes/my-fees'
+import { Route as MyHomeworkRouteImport } from './routes/my-homework'
 import { Route as MyRecordsRouteImport } from './routes/my-records'
+import { Route as MyResultsRouteImport } from './routes/my-results'
 import { Route as NoticesRouteImport } from './routes/notices'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as OnboardForgotPasswordRouteImport } from './routes/_onboard/forgot-password'
 import { Route as OnboardLoginRouteImport } from './routes/_onboard/login'
 import { Route as OnboardResetPasswordRouteImport } from './routes/_onboard/reset-password'
@@ -25,10 +34,18 @@ import { Route as OnboardSignupRouteImport } from './routes/_onboard/signup'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAcademicsRouteImport } from './routes/admin/academics'
 import { Route as AdminAttendanceRouteImport } from './routes/admin/attendance'
+import { Route as AdminCalendarRouteImport } from './routes/admin/calendar'
 import { Route as AdminContentRouteImport } from './routes/admin/content'
 import { Route as AdminDirectoryRouteImport } from './routes/admin/directory'
+import { Route as AdminExamsRouteImport } from './routes/admin/exams'
+import { Route as AdminFeesRouteImport } from './routes/admin/fees'
+import { Route as AdminGalleryRouteImport } from './routes/admin/gallery'
+import { Route as AdminHomeworkRouteImport } from './routes/admin/homework'
+import { Route as AdminInboxRouteImport } from './routes/admin/inbox'
 import { Route as AdminInvitesRouteImport } from './routes/admin/invites'
+import { Route as AdminMailRouteImport } from './routes/admin/mail'
 import { Route as AdminPermissionsRouteImport } from './routes/admin/permissions'
+import { Route as AdminTimetableRouteImport } from './routes/admin/timetable'
 import { Route as AdminTransportRouteImport } from './routes/admin/transport'
 import { Route as ApiUploadsRouteImport } from './routes/api/uploads'
 import { Route as EventsIndexRouteImport } from './routes/events.index'
@@ -56,6 +73,11 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdmissionsRoute = AdmissionsRouteImport.update({
+  id: '/admissions',
+  path: '/admissions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClubsRoute = ClubsRouteImport.update({
   id: '/clubs',
   path: '/clubs',
@@ -76,14 +98,54 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyClassesRoute = MyClassesRouteImport.update({
+  id: '/my-classes',
+  path: '/my-classes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyFeesRoute = MyFeesRouteImport.update({
+  id: '/my-fees',
+  path: '/my-fees',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyHomeworkRoute = MyHomeworkRouteImport.update({
+  id: '/my-homework',
+  path: '/my-homework',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MyRecordsRoute = MyRecordsRouteImport.update({
   id: '/my-records',
   path: '/my-records',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MyResultsRoute = MyResultsRouteImport.update({
+  id: '/my-results',
+  path: '/my-results',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NoticesRoute = NoticesRouteImport.update({
   id: '/notices',
   path: '/notices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardForgotPasswordRoute = OnboardForgotPasswordRouteImport.update({
@@ -121,6 +183,11 @@ const AdminAttendanceRoute = AdminAttendanceRouteImport.update({
   path: '/attendance',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCalendarRoute = AdminCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminContentRoute = AdminContentRouteImport.update({
   id: '/content',
   path: '/content',
@@ -131,14 +198,49 @@ const AdminDirectoryRoute = AdminDirectoryRouteImport.update({
   path: '/directory',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminExamsRoute = AdminExamsRouteImport.update({
+  id: '/exams',
+  path: '/exams',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFeesRoute = AdminFeesRouteImport.update({
+  id: '/fees',
+  path: '/fees',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminGalleryRoute = AdminGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminHomeworkRoute = AdminHomeworkRouteImport.update({
+  id: '/homework',
+  path: '/homework',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminInboxRoute = AdminInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInvitesRoute = AdminInvitesRouteImport.update({
   id: '/invites',
   path: '/invites',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminMailRoute = AdminMailRouteImport.update({
+  id: '/mail',
+  path: '/mail',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPermissionsRoute = AdminPermissionsRouteImport.update({
   id: '/permissions',
   path: '/permissions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTimetableRoute = AdminTimetableRouteImport.update({
+  id: '/timetable',
+  path: '/timetable',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminTransportRoute = AdminTransportRouteImport.update({
@@ -202,22 +304,39 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/admissions': typeof AdmissionsRoute
   '/clubs': typeof ClubsRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/events': typeof EventsRouteWithChildren
+  '/gallery': typeof GalleryRoute
+  '/my-classes': typeof MyClassesRoute
+  '/my-fees': typeof MyFeesRoute
+  '/my-homework': typeof MyHomeworkRoute
   '/my-records': typeof MyRecordsRoute
+  '/my-results': typeof MyResultsRoute
   '/notices': typeof NoticesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/forgot-password': typeof OnboardForgotPasswordRoute
   '/login': typeof OnboardLoginRoute
   '/reset-password': typeof OnboardResetPasswordRoute
   '/signup': typeof OnboardSignupRoute
   '/admin/academics': typeof AdminAcademicsRoute
   '/admin/attendance': typeof AdminAttendanceRoute
+  '/admin/calendar': typeof AdminCalendarRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/directory': typeof AdminDirectoryRoute
+  '/admin/exams': typeof AdminExamsRoute
+  '/admin/fees': typeof AdminFeesRoute
+  '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/homework': typeof AdminHomeworkRoute
+  '/admin/inbox': typeof AdminInboxRoute
   '/admin/invites': typeof AdminInvitesRoute
+  '/admin/mail': typeof AdminMailRoute
   '/admin/permissions': typeof AdminPermissionsRoute
+  '/admin/timetable': typeof AdminTimetableRoute
   '/admin/transport': typeof AdminTransportRoute
   '/api/uploads': typeof ApiUploadsRoute
   '/events/$slug': typeof EventsSlugRoute
@@ -234,20 +353,37 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admissions': typeof AdmissionsRoute
   '/clubs': typeof ClubsRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/gallery': typeof GalleryRoute
+  '/my-classes': typeof MyClassesRoute
+  '/my-fees': typeof MyFeesRoute
+  '/my-homework': typeof MyHomeworkRoute
   '/my-records': typeof MyRecordsRoute
+  '/my-results': typeof MyResultsRoute
+  '/notifications': typeof NotificationsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/forgot-password': typeof OnboardForgotPasswordRoute
   '/login': typeof OnboardLoginRoute
   '/reset-password': typeof OnboardResetPasswordRoute
   '/signup': typeof OnboardSignupRoute
   '/admin/academics': typeof AdminAcademicsRoute
   '/admin/attendance': typeof AdminAttendanceRoute
+  '/admin/calendar': typeof AdminCalendarRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/directory': typeof AdminDirectoryRoute
+  '/admin/exams': typeof AdminExamsRoute
+  '/admin/fees': typeof AdminFeesRoute
+  '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/homework': typeof AdminHomeworkRoute
+  '/admin/inbox': typeof AdminInboxRoute
   '/admin/invites': typeof AdminInvitesRoute
+  '/admin/mail': typeof AdminMailRoute
   '/admin/permissions': typeof AdminPermissionsRoute
+  '/admin/timetable': typeof AdminTimetableRoute
   '/admin/transport': typeof AdminTransportRoute
   '/api/uploads': typeof ApiUploadsRoute
   '/events/$slug': typeof EventsSlugRoute
@@ -266,22 +402,39 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/admissions': typeof AdmissionsRoute
   '/clubs': typeof ClubsRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/events': typeof EventsRouteWithChildren
+  '/gallery': typeof GalleryRoute
+  '/my-classes': typeof MyClassesRoute
+  '/my-fees': typeof MyFeesRoute
+  '/my-homework': typeof MyHomeworkRoute
   '/my-records': typeof MyRecordsRoute
+  '/my-results': typeof MyResultsRoute
   '/notices': typeof NoticesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_onboard/forgot-password': typeof OnboardForgotPasswordRoute
   '/_onboard/login': typeof OnboardLoginRoute
   '/_onboard/reset-password': typeof OnboardResetPasswordRoute
   '/_onboard/signup': typeof OnboardSignupRoute
   '/admin/academics': typeof AdminAcademicsRoute
   '/admin/attendance': typeof AdminAttendanceRoute
+  '/admin/calendar': typeof AdminCalendarRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/directory': typeof AdminDirectoryRoute
+  '/admin/exams': typeof AdminExamsRoute
+  '/admin/fees': typeof AdminFeesRoute
+  '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/homework': typeof AdminHomeworkRoute
+  '/admin/inbox': typeof AdminInboxRoute
   '/admin/invites': typeof AdminInvitesRoute
+  '/admin/mail': typeof AdminMailRoute
   '/admin/permissions': typeof AdminPermissionsRoute
+  '/admin/timetable': typeof AdminTimetableRoute
   '/admin/transport': typeof AdminTransportRoute
   '/api/uploads': typeof ApiUploadsRoute
   '/events/$slug': typeof EventsSlugRoute
@@ -301,22 +454,39 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/admissions'
     | '/clubs'
     | '/contact'
     | '/dashboard'
     | '/events'
+    | '/gallery'
+    | '/my-classes'
+    | '/my-fees'
+    | '/my-homework'
     | '/my-records'
+    | '/my-results'
     | '/notices'
+    | '/notifications'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
     | '/signup'
     | '/admin/academics'
     | '/admin/attendance'
+    | '/admin/calendar'
     | '/admin/content'
     | '/admin/directory'
+    | '/admin/exams'
+    | '/admin/fees'
+    | '/admin/gallery'
+    | '/admin/homework'
+    | '/admin/inbox'
     | '/admin/invites'
+    | '/admin/mail'
     | '/admin/permissions'
+    | '/admin/timetable'
     | '/admin/transport'
     | '/api/uploads'
     | '/events/$slug'
@@ -333,20 +503,37 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/admissions'
     | '/clubs'
     | '/contact'
     | '/dashboard'
+    | '/gallery'
+    | '/my-classes'
+    | '/my-fees'
+    | '/my-homework'
     | '/my-records'
+    | '/my-results'
+    | '/notifications'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
     | '/signup'
     | '/admin/academics'
     | '/admin/attendance'
+    | '/admin/calendar'
     | '/admin/content'
     | '/admin/directory'
+    | '/admin/exams'
+    | '/admin/fees'
+    | '/admin/gallery'
+    | '/admin/homework'
+    | '/admin/inbox'
     | '/admin/invites'
+    | '/admin/mail'
     | '/admin/permissions'
+    | '/admin/timetable'
     | '/admin/transport'
     | '/api/uploads'
     | '/events/$slug'
@@ -364,22 +551,39 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/admissions'
     | '/clubs'
     | '/contact'
     | '/dashboard'
     | '/events'
+    | '/gallery'
+    | '/my-classes'
+    | '/my-fees'
+    | '/my-homework'
     | '/my-records'
+    | '/my-results'
     | '/notices'
+    | '/notifications'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/_onboard/forgot-password'
     | '/_onboard/login'
     | '/_onboard/reset-password'
     | '/_onboard/signup'
     | '/admin/academics'
     | '/admin/attendance'
+    | '/admin/calendar'
     | '/admin/content'
     | '/admin/directory'
+    | '/admin/exams'
+    | '/admin/fees'
+    | '/admin/gallery'
+    | '/admin/homework'
+    | '/admin/inbox'
     | '/admin/invites'
+    | '/admin/mail'
     | '/admin/permissions'
+    | '/admin/timetable'
     | '/admin/transport'
     | '/api/uploads'
     | '/events/$slug'
@@ -398,12 +602,21 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AdmissionsRoute: typeof AdmissionsRoute
   ClubsRoute: typeof ClubsRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
   EventsRoute: typeof EventsRouteWithChildren
+  GalleryRoute: typeof GalleryRoute
+  MyClassesRoute: typeof MyClassesRoute
+  MyFeesRoute: typeof MyFeesRoute
+  MyHomeworkRoute: typeof MyHomeworkRoute
   MyRecordsRoute: typeof MyRecordsRoute
+  MyResultsRoute: typeof MyResultsRoute
   NoticesRoute: typeof NoticesRouteWithChildren
+  NotificationsRoute: typeof NotificationsRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   OnboardForgotPasswordRoute: typeof OnboardForgotPasswordRoute
   OnboardLoginRoute: typeof OnboardLoginRoute
   OnboardResetPasswordRoute: typeof OnboardResetPasswordRoute
@@ -439,6 +652,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admissions': {
+      id: '/admissions'
+      path: '/admissions'
+      fullPath: '/admissions'
+      preLoaderRoute: typeof AdmissionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/clubs': {
       id: '/clubs'
       path: '/clubs'
@@ -467,6 +687,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-classes': {
+      id: '/my-classes'
+      path: '/my-classes'
+      fullPath: '/my-classes'
+      preLoaderRoute: typeof MyClassesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-fees': {
+      id: '/my-fees'
+      path: '/my-fees'
+      fullPath: '/my-fees'
+      preLoaderRoute: typeof MyFeesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-homework': {
+      id: '/my-homework'
+      path: '/my-homework'
+      fullPath: '/my-homework'
+      preLoaderRoute: typeof MyHomeworkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/my-records': {
       id: '/my-records'
       path: '/my-records'
@@ -474,11 +722,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MyRecordsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/my-results': {
+      id: '/my-results'
+      path: '/my-results'
+      fullPath: '/my-results'
+      preLoaderRoute: typeof MyResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/notices': {
       id: '/notices'
       path: '/notices'
       fullPath: '/notices'
       preLoaderRoute: typeof NoticesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_onboard/forgot-password': {
@@ -530,6 +806,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAttendanceRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/calendar': {
+      id: '/admin/calendar'
+      path: '/calendar'
+      fullPath: '/admin/calendar'
+      preLoaderRoute: typeof AdminCalendarRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/content': {
       id: '/admin/content'
       path: '/content'
@@ -544,6 +827,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDirectoryRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/exams': {
+      id: '/admin/exams'
+      path: '/exams'
+      fullPath: '/admin/exams'
+      preLoaderRoute: typeof AdminExamsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/fees': {
+      id: '/admin/fees'
+      path: '/fees'
+      fullPath: '/admin/fees'
+      preLoaderRoute: typeof AdminFeesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/gallery': {
+      id: '/admin/gallery'
+      path: '/gallery'
+      fullPath: '/admin/gallery'
+      preLoaderRoute: typeof AdminGalleryRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/homework': {
+      id: '/admin/homework'
+      path: '/homework'
+      fullPath: '/admin/homework'
+      preLoaderRoute: typeof AdminHomeworkRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/inbox': {
+      id: '/admin/inbox'
+      path: '/inbox'
+      fullPath: '/admin/inbox'
+      preLoaderRoute: typeof AdminInboxRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/invites': {
       id: '/admin/invites'
       path: '/invites'
@@ -551,11 +869,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInvitesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/mail': {
+      id: '/admin/mail'
+      path: '/mail'
+      fullPath: '/admin/mail'
+      preLoaderRoute: typeof AdminMailRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/permissions': {
       id: '/admin/permissions'
       path: '/permissions'
       fullPath: '/admin/permissions'
       preLoaderRoute: typeof AdminPermissionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/timetable': {
+      id: '/admin/timetable'
+      path: '/timetable'
+      fullPath: '/admin/timetable'
+      preLoaderRoute: typeof AdminTimetableRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/transport': {
@@ -641,10 +973,18 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminAcademicsRoute: typeof AdminAcademicsRoute
   AdminAttendanceRoute: typeof AdminAttendanceRoute
+  AdminCalendarRoute: typeof AdminCalendarRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminDirectoryRoute: typeof AdminDirectoryRoute
+  AdminExamsRoute: typeof AdminExamsRoute
+  AdminFeesRoute: typeof AdminFeesRoute
+  AdminGalleryRoute: typeof AdminGalleryRoute
+  AdminHomeworkRoute: typeof AdminHomeworkRoute
+  AdminInboxRoute: typeof AdminInboxRoute
   AdminInvitesRoute: typeof AdminInvitesRoute
+  AdminMailRoute: typeof AdminMailRoute
   AdminPermissionsRoute: typeof AdminPermissionsRoute
+  AdminTimetableRoute: typeof AdminTimetableRoute
   AdminTransportRoute: typeof AdminTransportRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -652,10 +992,18 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAcademicsRoute: AdminAcademicsRoute,
   AdminAttendanceRoute: AdminAttendanceRoute,
+  AdminCalendarRoute: AdminCalendarRoute,
   AdminContentRoute: AdminContentRoute,
   AdminDirectoryRoute: AdminDirectoryRoute,
+  AdminExamsRoute: AdminExamsRoute,
+  AdminFeesRoute: AdminFeesRoute,
+  AdminGalleryRoute: AdminGalleryRoute,
+  AdminHomeworkRoute: AdminHomeworkRoute,
+  AdminInboxRoute: AdminInboxRoute,
   AdminInvitesRoute: AdminInvitesRoute,
+  AdminMailRoute: AdminMailRoute,
   AdminPermissionsRoute: AdminPermissionsRoute,
+  AdminTimetableRoute: AdminTimetableRoute,
   AdminTransportRoute: AdminTransportRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
@@ -692,12 +1040,21 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
+  AdmissionsRoute: AdmissionsRoute,
   ClubsRoute: ClubsRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
   EventsRoute: EventsRouteWithChildren,
+  GalleryRoute: GalleryRoute,
+  MyClassesRoute: MyClassesRoute,
+  MyFeesRoute: MyFeesRoute,
+  MyHomeworkRoute: MyHomeworkRoute,
   MyRecordsRoute: MyRecordsRoute,
+  MyResultsRoute: MyResultsRoute,
   NoticesRoute: NoticesRouteWithChildren,
+  NotificationsRoute: NotificationsRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   OnboardForgotPasswordRoute: OnboardForgotPasswordRoute,
   OnboardLoginRoute: OnboardLoginRoute,
   OnboardResetPasswordRoute: OnboardResetPasswordRoute,

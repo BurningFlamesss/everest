@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, CalendarDays, Paperclip } from "lucide-react";
 import { getNoticeFn } from "#/packages/content/server.ts";
+import { pageMeta } from "#/packages/school/meta.ts";
 
 export const Route = createFileRoute("/notices/$slug")({
 	loader: async ({ params }) => {
@@ -10,6 +11,12 @@ export const Route = createFileRoute("/notices/$slug")({
 
 		return notice;
 	},
+	head: ({ loaderData }) =>
+		pageMeta({
+			title: loaderData?.title ?? "Notice",
+			description: loaderData?.summary ?? undefined,
+			image: loaderData?.coverImage,
+		}),
 	notFoundComponent: () => (
 		<main className="min-h-screen bg-[#f6f1e8] pb-20 pl-0 md:ml-72">
 			<div className="px-6 py-16 md:px-16">

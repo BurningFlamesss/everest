@@ -1,6 +1,8 @@
 import { serverEnv } from "#/env/server.ts";
+import { ERROR_CODES } from "#/lib/error-codes.ts";
 import { prisma } from "#/packages/db/index.ts";
 import { renderMailTemplate, sendMail } from "#/packages/notifications/mail.ts";
+import { notifyUsers } from "#/packages/notifications/notification-service.ts";
 import {
 	createStaffInvite,
 	createStudentInvite,
@@ -37,7 +39,7 @@ export async function createInviteRequest(input: CreateInviteRequestInput) {
 		if (existing) {
 			throw new InviteError(
 				"A request for this email is already waiting for review.",
-				"REQUEST_ALREADY_PENDING",
+				ERROR_CODES.REQUEST_ALREADY_PENDING,
 			);
 		}
 
@@ -83,10 +85,6 @@ export async function listInviteRequests(options?: {
 	});
 }
 
-export async function countPendingInviteRequests() {
-	return prisma.inviteRequest.count({ where: { status: "PENDING" } });
-}
-
 function escapeHtml(value: string) {
 	return value
 		.replaceAll("&", "&amp;")
@@ -105,13 +103,13 @@ export async function approveInviteRequest(input: {
 	});
 
 	if (!request) {
-		throw new InviteError("Request not found", "REQUEST_NOT_FOUND");
+		throw new InviteError("Request not found", ERROR_CODES.REQUEST_NOT_FOUND);
 	}
 
 	if (request.status !== "PENDING") {
 		throw new InviteError(
 			"This request has already been reviewed.",
-			"REQUEST_ALREADY_REVIEWED",
+			ERROR_CODES.REQUEST_ALREADY_REVIEWED,
 		);
 	}
 
@@ -128,7 +126,7 @@ export async function approveInviteRequest(input: {
 	if (claimed.count === 0) {
 		throw new InviteError(
 			"This request has already been reviewed.",
-			"REQUEST_ALREADY_REVIEWED",
+			ERROR_CODES.REQUEST_ALREADY_REVIEWED,
 		);
 	}
 
@@ -167,6 +165,15 @@ export async function approveInviteRequest(input: {
 		where: { id: request.id },
 	});
 
+	void notifyUsers({
+		userIds: [invite.user.id],
+		type: "INVITE_APPROVED",
+		title: "Your invitation was approved",
+		body: "Set a password with the activation link to finish joining.",
+		refType: "invite-request",
+		refId: request.id,
+	}).catch((error) => console.error("Notification failed:", error));
+
 	const decision = await sendMail({
 		to: request.email,
 		subject: `Your ${serverEnv.ORGANIZATION_NAME} invitation request was approved`,
@@ -194,13 +201,13 @@ export async function rejectInviteRequest(input: {
 	});
 
 	if (!request) {
-		throw new InviteError("Request not found", "REQUEST_NOT_FOUND");
+		throw new InviteError("Request not found", ERROR_CODES.REQUEST_NOT_FOUND);
 	}
 
 	if (request.status !== "PENDING") {
 		throw new InviteError(
 			"This request has already been reviewed.",
-			"REQUEST_ALREADY_REVIEWED",
+			ERROR_CODES.REQUEST_ALREADY_REVIEWED,
 		);
 	}
 
@@ -219,13 +226,30 @@ export async function rejectInviteRequest(input: {
 	if (claimed.count === 0) {
 		throw new InviteError(
 			"This request has already been reviewed.",
-			"REQUEST_ALREADY_REVIEWED",
+			ERROR_CODES.REQUEST_ALREADY_REVIEWED,
 		);
 	}
 
 	const updated = await prisma.inviteRequest.findUniqueOrThrow({
 		where: { id: request.id },
 	});
+
+	const existingUser = await prisma.user.findUnique({
+		where: { email: request.email },
+		select: { id: true },
+	});
+
+	if (existingUser) {
+		void notifyUsers({
+			userIds: [existingUser.id],
+			type: "INVITE_REJECTED",
+			title: "Your invitation request was not approved",
+			body:
+				note ?? "Contact the school office if you believe this was a mistake.",
+			refType: "invite-request",
+			refId: request.id,
+		}).catch((error) => console.error("Notification failed:", error));
+	}
 
 	const decision = await sendMail({
 		to: request.email,

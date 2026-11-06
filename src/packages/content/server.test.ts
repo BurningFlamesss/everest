@@ -60,6 +60,12 @@ vi.mock("#/packages/storage/cleanup.ts", () => ({
 	collectOrphanedFileAssets: vi.fn(),
 }));
 
+vi.mock("#/packages/db/index.ts", () => ({
+	prisma: {
+		userRole: { findMany: vi.fn().mockResolvedValue([]) },
+	},
+}));
+
 beforeEach(() => {
 	vi.resetAllMocks();
 	mocks.getSession.mockResolvedValue({ user: { id: "manager" } });

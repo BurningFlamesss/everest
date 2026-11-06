@@ -6,11 +6,19 @@ const mocks = vi.hoisted(() => ({
 	serverEnv: {
 		MAIL_APP_USER: "scms@example.test" as string | undefined,
 		MAIL_APP_PASSWORD: "not-a-real-password" as string | undefined,
+		MAIL_SMTP_HOST: "smtp.gmail.com" as string | undefined,
+		MAIL_SMTP_PORT: 587 as number | undefined,
+		MAIL_SMTP_SECURE: false as boolean | undefined,
+		MAIL_FROM: undefined as string | undefined,
 	},
 	createTransport: vi.fn(),
 }));
 
 vi.mock("#/env/server.ts", () => ({ serverEnv: mocks.serverEnv }));
+
+vi.mock("#/packages/db/index.ts", () => ({
+	prisma: { mailLog: { create: vi.fn().mockResolvedValue({}) } },
+}));
 
 vi.mock("nodemailer", async (importOriginal) => ({
 	...(await importOriginal<typeof import("nodemailer")>()),
@@ -75,7 +83,6 @@ describe("sendMail with Nodemailer stream transport", () => {
 
 		expect(isMailConfigured()).toBe(true);
 		expect(createTransport).toHaveBeenCalledExactlyOnceWith({
-			service: "gmail",
 			host: "smtp.gmail.com",
 			port: 587,
 			secure: false,

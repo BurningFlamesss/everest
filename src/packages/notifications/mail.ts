@@ -1,5 +1,6 @@
 import * as nodemailer from "nodemailer";
 import { serverEnv } from "#/env/server.ts";
+import { recordMailDelivery } from "./mail-log.ts";
 
 export interface MailAttachment {
 	filename: string;
@@ -37,10 +38,9 @@ export function isMailConfigured(): boolean {
 
 function createTransport() {
 	return nodemailer.createTransport({
-		service: "gmail",
-		host: "smtp.gmail.com",
-		port: 587,
-		secure: false,
+		host: serverEnv.MAIL_SMTP_HOST,
+		port: serverEnv.MAIL_SMTP_PORT,
+		secure: serverEnv.MAIL_SMTP_SECURE,
 		auth: {
 			user: serverEnv.MAIL_APP_USER,
 			pass: serverEnv.MAIL_APP_PASSWORD,
@@ -58,12 +58,12 @@ function toAddressList(
 }
 
 /**
- * Sends a transactional email through the configured Gmail account.
+ * Sends a transactional email through the configured SMTP account.
  *
  * The function never throws: callers (auth hooks, invitation actions, ...)
  * receive a structured result so a mail outage cannot break the main flow.
  */
-export async function sendMail(input?: SendMailInput): Promise<SendMailResult> {
+async function deliverMail(input?: SendMailInput): Promise<SendMailResult> {
 	if (!input) {
 		return {
 			success: false,
@@ -112,7 +112,7 @@ export async function sendMail(input?: SendMailInput): Promise<SendMailResult> {
 		const transporter = createTransport();
 
 		const info = await transporter.sendMail({
-			from: input.from ?? serverEnv.MAIL_APP_USER,
+			from: input.from ?? serverEnv.MAIL_FROM ?? serverEnv.MAIL_APP_USER,
 			to,
 			cc: toAddressList(input.cc),
 			bcc: toAddressList(input.bcc),
@@ -145,6 +145,21 @@ export async function sendMail(input?: SendMailInput): Promise<SendMailResult> {
 			},
 		};
 	}
+}
+
+export async function sendMail(input?: SendMailInput): Promise<SendMailResult> {
+	const result = await deliverMail(input);
+
+	void recordMailDelivery({
+		recipient: Array.isArray(input?.to)
+			? input.to.join(", ")
+			: (input?.to ?? "unknown"),
+		subject: input?.subject?.trim() || "(no subject)",
+		ok: result.success,
+		error: result.success ? null : (result.details?.error ?? result.message),
+	});
+
+	return result;
 }
 
 export function renderMailTemplate({

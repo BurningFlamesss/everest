@@ -66,7 +66,11 @@ export const PermissionKey = {
   MANAGE_ACADEMICS: 'MANAGE_ACADEMICS',
   MANAGE_ATTENDANCE: 'MANAGE_ATTENDANCE',
   MANAGE_TRANSPORT: 'MANAGE_TRANSPORT',
-  MANAGE_PERMISSIONS: 'MANAGE_PERMISSIONS'
+  MANAGE_PERMISSIONS: 'MANAGE_PERMISSIONS',
+  MANAGE_INBOX: 'MANAGE_INBOX',
+  MANAGE_TIMETABLE: 'MANAGE_TIMETABLE',
+  MANAGE_EXAMS: 'MANAGE_EXAMS',
+  MANAGE_FEES: 'MANAGE_FEES'
 } as const
 
 export type PermissionKey = (typeof PermissionKey)[keyof typeof PermissionKey]
@@ -107,3 +111,21 @@ export const TransportDirection = {
 } as const
 
 export type TransportDirection = (typeof TransportDirection)[keyof typeof TransportDirection]
+
+
+export const ContactMessageStatus = {
+  NEW: 'NEW',
+  HANDLED: 'HANDLED'
+} as const
+
+export type ContactMessageStatus = (typeof ContactMessageStatus)[keyof typeof ContactMessageStatus]
+
+
+export const InvoiceStatus = {
+  DRAFT: 'DRAFT',
+  UNPAID: 'UNPAID',
+  PARTIAL: 'PARTIAL',
+  PAID: 'PAID'
+} as const
+
+export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus]

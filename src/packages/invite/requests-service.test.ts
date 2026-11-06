@@ -22,6 +22,8 @@ const prismaMock = vi.hoisted(() => ({
 		updateMany: vi.fn(),
 		findUniqueOrThrow: vi.fn(),
 	},
+	user: { findUnique: vi.fn() },
+	notification: { createMany: vi.fn() },
 }));
 
 const sendMailMock = vi.hoisted(() => vi.fn());
@@ -104,6 +106,8 @@ beforeEach(() => {
 	prismaMock.inviteRequest.findUnique.mockResolvedValue(null);
 	prismaMock.inviteRequest.updateMany.mockResolvedValue({ count: 1 });
 	prismaMock.inviteRequest.findUniqueOrThrow.mockResolvedValue(pendingRequest);
+	prismaMock.user.findUnique.mockResolvedValue(null);
+	prismaMock.notification.createMany.mockResolvedValue({ count: 0 });
 
 	vi.mocked(createStudentInvite).mockResolvedValue(inviteFixture("STUDENT"));
 	vi.mocked(createStaffInvite).mockResolvedValue(inviteFixture("STAFF"));

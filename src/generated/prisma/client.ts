@@ -177,6 +177,12 @@ export type TransportAssignment = Prisma.TransportAssignmentModel
  */
 export type FileAsset = Prisma.FileAssetModel
 /**
+ * Model ContactMessage
+ * Public contact-form submissions. Persisted before any email attempt so a
+ * mail outage never loses an enquiry.
+ */
+export type ContactMessage = Prisma.ContactMessageModel
+/**
  * Model RolePermission
  * 
  */
@@ -186,3 +192,68 @@ export type RolePermission = Prisma.RolePermissionModel
  * 
  */
 export type Attachment = Prisma.AttachmentModel
+/**
+ * Model AcademicYear
+ * 
+ */
+export type AcademicYear = Prisma.AcademicYearModel
+/**
+ * Model Term
+ * 
+ */
+export type Term = Prisma.TermModel
+/**
+ * Model TimetableSlot
+ * 
+ */
+export type TimetableSlot = Prisma.TimetableSlotModel
+/**
+ * Model Exam
+ * 
+ */
+export type Exam = Prisma.ExamModel
+/**
+ * Model ExamSchedule
+ * 
+ */
+export type ExamSchedule = Prisma.ExamScheduleModel
+/**
+ * Model Mark
+ * 
+ */
+export type Mark = Prisma.MarkModel
+/**
+ * Model Assignment
+ * 
+ */
+export type Assignment = Prisma.AssignmentModel
+/**
+ * Model FeeStructure
+ * 
+ */
+export type FeeStructure = Prisma.FeeStructureModel
+/**
+ * Model Invoice
+ * 
+ */
+export type Invoice = Prisma.InvoiceModel
+/**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
+ * Model MailLog
+ * 
+ */
+export type MailLog = Prisma.MailLogModel
+/**
+ * Model GalleryImage
+ * 
+ */
+export type GalleryImage = Prisma.GalleryImageModel

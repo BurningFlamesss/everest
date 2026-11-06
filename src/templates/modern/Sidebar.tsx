@@ -62,7 +62,7 @@ function Sidebar() {
 				aria-label={isSidebarOpened ? "Collapse navigation" : "Open navigation"}
 				onClick={() => setIsSidebarOpened((state) => !state)}
 				className={cn(
-					"absolute right-0 top-1/2 translate-x-[30%] translate-y-[-50%] rounded-full bg-white border border-red-500 cursor-pointer",
+					"absolute right-0 top-1/2 translate-x-[30%] translate-y-[-50%] cursor-pointer rounded-full border border-primary bg-card",
 				)}
 			>
 				<ChevronLeft
@@ -77,7 +77,7 @@ function Sidebar() {
 					isSidebarOpened ? "" : "hidden",
 				)}
 			>
-				<header className="rounded-t-2xl bg-red-400 flex flex-col items-center justify-center">
+				<header className="flex flex-col items-center justify-center rounded-t-2xl bg-sidebar text-sidebar-foreground">
 					<Link to="/" className="p-4">
 						<img
 							src={sidebar.logo}
@@ -85,12 +85,12 @@ function Sidebar() {
 							className="max-h-16 object-contain"
 						/>
 					</Link>
-					<span className="py-2 bg-yellow-400 w-full text-center">
+					<span className="w-full bg-sidebar-primary py-2 text-center text-sidebar-primary-foreground">
 						{sidebar.tagline}
 					</span>
 				</header>
 
-				<main className="bg-red-400 flex-1 min-h-0 overflow-auto">
+				<main className="min-h-0 flex-1 overflow-auto bg-sidebar text-sidebar-foreground">
 					<ul>
 						{Object.values(sidebar.collapsible)
 							.filter((item): item is ItemDetail => Boolean(item))
@@ -100,12 +100,12 @@ function Sidebar() {
 					</ul>
 				</main>
 
-				<footer className="rounded-b-2xl bg-red-400">
+				<footer className="rounded-b-2xl bg-sidebar text-sidebar-foreground">
 					{data?.session ? (
 						<>
 							<Link
 								to="/dashboard"
-								className="bg-yellow-400 flex w-full items-center justify-center gap-2 py-2 font-medium"
+								className="flex w-full items-center justify-center gap-2 bg-sidebar-primary py-2 font-medium text-sidebar-primary-foreground"
 							>
 								<LayoutDashboard size={16} /> Dashboard
 							</Link>
@@ -113,7 +113,7 @@ function Sidebar() {
 								type="button"
 								onClick={handleSignOut}
 								disabled={isSigningOut}
-								className="bg-red-400 flex w-full items-center justify-center gap-2 py-2 cursor-pointer rounded-b-2xl disabled:opacity-60"
+								className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-b-2xl bg-sidebar py-2 hover:bg-sidebar-accent disabled:opacity-60"
 							>
 								<LogOut size={16} />
 								{isSigningOut ? "Signing out…" : "Sign out"}
@@ -123,13 +123,13 @@ function Sidebar() {
 						<>
 							<Link
 								to="/signup"
-								className="bg-yellow-400 flex w-full items-center justify-center gap-2 py-2 font-medium"
+								className="flex w-full items-center justify-center gap-2 bg-sidebar-primary py-2 font-medium text-sidebar-primary-foreground"
 							>
 								<UserPlus size={16} /> Join / Invite
 							</Link>
 							<Link
 								to="/login"
-								className="bg-red-400 flex w-full items-center justify-center gap-2 py-2 rounded-b-2xl"
+								className="flex w-full items-center justify-center gap-2 rounded-b-2xl bg-sidebar py-2 hover:bg-sidebar-accent"
 							>
 								<LogIn size={16} /> Login
 							</Link>
@@ -153,8 +153,8 @@ function SidebarItem({ item }: { item: ItemDetail }) {
 				<Link
 					to={item.href ?? "/"}
 					target={item.external ? "_blank" : undefined}
-					className="flex items-center w-full gap-2.5 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-red-500/40"
-					activeProps={{ className: "bg-yellow-400/80 font-semibold" }}
+					className="flex w-full items-center gap-2.5 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 hover:bg-sidebar-accent"
+					activeProps={{ className: "bg-sidebar-primary font-semibold" }}
 				>
 					<span>{item.label}</span>
 				</Link>
@@ -167,7 +167,7 @@ function SidebarItem({ item }: { item: ItemDetail }) {
 			<button
 				type="button"
 				onClick={() => setIsOpen((state) => !state)}
-				className="flex items-center w-full gap-2.5 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-red-500/40"
+				className="flex w-full items-center gap-2.5 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 hover:bg-sidebar-accent"
 			>
 				<span className="flex-1 text-left">{item.label}</span>
 				<ChevronRight

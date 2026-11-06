@@ -8,6 +8,7 @@ import { KeyRound, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { AuthShell, Field, FormError } from "#/components/auth/AuthShell.tsx";
 import { ERROR } from "#/lib/error.ts";
+import { ERROR_CODES } from "#/lib/error-codes.ts";
 import { authClient } from "#/packages/auth/auth-client.ts";
 import { activateInvite } from "#/packages/auth/server/activate-invite.ts";
 import { getInvite } from "#/packages/auth/server/get-invite.ts";
@@ -119,11 +120,11 @@ function RouteComponent() {
 			const message =
 				activationError instanceof Error ? activationError.message : "";
 
-			if (message === "INVITE_ALREADY_USED") {
+			if (message === ERROR_CODES.INVITE_ALREADY_USED) {
 				setError("This invitation has already been used.");
-			} else if (message === "INVITE_EXPIRED") {
+			} else if (message === ERROR_CODES.INVITE_EXPIRED) {
 				setError("This invitation has expired.");
-			} else if (message === "Account already has a password") {
+			} else if (message === ERROR_CODES.ACCOUNT_ALREADY_ACTIVATED) {
 				setError("This account already has a password. Sign in instead.");
 			} else {
 				setError("Something went wrong. Please try again.");

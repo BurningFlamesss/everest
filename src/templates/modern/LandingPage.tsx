@@ -1,18 +1,34 @@
 import { Link } from "@tanstack/react-router";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowUpRight } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { Bell, CalendarDays, GraduationCap } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Footer } from "#/components/layout/Footer.tsx";
 import { useCanvasVideo } from "#/hooks/useCanvasVideo.ts";
-import { useSchoolContent } from "#/packages/school/hook.tsx";
+import { useSchoolConfig } from "#/packages/school/hook.tsx";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const DESKTOP_FRAMES = 216;
+const MOBILE_FRAMES = 108;
+
+function prefersReducedMotion() {
+	return (
+		typeof window !== "undefined" &&
+		window.matchMedia("(prefers-reduced-motion: reduce)").matches
+	);
+}
+
 export default function LandingPage() {
-	const { sidebar } = useSchoolContent();
+	const config = useSchoolConfig();
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
+		if (prefersReducedMotion()) {
+			gsap.set(".hero-next-section", { yPercent: 0, clipPath: "none" });
+			return;
+		}
+
 		const ctx = gsap.context(() => {
 			gsap.fromTo(
 				".hero-next-section",
@@ -40,114 +56,85 @@ export default function LandingPage() {
 	return (
 		<main className="w-full">
 			<div ref={containerRef} className="relative h-[500vh]">
-				<div className="sticky top-0 h-screen w-full overflow-hidden">
+				<div className="sticky top-0 h-screen w-full overflow-hidden bg-foreground">
 					<HeroCanvas scrollTrackRef={containerRef} />
+
+					<div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-4 pb-8 sm:px-6 md:pb-14 md:pl-80 md:pr-16">
+						<div className="pointer-events-auto max-w-2xl rounded-2xl bg-background/92 p-5 shadow-xl backdrop-blur-sm md:rounded-3xl md:p-8">
+							<p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary md:text-xs">
+								Admissions open · {config.organization.address}
+							</p>
+							<h1 className="mt-2 font-display text-2xl font-bold leading-tight text-foreground sm:text-3xl md:text-5xl">
+								{config.organization.name}
+							</h1>
+							<p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
+								{config.organization.tagline}
+							</p>
+							<div className="mt-4 flex flex-wrap gap-2 md:gap-3">
+								<Link
+									to="/contact"
+									hash="enquiry"
+									className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 md:px-5 md:py-2.5 md:text-sm"
+								>
+									<GraduationCap className="h-4 w-4" /> Admissions enquiry
+								</Link>
+								<Link
+									to="/notices"
+									className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-muted md:px-5 md:py-2.5 md:text-sm"
+								>
+									<Bell className="h-4 w-4" /> Notices
+								</Link>
+								<Link
+									to="/events"
+									className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-muted md:px-5 md:py-2.5 md:text-sm"
+								>
+									<CalendarDays className="h-4 w-4" /> Events
+								</Link>
+							</div>
+						</div>
+					</div>
 				</div>
 
-				<section className="hero-next-section absolute bottom-0 left-0 z-10 h-[80vh] w-full overflow-hidden bg-white rounded-3xl">
-					<div className="grid grid-cols-[6fr_5fr] mx-20 pt-20 gap-[8%]">
-						<h2 className="text-8xl font-bold">
+				<section className="hero-next-section absolute bottom-0 left-0 z-10 h-[80vh] w-full overflow-hidden rounded-t-3xl bg-card">
+					<div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-6 pt-10 md:grid-cols-[6fr_5fr] md:gap-[8%] md:px-10 md:pt-20">
+						<h2 className="font-display text-4xl font-bold leading-[1.05] text-foreground sm:text-6xl lg:text-7xl">
 							Established in purpose.
 							<br />
 							Contemporary in outlook.
 						</h2>
 						<div>
-							<p className="text-lg leading-normal mb-8">
-								Everest English Boarding Higher Secondary School is a learning
-								institution in Nepal built around a simple conviction: students
-								thrive when expectations are clear, relationships are strong,
-								and curiosity has room to become practice.
+							<p className="mb-8 text-base leading-normal text-muted-foreground md:text-lg">
+								{config.organization.name} is a learning institution in Nepal
+								built around a simple conviction: students thrive when
+								expectations are clear, relationships are strong, and curiosity
+								has room to become practice.
 							</p>
-							<dl className="border-t border-gray-300">
-								<div className="grid grid-cols-[140px_1fr] gap-5 p-4.5 border-b border-gray-300">
-									<dt className="text-xs uppercase">Institution</dt>
-									<dd className="text-md font-medium">
-										Everest English Boarding Higher Secondary School
-									</dd>
-								</div>
-								<div className="grid grid-cols-[140px_1fr] gap-5 p-4.5 border-b border-gray-300">
-									<dt className="text-xs uppercase">Learning Spaces</dt>
-									<dd className="text-md font-medium">
-										Everest Building + Canon Building
-									</dd>
-								</div>
-								<div className="grid grid-cols-[140px_1fr] gap-5 p-4.5 border-b border-gray-300">
-									<dt className="text-xs uppercase">Streams</dt>
-									<dd className="text-md font-medium">
-										Science (Computer/Biology), Management
-									</dd>
-								</div>
-								<div className="grid grid-cols-[140px_1fr] gap-5 p-4.5 border-b border-gray-300">
-									<dt className="text-xs uppercase">Labs</dt>
-									<dd className="text-md font-medium">
-										Computer, Biology, Physics, Chemistry
-									</dd>
-								</div>
+							<dl className="border-t border-border">
+								{[
+									["Institution", config.organization.name],
+									["Learning Spaces", "Everest Building + Canon Building"],
+									["Streams", "Science (Computer/Biology), Management"],
+									["Labs", "Computer, Biology, Physics, Chemistry"],
+								].map(([label, value]) => (
+									<div
+										key={label}
+										className="grid grid-cols-[120px_1fr] gap-5 border-b border-border p-4 md:grid-cols-[140px_1fr]"
+									>
+										<dt className="text-xs uppercase text-muted-foreground">
+											{label}
+										</dt>
+										<dd className="text-sm font-medium text-foreground md:text-base">
+											{value}
+										</dd>
+									</div>
+								))}
 							</dl>
 						</div>
 					</div>
 				</section>
 			</div>
 
-			<footer className="bg-black pb-10 pt-32.5 text-white">
-				<div className="mx-8">
-					<div className="flex items-end justify-between gap-7.5">
-						<p className="m-0 text-[10px] uppercase tracking-[0.14em] text-muted">
-							Reach the Highest Point
-						</p>
-						<Link
-							className="group inline-flex items-center gap-5.5 text-[clamp(62px,7vw,110px)] leading-[0.9] no-underline"
-							to="/contact"
-						>
-							<span>With Everest</span>
-							<ArrowUpRight className="h-11 w-11 text-yellow-400 transition-transform duration-220 ease-in group-hover:translate-x-1.25 group-hover:-translate-y-1.25" />
-						</Link>
-					</div>
-
-					<div className="mb-10.5 mt-13.5 h-px bg-gray-700" />
-
-					<div className="grid grid-cols-[2fr_1fr_1.5fr_1fr] gap-15">
-						<img src={sidebar.logo} alt="" />
-
-						<div className="flex flex-col gap-2.5 text-xs">
-							<span className="mb-2 text-[9px] uppercase tracking-[0.12em] text-yellow-400">
-								Explore
-							</span>
-							{[
-								{ label: "Home", to: "/" },
-								{ label: "About", to: "/about" },
-								{ label: "Notices", to: "/notices" },
-								{ label: "Events", to: "/events" },
-								{ label: "Contact", to: "/contact" },
-								{ label: "Signup", to: "/signup" },
-							].map((item) => (
-								<Link
-									key={item.to}
-									to={item.to}
-									className="text-white no-underline transition-colors hover:text-yellow-400"
-								>
-									{item.label}
-								</Link>
-							))}
-						</div>
-
-						<div className="flex flex-col gap-2.5 text-xs">
-							<span className="mb-2 text-[9px] uppercase tracking-[0.12em] text-yellow-400">
-								Institution
-							</span>
-							<p className="m-0 leading-normal text-muted">Nepal</p>
-							<p className="m-0 leading-normal text-muted">
-								School Administrator
-							</p>
-						</div>
-
-						<div className="flex flex-col items-end justify-between text-[9px] text-muted">
-							<span>SCMS / Everest</span>
-							<span>{new Date().getFullYear()}</span>
-						</div>
-					</div>
-				</div>
-			</footer>
+			<Footer />
 		</main>
 	);
 }
@@ -157,20 +144,39 @@ export function HeroCanvas({
 }: {
 	scrollTrackRef: React.RefObject<HTMLDivElement | null>;
 }) {
+	const config = useSchoolConfig();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const [frameCount, setFrameCount] = useState(DESKTOP_FRAMES);
 
-	const { drawFrame, frameCount, isLoading } = useCanvasVideo(canvasRef, 216);
+	useEffect(() => {
+		// Halve the frame budget on small screens so the hero does not compete
+		// with the page for bandwidth on a phone connection.
+		if (window.matchMedia("(max-width: 768px)").matches) {
+			setFrameCount(MOBILE_FRAMES);
+		}
+	}, []);
+
+	const {
+		drawFrame,
+		frameCount: loadedFrames,
+		isLoading,
+		progress,
+	} = useCanvasVideo(canvasRef, frameCount);
 
 	useEffect(() => {
 		if (isLoading) return;
 
 		drawFrame(0);
 
+		if (prefersReducedMotion()) {
+			return;
+		}
+
 		const handleResize = () => {
 			const start = ScrollTrigger.getById("hero-scroll");
 
 			if (start) {
-				drawFrame(start.progress * (frameCount - 1));
+				drawFrame(start.progress * (loadedFrames - 1));
 			}
 		};
 
@@ -184,7 +190,7 @@ export function HeroCanvas({
 				end: "bottom bottom",
 				scrub: 0,
 				onUpdate: (self) => {
-					const frameIndex = Math.floor(self.progress * (frameCount - 1));
+					const frameIndex = Math.floor(self.progress * (loadedFrames - 1));
 					drawFrame(frameIndex);
 				},
 			},
@@ -195,22 +201,46 @@ export function HeroCanvas({
 			ScrollTrigger.getById("hero-scroll")?.kill();
 			timeline.kill();
 		};
-	}, [isLoading, drawFrame, scrollTrackRef, frameCount]);
-
-	if (isLoading) {
-		return (
-			<div className="fixed inset-0 z-50 flex flex-col items-center justify-center">
-				<h1 className="text-2xl mb-4">Loading Experience</h1>
-			</div>
-		);
-	}
+	}, [isLoading, drawFrame, scrollTrackRef, loadedFrames]);
 
 	return (
-		<div className="relative w-full h-full">
+		<div className="relative h-full w-full">
+			<img
+				src="/landing-footage/frame_0001.jpeg"
+				alt=""
+				aria-hidden="true"
+				className="absolute inset-0 h-full w-full object-cover"
+			/>
 			<canvas
 				ref={canvasRef}
-				className="block w-full h-full object-cover filter contrast-[1.05] saturate-[1.05]"
+				className="relative block h-full w-full object-cover filter contrast-[1.05] saturate-[1.05]"
 			/>
+
+			{isLoading ? (
+				<div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-foreground/70 px-6 text-center text-background">
+					<p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+						{config.organization.shortName ?? "Everest"}
+					</p>
+					<h2 className="mt-3 max-w-lg font-display text-3xl font-bold md:text-5xl">
+						Loading the campus experience
+					</h2>
+					<div
+						role="progressbar"
+						aria-valuemin={0}
+						aria-valuemax={100}
+						aria-valuenow={Math.round(progress)}
+						className="mt-6 h-1 w-48 overflow-hidden rounded-full bg-background/20"
+					>
+						<div
+							className="h-full bg-accent transition-[width] duration-200"
+							style={{ width: `${progress}%` }}
+						/>
+					</div>
+					<p className="mt-2 text-xs text-background/60">
+						{Math.round(progress)}%
+					</p>
+				</div>
+			) : null}
 		</div>
 	);
 }

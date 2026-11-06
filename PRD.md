@@ -66,17 +66,18 @@ Admissions pipeline (applications/enquiry forms), library (catalog/loans/fines),
 ## 5. Technical Debts (fold into roadmap work)
 | Debt | Where | Levelling task |
 | --- | --- | --- |
-| Two conflicting design-token sets, none used by components | `src/styles.css` | DS-1 (Tasks) |
-| `components.json` ready but `src/components/ui/` absent (hand-rolled everything) | `src/components` | DS-2 |
-| LenisProvider commented out in `__root.tsx`; `html{scroll-behavior:smooth}` fights Lenis | `src/routes/__root.tsx` | P1 |
+| ~~Two conflicting design-token sets, none used by components~~ | `src/styles.css` | Resolved (DS-1) |
+| `components.json` ready but `src/components/ui/` absent (hand-rolled everything) | `src/components` | DS-2 partial (primitives added; admin screens not migrated) |
+| ~~LenisProvider commented out in `__root.tsx`; `html{scroll-behavior:smooth}` fights Lenis~~ | `src/routes/__root.tsx` | Resolved (DS-4: Lenis removed, reduced motion honored) |
 | Hardcoded tenant slug `"everest"`; `school-store.ts` (zustand) has no consumers | `__root.tsx`, `src/store` | P1 / P5 |
-| `Notice.audience` not honored on any feed | content package | P3 |
+| ~~`Notice.audience` not honored on any feed~~ | content package | Resolved (signed-in dashboard feed, T-18) |
 | Branch-scoped permission columns exist, never read/enforced | permissions packages | P3/P4 |
-| Dead code: legacy `createInvite`, duplicate `getInviteByToken`/`getGuardianInviteByToken`, unused `countPendingInviteRequests` | invite packages | T-1 |
-| `/uploads/$` serves any FileAsset without authz (UUID-unguessable, but unscoped) | `src/routes/uploads/$.ts` | P3 (decision) |
-| Gmail SMTP hard-coded in mail.ts | `src/packages/notifications/mail.ts` | P3 (configurable transport) |
-| No tests for academics/transport/admin server actions | `src/packages/**` | T-2 |
-| CI runs no DB-backed tests; `.env.example` missing `VITE_APP_TITLE`/`S3_REGION` | CI, env | T-3/T-4 |
+| ~~Dead code: legacy `createInvite`, duplicate `getInviteByToken`/`getGuardianInviteByToken`, unused `countPendingInviteRequests`~~ | invite packages | Resolved (T-1) |
+| `/uploads/$` authz decision recorded: public-by-unguessable-UUID + hardened headers/key checks; no per-asset visibility | `src/routes/uploads/$.ts` | Resolved as option (a), T-5 |
+| ~~Gmail SMTP hard-coded in mail.ts~~ | `src/packages/notifications/mail.ts` | Resolved (T-7, env-driven SMTP) |
+| ~~No tests for academics/transport/admin server actions~~ | `src/packages/**` | Resolved (T-2) |
+| ~~CI runs no DB-backed tests; `.env.example` missing `VITE_APP_TITLE`/`S3_REGION`~~ | CI, env | Resolved (T-3/T-4) |
+| `MailLog` delivery visibility still absent | mail | T-21 |
 
 ## 6. Success Criteria (per release)
 1. `npx tsc --noEmit`, `npx biome check src`, `npm test` all green; schema change ships with a versioned migration + updated seed.

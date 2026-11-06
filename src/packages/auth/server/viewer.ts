@@ -26,24 +26,30 @@ export const getViewerFn = createServerFn().handler(async () => {
 	// This runs on every page load, so roles, overrides and the activation
 	// flag come from one user query. `getUserRoles` previously ran separately
 	// and then again inside `getUserPermissions`, reading the same rows twice.
-	const [profile, roleDefaults] = await Promise.all([
-		prisma.user.findUnique({
-			where: { id: session.user.id },
-			select: {
-				activatedAt: true,
-				userRoles: {
-					select: { role: true, branchId: true },
-					orderBy: { createdAt: "asc" },
-				},
-				permissions: { select: { permission: true, granted: true } },
+	const profile = await prisma.user.findUnique({
+		where: { id: session.user.id },
+		select: {
+			activatedAt: true,
+			userRoles: {
+				select: { role: true, branchId: true },
+				orderBy: { createdAt: "asc" },
 			},
-		}),
-		getRolePermissionDefaults(),
-	]);
+			permissions: {
+				select: { permission: true, granted: true, scopeKey: true },
+			},
+		},
+	});
 
 	const roles = profile?.userRoles ?? [];
+	const branchId = roles[0]?.branchId ?? null;
+	const roleDefaults = await getRolePermissionDefaults(branchId);
 	const permissions = [
-		...resolvePermissions(roles, profile?.permissions ?? [], roleDefaults),
+		...resolvePermissions(
+			roles,
+			profile?.permissions ?? [],
+			roleDefaults,
+			branchId,
+		),
 	];
 
 	return {

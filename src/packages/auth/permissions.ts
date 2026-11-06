@@ -47,6 +47,29 @@ export const PERMISSION_DEFINITIONS = [
 		label: "Permissions",
 		description: "Grant or revoke individual permissions for users.",
 	},
+	{
+		key: "MANAGE_INBOX",
+		label: "Contact inbox",
+		description:
+			"Read messages sent through the public contact form and mark them handled.",
+	},
+	{
+		key: "MANAGE_TIMETABLE",
+		label: "Timetable",
+		description:
+			"Build the weekly timetable and resolve room or teacher clashes.",
+	},
+	{
+		key: "MANAGE_EXAMS",
+		label: "Exams & marks",
+		description:
+			"Schedule exams, enter marks and publish results to students and guardians.",
+	},
+	{
+		key: "MANAGE_FEES",
+		label: "Fees & finance",
+		description: "Create fee structures, issue invoices and record payments.",
+	},
 ] as const;
 
 export type PermissionKey = (typeof PERMISSION_DEFINITIONS)[number]["key"];
@@ -124,11 +147,14 @@ export function getPrimaryRole(roles: Array<{ role: string }>): string | null {
  * administrator change the baseline for a whole role. SUPERADMIN is always
  * granted every permission so the system can never be locked out completely.
  */
-export async function getRolePermissionDefaults(): Promise<
-	Record<string, Set<PermissionKey>>
-> {
+export async function getRolePermissionDefaults(
+	branchId?: string | null,
+): Promise<Record<string, Set<PermissionKey>>> {
 	const overrides = await prisma.rolePermission.findMany({
-		select: { role: true, permission: true, granted: true },
+		where: {
+			scopeKey: { in: branchId ? ["global", branchId] : ["global"] },
+		},
+		select: { role: true, permission: true, granted: true, scopeKey: true },
 	});
 
 	const result: Record<string, Set<PermissionKey>> = {};
@@ -139,7 +165,12 @@ export async function getRolePermissionDefaults(): Promise<
 
 	result.SUPERADMIN = new Set(ALL_PERMISSIONS);
 
-	for (const override of overrides) {
+	// Global defaults first, then branch-specific rows so a branch override wins.
+	const ordered = [...overrides].sort(
+		(a, b) => Number(a.scopeKey !== "global") - Number(b.scopeKey !== "global"),
+	);
+
+	for (const override of ordered) {
 		if (!isPermissionKey(override.permission)) continue;
 
 		let permissions = result[override.role];
@@ -169,8 +200,13 @@ export async function getRolePermissionDefaults(): Promise<
  */
 export function resolvePermissions(
 	roles: Array<{ role: string }>,
-	overrides: Array<{ permission: string; granted: boolean }>,
+	overrides: Array<{
+		permission: string;
+		granted: boolean;
+		scopeKey?: string | null;
+	}>,
 	roleDefaults: Record<string, Set<PermissionKey>>,
+	branchId?: string | null,
 ): Set<PermissionKey> {
 	const permissions = new Set<PermissionKey>();
 
@@ -180,7 +216,20 @@ export function resolvePermissions(
 		}
 	}
 
-	for (const override of overrides) {
+	const scoped = overrides
+		.filter(
+			(override) =>
+				!override.scopeKey ||
+				override.scopeKey === "global" ||
+				(override.scopeKey === branchId && Boolean(branchId)),
+		)
+		.sort(
+			(a, b) =>
+				Number(a.scopeKey !== "global" && a.scopeKey !== null) -
+				Number(b.scopeKey !== "global" && b.scopeKey !== null),
+		);
+
+	for (const override of scoped) {
 		if (!isPermissionKey(override.permission)) continue;
 
 		if (override.granted) {
@@ -207,21 +256,29 @@ export function resolvePermissions(
  */
 export async function getUserPermissions(
 	userId: string,
+	branchId?: string | null,
 ): Promise<Set<PermissionKey>> {
-	const [user, roleDefaults] = await Promise.all([
-		prisma.user.findUnique({
-			where: { id: userId },
-			select: {
-				userRoles: { select: { role: true } },
-				permissions: { select: { permission: true, granted: true } },
+	const user = await prisma.user.findUnique({
+		where: { id: userId },
+		select: {
+			userRoles: { select: { role: true, branchId: true } },
+			permissions: {
+				select: { permission: true, granted: true, scopeKey: true },
 			},
-		}),
-		getRolePermissionDefaults(),
-	]);
+		},
+	});
 
 	if (!user) return new Set<PermissionKey>();
 
-	return resolvePermissions(user.userRoles, user.permissions, roleDefaults);
+	const scope = branchId ?? user.userRoles[0]?.branchId ?? null;
+	const roleDefaults = await getRolePermissionDefaults(scope);
+
+	return resolvePermissions(
+		user.userRoles,
+		user.permissions,
+		roleDefaults,
+		scope,
+	);
 }
 
 export async function hasPermission(

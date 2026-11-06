@@ -19,6 +19,15 @@ export const serverEnv = createEnv({
 
 		MAIL_APP_USER: z.string().optional(),
 		MAIL_APP_PASSWORD: z.string().optional(),
+		// SMTP transport. Defaults keep the original Gmail behaviour; point these
+		// at any SMTP provider (Mailgun, SES SMTP, Postmark, a school mail server).
+		MAIL_SMTP_HOST: z.string().trim().min(1).default("smtp.gmail.com"),
+		MAIL_SMTP_PORT: z.coerce.number().int().positive().default(587),
+		MAIL_SMTP_SECURE: z
+			.enum(["true", "false"])
+			.default("false")
+			.transform((value) => value === "true"),
+		MAIL_FROM: z.string().trim().optional(),
 
 		STORAGE_DRIVER: z.enum(["local", "s3"]).default("local"),
 		STORAGE_LOCAL_DIR: z.string().default(".data/uploads"),

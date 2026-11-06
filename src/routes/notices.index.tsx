@@ -1,8 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Bell, CalendarDays } from "lucide-react";
 import { getNoticesFn } from "#/packages/content/server.ts";
+import { pageMeta } from "#/packages/school/meta.ts";
 
 export const Route = createFileRoute("/notices/")({
+	head: () =>
+		pageMeta({
+			title: "Notices",
+			description:
+				"Official announcements from the school office, teachers and departments.",
+		}),
 	loader: () => getNoticesFn({ data: { limit: 100 } }),
 	component: NoticesPage,
 });

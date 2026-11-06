@@ -1,8 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, CalendarDays, MapPin } from "lucide-react";
 import { getEventsFn } from "#/packages/content/server.ts";
+import { pageMeta } from "#/packages/school/meta.ts";
 
 export const Route = createFileRoute("/events/")({
+	head: () =>
+		pageMeta({
+			title: "Events",
+			description:
+				"Programmes, examinations, sports and celebrations on the school calendar.",
+		}),
 	loader: () => getEventsFn({ data: { limit: 100 } }),
 	component: EventsPage,
 });

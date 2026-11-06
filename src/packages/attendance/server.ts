@@ -1,12 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { listCourses } from "#/packages/academics/courses-service.ts";
 import { auth } from "#/packages/auth/auth.ts";
 import {
 	AuthorizationError,
 	requirePermission,
 } from "#/packages/auth/permissions.ts";
 import { prisma } from "#/packages/db/index.ts";
-import { listCourses } from "#/packages/academics/courses-service.ts";
 import {
 	deleteAttendanceSession,
 	getAttendanceSession,

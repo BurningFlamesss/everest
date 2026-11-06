@@ -10,7 +10,7 @@ How the system fits together today, the conventions that keep it coherent, and t
 | DB | PostgreSQL 17 + Prisma 7 (`@prisma/adapter-pg`; output `src/generated/prisma`) |
 | Auth | Better Auth 1.7.15 (`tanstackStartCookies` plugin only; custom RBAC on top) |
 | Validation | Zod 4 via `.validator()` on every server fn; env via `@t3-oss/env-core` (`src/env/{server,client}.ts`, exit-on-invalid) |
-| Mail | Nodemailer (Gmail SMTP hardcode, graceful fallback) |
+| Mail | Nodemailer (env-driven SMTP; Gmail defaults, graceful fallback) |
 | Storage | Pluggable drivers: `LocalStorageDriver` (`.data/uploads`) / `S3StorageDriver` (`@aws-sdk/client-s3`, MinIO-compatible, region discovery) |
 | Client state | Zustand + immer (`src/store/school-store.ts`, currently unused); TanStack Query provider wired but unused |
 | Motion | GSAP (+ScrollTrigger) on the landing hero; Lenis provider **built but disabled** |
@@ -61,7 +61,7 @@ Conventions: composite `@@unique` for idempotency & upsert safety; FKs cascade o
 
 **Permission resolution:** `getViewerFn` one query joins user roles + `UserPermission` rows; merges hard-coded defaults with `RolePermission` DB overrides via pure `resolvePermissions`; priority SUPERADMIN→ADMIN→STAFF→STUDENT→GUARDIAN; `isManagement` = any permission granted. Guard helpers: `requirePermission`, `hasAnyRole`, self-lockout guard on `MANAGE_PERMISSIONS`.
 
-**Uploads:** client widget → `POST /api/uploads` (session + `MANAGE_CONTENT`, policy by MIME/size) → driver.put → `FileAsset` row (**rollback object on DB failure**) → referenced via `Attachment` FKs or coverImage URLs. Cleanup sweep (admin action or cron) deletes assets unreferenced for >24 h, storage-first, retry-safe.
+**Uploads:** client widget → `POST /api/uploads` (session + `MANAGE_CONTENT`, policy by MIME/size) → driver.put → `FileAsset` row (**rollback object on DB failure**) → referenced via `Attachment` FKs or coverImage URLs. Cleanup sweep (admin action or cron) deletes assets unreferenced for >24 h, storage-first, retry-safe. `/uploads/$` is public by unguessable key (no listing), validates the storage-key grammar and serves `nosniff`, sandbox-CSP and attachment disposition for non-previewable types — the recorded T-5 decision.
 
 **Email matrix:** verify / forgot-reset / duplicate-signup notice / invite / request→admin / request-approved / request-rejected. All skip silently when `MAIL_APP_USER/PASSWORD` unset.
 
@@ -72,7 +72,7 @@ Conventions: composite `@@unique` for idempotency & upsert safety; FKs cascade o
 - **Unit** (`npm test`): pure logic and server actions with stubbed prisma — storage drivers, csv, mail, permissions, content services, request queue, upload/cleanup.
 - **Integration** (`npm run test:integration`): real Postgres + real storage; requires `SCMS_TEST_DATABASE_URL` ending `_test`/`_verification`; never falls back to app `DATABASE_URL`.
 - **E2E** (`npm run test:e2e`): Playwright against a separately built app instance (`SCMS_E2E_DATABASE_URL`, `SCMS_E2E_BASE_URL`); run twice for local and S3 storage.
-- CI runs `tsc` `biome lint` unit `build` only (no DB in CI).
+- CI runs `tsc` `biome lint` unit `build`, plus a Postgres-service job that applies migrations from scratch, seeds and runs integration tests on local storage. E2E still needs a separately started app and stays out of CI.
 
 ## 8. Architectural Record (do not regress these)
 1. **No in-process timers** — cleanup and scheduled work is external-scheduler driven (`/api/cron/cleanup`) to stay multi-instance safe.
@@ -86,7 +86,8 @@ Conventions: composite `@@unique` for idempotency & upsert safety; FKs cascade o
 ## 9. Architectural TODOs for the next agent
 - Introduce TanStack Query concretely (mutation caching / invalidations) **or** remove the unused provider — do not keep both half-wired.
 - Resolve the dual state cache pattern: page-local `useState` `list` culling after actions vs a central store.
-- Decide and implement authz on `/uploads/$` (signed asset links or admin-only flag on FileAsset) — see Tasks T-5.
 - Branch-scoped permissions: enforcement first in `resolvePermissions`/guards, then admin UI.
-- Move standard error codes (e.g. `INVITE_NOT_FOUND`, `COURSE_CODE_TAKEN`) to a typed constants module shared by client & server (today plain `Error` messages).
-- Replace hardcoded Gmail transport with configurable SMTP/HTTP transport + a `MailLog` table for delivery visibility.
+- Migrate the remaining admin screens onto `src/components/ui` primitives (DS-2).
+- Add a `MailLog` table for delivery visibility (T-21).
+
+Resolved: uploads authz decision (T-5), typed error codes in `src/lib/error-codes.ts` (T-6), configurable SMTP transport (T-7), single token set + config-driven theming (DS-1/DS-5), Lenis removal with reduced-motion support (DS-4).

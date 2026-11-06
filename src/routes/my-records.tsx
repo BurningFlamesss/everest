@@ -40,6 +40,17 @@ function MyRecords() {
 					Everything here is pulled from your own student record. It is
 					read-only — contact the school office if something looks wrong.
 				</p>
+				<div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
+					<Link to="/my-results" className="text-red-600 hover:text-red-700">
+						Exam results
+					</Link>
+					<Link to="/my-homework" className="text-red-600 hover:text-red-700">
+						Homework
+					</Link>
+					<Link to="/my-fees" className="text-red-600 hover:text-red-700">
+						Fees
+					</Link>
+				</div>
 			</section>
 
 			<section className="space-y-6 px-6 md:px-16">

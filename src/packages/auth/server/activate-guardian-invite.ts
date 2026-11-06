@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { hashPassword } from "better-auth/crypto";
 import { z } from "zod";
+import { ERROR_CODES } from "#/lib/error-codes.ts";
 import { prisma } from "../../db";
 
 const ActivationSchema = z.object({
@@ -22,19 +23,19 @@ export const activateGuardianInvite = createServerFn()
 		});
 
 		if (!invite) {
-			throw new Error("INVITE_NOT_FOUND");
+			throw new Error(ERROR_CODES.INVITE_NOT_FOUND);
 		}
 
 		if (invite.usedAt) {
-			throw new Error("INVITE_ALREADY_USED");
+			throw new Error(ERROR_CODES.INVITE_ALREADY_USED);
 		}
 
 		if (invite.expiresAt < new Date()) {
-			throw new Error("INVITE_EXPIRED");
+			throw new Error(ERROR_CODES.INVITE_EXPIRED);
 		}
 
 		if (!invite.user) {
-			throw new Error("INVITE_USER_MISSING");
+			throw new Error(ERROR_CODES.INVITE_USER_MISSING);
 		}
 
 		const user = invite.user;
@@ -47,7 +48,7 @@ export const activateGuardianInvite = createServerFn()
 		});
 
 		if (existingAccount) {
-			throw new Error("ACCOUNT_ALREADY_ACTIVATED");
+			throw new Error(ERROR_CODES.ACCOUNT_ALREADY_ACTIVATED);
 		}
 
 		const hashedPassword = await hashPassword(password);

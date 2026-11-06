@@ -23,7 +23,14 @@ import {
 	updateEvent,
 	updateNotice,
 } from "#/packages/content/content-service.ts";
+import { prisma } from "#/packages/db/index.ts";
 import { collectOrphanedFileAssets } from "#/packages/storage/cleanup.ts";
+import {
+	createGalleryImage,
+	deleteGalleryImage,
+	listGallery,
+	updateGalleryImage,
+} from "./gallery-service.ts";
 
 async function requireManager() {
 	const { getRequestHeaders } = await import("@tanstack/react-start/server");
@@ -98,6 +105,101 @@ export const getClubsFn = createServerFn()
 	.handler(async ({ data }) => {
 		return listClubs({ search: data?.search });
 	});
+
+export const getGalleryFn = createServerFn().handler(async () => {
+	return listGallery(false);
+});
+
+export const getGalleryAdminFn = createServerFn().handler(async () => {
+	try {
+		await requireManager();
+		return { success: true as const, images: await listGallery(true) };
+	} catch (error) {
+		return failure(error);
+	}
+});
+
+const gallerySchema = z.object({
+	imageUrl: z.string().trim().min(1, "Upload an image"),
+	title: z.string().trim().max(160).optional(),
+	caption: z.string().trim().max(500).optional(),
+	sortOrder: z.number().int().min(0).max(9999).optional(),
+	isPublished: z.boolean().optional(),
+});
+
+export const createGalleryImageAction = createServerFn()
+	.validator(gallerySchema)
+	.handler(async ({ data }) => {
+		try {
+			await requireManager();
+			const image = await createGalleryImage(data);
+
+			return { success: true as const, image };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+export const updateGalleryImageAction = createServerFn()
+	.validator(gallerySchema.partial().extend({ id: z.string().min(1) }))
+	.handler(async ({ data }) => {
+		try {
+			await requireManager();
+			const { id, ...input } = data;
+			const image = await updateGalleryImage(id, input);
+
+			return { success: true as const, image };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+export const deleteGalleryImageAction = createServerFn()
+	.validator(z.object({ id: z.string().min(1) }))
+	.handler(async ({ data }) => {
+		try {
+			await requireManager();
+			await deleteGalleryImage(data.id);
+
+			return { success: true as const };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+/**
+ * Signed-in notice feed filtered by `Notice.audience`.
+ *
+ * Public pages stay unfiltered; this is the feed for people who are logged in,
+ * so STAFF/STUDENTS/GUARDIANS only receive notices addressed to them (plus
+ * `ALL`). Management roles keep the full list.
+ */
+export const getMyNoticesFn = createServerFn().handler(async () => {
+	const { getRequestHeaders } = await import("@tanstack/react-start/server");
+	const session = await auth.api.getSession({ headers: getRequestHeaders() });
+
+	if (!session?.user?.id) return [];
+
+	const roles = await prisma.userRole.findMany({
+		where: { userId: session.user.id },
+		select: { role: true },
+	});
+
+	const roleSet = new Set(roles.map((entry) => entry.role));
+
+	const audience =
+		roleSet.has("SUPERADMIN") || roleSet.has("ADMIN")
+			? undefined
+			: roleSet.has("STAFF")
+				? ("STAFF" as const)
+				: roleSet.has("STUDENT")
+					? ("STUDENTS" as const)
+					: roleSet.has("GUARDIAN")
+						? ("GUARDIANS" as const)
+						: undefined;
+
+	return listNotices({ audience, limit: 5 });
+});
 
 const attachmentSchema = z.object({
 	fileAssetId: z.string().min(1),

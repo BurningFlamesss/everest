@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { prisma } from "../../db";
 
-const TokenSchema = z.uuid()
+const TokenSchema = z.uuid();
 
 export const getInvite = createServerFn()
 	.validator(TokenSchema)

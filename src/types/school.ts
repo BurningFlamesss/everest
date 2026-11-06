@@ -1,11 +1,17 @@
 export interface SchoolConfig {
 	organization: {
 		name: string;
+		shortName?: string;
 		slug: string;
+		tagline?: string;
+		address?: string;
 	};
 	theme: {
 		template: "modern";
 		primary: `#${string}`;
+		accent?: `#${string}`;
+		background?: `#${string}`;
+		sidebar?: `#${string}`;
 	};
 	features: {
 		clubs: boolean;
@@ -15,10 +21,15 @@ export interface SchoolConfig {
 	contact: {
 		phone: string;
 		email: string;
+		address?: string;
+		hours?: Array<{ label: string; value: string }>;
+		mapImage?: string;
 	};
+	socials?: Array<{ label: string; href: string }>;
 	seo: {
 		title: string;
 		description: string;
+		ogImage?: string;
 	};
 }
 

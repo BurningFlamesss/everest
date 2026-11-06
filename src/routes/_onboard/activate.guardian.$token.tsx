@@ -7,6 +7,7 @@ import {
 import { KeyRound, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { AuthShell, Field, FormError } from "#/components/auth/AuthShell.tsx";
+import { ERROR_CODES } from "#/lib/error-codes.ts";
 import { authClient } from "#/packages/auth/auth-client.ts";
 import { activateGuardianInvite } from "#/packages/auth/server/activate-guardian-invite.ts";
 import { getGuardianInvite } from "#/packages/auth/server/get-guardian-invite.ts";
@@ -25,11 +26,11 @@ export const Route = createFileRoute("/_onboard/activate/guardian/$token")({
 		}
 
 		if (invite.usedAt) {
-			throw new Error("INVITE_ALREADY_USED");
+			throw new Error(ERROR_CODES.INVITE_ALREADY_USED);
 		}
 
 		if (invite.expiresAt < new Date()) {
-			throw new Error("INVITE_EXPIRED");
+			throw new Error(ERROR_CODES.INVITE_EXPIRED);
 		}
 
 		return invite;
@@ -45,9 +46,11 @@ export const Route = createFileRoute("/_onboard/activate/guardian/$token")({
 	errorComponent: ({ error }) => (
 		<AuthShell title="This link can't be used">
 			<p className="text-sm text-gray-600">
-				{error instanceof Error && error.message === "INVITE_ALREADY_USED"
+				{error instanceof Error &&
+				error.message === ERROR_CODES.INVITE_ALREADY_USED
 					? "This invitation has already been used. Try signing in instead."
-					: error instanceof Error && error.message === "INVITE_EXPIRED"
+					: error instanceof Error &&
+							error.message === ERROR_CODES.INVITE_EXPIRED
 						? "This invitation has expired. Ask the school office for a new link."
 						: "Something went wrong while loading this invitation."}
 			</p>
@@ -110,11 +113,11 @@ function RouteComponent() {
 				activationError instanceof Error ? activationError.message : "";
 
 			setError(
-				message === "INVITE_ALREADY_USED"
+				message === ERROR_CODES.INVITE_ALREADY_USED
 					? "This invitation has already been used."
-					: message === "INVITE_EXPIRED"
+					: message === ERROR_CODES.INVITE_EXPIRED
 						? "This invitation has expired."
-						: message === "ACCOUNT_ALREADY_ACTIVATED"
+						: message === ERROR_CODES.ACCOUNT_ALREADY_ACTIVATED
 							? "This account already has a password. Sign in instead."
 							: "Something went wrong. Please try again.",
 			);

@@ -1,3 +1,4 @@
+import { ERROR_CODES } from "#/lib/error-codes.ts";
 import { prisma } from "#/packages/db/index.ts";
 import {
 	getDefaultInviteContext,
@@ -153,7 +154,7 @@ export async function createCourse(input: CourseInput) {
 	});
 
 	if (existing) {
-		throw new Error("COURSE_CODE_TAKEN");
+		throw new Error(ERROR_CODES.COURSE_CODE_TAKEN);
 	}
 
 	return prisma.course.create({
@@ -176,7 +177,7 @@ export async function createCourse(input: CourseInput) {
 export async function updateCourse(id: string, input: Partial<CourseInput>) {
 	const existing = await prisma.course.findUnique({ where: { id } });
 
-	if (!existing) throw new Error("COURSE_NOT_FOUND");
+	if (!existing) throw new Error(ERROR_CODES.COURSE_NOT_FOUND);
 
 	if (input.code !== undefined) {
 		const code = input.code.trim().toUpperCase();
@@ -189,7 +190,7 @@ export async function updateCourse(id: string, input: Partial<CourseInput>) {
 			select: { id: true },
 		});
 
-		if (duplicate) throw new Error("COURSE_CODE_TAKEN");
+		if (duplicate) throw new Error(ERROR_CODES.COURSE_CODE_TAKEN);
 	}
 
 	return prisma.course.update({

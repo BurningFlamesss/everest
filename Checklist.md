@@ -1,4 +1,6 @@
-# Checklist — Feature Audit (what is done / partial / missing)
+# Checklist
+
+> **Status update (2026-11-07):** M2 academic core is shipped — academic years/terms, timetable with server-side teacher/room clash rejection, exams with idempotent marks and published-result notifications, homework with attachments and enrolment-scoped visibility, and phase-1 fees (structures → invoices → payments with atomic status). M3 is shipped apart from password-reset notifications: in-app notification center with bell/badge and invite/notice/exam triggers, role-aware dashboard cards, `/my-classes` staff workspace, and a `MailLog` + `/admin/mail` view. Marketing parity added `/gallery`, `/admissions`, and a gallery manager. Branch-scoped permission resolution now honours `scopeKey` with global fallback. Still open: extended domains (library, hostel, discipline, health, HR, admissions pipeline, student documents) and runtime tenant resolution (T-29), plus DS-2's admin-screen migration. — Feature Audit (what is done / partial / missing)
 
 Legend: ✅ implemented · 🟡 partially implemented (follow-up needed) · ❌ not started.
 Sources: full codebase audit 2026-11-06. Cross-refs: [PRD.md](./PRD.md), [Tasks.md](./Tasks.md).
@@ -60,14 +62,14 @@ Sources: full codebase audit 2026-11-06. Cross-refs: [PRD.md](./PRD.md), [Tasks.
 - ✅ Clubs (meeting schedule, isActive, ≤10 attachments w/ Edit-attachments) public cards
 - ✅ Admin `/admin/content`: create/edit/delete all three, publish/unpublish, orphan cleanup UI
 - ✅ Storage: local + S3 drivers, policy (5 MB image/10 MB doc), `/api/uploads` gated by `MANAGE_CONTENT`, rollback on DB failure
-- ✅ `/uploads/$` file serving w/ immutable cache — 🟡 no per-asset authz (public if key known; UUID-unguessable) — needs explicit decision
+- ✅ `/uploads/$` file serving w/ immutable cache — decision recorded (Tasks T-5): public-by-unguessable-UUID, safe-key validation, no listing, `nosniff` + sandbox CSP, attachment disposition for non-previewable types. Sensitive documents must not be attached to public content until per-asset authz exists.
 - ✅ Orphan cleanup: admin manual + `/api/cron/cleanup` (token-protected, batched, 24 h grace) — 🟡 external scheduler must call it; disabled without `CRON_SECRET`
-- 🟡 Landing page: bespoke GSAP/canvas-video hero — 🟡 no CTAs/links on hero, sidebar overlaps full-bleed hero, no hero fallback for slow networks
+- ✅ Landing page: bespoke GSAP/canvas-video hero with admissions/notices/events CTAs, mobile-safe overlay (`md:pl-80`), poster + progress fallback and a halved mobile frame budget; reduced-motion skips the scrub
 - ✅ About page (real content)
-- 🟡 Contact page: info cards from `schools/everest/config.json` — ❌ **no contact form** (mailto/tel only), placeholder phone data, static map image
-- ❌ Shared `Footer`/`Navbar` components (footer is inline in LandingPage; sidebar is the only nav for inner pages)
+- ✅ Contact page: info/hours/map from `schools/everest/config.json` plus a persisted enquiry form (name, email, phone, subject, message; honeypot, minimum fill time, per-email + per-IP hourly flood limits) and `/admin/inbox` to read/resolve messages with email notification
+- ✅ Shared `Footer` (`src/components/layout/Footer.tsx`) driven by school config, used on landing/about/contact; sidebar remains the app nav
 - ❌ Faculty/staff page, gallery, admissions/enquiry page, alumni, results/achievements
-- ❌ SEO: per-page meta/OG tags, sitemap, og-images (config has an SEO sketch that is not rendered)
+- ✅ SEO: root + per-page title/description/OG metadata from config and content, `/sitemap.xml` (static + notices/events/clubs) and `/robots.txt`
 - ❌ Newsletter/analytics integration
 
 ## 8. Dashboards & Self-service
@@ -75,18 +77,19 @@ Sources: full codebase audit 2026-11-06. Cross-refs: [PRD.md](./PRD.md), [Tasks.
 - ✅ `/admin` overview: live counts (students, staff, guardians, pending invites, drafts, upcoming events, clubs)
 - ✅ `/my-records`: per-student courses, attendance totals+%, last-10, bus route; guardian multi-child
 - 🟡 Staff view of `/my-records` is an explicit empty state
-- ❌ Notification center / in-app inbox (no `Notification` model; mail is fire-and-forget)
-- ❌ Notice feed filtered by `Notice.audience` for signed-in users
+- 🟡 Admin contact inbox (`/admin/inbox`) persists and resolves public enquiries; there is still no per-user notification center (`Notification` model)
+- ✅ Signed-in dashboard shows a notice feed scoped by `Notice.audience` (management roles see everything; tests cover each audience value)
 
 ## 9. Platform & Ops
 - ✅ TanStack Start (SSR) + React 19 + React Compiler + Tailwind v4; `#/*` alias
 - ✅ Zod validation on every server function (`.validator`); env validated via t3-env (exit-on-invalid)
 - ✅ Prisma 7 + pg adapter; 4 versioned migrations; idempotent seed (org, branch, superadmin, activation link, starter content); `db:migrate:status` tooling
 - ✅ Docker 3-stage non-root image; compose (postgres17) + optional MinIO overlay (requires pinned `MINIO_IMAGE`)
-- ✅ CI (`verify`): npm ci → prisma generate → tsc → biome lint → unit tests → build — 🟡 no DB/integration/e2e in CI
-- ✅ Tests: ~120 unit (13 files), 8 integration (club-attachments, local+S3), 5 Playwright e2e (auth-security, club-attachments) — 🟡 no tests for academics/transport/admin/records-*Action* beyond records service
-- 🟡 Email: Gmail SMTP hardcoded, graceful not-configured fallback, 7 email types, no delivery log, no provider config
+- ✅ CI: `verify` (npm ci → prisma generate → tsc → biome → unit tests → build) plus an `integration` job with a Postgres 17 service that applies migrations from scratch, seeds and runs `npm run test:integration` against local storage
+- ✅ Tests: 220 unit/UI (17 files) including academics/transport/admin server actions, contact persistence/flood limits and notice audience scoping; 8 integration (club-attachments, local+S3); 5 Playwright e2e — e2e remains out of CI (needs a separately started app)
+- 🟡 Email: configurable SMTP host/port/secure/from with env defaults preserving Gmail, graceful not-configured fallback, 7 email types — still no `MailLog` delivery table
 - 🟡 Live state: zustand `school-store` has zero consumers; TanStack Query wired for SSR but **zero** `useQuery` call sites (all data via loaders + manual action calls)
+- ✅ Design system: one semantic token set mapped to the cream/red palette, Fraunces bound to marketing headings, `--positive`/`--info`, config-driven CSS variables at SSR; `src/components/ui` primitives started (DS-2 still partial)
 
 ## 10. Roadmap Domains (all ❌ — no models exist)
 Fees & finance · Exams/marks/report cards · Timetable · Homework/assignments · Academic year/terms · Library · Hostel · Discipline/wellbeing · Health records · Admissions pipeline · Staff HR (leave/payroll) · Certificates/student documents · Surveys/PTA · August-first: contact-form persistence

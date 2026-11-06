@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { ERROR_CODES } from "#/lib/error-codes.ts";
 import { auth } from "#/packages/auth/auth.ts";
 import {
 	AuthorizationError,
@@ -38,7 +39,7 @@ function failure(error: unknown) {
 		return {
 			success: false as const,
 			error: error.message,
-			code: "UNAUTHORIZED",
+			code: ERROR_CODES.UNAUTHORIZED,
 		};
 	}
 
@@ -50,10 +51,10 @@ function failure(error: unknown) {
 	return {
 		success: false as const,
 		error:
-			message === "COURSE_CODE_TAKEN"
+			message === ERROR_CODES.COURSE_CODE_TAKEN
 				? "Another course already uses that code."
 				: message,
-		code: "INTERNAL_ERROR",
+		code: ERROR_CODES.INTERNAL_ERROR,
 	};
 }
 

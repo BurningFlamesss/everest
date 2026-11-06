@@ -1,8 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Clock, Paperclip, Users } from "lucide-react";
 import { getClubsFn } from "#/packages/content/server.ts";
+import { pageMeta } from "#/packages/school/meta.ts";
 
 export const Route = createFileRoute("/clubs")({
+	head: () =>
+		pageMeta({
+			title: "Clubs",
+			description:
+				"Clubs give students a place to build skills, make friends and take on responsibility beyond the classroom.",
+		}),
 	loader: () => getClubsFn({ data: {} }),
 	component: ClubsPage,
 });

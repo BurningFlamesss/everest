@@ -1,11 +1,17 @@
 {
 	"organization": {
 		"slug": "everest",
-		"name": "everest"
+		"name": "Everest English Boarding Higher Secondary School",
+		"shortName": "Everest",
+		"tagline": "Established in purpose. Contemporary in outlook.",
+		"address": "Butwal, Rupandehi, Nepal"
 	},
 	"theme": {
 		"template": "modern",
-		"primary": "#ff0000"
+		"primary": "#ef4444",
+		"accent": "#facc15",
+		"background": "#f6f1e8",
+		"sidebar": "#f87171"
 	},
 	"features": {
 		"clubs": true,
@@ -13,11 +19,23 @@
 		"notices": true
 	},
 	"contact": {
-		"phone": "980000000",
-		"email": "everestbutwal@gmail.com"
+		"phone": "+977 71 540 000",
+		"email": "everestbutwal@gmail.com",
+		"address": "Butwal, Rupandehi, Nepal",
+		"hours": [
+			{ "label": "Sunday – Thursday", "value": "9:00 – 16:00" },
+			{ "label": "Friday", "value": "9:00 – 13:00" },
+			{ "label": "Saturday", "value": "Closed" }
+		],
+		"mapImage": "/map.png"
 	},
+	"socials": [
+		{ "label": "Facebook", "href": "https://www.facebook.com/" },
+		{ "label": "Instagram", "href": "https://www.instagram.com/" }
+	],
 	"seo": {
-		"title": "everest",
-		"description": "everest is the best learning platform"
+		"title": "Everest English Boarding Higher Secondary School",
+		"description": "Everest English Boarding Higher Secondary School in Butwal, Nepal — a learning institution built on clear expectations, strong relationships and room for curiosity.",
+		"ogImage": "/schools/everest/logo.png"
 	}
 }

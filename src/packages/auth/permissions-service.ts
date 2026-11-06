@@ -99,6 +99,7 @@ export async function listPermissionUsers(options?: {
 			activatedAt: true,
 			userRoles: { select: { role: true, branchId: true } },
 			permissions: {
+				where: { scopeKey: "global" },
 				select: { permission: true, granted: true },
 			},
 		},
@@ -162,6 +163,7 @@ export async function listRolePermissions(): Promise<
 	const [defaults, overrides] = await Promise.all([
 		getRolePermissionDefaults(),
 		prisma.rolePermission.findMany({
+			where: { scopeKey: "global" },
 			select: { role: true, permission: true, granted: true },
 			orderBy: { role: "asc" },
 		}),
@@ -207,9 +209,10 @@ export async function setRolePermissionDefault(input: {
 
 	return prisma.rolePermission.upsert({
 		where: {
-			role_permission: {
+			role_permission_scopeKey: {
 				role: input.role,
 				permission: input.permission,
+				scopeKey: "global",
 			},
 		},
 		update: { granted: input.granted },
@@ -251,9 +254,10 @@ export async function setPermissionOverride(input: {
 
 	return prisma.userPermission.upsert({
 		where: {
-			userId_permission: {
+			userId_permission_scopeKey: {
 				userId: input.userId,
 				permission: input.permission,
+				scopeKey: "global",
 			},
 		},
 		update: { granted: input.granted },

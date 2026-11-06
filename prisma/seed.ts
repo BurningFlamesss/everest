@@ -81,6 +81,47 @@ async function main() {
     }
   })
 
+  // A default academic calendar keeps timetable/exam/fee screens usable on a
+  // fresh database. Existing years are never rewritten.
+  const calendarYear = new Date().getUTCFullYear()
+  const yearStartsOn = new Date(Date.UTC(calendarYear, 3, 1))
+  const yearEndsOn = new Date(Date.UTC(calendarYear + 1, 2, 31))
+
+  const academicYear = await prisma.academicYear.upsert({
+    where: {
+      organizationId_name: {
+        organizationId: organization.id,
+        name: `${calendarYear}-${String(calendarYear + 1).slice(-2)}`
+      }
+    },
+    update: {},
+    create: {
+      organizationId: organization.id,
+      name: `${calendarYear}-${String(calendarYear + 1).slice(-2)}`,
+      startsOn: yearStartsOn,
+      endsOn: yearEndsOn,
+      isActive: true
+    }
+  })
+
+  await prisma.term.createMany({
+    data: [
+      {
+        academicYearId: academicYear.id,
+        name: 'Term 1',
+        startsOn: yearStartsOn,
+        endsOn: new Date(Date.UTC(calendarYear, 8, 30))
+      },
+      {
+        academicYearId: academicYear.id,
+        name: 'Term 2',
+        startsOn: new Date(Date.UTC(calendarYear, 9, 1)),
+        endsOn: yearEndsOn
+      }
+    ],
+    skipDuplicates: true
+  })
+
   // The super admin should not receive a fresh invite on every seed run.
   const existingInvite = await prisma.invite.findFirst({
     where: { userId: user.id, usedAt: null },
