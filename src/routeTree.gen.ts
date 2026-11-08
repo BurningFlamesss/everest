@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+<<<<<<< HEAD
 import { Route as OnboardRouteImport } from './routes/_onboard'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -79,6 +80,60 @@ import { Route as ApiWebsitePagesKeySectionsSectionTypeRouteImport } from './rou
 
 const OnboardRoute = OnboardRouteImport.update({
   id: '/_onboard',
+=======
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdmissionsRouteImport } from './routes/admissions'
+import { Route as ClubsRouteImport } from './routes/clubs'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as MyClassesRouteImport } from './routes/my-classes'
+import { Route as MyFeesRouteImport } from './routes/my-fees'
+import { Route as MyHomeworkRouteImport } from './routes/my-homework'
+import { Route as MyRecordsRouteImport } from './routes/my-records'
+import { Route as MyResultsRouteImport } from './routes/my-results'
+import { Route as NoticesRouteImport } from './routes/notices'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as OnboardForgotPasswordRouteImport } from './routes/_onboard/forgot-password'
+import { Route as OnboardLoginRouteImport } from './routes/_onboard/login'
+import { Route as OnboardResetPasswordRouteImport } from './routes/_onboard/reset-password'
+import { Route as OnboardSignupRouteImport } from './routes/_onboard/signup'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminAcademicsRouteImport } from './routes/admin/academics'
+import { Route as AdminAttendanceRouteImport } from './routes/admin/attendance'
+import { Route as AdminCalendarRouteImport } from './routes/admin/calendar'
+import { Route as AdminContentRouteImport } from './routes/admin/content'
+import { Route as AdminDirectoryRouteImport } from './routes/admin/directory'
+import { Route as AdminExamsRouteImport } from './routes/admin/exams'
+import { Route as AdminFeesRouteImport } from './routes/admin/fees'
+import { Route as AdminGalleryRouteImport } from './routes/admin/gallery'
+import { Route as AdminHomeworkRouteImport } from './routes/admin/homework'
+import { Route as AdminInboxRouteImport } from './routes/admin/inbox'
+import { Route as AdminInvitesRouteImport } from './routes/admin/invites'
+import { Route as AdminMailRouteImport } from './routes/admin/mail'
+import { Route as AdminPermissionsRouteImport } from './routes/admin/permissions'
+import { Route as AdminTimetableRouteImport } from './routes/admin/timetable'
+import { Route as AdminTransportRouteImport } from './routes/admin/transport'
+import { Route as ApiUploadsRouteImport } from './routes/api/uploads'
+import { Route as EventsIndexRouteImport } from './routes/events.index'
+import { Route as EventsSlugRouteImport } from './routes/events.$slug'
+import { Route as NoticesIndexRouteImport } from './routes/notices.index'
+import { Route as NoticesSlugRouteImport } from './routes/notices.$slug'
+import { Route as UploadsSplatRouteImport } from './routes/uploads/$'
+import { Route as OnboardActivateTokenRouteImport } from './routes/_onboard/activate.$token'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiCronCleanupRouteImport } from './routes/api/cron/cleanup'
+import { Route as OnboardActivateGuardianTokenRouteImport } from './routes/_onboard/activate.guardian.$token'
+
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+>>>>>>> scms-local-main
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublicRoute = PublicRouteImport.update({
@@ -90,6 +145,7 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+<<<<<<< HEAD
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -174,12 +230,109 @@ const PublicTransportationRoute = PublicTransportationRouteImport.update({
   id: '/transportation',
   path: '/transportation',
   getParentRoute: () => PublicRoute,
+=======
+const AdmissionsRoute = AdmissionsRouteImport.update({
+  id: '/admissions',
+  path: '/admissions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClubsRoute = ClubsRouteImport.update({
+  id: '/clubs',
+  path: '/clubs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyClassesRoute = MyClassesRouteImport.update({
+  id: '/my-classes',
+  path: '/my-classes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyFeesRoute = MyFeesRouteImport.update({
+  id: '/my-fees',
+  path: '/my-fees',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyHomeworkRoute = MyHomeworkRouteImport.update({
+  id: '/my-homework',
+  path: '/my-homework',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyRecordsRoute = MyRecordsRouteImport.update({
+  id: '/my-records',
+  path: '/my-records',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyResultsRoute = MyResultsRouteImport.update({
+  id: '/my-results',
+  path: '/my-results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticesRoute = NoticesRouteImport.update({
+  id: '/notices',
+  path: '/notices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardForgotPasswordRoute = OnboardForgotPasswordRouteImport.update({
+  id: '/_onboard/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardLoginRoute = OnboardLoginRouteImport.update({
+  id: '/_onboard/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardResetPasswordRoute = OnboardResetPasswordRouteImport.update({
+  id: '/_onboard/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardSignupRoute = OnboardSignupRouteImport.update({
+  id: '/_onboard/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+>>>>>>> scms-local-main
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+<<<<<<< HEAD
 const AdminSplatRoute = AdminSplatRouteImport.update({
   id: '/$',
   path: '/$',
@@ -193,6 +346,11 @@ const AdminActivityRoute = AdminActivityRouteImport.update({
 const AdminAdmissionsRoute = AdminAdmissionsRouteImport.update({
   id: '/admissions',
   path: '/admissions',
+=======
+const AdminAcademicsRoute = AdminAcademicsRouteImport.update({
+  id: '/academics',
+  path: '/academics',
+>>>>>>> scms-local-main
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAttendanceRoute = AdminAttendanceRouteImport.update({
@@ -200,6 +358,7 @@ const AdminAttendanceRoute = AdminAttendanceRouteImport.update({
   path: '/attendance',
   getParentRoute: () => AdminRoute,
 } as any)
+<<<<<<< HEAD
 const AdminClassesRoute = AdminClassesRouteImport.update({
   id: '/classes',
   path: '/classes',
@@ -223,6 +382,31 @@ const AdminFacilitiesRoute = AdminFacilitiesRouteImport.update({
 const AdminFacultyRoute = AdminFacultyRouteImport.update({
   id: '/faculty',
   path: '/faculty',
+=======
+const AdminCalendarRoute = AdminCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContentRoute = AdminContentRouteImport.update({
+  id: '/content',
+  path: '/content',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDirectoryRoute = AdminDirectoryRouteImport.update({
+  id: '/directory',
+  path: '/directory',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminExamsRoute = AdminExamsRouteImport.update({
+  id: '/exams',
+  path: '/exams',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFeesRoute = AdminFeesRouteImport.update({
+  id: '/fees',
+  path: '/fees',
+>>>>>>> scms-local-main
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminGalleryRoute = AdminGalleryRouteImport.update({
@@ -230,6 +414,7 @@ const AdminGalleryRoute = AdminGalleryRouteImport.update({
   path: '/gallery',
   getParentRoute: () => AdminRoute,
 } as any)
+<<<<<<< HEAD
 const AdminNoticesRoute = AdminNoticesRouteImport.update({
   id: '/notices',
   path: '/notices',
@@ -364,6 +549,71 @@ const AdminStudentsIdRoute = AdminStudentsIdRouteImport.update({
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
+=======
+const AdminHomeworkRoute = AdminHomeworkRouteImport.update({
+  id: '/homework',
+  path: '/homework',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminInboxRoute = AdminInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminInvitesRoute = AdminInvitesRouteImport.update({
+  id: '/invites',
+  path: '/invites',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMailRoute = AdminMailRouteImport.update({
+  id: '/mail',
+  path: '/mail',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPermissionsRoute = AdminPermissionsRouteImport.update({
+  id: '/permissions',
+  path: '/permissions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTimetableRoute = AdminTimetableRouteImport.update({
+  id: '/timetable',
+  path: '/timetable',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTransportRoute = AdminTransportRouteImport.update({
+  id: '/transport',
+  path: '/transport',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ApiUploadsRoute = ApiUploadsRouteImport.update({
+  id: '/api/uploads',
+  path: '/api/uploads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsIndexRoute = EventsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EventsRoute,
+} as any)
+const EventsSlugRoute = EventsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => EventsRoute,
+} as any)
+const NoticesIndexRoute = NoticesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => NoticesRoute,
+} as any)
+const NoticesSlugRoute = NoticesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => NoticesRoute,
+} as any)
+const UploadsSplatRoute = UploadsSplatRouteImport.update({
+  id: '/uploads/$',
+  path: '/uploads/$',
+>>>>>>> scms-local-main
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiWebsitePagesRoute = ApiWebsitePagesRouteImport.update({
@@ -371,6 +621,7 @@ const ApiWebsitePagesRoute = ApiWebsitePagesRouteImport.update({
   path: '/api/website/pages',
   getParentRoute: () => rootRouteImport,
 } as any)
+<<<<<<< HEAD
 const AdminNoticesIdEditRoute = AdminNoticesIdEditRouteImport.update({
   id: '/edit',
   path: '/edit',
@@ -461,6 +712,70 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/user/': typeof UserIndexRoute
   '/activate-guardian/$token': typeof OnboardActivateGuardianTokenRoute
+=======
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronCleanupRoute = ApiCronCleanupRouteImport.update({
+  id: '/api/cron/cleanup',
+  path: '/api/cron/cleanup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardActivateGuardianTokenRoute =
+  OnboardActivateGuardianTokenRouteImport.update({
+    id: '/_onboard/activate/guardian/$token',
+    path: '/activate/guardian/$token',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/admissions': typeof AdmissionsRoute
+  '/clubs': typeof ClubsRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/events': typeof EventsRouteWithChildren
+  '/gallery': typeof GalleryRoute
+  '/my-classes': typeof MyClassesRoute
+  '/my-fees': typeof MyFeesRoute
+  '/my-homework': typeof MyHomeworkRoute
+  '/my-records': typeof MyRecordsRoute
+  '/my-results': typeof MyResultsRoute
+  '/notices': typeof NoticesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/forgot-password': typeof OnboardForgotPasswordRoute
+  '/login': typeof OnboardLoginRoute
+  '/reset-password': typeof OnboardResetPasswordRoute
+  '/signup': typeof OnboardSignupRoute
+  '/admin/academics': typeof AdminAcademicsRoute
+  '/admin/attendance': typeof AdminAttendanceRoute
+  '/admin/calendar': typeof AdminCalendarRoute
+  '/admin/content': typeof AdminContentRoute
+  '/admin/directory': typeof AdminDirectoryRoute
+  '/admin/exams': typeof AdminExamsRoute
+  '/admin/fees': typeof AdminFeesRoute
+  '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/homework': typeof AdminHomeworkRoute
+  '/admin/inbox': typeof AdminInboxRoute
+  '/admin/invites': typeof AdminInvitesRoute
+  '/admin/mail': typeof AdminMailRoute
+  '/admin/permissions': typeof AdminPermissionsRoute
+  '/admin/timetable': typeof AdminTimetableRoute
+  '/admin/transport': typeof AdminTransportRoute
+  '/api/uploads': typeof ApiUploadsRoute
+  '/events/$slug': typeof EventsSlugRoute
+  '/notices/$slug': typeof NoticesSlugRoute
+  '/uploads/$': typeof UploadsSplatRoute
+  '/admin/': typeof AdminIndexRoute
+  '/events/': typeof EventsIndexRoute
+  '/notices/': typeof NoticesIndexRoute
+>>>>>>> scms-local-main
   '/activate/$token': typeof OnboardActivateTokenRoute
   '/admin/admissions/$id': typeof AdminAdmissionsIdRoute
   '/admin/classes/$id': typeof AdminClassesIdRoute
@@ -473,6 +788,7 @@ export interface FileRoutesByFullPath {
   '/admin/staff/$id': typeof AdminStaffIdRoute
   '/admin/students/$id': typeof AdminStudentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+<<<<<<< HEAD
   '/api/website/pages': typeof ApiWebsitePagesRouteWithChildren
   '/activate/': typeof OnboardActivateIndexRoute
   '/admin/notices/$id/edit': typeof AdminNoticesIdEditRoute
@@ -526,6 +842,53 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/user': typeof UserIndexRoute
   '/activate-guardian/$token': typeof OnboardActivateGuardianTokenRoute
+=======
+  '/api/cron/cleanup': typeof ApiCronCleanupRoute
+  '/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admissions': typeof AdmissionsRoute
+  '/clubs': typeof ClubsRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/gallery': typeof GalleryRoute
+  '/my-classes': typeof MyClassesRoute
+  '/my-fees': typeof MyFeesRoute
+  '/my-homework': typeof MyHomeworkRoute
+  '/my-records': typeof MyRecordsRoute
+  '/my-results': typeof MyResultsRoute
+  '/notifications': typeof NotificationsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/forgot-password': typeof OnboardForgotPasswordRoute
+  '/login': typeof OnboardLoginRoute
+  '/reset-password': typeof OnboardResetPasswordRoute
+  '/signup': typeof OnboardSignupRoute
+  '/admin/academics': typeof AdminAcademicsRoute
+  '/admin/attendance': typeof AdminAttendanceRoute
+  '/admin/calendar': typeof AdminCalendarRoute
+  '/admin/content': typeof AdminContentRoute
+  '/admin/directory': typeof AdminDirectoryRoute
+  '/admin/exams': typeof AdminExamsRoute
+  '/admin/fees': typeof AdminFeesRoute
+  '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/homework': typeof AdminHomeworkRoute
+  '/admin/inbox': typeof AdminInboxRoute
+  '/admin/invites': typeof AdminInvitesRoute
+  '/admin/mail': typeof AdminMailRoute
+  '/admin/permissions': typeof AdminPermissionsRoute
+  '/admin/timetable': typeof AdminTimetableRoute
+  '/admin/transport': typeof AdminTransportRoute
+  '/api/uploads': typeof ApiUploadsRoute
+  '/events/$slug': typeof EventsSlugRoute
+  '/notices/$slug': typeof NoticesSlugRoute
+  '/uploads/$': typeof UploadsSplatRoute
+  '/admin': typeof AdminIndexRoute
+  '/events': typeof EventsIndexRoute
+  '/notices': typeof NoticesIndexRoute
+>>>>>>> scms-local-main
   '/activate/$token': typeof OnboardActivateTokenRoute
   '/admin/admissions/$id': typeof AdminAdmissionsIdRoute
   '/admin/classes/$id': typeof AdminClassesIdRoute
@@ -538,6 +901,7 @@ export interface FileRoutesByTo {
   '/admin/staff/$id': typeof AdminStaffIdRoute
   '/admin/students/$id': typeof AdminStudentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+<<<<<<< HEAD
   '/api/website/pages': typeof ApiWebsitePagesRouteWithChildren
   '/activate': typeof OnboardActivateIndexRoute
   '/admin/notices/$id/edit': typeof AdminNoticesIdEditRoute
@@ -596,6 +960,57 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/user/': typeof UserIndexRoute
   '/_onboard/activate-guardian/$token': typeof OnboardActivateGuardianTokenRoute
+=======
+  '/api/cron/cleanup': typeof ApiCronCleanupRoute
+  '/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/admissions': typeof AdmissionsRoute
+  '/clubs': typeof ClubsRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/events': typeof EventsRouteWithChildren
+  '/gallery': typeof GalleryRoute
+  '/my-classes': typeof MyClassesRoute
+  '/my-fees': typeof MyFeesRoute
+  '/my-homework': typeof MyHomeworkRoute
+  '/my-records': typeof MyRecordsRoute
+  '/my-results': typeof MyResultsRoute
+  '/notices': typeof NoticesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_onboard/forgot-password': typeof OnboardForgotPasswordRoute
+  '/_onboard/login': typeof OnboardLoginRoute
+  '/_onboard/reset-password': typeof OnboardResetPasswordRoute
+  '/_onboard/signup': typeof OnboardSignupRoute
+  '/admin/academics': typeof AdminAcademicsRoute
+  '/admin/attendance': typeof AdminAttendanceRoute
+  '/admin/calendar': typeof AdminCalendarRoute
+  '/admin/content': typeof AdminContentRoute
+  '/admin/directory': typeof AdminDirectoryRoute
+  '/admin/exams': typeof AdminExamsRoute
+  '/admin/fees': typeof AdminFeesRoute
+  '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/homework': typeof AdminHomeworkRoute
+  '/admin/inbox': typeof AdminInboxRoute
+  '/admin/invites': typeof AdminInvitesRoute
+  '/admin/mail': typeof AdminMailRoute
+  '/admin/permissions': typeof AdminPermissionsRoute
+  '/admin/timetable': typeof AdminTimetableRoute
+  '/admin/transport': typeof AdminTransportRoute
+  '/api/uploads': typeof ApiUploadsRoute
+  '/events/$slug': typeof EventsSlugRoute
+  '/notices/$slug': typeof NoticesSlugRoute
+  '/uploads/$': typeof UploadsSplatRoute
+  '/admin/': typeof AdminIndexRoute
+  '/events/': typeof EventsIndexRoute
+  '/notices/': typeof NoticesIndexRoute
+>>>>>>> scms-local-main
   '/_onboard/activate/$token': typeof OnboardActivateTokenRoute
   '/admin/admissions/$id': typeof AdminAdmissionsIdRoute
   '/admin/classes/$id': typeof AdminClassesIdRoute
@@ -608,6 +1023,7 @@ export interface FileRoutesById {
   '/admin/staff/$id': typeof AdminStaffIdRoute
   '/admin/students/$id': typeof AdminStudentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+<<<<<<< HEAD
   '/api/website/pages': typeof ApiWebsitePagesRouteWithChildren
   '/_onboard/activate/': typeof OnboardActivateIndexRoute
   '/admin/notices/$id/edit': typeof AdminNoticesIdEditRoute
@@ -618,11 +1034,16 @@ export interface FileRoutesById {
   '/api/website/pages/$key/unpublish': typeof ApiWebsitePagesKeyUnpublishRoute
   '/api/website/pages/$key/blocks/$blockId': typeof ApiWebsitePagesKeyBlocksBlockIdRoute
   '/api/website/pages/$key/sections/$sectionType': typeof ApiWebsitePagesKeySectionsSectionTypeRoute
+=======
+  '/api/cron/cleanup': typeof ApiCronCleanupRoute
+  '/_onboard/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
+>>>>>>> scms-local-main
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+<<<<<<< HEAD
     | '/admin'
     | '/login'
     | '/user'
@@ -665,6 +1086,51 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/user/'
     | '/activate-guardian/$token'
+=======
+    | '/about'
+    | '/admin'
+    | '/admissions'
+    | '/clubs'
+    | '/contact'
+    | '/dashboard'
+    | '/events'
+    | '/gallery'
+    | '/my-classes'
+    | '/my-fees'
+    | '/my-homework'
+    | '/my-records'
+    | '/my-results'
+    | '/notices'
+    | '/notifications'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/signup'
+    | '/admin/academics'
+    | '/admin/attendance'
+    | '/admin/calendar'
+    | '/admin/content'
+    | '/admin/directory'
+    | '/admin/exams'
+    | '/admin/fees'
+    | '/admin/gallery'
+    | '/admin/homework'
+    | '/admin/inbox'
+    | '/admin/invites'
+    | '/admin/mail'
+    | '/admin/permissions'
+    | '/admin/timetable'
+    | '/admin/transport'
+    | '/api/uploads'
+    | '/events/$slug'
+    | '/notices/$slug'
+    | '/uploads/$'
+    | '/admin/'
+    | '/events/'
+    | '/notices/'
+>>>>>>> scms-local-main
     | '/activate/$token'
     | '/admin/admissions/$id'
     | '/admin/classes/$id'
@@ -677,6 +1143,7 @@ export interface FileRouteTypes {
     | '/admin/staff/$id'
     | '/admin/students/$id'
     | '/api/auth/$'
+<<<<<<< HEAD
     | '/api/website/pages'
     | '/activate/'
     | '/admin/notices/$id/edit'
@@ -730,6 +1197,53 @@ export interface FileRouteTypes {
     | '/admin'
     | '/user'
     | '/activate-guardian/$token'
+=======
+    | '/api/cron/cleanup'
+    | '/activate/guardian/$token'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/about'
+    | '/admissions'
+    | '/clubs'
+    | '/contact'
+    | '/dashboard'
+    | '/gallery'
+    | '/my-classes'
+    | '/my-fees'
+    | '/my-homework'
+    | '/my-records'
+    | '/my-results'
+    | '/notifications'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/signup'
+    | '/admin/academics'
+    | '/admin/attendance'
+    | '/admin/calendar'
+    | '/admin/content'
+    | '/admin/directory'
+    | '/admin/exams'
+    | '/admin/fees'
+    | '/admin/gallery'
+    | '/admin/homework'
+    | '/admin/inbox'
+    | '/admin/invites'
+    | '/admin/mail'
+    | '/admin/permissions'
+    | '/admin/timetable'
+    | '/admin/transport'
+    | '/api/uploads'
+    | '/events/$slug'
+    | '/notices/$slug'
+    | '/uploads/$'
+    | '/admin'
+    | '/events'
+    | '/notices'
+>>>>>>> scms-local-main
     | '/activate/$token'
     | '/admin/admissions/$id'
     | '/admin/classes/$id'
@@ -742,6 +1256,7 @@ export interface FileRouteTypes {
     | '/admin/staff/$id'
     | '/admin/students/$id'
     | '/api/auth/$'
+<<<<<<< HEAD
     | '/api/website/pages'
     | '/activate'
     | '/admin/notices/$id/edit'
@@ -799,6 +1314,56 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/user/'
     | '/_onboard/activate-guardian/$token'
+=======
+    | '/api/cron/cleanup'
+    | '/activate/guardian/$token'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/admissions'
+    | '/clubs'
+    | '/contact'
+    | '/dashboard'
+    | '/events'
+    | '/gallery'
+    | '/my-classes'
+    | '/my-fees'
+    | '/my-homework'
+    | '/my-records'
+    | '/my-results'
+    | '/notices'
+    | '/notifications'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/_onboard/forgot-password'
+    | '/_onboard/login'
+    | '/_onboard/reset-password'
+    | '/_onboard/signup'
+    | '/admin/academics'
+    | '/admin/attendance'
+    | '/admin/calendar'
+    | '/admin/content'
+    | '/admin/directory'
+    | '/admin/exams'
+    | '/admin/fees'
+    | '/admin/gallery'
+    | '/admin/homework'
+    | '/admin/inbox'
+    | '/admin/invites'
+    | '/admin/mail'
+    | '/admin/permissions'
+    | '/admin/timetable'
+    | '/admin/transport'
+    | '/api/uploads'
+    | '/events/$slug'
+    | '/notices/$slug'
+    | '/uploads/$'
+    | '/admin/'
+    | '/events/'
+    | '/notices/'
+>>>>>>> scms-local-main
     | '/_onboard/activate/$token'
     | '/admin/admissions/$id'
     | '/admin/classes/$id'
@@ -811,6 +1376,7 @@ export interface FileRouteTypes {
     | '/admin/staff/$id'
     | '/admin/students/$id'
     | '/api/auth/$'
+<<<<<<< HEAD
     | '/api/website/pages'
     | '/_onboard/activate/'
     | '/admin/notices/$id/edit'
@@ -832,10 +1398,46 @@ export interface RootRouteChildren {
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiWebsitePagesRoute: typeof ApiWebsitePagesRouteWithChildren
   ApiWebsitePageKeyRoute: typeof ApiWebsitePageKeyRoute
+=======
+    | '/api/cron/cleanup'
+    | '/_onboard/activate/guardian/$token'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  AdmissionsRoute: typeof AdmissionsRoute
+  ClubsRoute: typeof ClubsRoute
+  ContactRoute: typeof ContactRoute
+  DashboardRoute: typeof DashboardRoute
+  EventsRoute: typeof EventsRouteWithChildren
+  GalleryRoute: typeof GalleryRoute
+  MyClassesRoute: typeof MyClassesRoute
+  MyFeesRoute: typeof MyFeesRoute
+  MyHomeworkRoute: typeof MyHomeworkRoute
+  MyRecordsRoute: typeof MyRecordsRoute
+  MyResultsRoute: typeof MyResultsRoute
+  NoticesRoute: typeof NoticesRouteWithChildren
+  NotificationsRoute: typeof NotificationsRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  OnboardForgotPasswordRoute: typeof OnboardForgotPasswordRoute
+  OnboardLoginRoute: typeof OnboardLoginRoute
+  OnboardResetPasswordRoute: typeof OnboardResetPasswordRoute
+  OnboardSignupRoute: typeof OnboardSignupRoute
+  ApiUploadsRoute: typeof ApiUploadsRoute
+  UploadsSplatRoute: typeof UploadsSplatRoute
+  OnboardActivateTokenRoute: typeof OnboardActivateTokenRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiCronCleanupRoute: typeof ApiCronCleanupRoute
+  OnboardActivateGuardianTokenRoute: typeof OnboardActivateGuardianTokenRoute
+>>>>>>> scms-local-main
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+<<<<<<< HEAD
     '/_onboard': {
       id: '/_onboard'
       path: ''
@@ -848,6 +1450,139 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof PublicRouteImport
+=======
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admissions': {
+      id: '/admissions'
+      path: '/admissions'
+      fullPath: '/admissions'
+      preLoaderRoute: typeof AdmissionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clubs': {
+      id: '/clubs'
+      path: '/clubs'
+      fullPath: '/clubs'
+      preLoaderRoute: typeof ClubsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-classes': {
+      id: '/my-classes'
+      path: '/my-classes'
+      fullPath: '/my-classes'
+      preLoaderRoute: typeof MyClassesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-fees': {
+      id: '/my-fees'
+      path: '/my-fees'
+      fullPath: '/my-fees'
+      preLoaderRoute: typeof MyFeesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-homework': {
+      id: '/my-homework'
+      path: '/my-homework'
+      fullPath: '/my-homework'
+      preLoaderRoute: typeof MyHomeworkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-records': {
+      id: '/my-records'
+      path: '/my-records'
+      fullPath: '/my-records'
+      preLoaderRoute: typeof MyRecordsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-results': {
+      id: '/my-results'
+      path: '/my-results'
+      fullPath: '/my-results'
+      preLoaderRoute: typeof MyResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notices': {
+      id: '/notices'
+      path: '/notices'
+      fullPath: '/notices'
+      preLoaderRoute: typeof NoticesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_onboard/forgot-password': {
+      id: '/_onboard/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof OnboardForgotPasswordRouteImport
+>>>>>>> scms-local-main
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -864,6 +1599,7 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+<<<<<<< HEAD
     '/user': {
       id: '/user'
       path: '/user'
@@ -975,6 +1711,21 @@ declare module '@tanstack/react-router' {
       fullPath: '/transportation'
       preLoaderRoute: typeof PublicTransportationRouteImport
       parentRoute: typeof PublicRoute
+=======
+    '/_onboard/reset-password': {
+      id: '/_onboard/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof OnboardResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_onboard/signup': {
+      id: '/_onboard/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof OnboardSignupRouteImport
+      parentRoute: typeof rootRouteImport
+>>>>>>> scms-local-main
     }
     '/admin/': {
       id: '/admin/'
@@ -983,6 +1734,7 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+<<<<<<< HEAD
     '/admin/$': {
       id: '/admin/$'
       path: '/$'
@@ -1002,6 +1754,13 @@ declare module '@tanstack/react-router' {
       path: '/admissions'
       fullPath: '/admin/admissions'
       preLoaderRoute: typeof AdminAdmissionsRouteImport
+=======
+    '/admin/academics': {
+      id: '/admin/academics'
+      path: '/academics'
+      fullPath: '/admin/academics'
+      preLoaderRoute: typeof AdminAcademicsRouteImport
+>>>>>>> scms-local-main
       parentRoute: typeof AdminRoute
     }
     '/admin/attendance': {
@@ -1011,6 +1770,7 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAttendanceRouteImport
       parentRoute: typeof AdminRoute
     }
+<<<<<<< HEAD
     '/admin/classes': {
       id: '/admin/classes'
       path: '/classes'
@@ -1044,6 +1804,41 @@ declare module '@tanstack/react-router' {
       path: '/faculty'
       fullPath: '/admin/faculty'
       preLoaderRoute: typeof AdminFacultyRouteImport
+=======
+    '/admin/calendar': {
+      id: '/admin/calendar'
+      path: '/calendar'
+      fullPath: '/admin/calendar'
+      preLoaderRoute: typeof AdminCalendarRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/content': {
+      id: '/admin/content'
+      path: '/content'
+      fullPath: '/admin/content'
+      preLoaderRoute: typeof AdminContentRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/directory': {
+      id: '/admin/directory'
+      path: '/directory'
+      fullPath: '/admin/directory'
+      preLoaderRoute: typeof AdminDirectoryRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/exams': {
+      id: '/admin/exams'
+      path: '/exams'
+      fullPath: '/admin/exams'
+      preLoaderRoute: typeof AdminExamsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/fees': {
+      id: '/admin/fees'
+      path: '/fees'
+      fullPath: '/admin/fees'
+      preLoaderRoute: typeof AdminFeesRouteImport
+>>>>>>> scms-local-main
       parentRoute: typeof AdminRoute
     }
     '/admin/gallery': {
@@ -1053,6 +1848,7 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminGalleryRouteImport
       parentRoute: typeof AdminRoute
     }
+<<<<<<< HEAD
     '/admin/notices': {
       id: '/admin/notices'
       path: '/notices'
@@ -1240,6 +2036,97 @@ declare module '@tanstack/react-router' {
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
+=======
+    '/admin/homework': {
+      id: '/admin/homework'
+      path: '/homework'
+      fullPath: '/admin/homework'
+      preLoaderRoute: typeof AdminHomeworkRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/inbox': {
+      id: '/admin/inbox'
+      path: '/inbox'
+      fullPath: '/admin/inbox'
+      preLoaderRoute: typeof AdminInboxRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/invites': {
+      id: '/admin/invites'
+      path: '/invites'
+      fullPath: '/admin/invites'
+      preLoaderRoute: typeof AdminInvitesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/mail': {
+      id: '/admin/mail'
+      path: '/mail'
+      fullPath: '/admin/mail'
+      preLoaderRoute: typeof AdminMailRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/permissions': {
+      id: '/admin/permissions'
+      path: '/permissions'
+      fullPath: '/admin/permissions'
+      preLoaderRoute: typeof AdminPermissionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/timetable': {
+      id: '/admin/timetable'
+      path: '/timetable'
+      fullPath: '/admin/timetable'
+      preLoaderRoute: typeof AdminTimetableRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/transport': {
+      id: '/admin/transport'
+      path: '/transport'
+      fullPath: '/admin/transport'
+      preLoaderRoute: typeof AdminTransportRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/api/uploads': {
+      id: '/api/uploads'
+      path: '/api/uploads'
+      fullPath: '/api/uploads'
+      preLoaderRoute: typeof ApiUploadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/': {
+      id: '/events/'
+      path: '/'
+      fullPath: '/events/'
+      preLoaderRoute: typeof EventsIndexRouteImport
+      parentRoute: typeof EventsRoute
+    }
+    '/events/$slug': {
+      id: '/events/$slug'
+      path: '/$slug'
+      fullPath: '/events/$slug'
+      preLoaderRoute: typeof EventsSlugRouteImport
+      parentRoute: typeof EventsRoute
+    }
+    '/notices/': {
+      id: '/notices/'
+      path: '/'
+      fullPath: '/notices/'
+      preLoaderRoute: typeof NoticesIndexRouteImport
+      parentRoute: typeof NoticesRoute
+    }
+    '/notices/$slug': {
+      id: '/notices/$slug'
+      path: '/$slug'
+      fullPath: '/notices/$slug'
+      preLoaderRoute: typeof NoticesSlugRouteImport
+      parentRoute: typeof NoticesRoute
+    }
+    '/uploads/$': {
+      id: '/uploads/$'
+      path: '/uploads/$'
+      fullPath: '/uploads/$'
+      preLoaderRoute: typeof UploadsSplatRouteImport
+>>>>>>> scms-local-main
       parentRoute: typeof rootRouteImport
     }
     '/api/website/pages': {
@@ -1249,6 +2136,7 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiWebsitePagesRouteImport
       parentRoute: typeof rootRouteImport
     }
+<<<<<<< HEAD
     '/admin/notices/$id/edit': {
       id: '/admin/notices/$id/edit'
       path: '/edit'
@@ -1304,10 +2192,33 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/website/pages/$key/sections/$sectionType'
       preLoaderRoute: typeof ApiWebsitePagesKeySectionsSectionTypeRouteImport
       parentRoute: typeof ApiWebsitePagesKeyRoute
+=======
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/cleanup': {
+      id: '/api/cron/cleanup'
+      path: '/api/cron/cleanup'
+      fullPath: '/api/cron/cleanup'
+      preLoaderRoute: typeof ApiCronCleanupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_onboard/activate/guardian/$token': {
+      id: '/_onboard/activate/guardian/$token'
+      path: '/activate/guardian/$token'
+      fullPath: '/activate/guardian/$token'
+      preLoaderRoute: typeof OnboardActivateGuardianTokenRouteImport
+      parentRoute: typeof rootRouteImport
+>>>>>>> scms-local-main
     }
   }
 }
 
+<<<<<<< HEAD
 interface OnboardRouteChildren {
   OnboardActivateGuardianTokenRoute: typeof OnboardActivateGuardianTokenRoute
   OnboardActivateTokenRoute: typeof OnboardActivateTokenRoute
@@ -1316,6 +2227,99 @@ interface OnboardRouteChildren {
 
 const OnboardRouteChildren: OnboardRouteChildren = {
   OnboardActivateGuardianTokenRoute: OnboardActivateGuardianTokenRoute,
+=======
+interface AdminRouteChildren {
+  AdminAcademicsRoute: typeof AdminAcademicsRoute
+  AdminAttendanceRoute: typeof AdminAttendanceRoute
+  AdminCalendarRoute: typeof AdminCalendarRoute
+  AdminContentRoute: typeof AdminContentRoute
+  AdminDirectoryRoute: typeof AdminDirectoryRoute
+  AdminExamsRoute: typeof AdminExamsRoute
+  AdminFeesRoute: typeof AdminFeesRoute
+  AdminGalleryRoute: typeof AdminGalleryRoute
+  AdminHomeworkRoute: typeof AdminHomeworkRoute
+  AdminInboxRoute: typeof AdminInboxRoute
+  AdminInvitesRoute: typeof AdminInvitesRoute
+  AdminMailRoute: typeof AdminMailRoute
+  AdminPermissionsRoute: typeof AdminPermissionsRoute
+  AdminTimetableRoute: typeof AdminTimetableRoute
+  AdminTransportRoute: typeof AdminTransportRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAcademicsRoute: AdminAcademicsRoute,
+  AdminAttendanceRoute: AdminAttendanceRoute,
+  AdminCalendarRoute: AdminCalendarRoute,
+  AdminContentRoute: AdminContentRoute,
+  AdminDirectoryRoute: AdminDirectoryRoute,
+  AdminExamsRoute: AdminExamsRoute,
+  AdminFeesRoute: AdminFeesRoute,
+  AdminGalleryRoute: AdminGalleryRoute,
+  AdminHomeworkRoute: AdminHomeworkRoute,
+  AdminInboxRoute: AdminInboxRoute,
+  AdminInvitesRoute: AdminInvitesRoute,
+  AdminMailRoute: AdminMailRoute,
+  AdminPermissionsRoute: AdminPermissionsRoute,
+  AdminTimetableRoute: AdminTimetableRoute,
+  AdminTransportRoute: AdminTransportRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface EventsRouteChildren {
+  EventsSlugRoute: typeof EventsSlugRoute
+  EventsIndexRoute: typeof EventsIndexRoute
+}
+
+const EventsRouteChildren: EventsRouteChildren = {
+  EventsSlugRoute: EventsSlugRoute,
+  EventsIndexRoute: EventsIndexRoute,
+}
+
+const EventsRouteWithChildren =
+  EventsRoute._addFileChildren(EventsRouteChildren)
+
+interface NoticesRouteChildren {
+  NoticesSlugRoute: typeof NoticesSlugRoute
+  NoticesIndexRoute: typeof NoticesIndexRoute
+}
+
+const NoticesRouteChildren: NoticesRouteChildren = {
+  NoticesSlugRoute: NoticesSlugRoute,
+  NoticesIndexRoute: NoticesIndexRoute,
+}
+
+const NoticesRouteWithChildren =
+  NoticesRoute._addFileChildren(NoticesRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AdmissionsRoute: AdmissionsRoute,
+  ClubsRoute: ClubsRoute,
+  ContactRoute: ContactRoute,
+  DashboardRoute: DashboardRoute,
+  EventsRoute: EventsRouteWithChildren,
+  GalleryRoute: GalleryRoute,
+  MyClassesRoute: MyClassesRoute,
+  MyFeesRoute: MyFeesRoute,
+  MyHomeworkRoute: MyHomeworkRoute,
+  MyRecordsRoute: MyRecordsRoute,
+  MyResultsRoute: MyResultsRoute,
+  NoticesRoute: NoticesRouteWithChildren,
+  NotificationsRoute: NotificationsRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  OnboardForgotPasswordRoute: OnboardForgotPasswordRoute,
+  OnboardLoginRoute: OnboardLoginRoute,
+  OnboardResetPasswordRoute: OnboardResetPasswordRoute,
+  OnboardSignupRoute: OnboardSignupRoute,
+  ApiUploadsRoute: ApiUploadsRoute,
+  UploadsSplatRoute: UploadsSplatRoute,
+>>>>>>> scms-local-main
   OnboardActivateTokenRoute: OnboardActivateTokenRoute,
   OnboardActivateIndexRoute: OnboardActivateIndexRoute,
 }
@@ -1599,8 +2603,13 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   UserRoute: UserRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+<<<<<<< HEAD
   ApiWebsitePagesRoute: ApiWebsitePagesRouteWithChildren,
   ApiWebsitePageKeyRoute: ApiWebsitePageKeyRoute,
+=======
+  ApiCronCleanupRoute: ApiCronCleanupRoute,
+  OnboardActivateGuardianTokenRoute: OnboardActivateGuardianTokenRoute,
+>>>>>>> scms-local-main
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

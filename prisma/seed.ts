@@ -104,7 +104,7 @@ async function main() {
     }
   })
 
-  const staff = await prisma.staff.upsert({
+  await prisma.staff.upsert({
     where: {
       userId: user.id
     },
@@ -117,7 +117,7 @@ async function main() {
     }
   })
 
-  const role = await prisma.userRole.upsert({
+  await prisma.userRole.upsert({
     where: {
       userId_organizationId_role: {
         userId: user.id,
@@ -134,7 +134,53 @@ async function main() {
     }
   })
 
-  const invite = await prisma.invite.create({
+  // A default academic calendar keeps timetable/exam/fee screens usable on a
+  // fresh database. Existing years are never rewritten.
+  const calendarYear = new Date().getUTCFullYear()
+  const yearStartsOn = new Date(Date.UTC(calendarYear, 3, 1))
+  const yearEndsOn = new Date(Date.UTC(calendarYear + 1, 2, 31))
+
+  const academicYear = await prisma.academicYear.upsert({
+    where: {
+      organizationId_name: {
+        organizationId: organization.id,
+        name: `${calendarYear}-${String(calendarYear + 1).slice(-2)}`
+      }
+    },
+    update: {},
+    create: {
+      organizationId: organization.id,
+      name: `${calendarYear}-${String(calendarYear + 1).slice(-2)}`,
+      startsOn: yearStartsOn,
+      endsOn: yearEndsOn,
+      isActive: true
+    }
+  })
+
+  await prisma.term.createMany({
+    data: [
+      {
+        academicYearId: academicYear.id,
+        name: 'Term 1',
+        startsOn: yearStartsOn,
+        endsOn: new Date(Date.UTC(calendarYear, 8, 30))
+      },
+      {
+        academicYearId: academicYear.id,
+        name: 'Term 2',
+        startsOn: new Date(Date.UTC(calendarYear, 9, 1)),
+        endsOn: yearEndsOn
+      }
+    ],
+    skipDuplicates: true
+  })
+
+  // The super admin should not receive a fresh invite on every seed run.
+  const existingInvite = await prisma.invite.findFirst({
+    where: { userId: user.id, usedAt: null },
+  })
+
+  const invite = existingInvite ?? await prisma.invite.create({
     data: {
 			token: crypto.randomUUID(),
 			userId: user.id,
@@ -143,6 +189,61 @@ async function main() {
 				Date.now() + 1000 * 60 * 60 * 24 * 7,
 			),
 		},
+  })
+
+  // A small set of starter content so the public pages are never empty.
+  await prisma.notice.upsert({
+    where: { slug: "welcome-to-the-new-school-year" },
+    update: {},
+    create: {
+      title: "Welcome to the new school year",
+      slug: "welcome-to-the-new-school-year",
+      summary:
+        "The school office shares the key dates and reminders for the start of the academic session.",
+      body:
+        "Welcome back, everyone.\n\nClasses resume on the first working day of the new session. Students should arrive by 9:00 with their uniforms, notebooks and a completed emergency contact form.\n\nThe office will publish the full calendar, including examination dates and parent meetings, under Events. Please check the Notices page regularly for updates.",
+      category: "General",
+      audience: "ALL",
+      isPublished: true,
+      publishedAt: new Date(),
+      organizationId: organization.id,
+      branchId: branch.id,
+      authorId: user.id,
+    },
+  })
+
+  await prisma.event.upsert({
+    where: { slug: "parent-teacher-meeting" },
+    update: {},
+    create: {
+      title: "Parent–teacher meeting",
+      slug: "parent-teacher-meeting",
+      description:
+        "A chance for guardians to meet class teachers and review the first term's progress.",
+      location: "Main hall",
+      startsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 21),
+      endsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 21 + 1000 * 60 * 60 * 3),
+      isPublished: true,
+      publishedAt: new Date(),
+      organizationId: organization.id,
+      branchId: branch.id,
+      authorId: user.id,
+    },
+  })
+
+  await prisma.club.upsert({
+    where: { slug: "science-club" },
+    update: {},
+    create: {
+      name: "Science Club",
+      slug: "science-club",
+      description:
+        "Student-led experiments, science exhibitions and preparation for regional competitions.",
+      meetingSchedule: "Fridays, 2:00 – 3:00",
+      isActive: true,
+      organizationId: organization.id,
+      branchId: branch.id,
+    },
   })
 
   console.log(`

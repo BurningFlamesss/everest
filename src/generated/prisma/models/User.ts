@@ -213,6 +213,12 @@ export type UserWhereInput = {
   staff?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
   guardian?: Prisma.XOR<Prisma.GuardianNullableScalarRelationFilter, Prisma.GuardianWhereInput> | null
   invites?: Prisma.InviteListRelationFilter
+  guardianInvites?: Prisma.GuardianInviteListRelationFilter
+  permissions?: Prisma.UserPermissionListRelationFilter
+  uploadedFiles?: Prisma.FileAssetListRelationFilter
+  reviewedInviteRequests?: Prisma.InviteRequestListRelationFilter
+  handledContactMessages?: Prisma.ContactMessageListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -231,6 +237,12 @@ export type UserOrderByWithRelationInput = {
   staff?: Prisma.StaffOrderByWithRelationInput
   guardian?: Prisma.GuardianOrderByWithRelationInput
   invites?: Prisma.InviteOrderByRelationAggregateInput
+  guardianInvites?: Prisma.GuardianInviteOrderByRelationAggregateInput
+  permissions?: Prisma.UserPermissionOrderByRelationAggregateInput
+  uploadedFiles?: Prisma.FileAssetOrderByRelationAggregateInput
+  reviewedInviteRequests?: Prisma.InviteRequestOrderByRelationAggregateInput
+  handledContactMessages?: Prisma.ContactMessageOrderByRelationAggregateInput
+  notifications?: Prisma.NotificationOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -252,6 +264,12 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   staff?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
   guardian?: Prisma.XOR<Prisma.GuardianNullableScalarRelationFilter, Prisma.GuardianWhereInput> | null
   invites?: Prisma.InviteListRelationFilter
+  guardianInvites?: Prisma.GuardianInviteListRelationFilter
+  permissions?: Prisma.UserPermissionListRelationFilter
+  uploadedFiles?: Prisma.FileAssetListRelationFilter
+  reviewedInviteRequests?: Prisma.InviteRequestListRelationFilter
+  handledContactMessages?: Prisma.ContactMessageListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -298,6 +316,12 @@ export type UserCreateInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -316,6 +340,12 @@ export type UserUncheckedCreateInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -334,6 +364,12 @@ export type UserUpdateInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -352,6 +388,12 @@ export type UserUncheckedUpdateInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -423,6 +465,11 @@ export type UserMinOrderByAggregateInput = {
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -543,6 +590,98 @@ export type UserUpdateOneRequiredWithoutInvitesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInvitesInput, Prisma.UserUpdateWithoutInvitesInput>, Prisma.UserUncheckedUpdateWithoutInvitesInput>
 }
 
+export type UserCreateNestedOneWithoutGuardianInvitesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGuardianInvitesInput, Prisma.UserUncheckedCreateWithoutGuardianInvitesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGuardianInvitesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutGuardianInvitesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGuardianInvitesInput, Prisma.UserUncheckedCreateWithoutGuardianInvitesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGuardianInvitesInput
+  upsert?: Prisma.UserUpsertWithoutGuardianInvitesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGuardianInvitesInput, Prisma.UserUpdateWithoutGuardianInvitesInput>, Prisma.UserUncheckedUpdateWithoutGuardianInvitesInput>
+}
+
+export type UserCreateNestedOneWithoutPermissionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPermissionsInput, Prisma.UserUncheckedCreateWithoutPermissionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPermissionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPermissionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPermissionsInput, Prisma.UserUncheckedCreateWithoutPermissionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPermissionsInput
+  upsert?: Prisma.UserUpsertWithoutPermissionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPermissionsInput, Prisma.UserUpdateWithoutPermissionsInput>, Prisma.UserUncheckedUpdateWithoutPermissionsInput>
+}
+
+export type UserCreateNestedOneWithoutReviewedInviteRequestsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedInviteRequestsInput, Prisma.UserUncheckedCreateWithoutReviewedInviteRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedInviteRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutReviewedInviteRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedInviteRequestsInput, Prisma.UserUncheckedCreateWithoutReviewedInviteRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedInviteRequestsInput
+  upsert?: Prisma.UserUpsertWithoutReviewedInviteRequestsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReviewedInviteRequestsInput, Prisma.UserUpdateWithoutReviewedInviteRequestsInput>, Prisma.UserUncheckedUpdateWithoutReviewedInviteRequestsInput>
+}
+
+export type UserCreateNestedOneWithoutUploadedFilesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedFilesInput, Prisma.UserUncheckedCreateWithoutUploadedFilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedFilesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutUploadedFilesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedFilesInput, Prisma.UserUncheckedCreateWithoutUploadedFilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedFilesInput
+  upsert?: Prisma.UserUpsertWithoutUploadedFilesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedFilesInput, Prisma.UserUpdateWithoutUploadedFilesInput>, Prisma.UserUncheckedUpdateWithoutUploadedFilesInput>
+}
+
+export type UserCreateNestedOneWithoutHandledContactMessagesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutHandledContactMessagesInput, Prisma.UserUncheckedCreateWithoutHandledContactMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHandledContactMessagesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutHandledContactMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutHandledContactMessagesInput, Prisma.UserUncheckedCreateWithoutHandledContactMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHandledContactMessagesInput
+  upsert?: Prisma.UserUpsertWithoutHandledContactMessagesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHandledContactMessagesInput, Prisma.UserUpdateWithoutHandledContactMessagesInput>, Prisma.UserUncheckedUpdateWithoutHandledContactMessagesInput>
+}
+
+export type UserCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.UserUpsertWithoutNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+}
+
 export type UserCreateWithoutSessionsInput = {
   id: string
   name: string
@@ -558,6 +697,12 @@ export type UserCreateWithoutSessionsInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -575,6 +720,12 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -608,6 +759,12 @@ export type UserUpdateWithoutSessionsInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -625,6 +782,12 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -642,6 +805,12 @@ export type UserCreateWithoutAccountsInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -659,6 +828,12 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -692,6 +867,12 @@ export type UserUpdateWithoutAccountsInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -709,6 +890,12 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUserRolesInput = {
@@ -726,6 +913,12 @@ export type UserCreateWithoutUserRolesInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -743,6 +936,12 @@ export type UserUncheckedCreateWithoutUserRolesInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -776,6 +975,12 @@ export type UserUpdateWithoutUserRolesInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -793,6 +998,12 @@ export type UserUncheckedUpdateWithoutUserRolesInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutStudentInput = {
@@ -810,6 +1021,12 @@ export type UserCreateWithoutStudentInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStudentInput = {
@@ -827,6 +1044,12 @@ export type UserUncheckedCreateWithoutStudentInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStudentInput = {
@@ -860,6 +1083,12 @@ export type UserUpdateWithoutStudentInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStudentInput = {
@@ -877,6 +1106,12 @@ export type UserUncheckedUpdateWithoutStudentInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutStaffInput = {
@@ -894,6 +1129,12 @@ export type UserCreateWithoutStaffInput = {
   student?: Prisma.StudentCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStaffInput = {
@@ -911,6 +1152,12 @@ export type UserUncheckedCreateWithoutStaffInput = {
   student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStaffInput = {
@@ -944,6 +1191,12 @@ export type UserUpdateWithoutStaffInput = {
   student?: Prisma.StudentUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStaffInput = {
@@ -961,6 +1214,12 @@ export type UserUncheckedUpdateWithoutStaffInput = {
   student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGuardianInput = {
@@ -978,6 +1237,12 @@ export type UserCreateWithoutGuardianInput = {
   student?: Prisma.StudentCreateNestedOneWithoutUserInput
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGuardianInput = {
@@ -995,6 +1260,12 @@ export type UserUncheckedCreateWithoutGuardianInput = {
   student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGuardianInput = {
@@ -1028,6 +1299,12 @@ export type UserUpdateWithoutGuardianInput = {
   student?: Prisma.StudentUpdateOneWithoutUserNestedInput
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGuardianInput = {
@@ -1045,6 +1322,12 @@ export type UserUncheckedUpdateWithoutGuardianInput = {
   student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutInvitesInput = {
@@ -1062,6 +1345,12 @@ export type UserCreateWithoutInvitesInput = {
   student?: Prisma.StudentCreateNestedOneWithoutUserInput
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInvitesInput = {
@@ -1079,6 +1368,12 @@ export type UserUncheckedCreateWithoutInvitesInput = {
   student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInvitesInput = {
@@ -1112,6 +1407,12 @@ export type UserUpdateWithoutInvitesInput = {
   student?: Prisma.StudentUpdateOneWithoutUserNestedInput
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInvitesInput = {
@@ -1129,6 +1430,660 @@ export type UserUncheckedUpdateWithoutInvitesInput = {
   student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutGuardianInvitesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutGuardianInvitesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutGuardianInvitesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutGuardianInvitesInput, Prisma.UserUncheckedCreateWithoutGuardianInvitesInput>
+}
+
+export type UserUpsertWithoutGuardianInvitesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutGuardianInvitesInput, Prisma.UserUncheckedUpdateWithoutGuardianInvitesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutGuardianInvitesInput, Prisma.UserUncheckedCreateWithoutGuardianInvitesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutGuardianInvitesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutGuardianInvitesInput, Prisma.UserUncheckedUpdateWithoutGuardianInvitesInput>
+}
+
+export type UserUpdateWithoutGuardianInvitesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutGuardianInvitesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPermissionsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPermissionsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPermissionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPermissionsInput, Prisma.UserUncheckedCreateWithoutPermissionsInput>
+}
+
+export type UserUpsertWithoutPermissionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPermissionsInput, Prisma.UserUncheckedUpdateWithoutPermissionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPermissionsInput, Prisma.UserUncheckedCreateWithoutPermissionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPermissionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPermissionsInput, Prisma.UserUncheckedUpdateWithoutPermissionsInput>
+}
+
+export type UserUpdateWithoutPermissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPermissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutReviewedInviteRequestsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutReviewedInviteRequestsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutReviewedInviteRequestsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedInviteRequestsInput, Prisma.UserUncheckedCreateWithoutReviewedInviteRequestsInput>
+}
+
+export type UserUpsertWithoutReviewedInviteRequestsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReviewedInviteRequestsInput, Prisma.UserUncheckedUpdateWithoutReviewedInviteRequestsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedInviteRequestsInput, Prisma.UserUncheckedCreateWithoutReviewedInviteRequestsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReviewedInviteRequestsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReviewedInviteRequestsInput, Prisma.UserUncheckedUpdateWithoutReviewedInviteRequestsInput>
+}
+
+export type UserUpdateWithoutReviewedInviteRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReviewedInviteRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutUploadedFilesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutUploadedFilesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutUploadedFilesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedFilesInput, Prisma.UserUncheckedCreateWithoutUploadedFilesInput>
+}
+
+export type UserUpsertWithoutUploadedFilesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUploadedFilesInput, Prisma.UserUncheckedUpdateWithoutUploadedFilesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedFilesInput, Prisma.UserUncheckedCreateWithoutUploadedFilesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUploadedFilesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUploadedFilesInput, Prisma.UserUncheckedUpdateWithoutUploadedFilesInput>
+}
+
+export type UserUpdateWithoutUploadedFilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUploadedFilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutHandledContactMessagesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutHandledContactMessagesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutHandledContactMessagesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutHandledContactMessagesInput, Prisma.UserUncheckedCreateWithoutHandledContactMessagesInput>
+}
+
+export type UserUpsertWithoutHandledContactMessagesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutHandledContactMessagesInput, Prisma.UserUncheckedUpdateWithoutHandledContactMessagesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutHandledContactMessagesInput, Prisma.UserUncheckedCreateWithoutHandledContactMessagesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutHandledContactMessagesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutHandledContactMessagesInput, Prisma.UserUncheckedUpdateWithoutHandledContactMessagesInput>
+}
+
+export type UserUpdateWithoutHandledContactMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutHandledContactMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutNotificationsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+}
+
+export type UserUncheckedCreateWithoutNotificationsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+}
+
+export type UserCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+}
+
+export type UserUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type UserUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
 }
 
 
@@ -1141,6 +2096,12 @@ export type UserCountOutputType = {
   accounts: number
   userRoles: number
   invites: number
+  guardianInvites: number
+  permissions: number
+  uploadedFiles: number
+  reviewedInviteRequests: number
+  handledContactMessages: number
+  notifications: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1148,6 +2109,12 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
   userRoles?: boolean | UserCountOutputTypeCountUserRolesArgs
   invites?: boolean | UserCountOutputTypeCountInvitesArgs
+  guardianInvites?: boolean | UserCountOutputTypeCountGuardianInvitesArgs
+  permissions?: boolean | UserCountOutputTypeCountPermissionsArgs
+  uploadedFiles?: boolean | UserCountOutputTypeCountUploadedFilesArgs
+  reviewedInviteRequests?: boolean | UserCountOutputTypeCountReviewedInviteRequestsArgs
+  handledContactMessages?: boolean | UserCountOutputTypeCountHandledContactMessagesArgs
+  notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
 }
 
 /**
@@ -1188,6 +2155,48 @@ export type UserCountOutputTypeCountInvitesArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.InviteWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountGuardianInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GuardianInviteWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPermissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserPermissionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUploadedFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FileAssetWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReviewedInviteRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InviteRequestWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountHandledContactMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ContactMessageWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1205,6 +2214,12 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   staff?: boolean | Prisma.User$staffArgs<ExtArgs>
   guardian?: boolean | Prisma.User$guardianArgs<ExtArgs>
   invites?: boolean | Prisma.User$invitesArgs<ExtArgs>
+  guardianInvites?: boolean | Prisma.User$guardianInvitesArgs<ExtArgs>
+  permissions?: boolean | Prisma.User$permissionsArgs<ExtArgs>
+  uploadedFiles?: boolean | Prisma.User$uploadedFilesArgs<ExtArgs>
+  reviewedInviteRequests?: boolean | Prisma.User$reviewedInviteRequestsArgs<ExtArgs>
+  handledContactMessages?: boolean | Prisma.User$handledContactMessagesArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1250,6 +2265,12 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   staff?: boolean | Prisma.User$staffArgs<ExtArgs>
   guardian?: boolean | Prisma.User$guardianArgs<ExtArgs>
   invites?: boolean | Prisma.User$invitesArgs<ExtArgs>
+  guardianInvites?: boolean | Prisma.User$guardianInvitesArgs<ExtArgs>
+  permissions?: boolean | Prisma.User$permissionsArgs<ExtArgs>
+  uploadedFiles?: boolean | Prisma.User$uploadedFilesArgs<ExtArgs>
+  reviewedInviteRequests?: boolean | Prisma.User$reviewedInviteRequestsArgs<ExtArgs>
+  handledContactMessages?: boolean | Prisma.User$handledContactMessagesArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1265,6 +2286,12 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     staff: Prisma.$StaffPayload<ExtArgs> | null
     guardian: Prisma.$GuardianPayload<ExtArgs> | null
     invites: Prisma.$InvitePayload<ExtArgs>[]
+    guardianInvites: Prisma.$GuardianInvitePayload<ExtArgs>[]
+    permissions: Prisma.$UserPermissionPayload<ExtArgs>[]
+    uploadedFiles: Prisma.$FileAssetPayload<ExtArgs>[]
+    reviewedInviteRequests: Prisma.$InviteRequestPayload<ExtArgs>[]
+    handledContactMessages: Prisma.$ContactMessagePayload<ExtArgs>[]
+    notifications: Prisma.$NotificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1676,6 +2703,12 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   staff<T extends Prisma.User$staffArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$staffArgs<ExtArgs>>): Prisma.Prisma__StaffClient<runtime.Types.Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   guardian<T extends Prisma.User$guardianArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$guardianArgs<ExtArgs>>): Prisma.Prisma__GuardianClient<runtime.Types.Result.GetResult<Prisma.$GuardianPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   invites<T extends Prisma.User$invitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$invitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  guardianInvites<T extends Prisma.User$guardianInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$guardianInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GuardianInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  permissions<T extends Prisma.User$permissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$permissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  uploadedFiles<T extends Prisma.User$uploadedFilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedFilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FileAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reviewedInviteRequests<T extends Prisma.User$reviewedInviteRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedInviteRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InviteRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  handledContactMessages<T extends Prisma.User$handledContactMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$handledContactMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2256,6 +3289,150 @@ export type User$invitesArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.InviteScalarFieldEnum | Prisma.InviteScalarFieldEnum[]
+}
+
+/**
+ * User.guardianInvites
+ */
+export type User$guardianInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GuardianInvite
+   */
+  select?: Prisma.GuardianInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GuardianInvite
+   */
+  omit?: Prisma.GuardianInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GuardianInviteInclude<ExtArgs> | null
+  where?: Prisma.GuardianInviteWhereInput
+  orderBy?: Prisma.GuardianInviteOrderByWithRelationInput | Prisma.GuardianInviteOrderByWithRelationInput[]
+  cursor?: Prisma.GuardianInviteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GuardianInviteScalarFieldEnum | Prisma.GuardianInviteScalarFieldEnum[]
+}
+
+/**
+ * User.permissions
+ */
+export type User$permissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserPermission
+   */
+  select?: Prisma.UserPermissionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserPermission
+   */
+  omit?: Prisma.UserPermissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserPermissionInclude<ExtArgs> | null
+  where?: Prisma.UserPermissionWhereInput
+  orderBy?: Prisma.UserPermissionOrderByWithRelationInput | Prisma.UserPermissionOrderByWithRelationInput[]
+  cursor?: Prisma.UserPermissionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserPermissionScalarFieldEnum | Prisma.UserPermissionScalarFieldEnum[]
+}
+
+/**
+ * User.uploadedFiles
+ */
+export type User$uploadedFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FileAsset
+   */
+  select?: Prisma.FileAssetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FileAsset
+   */
+  omit?: Prisma.FileAssetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FileAssetInclude<ExtArgs> | null
+  where?: Prisma.FileAssetWhereInput
+  orderBy?: Prisma.FileAssetOrderByWithRelationInput | Prisma.FileAssetOrderByWithRelationInput[]
+  cursor?: Prisma.FileAssetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FileAssetScalarFieldEnum | Prisma.FileAssetScalarFieldEnum[]
+}
+
+/**
+ * User.reviewedInviteRequests
+ */
+export type User$reviewedInviteRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InviteRequest
+   */
+  select?: Prisma.InviteRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InviteRequest
+   */
+  omit?: Prisma.InviteRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InviteRequestInclude<ExtArgs> | null
+  where?: Prisma.InviteRequestWhereInput
+  orderBy?: Prisma.InviteRequestOrderByWithRelationInput | Prisma.InviteRequestOrderByWithRelationInput[]
+  cursor?: Prisma.InviteRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InviteRequestScalarFieldEnum | Prisma.InviteRequestScalarFieldEnum[]
+}
+
+/**
+ * User.handledContactMessages
+ */
+export type User$handledContactMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ContactMessage
+   */
+  select?: Prisma.ContactMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ContactMessage
+   */
+  omit?: Prisma.ContactMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ContactMessageInclude<ExtArgs> | null
+  where?: Prisma.ContactMessageWhereInput
+  orderBy?: Prisma.ContactMessageOrderByWithRelationInput | Prisma.ContactMessageOrderByWithRelationInput[]
+  cursor?: Prisma.ContactMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ContactMessageScalarFieldEnum | Prisma.ContactMessageScalarFieldEnum[]
+}
+
+/**
+ * User.notifications
+ */
+export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
 }
 
 /**

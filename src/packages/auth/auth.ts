@@ -2,10 +2,9 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { serverEnv } from "#/env/server.ts";
-import { prisma } from "#/packages/db/index.ts";
-import { sendMail } from "#/packages/notifications/mail.ts";
+import { renderMailTemplate, sendMail } from "#/packages/notifications/mail.ts";
 
-const SCHOOL_NAME = serverEnv.ORGANIZATION_NAME;
+const { prisma } = await import("../db/index");
 
 export const auth = betterAuth({
 	database: prismaAdapter(prisma, {
@@ -20,20 +19,32 @@ export const auth = betterAuth({
 		async sendResetPassword({ user, url }) {
 			await sendMail({
 				to: user.email,
-				subject: `Reset your ${SCHOOL_NAME} password`,
-				html: `<p>Hello ${user.name ?? ""},</p>
-<p>We received a request to reset your password. Click the link below to choose a new one. The link expires shortly.</p>
-<p><a href="${url}">Reset password</a></p>
-<p>If you didn't request this, you can ignore this email.</p>`,
+				subject: "Reset your password",
+				html: renderMailTemplate({
+					title: "Reset your password",
+					body: [
+						`Hi ${user.name},`,
+						"We received a request to reset the password for your account.",
+						"This link is valid for 20 minutes. If you did not request a reset, you can ignore this email.",
+					],
+					actionLabel: "Choose a new password",
+					actionUrl: url,
+				}),
 			});
 		},
-		resetPasswordTokenExpiresIn: 1000 * 60 * 20,
+		resetPasswordTokenExpiresIn: 20 * 60,
 
 		onExistingUserSignUp: async ({ user }) => {
 			await sendMail({
 				to: user.email,
-				subject: `Sign-up attempt with your ${SCHOOL_NAME} email`,
-				html: `<p>Someone tried to create an account using your email address. If this was you, try signing in instead. If not, you can safely ignore this email.</p>`,
+				subject: "Sign-up attempt with your email",
+				html: renderMailTemplate({
+					title: "Sign-up attempt",
+					body: [
+						"Someone tried to create an account using your email address.",
+						"If this was you, try signing in instead. If not, you can safely ignore this email.",
+					],
+				}),
 			});
 		},
 	},
@@ -44,13 +55,19 @@ export const auth = betterAuth({
 		async sendVerificationEmail({ user, url }) {
 			await sendMail({
 				to: user.email,
-				subject: `Verify your ${SCHOOL_NAME} email`,
-				html: `<p>Hello ${user.name ?? ""},</p>
-<p>Please confirm your email address by clicking the link below.</p>
-<p><a href="${url}">Verify email</a></p>`,
+				subject: "Verify your email address",
+				html: renderMailTemplate({
+					title: `Welcome, ${user.name}`,
+					body: [
+						"Confirm your email address to finish setting up your account.",
+						"This link is valid for 20 minutes.",
+					],
+					actionLabel: "Verify my email",
+					actionUrl: url,
+				}),
 			});
 		},
-		expiresIn: 1000 * 60 * 20,
+		expiresIn: 20 * 60,
 	},
 
 	baseURL: serverEnv.APP_URL,

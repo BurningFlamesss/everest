@@ -1,76 +1,67 @@
 import {
 	createFileRoute,
-	Link,
 	notFound,
 	redirect,
 	useNavigate,
 } from "@tanstack/react-router";
-import { AlertCircle, ArrowLeft, LoaderCircle } from "lucide-react";
+import { KeyRound, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { AuthShell, Field, FormError } from "#/components/auth/AuthShell.tsx";
 import { ERROR } from "#/lib/error.ts";
-import { pageCopy } from "#/lib/site";
+import { ERROR_CODES } from "#/lib/error-codes.ts";
 import { authClient } from "#/packages/auth/auth-client.ts";
 import { activateInvite } from "#/packages/auth/server/activate-invite.ts";
 import { getInvite } from "#/packages/auth/server/get-invite.ts";
-import { Button } from "#/templates/modern/components/Button.tsx";
-import {
-	ImageReveal,
-	SectionLabel,
-} from "#/templates/modern/components/Editorial.tsx";
-import { Input } from "#/templates/modern/components/Input";
-import { Label } from "#/templates/modern/components/Label";
 
 export const Route = createFileRoute("/_onboard/activate/$token")({
-	beforeLoad: async ({ context, location }) => {
-		const search = location.search as any;
-		if (
-			String(search.cms) === "1" ||
-			String(search["allow-when-logged-in"]) === "true"
-		) {
-			return;
-		}
+	beforeLoad: async ({ context }) => {
 		if (context.session) {
-			if (
-				context.session.user.role === "admin" ||
-				context.session.user.role === "super_admin"
-			) {
-				throw redirect({ to: "/admin/overview" });
-			}
-			throw redirect({ to: "/user" });
+			throw redirect({ to: "/" });
 		}
 	},
 	loader: async ({ params }) => {
-		const clean = decodeURIComponent(params.token || "")
-			.trim()
-			.replace(/\/+$/, "");
-		const invite = await getInvite({ data: clean });
-		if (!invite) throw notFound();
-		if (invite.usedAt) throw new Error(ERROR.INVITATION_USED);
-		if (invite.expiresAt < new Date())
+		const invite = await getInvite({
+			data: params.token,
+		});
+
+		if (!invite) {
+			throw notFound();
+		}
+
+		if (invite.usedAt) {
+			throw new Error(ERROR.INVITATION_USED);
+		}
+
+		if (invite.expiresAt < new Date()) {
 			throw new Error(ERROR.INVITATION_EXPIRED);
+		}
+
 		return invite;
 	},
-	notFoundComponent: () => (
-		<div className="flex flex-col items-center justify-center min-h-screen">
-			<div className="max-w-md p-8 text-center bg-card border border-border shadow-sm rounded-xl">
-				<AlertCircle className="w-12 h-12 mx-auto text-red-500 mb-4" />
-				<h2 className="text-xl font-semibold mb-2">Invite Not Found</h2>
-				<p className="text-muted-foreground mb-6">
-					This activation link appears to be invalid or incorrectly formatted.
-					Please check the URL and try again.
+	notFoundComponent: () => {
+		return (
+			<AuthShell title="Invitation not found">
+				<p className="text-sm text-gray-600">
+					This invitation link does not exist. Ask an administrator to send a
+					new one.
 				</p>
-				<Link to="/" className="text-accent hover:underline font-medium">
-					Return to homepage
-				</Link>
-			</div>
-		</div>
-	),
+			</AuthShell>
+		);
+	},
 	errorComponent: ({ error }) => {
-		if (error.message === ERROR.INVITATION_USED)
-			return <div>This invitation has already been used.</div>;
-		if (error.message === ERROR.INVITATION_EXPIRED)
-			return <div>This invitation has expired.</div>;
-		return <div>Something went wrong.</div>;
+		const errorMessage = error instanceof Error ? error.message : "";
+		const message =
+			errorMessage === ERROR.INVITATION_USED
+				? "This invitation has already been used. Try signing in instead."
+				: errorMessage === ERROR.INVITATION_EXPIRED
+					? "This invitation has expired. Ask an administrator for a new link."
+					: "Something went wrong while loading this invitation.";
+
+		return (
+			<AuthShell title="This link can't be used">
+				<p className="text-sm text-gray-600">{message}</p>
+			</AuthShell>
+		);
 	},
 	component: RouteComponent,
 });
@@ -78,134 +69,126 @@ export const Route = createFileRoute("/_onboard/activate/$token")({
 function RouteComponent() {
 	const invite = Route.useLoaderData();
 	const navigate = useNavigate();
-	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
 	const [error, setError] = useState("");
-	const [busy, setBusy] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (password !== confirmPassword) {
-			setError("Passwords do not match");
-			return;
-		}
+		setError("");
+
+		const formData = new FormData(e.currentTarget);
+		const password = String(formData.get("password") ?? "");
+		const confirmPassword = String(formData.get("confirmPassword") ?? "");
+
 		if (password.length < 8) {
-			setError("Password must be at least 8 characters");
+			setError("Use at least 8 characters for your password.");
 			return;
 		}
-		setBusy(true);
+
+		if (password !== confirmPassword) {
+			setError("The two passwords do not match.");
+			return;
+		}
+
+		setIsSubmitting(true);
+
 		try {
 			const response = await activateInvite({
-				data: { token: invite.token, password },
+				data: {
+					token: invite.token,
+					password,
+				},
 			});
+
 			if (!response.success) {
-				setError("Failed to activate account");
-				setBusy(false);
+				setError("We could not activate this account. Please try again.");
 				return;
 			}
+
 			const signInRes = await authClient.signIn.email({
 				email: invite.user.email,
 				password,
 			});
+
 			if (signInRes.error) {
-				setError(signInRes.error.message || "Login failed");
-				setBusy(false);
+				await navigate({ to: "/login" });
 				return;
 			}
-			navigate({ to: "/" });
-		} catch (error) {
-			setError("Something went wrong");
-			setBusy(false);
+
+			await navigate({ to: "/" });
+		} catch (activationError) {
+			const message =
+				activationError instanceof Error ? activationError.message : "";
+
+			if (message === ERROR_CODES.INVITE_ALREADY_USED) {
+				setError("This invitation has already been used.");
+			} else if (message === ERROR_CODES.INVITE_EXPIRED) {
+				setError("This invitation has expired.");
+			} else if (message === ERROR_CODES.ACCOUNT_ALREADY_ACTIVATED) {
+				setError("This account already has a password. Sign in instead.");
+			} else {
+				setError("Something went wrong. Please try again.");
+			}
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
 	return (
-		<section
-			className="auth-page overflow-x-hidden min-w-0"
-			aria-labelledby="activate-title"
+		<AuthShell
+			badge="Activate account"
+			title={`Welcome, ${invite.user.name}`}
+			subtitle="Choose a password to finish setting up your account."
+			footer={
+				<p className="text-xs text-gray-500">
+					This invitation expires{" "}
+					{new Date(invite.expiresAt).toLocaleDateString(undefined, {
+						dateStyle: "medium",
+					})}
+					.
+				</p>
+			}
 		>
-			<div className="auth-visual min-w-0">
-				<ImageReveal
-					src="/schools/everest/landing-footage/frame_0001.jpeg"
-					alt="School architecture marking the entrance to Everest"
-					eager
-					testId="activate-visual-image"
+			<form onSubmit={handleSubmit} className="space-y-4">
+				<FormError message={error} />
+
+				<div className="rounded-xl bg-gray-50 p-4 text-sm">
+					<p className="font-medium text-gray-900">{invite.user.name}</p>
+					<p className="text-gray-500">{invite.user.email}</p>
+				</div>
+
+				<Field
+					label="New password"
+					type="password"
+					name="password"
+					autoComplete="new-password"
+					placeholder="At least 8 characters"
+					minLength={8}
+					required
 				/>
-				<div className="auth-visual__overlay">
-					<SectionLabel number="04" inverse>
-						Welcome
-					</SectionLabel>
-					<p>Account Activation</p>
-					<span>One community / connected responsibly</span>
-				</div>
-			</div>
-			<div className="auth-panel w-full">
-				<Link to="/" className="auth-back" style={{ color: "var(--c-black)" }}>
-					<ArrowLeft aria-hidden="true" style={{ color: "var(--c-red)" }} />
-					Public website
-				</Link>
-				<div className="auth-panel__inner">
-					<header>
-						<span className="auth-kicker">{pageCopy.activate.eyebrow}</span>
-						<h1 id="activate-title" className="t-page-title text-foreground">
-							SET YOUR
-							<br />
-							PASSWORD.
-						</h1>
-						<p className="auth-intro text-foreground mt-4 font-medium break-all">
-							Creating account for {invite.user.email}
-						</p>
-					</header>
-					<form onSubmit={handleSubmit} className="auth-form" noValidate>
-						<div
-							className={`form-control ${error ? "form-control--error" : ""}`}
-						>
-							<Label htmlFor="password">Password</Label>
-							<Input
-								id="password"
-								type="password"
-								value={password}
-								onChange={(e) => {
-									setPassword(e.target.value);
-									setError("");
-								}}
-								className="editorial-input text-foreground"
-							/>
-						</div>
-						<div
-							className={`form-control ${error ? "form-control--error" : ""}`}
-						>
-							<Label htmlFor="confirmPassword">Confirm Password</Label>
-							<Input
-								id="confirmPassword"
-								type="password"
-								value={confirmPassword}
-								onChange={(e) => {
-									setConfirmPassword(e.target.value);
-									setError("");
-								}}
-								className="editorial-input text-foreground"
-							/>
-							{error && (
-								<p className="field-error">
-									<AlertCircle aria-hidden="true" />
-									{error}
-								</p>
-							)}
-						</div>
-						<Button
-							type="submit"
-							disabled={busy}
-							className="institution-button institution-button--full"
-						>
-							{busy ? (
-								<LoaderCircle className="spin" aria-hidden="true" />
-							) : null}
-							{busy ? "Activating..." : "Activate Account"}
-						</Button>
-					</form>
-				</div>
-			</div>
-		</section>
+				<Field
+					label="Confirm password"
+					type="password"
+					name="confirmPassword"
+					autoComplete="new-password"
+					placeholder="Repeat your password"
+					minLength={8}
+					required
+				/>
+
+				<button
+					type="submit"
+					disabled={isSubmitting}
+					className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-red-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
+				>
+					{isSubmitting ? (
+						<Loader2 className="h-4 w-4 animate-spin" />
+					) : (
+						<KeyRound className="h-4 w-4" />
+					)}
+					{isSubmitting ? "Activating…" : "Activate account"}
+				</button>
+			</form>
+		</AuthShell>
 	);
 }

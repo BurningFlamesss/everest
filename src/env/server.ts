@@ -17,8 +17,34 @@ export const serverEnv = createEnv({
 		DEFAULT_BRANCH_NAME: z.string().min(1),
 		DEFAULT_BRANCH_SLUG: z.string().min(1),
 
-		MAIL_APP_USER: z.string(),
-		MAIL_APP_PASSWORD: z.string()
+		MAIL_APP_USER: z.string().optional(),
+		MAIL_APP_PASSWORD: z.string().optional(),
+		// SMTP transport. Defaults keep the original Gmail behaviour; point these
+		// at any SMTP provider (Mailgun, SES SMTP, Postmark, a school mail server).
+		MAIL_SMTP_HOST: z.string().trim().min(1).default("smtp.gmail.com"),
+		MAIL_SMTP_PORT: z.coerce.number().int().positive().default(587),
+		MAIL_SMTP_SECURE: z
+			.enum(["true", "false"])
+			.default("false")
+			.transform((value) => value === "true"),
+		MAIL_FROM: z.string().trim().optional(),
+
+		STORAGE_DRIVER: z.enum(["local", "s3"]).default("local"),
+		STORAGE_LOCAL_DIR: z.string().default(".data/uploads"),
+		S3_ENDPOINT: z.string().default("localhost"),
+		S3_PORT: z.coerce.number().int().positive().default(9000),
+		S3_USE_SSL: z
+			.enum(["true", "false"])
+			.default("false")
+			.transform((value) => value === "true"),
+		S3_ACCESS_KEY: z.string().default("scms"),
+		S3_SECRET_KEY: z.string().default("scms-secret"),
+		S3_BUCKET: z.string().default("scms"),
+		S3_REGION: z.string().trim().min(1).optional(),
+
+		// Required to call the scheduled upload-cleanup endpoint. Leave unset to
+		// disable the endpoint entirely.
+		CRON_SECRET: z.string().trim().min(16).optional(),
 	},
 
 	runtimeEnv: process.env,

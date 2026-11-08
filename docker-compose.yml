@@ -17,5 +17,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+# Optional MinIO storage is defined in docker-compose.minio.yml.
 volumes:
   postgres_data:

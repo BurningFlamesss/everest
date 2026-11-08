@@ -9,10 +9,14 @@
 		"ignoreUnknown": false,
 		"includes": [
 			"**/src/**/*",
+			"**/tests/**/*.ts",
+			"**/vitest*.config.ts",
+			"**/playwright.config.ts",
 			"**/.vscode/**/*",
 			"**/index.html",
 			"**/vite.config.ts",
 			"!**/src/routeTree.gen.ts",
+			"!**/src/generated",
 			"!**/src/styles.css"
 		]
 	},

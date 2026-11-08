@@ -202,6 +202,10 @@ export type OrganizationWhereInput = {
   userRoles?: Prisma.UserRoleListRelationFilter
   students?: Prisma.StudentListRelationFilter
   staffs?: Prisma.StaffListRelationFilter
+  classrooms?: Prisma.ClassroomListRelationFilter
+  courses?: Prisma.CourseListRelationFilter
+  transportRoutes?: Prisma.TransportRouteListRelationFilter
+  academicYears?: Prisma.AcademicYearListRelationFilter
 }
 
 export type OrganizationOrderByWithRelationInput = {
@@ -216,6 +220,10 @@ export type OrganizationOrderByWithRelationInput = {
   userRoles?: Prisma.UserRoleOrderByRelationAggregateInput
   students?: Prisma.StudentOrderByRelationAggregateInput
   staffs?: Prisma.StaffOrderByRelationAggregateInput
+  classrooms?: Prisma.ClassroomOrderByRelationAggregateInput
+  courses?: Prisma.CourseOrderByRelationAggregateInput
+  transportRoutes?: Prisma.TransportRouteOrderByRelationAggregateInput
+  academicYears?: Prisma.AcademicYearOrderByRelationAggregateInput
 }
 
 export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -233,6 +241,10 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   userRoles?: Prisma.UserRoleListRelationFilter
   students?: Prisma.StudentListRelationFilter
   staffs?: Prisma.StaffListRelationFilter
+  classrooms?: Prisma.ClassroomListRelationFilter
+  courses?: Prisma.CourseListRelationFilter
+  transportRoutes?: Prisma.TransportRouteListRelationFilter
+  academicYears?: Prisma.AcademicYearListRelationFilter
 }, "id" | "slug">
 
 export type OrganizationOrderByWithAggregationInput = {
@@ -273,6 +285,10 @@ export type OrganizationCreateInput = {
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutOrganizationInput
   students?: Prisma.StudentCreateNestedManyWithoutOrganizationInput
   staffs?: Prisma.StaffCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateInput = {
@@ -287,6 +303,10 @@ export type OrganizationUncheckedCreateInput = {
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutOrganizationInput
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutOrganizationInput
   staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUpdateInput = {
@@ -301,6 +321,10 @@ export type OrganizationUpdateInput = {
   userRoles?: Prisma.UserRoleUpdateManyWithoutOrganizationNestedInput
   students?: Prisma.StudentUpdateManyWithoutOrganizationNestedInput
   staffs?: Prisma.StaffUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateInput = {
@@ -315,6 +339,10 @@ export type OrganizationUncheckedUpdateInput = {
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutOrganizationNestedInput
   students?: Prisma.StudentUncheckedUpdateManyWithoutOrganizationNestedInput
   staffs?: Prisma.StaffUncheckedUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateManyInput = {
@@ -438,6 +466,62 @@ export type OrganizationUpdateOneRequiredWithoutStaffsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutStaffsInput, Prisma.OrganizationUpdateWithoutStaffsInput>, Prisma.OrganizationUncheckedUpdateWithoutStaffsInput>
 }
 
+export type OrganizationCreateNestedOneWithoutClassroomsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutClassroomsInput, Prisma.OrganizationUncheckedCreateWithoutClassroomsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutClassroomsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutClassroomsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutClassroomsInput, Prisma.OrganizationUncheckedCreateWithoutClassroomsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutClassroomsInput
+  upsert?: Prisma.OrganizationUpsertWithoutClassroomsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutClassroomsInput, Prisma.OrganizationUpdateWithoutClassroomsInput>, Prisma.OrganizationUncheckedUpdateWithoutClassroomsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutCoursesInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutCoursesInput, Prisma.OrganizationUncheckedCreateWithoutCoursesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutCoursesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutCoursesNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutCoursesInput, Prisma.OrganizationUncheckedCreateWithoutCoursesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutCoursesInput
+  upsert?: Prisma.OrganizationUpsertWithoutCoursesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutCoursesInput, Prisma.OrganizationUpdateWithoutCoursesInput>, Prisma.OrganizationUncheckedUpdateWithoutCoursesInput>
+}
+
+export type OrganizationCreateNestedOneWithoutTransportRoutesInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutTransportRoutesInput, Prisma.OrganizationUncheckedCreateWithoutTransportRoutesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutTransportRoutesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutTransportRoutesNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutTransportRoutesInput, Prisma.OrganizationUncheckedCreateWithoutTransportRoutesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutTransportRoutesInput
+  upsert?: Prisma.OrganizationUpsertWithoutTransportRoutesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutTransportRoutesInput, Prisma.OrganizationUpdateWithoutTransportRoutesInput>, Prisma.OrganizationUncheckedUpdateWithoutTransportRoutesInput>
+}
+
+export type OrganizationCreateNestedOneWithoutAcademicYearsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAcademicYearsInput, Prisma.OrganizationUncheckedCreateWithoutAcademicYearsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAcademicYearsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutAcademicYearsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAcademicYearsInput, Prisma.OrganizationUncheckedCreateWithoutAcademicYearsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAcademicYearsInput
+  upsert?: Prisma.OrganizationUpsertWithoutAcademicYearsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutAcademicYearsInput, Prisma.OrganizationUpdateWithoutAcademicYearsInput>, Prisma.OrganizationUncheckedUpdateWithoutAcademicYearsInput>
+}
+
 export type OrganizationCreateWithoutBranchesInput = {
   id?: string
   name: string
@@ -449,6 +533,10 @@ export type OrganizationCreateWithoutBranchesInput = {
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutOrganizationInput
   students?: Prisma.StudentCreateNestedManyWithoutOrganizationInput
   staffs?: Prisma.StaffCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutBranchesInput = {
@@ -462,6 +550,10 @@ export type OrganizationUncheckedCreateWithoutBranchesInput = {
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutOrganizationInput
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutOrganizationInput
   staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutBranchesInput = {
@@ -491,6 +583,10 @@ export type OrganizationUpdateWithoutBranchesInput = {
   userRoles?: Prisma.UserRoleUpdateManyWithoutOrganizationNestedInput
   students?: Prisma.StudentUpdateManyWithoutOrganizationNestedInput
   staffs?: Prisma.StaffUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutBranchesInput = {
@@ -504,6 +600,10 @@ export type OrganizationUncheckedUpdateWithoutBranchesInput = {
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutOrganizationNestedInput
   students?: Prisma.StudentUncheckedUpdateManyWithoutOrganizationNestedInput
   staffs?: Prisma.StaffUncheckedUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutUserRolesInput = {
@@ -517,6 +617,10 @@ export type OrganizationCreateWithoutUserRolesInput = {
   branches?: Prisma.BranchCreateNestedManyWithoutOrganizationInput
   students?: Prisma.StudentCreateNestedManyWithoutOrganizationInput
   staffs?: Prisma.StaffCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutUserRolesInput = {
@@ -530,6 +634,10 @@ export type OrganizationUncheckedCreateWithoutUserRolesInput = {
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrganizationInput
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutOrganizationInput
   staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutUserRolesInput = {
@@ -559,6 +667,10 @@ export type OrganizationUpdateWithoutUserRolesInput = {
   branches?: Prisma.BranchUpdateManyWithoutOrganizationNestedInput
   students?: Prisma.StudentUpdateManyWithoutOrganizationNestedInput
   staffs?: Prisma.StaffUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutUserRolesInput = {
@@ -572,6 +684,10 @@ export type OrganizationUncheckedUpdateWithoutUserRolesInput = {
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrganizationNestedInput
   students?: Prisma.StudentUncheckedUpdateManyWithoutOrganizationNestedInput
   staffs?: Prisma.StaffUncheckedUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutStudentsInput = {
@@ -585,6 +701,10 @@ export type OrganizationCreateWithoutStudentsInput = {
   branches?: Prisma.BranchCreateNestedManyWithoutOrganizationInput
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutOrganizationInput
   staffs?: Prisma.StaffCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutStudentsInput = {
@@ -598,6 +718,10 @@ export type OrganizationUncheckedCreateWithoutStudentsInput = {
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrganizationInput
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutOrganizationInput
   staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutStudentsInput = {
@@ -627,6 +751,10 @@ export type OrganizationUpdateWithoutStudentsInput = {
   branches?: Prisma.BranchUpdateManyWithoutOrganizationNestedInput
   userRoles?: Prisma.UserRoleUpdateManyWithoutOrganizationNestedInput
   staffs?: Prisma.StaffUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutStudentsInput = {
@@ -640,6 +768,10 @@ export type OrganizationUncheckedUpdateWithoutStudentsInput = {
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrganizationNestedInput
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutOrganizationNestedInput
   staffs?: Prisma.StaffUncheckedUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutStaffsInput = {
@@ -653,6 +785,10 @@ export type OrganizationCreateWithoutStaffsInput = {
   branches?: Prisma.BranchCreateNestedManyWithoutOrganizationInput
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutOrganizationInput
   students?: Prisma.StudentCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutStaffsInput = {
@@ -666,6 +802,10 @@ export type OrganizationUncheckedCreateWithoutStaffsInput = {
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrganizationInput
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutOrganizationInput
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutStaffsInput = {
@@ -695,6 +835,10 @@ export type OrganizationUpdateWithoutStaffsInput = {
   branches?: Prisma.BranchUpdateManyWithoutOrganizationNestedInput
   userRoles?: Prisma.UserRoleUpdateManyWithoutOrganizationNestedInput
   students?: Prisma.StudentUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutStaffsInput = {
@@ -708,6 +852,346 @@ export type OrganizationUncheckedUpdateWithoutStaffsInput = {
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrganizationNestedInput
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutOrganizationNestedInput
   students?: Prisma.StudentUncheckedUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutClassroomsInput = {
+  id?: string
+  name: string
+  slug: string
+  logo?: string | null
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchCreateNestedManyWithoutOrganizationInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutOrganizationInput
+  students?: Prisma.StudentCreateNestedManyWithoutOrganizationInput
+  staffs?: Prisma.StaffCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutClassroomsInput = {
+  id?: string
+  name: string
+  slug: string
+  logo?: string | null
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrganizationInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutOrganizationInput
+  students?: Prisma.StudentUncheckedCreateNestedManyWithoutOrganizationInput
+  staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutClassroomsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutClassroomsInput, Prisma.OrganizationUncheckedCreateWithoutClassroomsInput>
+}
+
+export type OrganizationUpsertWithoutClassroomsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutClassroomsInput, Prisma.OrganizationUncheckedUpdateWithoutClassroomsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutClassroomsInput, Prisma.OrganizationUncheckedCreateWithoutClassroomsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutClassroomsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutClassroomsInput, Prisma.OrganizationUncheckedUpdateWithoutClassroomsInput>
+}
+
+export type OrganizationUpdateWithoutClassroomsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUpdateManyWithoutOrganizationNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutOrganizationNestedInput
+  students?: Prisma.StudentUpdateManyWithoutOrganizationNestedInput
+  staffs?: Prisma.StaffUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutClassroomsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUncheckedUpdateManyWithoutOrganizationNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  students?: Prisma.StudentUncheckedUpdateManyWithoutOrganizationNestedInput
+  staffs?: Prisma.StaffUncheckedUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutCoursesInput = {
+  id?: string
+  name: string
+  slug: string
+  logo?: string | null
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchCreateNestedManyWithoutOrganizationInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutOrganizationInput
+  students?: Prisma.StudentCreateNestedManyWithoutOrganizationInput
+  staffs?: Prisma.StaffCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutCoursesInput = {
+  id?: string
+  name: string
+  slug: string
+  logo?: string | null
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrganizationInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutOrganizationInput
+  students?: Prisma.StudentUncheckedCreateNestedManyWithoutOrganizationInput
+  staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutCoursesInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutCoursesInput, Prisma.OrganizationUncheckedCreateWithoutCoursesInput>
+}
+
+export type OrganizationUpsertWithoutCoursesInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutCoursesInput, Prisma.OrganizationUncheckedUpdateWithoutCoursesInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutCoursesInput, Prisma.OrganizationUncheckedCreateWithoutCoursesInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutCoursesInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutCoursesInput, Prisma.OrganizationUncheckedUpdateWithoutCoursesInput>
+}
+
+export type OrganizationUpdateWithoutCoursesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUpdateManyWithoutOrganizationNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutOrganizationNestedInput
+  students?: Prisma.StudentUpdateManyWithoutOrganizationNestedInput
+  staffs?: Prisma.StaffUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutCoursesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUncheckedUpdateManyWithoutOrganizationNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  students?: Prisma.StudentUncheckedUpdateManyWithoutOrganizationNestedInput
+  staffs?: Prisma.StaffUncheckedUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutTransportRoutesInput = {
+  id?: string
+  name: string
+  slug: string
+  logo?: string | null
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchCreateNestedManyWithoutOrganizationInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutOrganizationInput
+  students?: Prisma.StudentCreateNestedManyWithoutOrganizationInput
+  staffs?: Prisma.StaffCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutTransportRoutesInput = {
+  id?: string
+  name: string
+  slug: string
+  logo?: string | null
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrganizationInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutOrganizationInput
+  students?: Prisma.StudentUncheckedCreateNestedManyWithoutOrganizationInput
+  staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutOrganizationInput
+  academicYears?: Prisma.AcademicYearUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutTransportRoutesInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutTransportRoutesInput, Prisma.OrganizationUncheckedCreateWithoutTransportRoutesInput>
+}
+
+export type OrganizationUpsertWithoutTransportRoutesInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutTransportRoutesInput, Prisma.OrganizationUncheckedUpdateWithoutTransportRoutesInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutTransportRoutesInput, Prisma.OrganizationUncheckedCreateWithoutTransportRoutesInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutTransportRoutesInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutTransportRoutesInput, Prisma.OrganizationUncheckedUpdateWithoutTransportRoutesInput>
+}
+
+export type OrganizationUpdateWithoutTransportRoutesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUpdateManyWithoutOrganizationNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutOrganizationNestedInput
+  students?: Prisma.StudentUpdateManyWithoutOrganizationNestedInput
+  staffs?: Prisma.StaffUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutTransportRoutesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUncheckedUpdateManyWithoutOrganizationNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  students?: Prisma.StudentUncheckedUpdateManyWithoutOrganizationNestedInput
+  staffs?: Prisma.StaffUncheckedUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutOrganizationNestedInput
+  academicYears?: Prisma.AcademicYearUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutAcademicYearsInput = {
+  id?: string
+  name: string
+  slug: string
+  logo?: string | null
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchCreateNestedManyWithoutOrganizationInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutOrganizationInput
+  students?: Prisma.StudentCreateNestedManyWithoutOrganizationInput
+  staffs?: Prisma.StaffCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutAcademicYearsInput = {
+  id?: string
+  name: string
+  slug: string
+  logo?: string | null
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrganizationInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutOrganizationInput
+  students?: Prisma.StudentUncheckedCreateNestedManyWithoutOrganizationInput
+  staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutOrganizationInput
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutOrganizationInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutOrganizationInput
+  transportRoutes?: Prisma.TransportRouteUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutAcademicYearsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAcademicYearsInput, Prisma.OrganizationUncheckedCreateWithoutAcademicYearsInput>
+}
+
+export type OrganizationUpsertWithoutAcademicYearsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutAcademicYearsInput, Prisma.OrganizationUncheckedUpdateWithoutAcademicYearsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAcademicYearsInput, Prisma.OrganizationUncheckedCreateWithoutAcademicYearsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutAcademicYearsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutAcademicYearsInput, Prisma.OrganizationUncheckedUpdateWithoutAcademicYearsInput>
+}
+
+export type OrganizationUpdateWithoutAcademicYearsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUpdateManyWithoutOrganizationNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutOrganizationNestedInput
+  students?: Prisma.StudentUpdateManyWithoutOrganizationNestedInput
+  staffs?: Prisma.StaffUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutAcademicYearsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUncheckedUpdateManyWithoutOrganizationNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  students?: Prisma.StudentUncheckedUpdateManyWithoutOrganizationNestedInput
+  staffs?: Prisma.StaffUncheckedUpdateManyWithoutOrganizationNestedInput
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutOrganizationNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutOrganizationNestedInput
+  transportRoutes?: Prisma.TransportRouteUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 
@@ -720,6 +1204,10 @@ export type OrganizationCountOutputType = {
   userRoles: number
   students: number
   staffs: number
+  classrooms: number
+  courses: number
+  transportRoutes: number
+  academicYears: number
 }
 
 export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -727,6 +1215,10 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   userRoles?: boolean | OrganizationCountOutputTypeCountUserRolesArgs
   students?: boolean | OrganizationCountOutputTypeCountStudentsArgs
   staffs?: boolean | OrganizationCountOutputTypeCountStaffsArgs
+  classrooms?: boolean | OrganizationCountOutputTypeCountClassroomsArgs
+  courses?: boolean | OrganizationCountOutputTypeCountCoursesArgs
+  transportRoutes?: boolean | OrganizationCountOutputTypeCountTransportRoutesArgs
+  academicYears?: boolean | OrganizationCountOutputTypeCountAcademicYearsArgs
 }
 
 /**
@@ -767,6 +1259,34 @@ export type OrganizationCountOutputTypeCountStaffsArgs<ExtArgs extends runtime.T
   where?: Prisma.StaffWhereInput
 }
 
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountClassroomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClassroomWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountCoursesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CourseWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountTransportRoutesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TransportRouteWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountAcademicYearsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AcademicYearWhereInput
+}
+
 
 export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -780,6 +1300,10 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   userRoles?: boolean | Prisma.Organization$userRolesArgs<ExtArgs>
   students?: boolean | Prisma.Organization$studentsArgs<ExtArgs>
   staffs?: boolean | Prisma.Organization$staffsArgs<ExtArgs>
+  classrooms?: boolean | Prisma.Organization$classroomsArgs<ExtArgs>
+  courses?: boolean | Prisma.Organization$coursesArgs<ExtArgs>
+  transportRoutes?: boolean | Prisma.Organization$transportRoutesArgs<ExtArgs>
+  academicYears?: boolean | Prisma.Organization$academicYearsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
 
@@ -819,6 +1343,10 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   userRoles?: boolean | Prisma.Organization$userRolesArgs<ExtArgs>
   students?: boolean | Prisma.Organization$studentsArgs<ExtArgs>
   staffs?: boolean | Prisma.Organization$staffsArgs<ExtArgs>
+  classrooms?: boolean | Prisma.Organization$classroomsArgs<ExtArgs>
+  courses?: boolean | Prisma.Organization$coursesArgs<ExtArgs>
+  transportRoutes?: boolean | Prisma.Organization$transportRoutesArgs<ExtArgs>
+  academicYears?: boolean | Prisma.Organization$academicYearsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -831,6 +1359,10 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     userRoles: Prisma.$UserRolePayload<ExtArgs>[]
     students: Prisma.$StudentPayload<ExtArgs>[]
     staffs: Prisma.$StaffPayload<ExtArgs>[]
+    classrooms: Prisma.$ClassroomPayload<ExtArgs>[]
+    courses: Prisma.$CoursePayload<ExtArgs>[]
+    transportRoutes: Prisma.$TransportRoutePayload<ExtArgs>[]
+    academicYears: Prisma.$AcademicYearPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1238,6 +1770,10 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   userRoles<T extends Prisma.Organization$userRolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$userRolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   students<T extends Prisma.Organization$studentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   staffs<T extends Prisma.Organization$staffsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$staffsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  classrooms<T extends Prisma.Organization$classroomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$classroomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassroomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  courses<T extends Prisma.Organization$coursesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$coursesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  transportRoutes<T extends Prisma.Organization$transportRoutesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$transportRoutesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransportRoutePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  academicYears<T extends Prisma.Organization$academicYearsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$academicYearsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AcademicYearPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1760,6 +2296,102 @@ export type Organization$staffsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.StaffScalarFieldEnum | Prisma.StaffScalarFieldEnum[]
+}
+
+/**
+ * Organization.classrooms
+ */
+export type Organization$classroomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Classroom
+   */
+  select?: Prisma.ClassroomSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Classroom
+   */
+  omit?: Prisma.ClassroomOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClassroomInclude<ExtArgs> | null
+  where?: Prisma.ClassroomWhereInput
+  orderBy?: Prisma.ClassroomOrderByWithRelationInput | Prisma.ClassroomOrderByWithRelationInput[]
+  cursor?: Prisma.ClassroomWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClassroomScalarFieldEnum | Prisma.ClassroomScalarFieldEnum[]
+}
+
+/**
+ * Organization.courses
+ */
+export type Organization$coursesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Course
+   */
+  select?: Prisma.CourseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Course
+   */
+  omit?: Prisma.CourseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CourseInclude<ExtArgs> | null
+  where?: Prisma.CourseWhereInput
+  orderBy?: Prisma.CourseOrderByWithRelationInput | Prisma.CourseOrderByWithRelationInput[]
+  cursor?: Prisma.CourseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CourseScalarFieldEnum | Prisma.CourseScalarFieldEnum[]
+}
+
+/**
+ * Organization.transportRoutes
+ */
+export type Organization$transportRoutesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TransportRoute
+   */
+  select?: Prisma.TransportRouteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TransportRoute
+   */
+  omit?: Prisma.TransportRouteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TransportRouteInclude<ExtArgs> | null
+  where?: Prisma.TransportRouteWhereInput
+  orderBy?: Prisma.TransportRouteOrderByWithRelationInput | Prisma.TransportRouteOrderByWithRelationInput[]
+  cursor?: Prisma.TransportRouteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TransportRouteScalarFieldEnum | Prisma.TransportRouteScalarFieldEnum[]
+}
+
+/**
+ * Organization.academicYears
+ */
+export type Organization$academicYearsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AcademicYear
+   */
+  select?: Prisma.AcademicYearSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AcademicYear
+   */
+  omit?: Prisma.AcademicYearOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AcademicYearInclude<ExtArgs> | null
+  where?: Prisma.AcademicYearWhereInput
+  orderBy?: Prisma.AcademicYearOrderByWithRelationInput | Prisma.AcademicYearOrderByWithRelationInput[]
+  cursor?: Prisma.AcademicYearWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AcademicYearScalarFieldEnum | Prisma.AcademicYearScalarFieldEnum[]
 }
 
 /**

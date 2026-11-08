@@ -1,0 +1,24 @@
+# Opt in with both docker-compose.yml and this file; see README.md.
+services:
+  minio:
+    image: ${MINIO_IMAGE:?Set MINIO_IMAGE to a vetted compatible MinIO image; see README.md}
+
+    container_name: scms-minio
+
+    restart: unless-stopped
+
+    command: server /data --console-address ":9001"
+
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-scms}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-scms-secret}
+
+    ports:
+      - "${S3_PORT:-9000}:9000"
+      - "9001:9001"
+
+    volumes:
+      - minio_data:/data
+
+volumes:
+  minio_data:

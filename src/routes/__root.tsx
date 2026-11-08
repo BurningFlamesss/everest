@@ -5,9 +5,15 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { Suspense } from "react";
-import NotFoundPage from "#/components/NotFoundPage.tsx";
 import { getSessionFn } from "#/packages/auth/middleware/auth.middleware.ts";
+import { AuthProvider } from "#/providers/AuthProvider";
+import Sidebar from "#/templates/modern/Sidebar";
+import themeCss from "#/templates/modern/components/tokens/theme.css?url";
+import type { MyRouterContext } from "#/types/router-context.ts";
+import appCss from "../app.css?url";
+import indexCss from "../index.css?url";
+import globalCss from "../styles.css?url";
+
 import {
 	getAlbumsServer,
 	getAllPublishedPagesServer,
@@ -23,22 +29,8 @@ import {
 	getSchoolConfigServer,
 	getSchoolContentServer,
 } from "#/packages/content/server/content.ts";
-import { AuthProvider } from "#/providers/AuthProvider";
-import { Sidebar } from "#/templates/modern/components/layout/Sidebar";
-import themeCss from "#/templates/modern/components/tokens/theme.css?url";
-import type { MyRouterContext } from "#/types/router-context.ts";
-import appCss from "../app.css?url";
-import indexCss from "../index.css?url";
-import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
-import globalCss from "../styles.css?url";
-
 import { getSchoolConfig, getSchoolContent } from "#/packages/school/loader.ts";
-
-const PUBLIC_CACHE_HEADERS = () => ({
-	"Cache-Control":
-		"public, max-age=60, s-maxage=3600, stale-while-revalidate=86400",
-	"CDN-Cache-Control": "max-age=3600, stale-while-revalidate=86400",
-});
+import { schoolThemeStyle } from "#/packages/school/theme.ts";
 
 function ErrorComponent() {
 	return (
@@ -57,6 +49,30 @@ function ErrorComponent() {
 				>
 					Refresh Page
 				</button>
+			</div>
+		</div>
+	);
+}
+
+function NotFoundComponent() {
+	return (
+		<div className="flex min-h-screen items-center justify-center bg-background px-4 md:pl-72">
+			<div className="text-center">
+				<p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+					404
+				</p>
+				<h1 className="mt-3 font-display text-4xl font-bold text-foreground">
+					We couldn&apos;t find that page
+				</h1>
+				<p className="mt-2 text-muted-foreground">
+					The link may be old or the page may have moved.
+				</p>
+				<a
+					href="/"
+					className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+				>
+					Back to the home page
+				</a>
 			</div>
 		</div>
 	);
@@ -153,62 +169,97 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			content,
 		};
 	},
-	head: () => ({
-		meta: [
-			{
-				charSet: "utf-8",
-			},
-			{
-				name: "viewport",
-				content: "width=device-width, initial-scale=1",
-			},
-			{
-				title: "Everest English Boarding Secondary School",
-			},
-		],
-		links: [
-			{
-				rel: "stylesheet",
-				href: globalCss,
-			},
-			{
-				rel: "stylesheet",
-				href: appCss,
-			},
-			{
-				rel: "stylesheet",
-				href: indexCss,
-			},
-			{
-				rel: "stylesheet",
-				href: themeCss,
-			},
-		],
-	}),
-	headers: PUBLIC_CACHE_HEADERS,
-	notFoundComponent: NotFoundPage,
+	head: ({ loaderData }) => {
+		const config = loaderData?.config;
+
+		return {
+			meta: [
+				{
+					charSet: "utf-8",
+				},
+				{
+					name: "viewport",
+					content: "width=device-width, initial-scale=1",
+				},
+				{ title: config?.seo?.title },
+				{
+					name: "description",
+					content: config?.seo?.description,
+				},
+				{
+					name: "theme-color",
+					content: config?.theme?.primary,
+				},
+				{
+					property: "og:type",
+					content: "website",
+				},
+				{
+					property: "og:site_name",
+					content: config?.organization?.name,
+				},
+				{
+					property: "og:title",
+					content: config?.seo?.title,
+				},
+				{
+					property: "og:description",
+					content: config?.seo?.description,
+				},
+				{
+					property: "og:image",
+					content: config?.seo?.ogImage,
+				},
+				{
+					name: "twitter:card",
+					content: "summary_large_image",
+				},
+				{
+					name: "twitter:title",
+					content: config?.seo?.title,
+				},
+				{
+					name: "twitter:description",
+					content: config?.seo?.description,
+				},
+			],
+			links: [
+				{
+					rel: "stylesheet",
+					href: globalCss,
+				},
+				{
+					rel: "stylesheet",
+					href: appCss,
+				},
+				{
+					rel: "stylesheet",
+					href: indexCss,
+				},
+				{
+					rel: "stylesheet",
+					href: themeCss,
+				},
+			],
+		};
+	},
 	errorComponent: ErrorComponent,
+	notFoundComponent: NotFoundComponent,
 	shellComponent: RootDocument,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+	const { config } = Route.useLoaderData();
+
 	return (
-		<html lang="en">
+		<html lang="en" style={schoolThemeStyle(config)}>
 			<head>
 				<HeadContent />
 			</head>
 			<body>
 				<AuthProvider>
 					<Sidebar />
-					<Suspense
-						fallback={
-							<div className="flex h-screen items-center justify-center">
-								Loading...
-							</div>
-						}
-					>
-						{children}
-					</Suspense>
+					{children}
 				</AuthProvider>
 				<TanStackDevtools
 					config={{
@@ -219,7 +270,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 							name: "Tanstack Router",
 							render: <TanStackRouterDevtoolsPanel />,
 						},
-						TanStackQueryDevtools,
 					]}
 				/>
 				<Scripts />
