@@ -126,12 +126,9 @@ export default function NoticesPage() {
 
 	const changeStatusTab = (value: string) => {
 		navigate({
-			search: (prev: Record<string, any>) => {
-				const next = { ...prev };
-				if (value === "all") delete next.status;
-				else next.status = value;
-				return next;
-			},
+			search: (value === "all"
+					? Object.fromEntries(Object.entries(searchParams).filter(([k]) => k !== "status"))
+					: { ...searchParams, status: value }) as Record<string, string | undefined>,
 			replace: true,
 		});
 	};
@@ -150,7 +147,8 @@ export default function NoticesPage() {
 					)}
 					<div className="min-w-0">
 						<Link
-							to={`/admin/notices/${notice.id}`}
+							to="/admin/notices/$id"
+								params={{ id: notice.id }}
 							className="block truncate text-sm font-medium text-foreground transition-colors hover:text-primary focus-ring"
 							data-testid={`notice-link-${notice.id}`}
 							onClick={(event) => event.stopPropagation()}
@@ -247,7 +245,7 @@ export default function NoticesPage() {
 						className="row-actions h-7 w-7"
 						aria-label="Open notice"
 						data-testid={`notice-view-${notice.id}`}
-						onClick={() => navigate(`/admin/notices/${notice.id}`)}
+						onClick={() => navigate({ to: "/admin/notices/$id", params: { id: notice.id } })}
 					>
 						<Eye className="h-3.5 w-3.5" />
 					</Button>
@@ -267,7 +265,7 @@ export default function NoticesPage() {
 							<DropdownMenuItem
 								className="gap-2 text-xs"
 								data-testid={`notice-action-open-${notice.id}`}
-								onClick={() => navigate(`/admin/notices/${notice.id}`)}
+								onClick={() => navigate({ to: "/admin/notices/$id", params: { id: notice.id } })}
 							>
 								<Eye className="h-3.5 w-3.5" /> Open
 							</DropdownMenuItem>
@@ -275,7 +273,7 @@ export default function NoticesPage() {
 								<DropdownMenuItem
 									className="gap-2 text-xs"
 									data-testid={`notice-action-edit-${notice.id}`}
-									onClick={() => navigate(`/admin/notices/${notice.id}/edit`)}
+									onClick={() => navigate({ to: "/admin/notices/$id/edit", params: { id: notice.id } })}
 								>
 									<Pencil className="h-3.5 w-3.5" /> Edit
 								</DropdownMenuItem>
@@ -438,7 +436,7 @@ export default function NoticesPage() {
 				loading={isLoading}
 				error={isError ? true : undefined}
 				onRetry={() => void refetch()}
-				onRowClick={(notice) => navigate(`/admin/notices/${notice.id}`)}
+				onRowClick={(notice) => navigate({ to: "/admin/notices/$id", params: { id: notice.id } })}
 				page={page}
 				pageSize={8}
 				total={data?.total ?? 0}
@@ -449,7 +447,7 @@ export default function NoticesPage() {
 						title="No notices here yet"
 						description="Nothing matches this view. Change the status tab or write a new notice for students, guardians or staff."
 						primaryLabel={can("notices.manage") ? "Write a notice" : undefined}
-						onPrimary={() => navigate("/admin/notices/new")}
+						onPrimary={() => navigate({ to: "/admin/notices/new" })}
 						testId="notices-empty"
 					/>
 				}

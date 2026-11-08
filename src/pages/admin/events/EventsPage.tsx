@@ -83,11 +83,7 @@ export default function EventsPage() {
 			setEditing(null);
 			setFormOpen(true);
 			navigate({
-				search: (prev: Record<string, any>) => {
-					const next = { ...prev };
-					delete next.new;
-					return next;
-				},
+				search: Object.fromEntries(Object.entries(searchParams).filter(([k]) => k !== "new")),
 				replace: true,
 			});
 		}
@@ -243,7 +239,8 @@ export default function EventsPage() {
 			render: (event) => (
 				<div className="min-w-0">
 					<Link
-						to={`/admin/events/${event.id}`}
+						to="/admin/events/$id"
+								params={{ id: event.id }}
 						className="block truncate text-sm font-medium text-foreground transition-colors hover:text-primary focus-ring"
 						data-testid={`event-link-${event.id}`}
 						onClick={(e) => e.stopPropagation()}
@@ -414,7 +411,7 @@ export default function EventsPage() {
 					loading={isLoading}
 					error={isError ? true : undefined}
 					onRetry={() => void refetch()}
-					onRowClick={(event) => navigate(`/admin/events/${event.id}`)}
+					onRowClick={(event) => navigate({ to: "/admin/events/$id", params: { id: event.id } })}
 					total={events.length}
 					pageSize={events.length || 1}
 					footNote={`${events.length} events on the calendar`}
@@ -475,7 +472,8 @@ export default function EventsPage() {
 								{dayEvents.map((event) => (
 									<li key={event.id} className="group">
 										<Link
-											to={`/admin/events/${event.id}`}
+											to="/admin/events/$id"
+								params={{ id: event.id }}
 											data-testid={`events-agenda-item-${event.id}`}
 											className="block rounded-lg border border-hairline bg-surface-1 px-3 py-2.5 transition-colors duration-150 hover:border-primary/35 hover:bg-surface-2 focus-ring"
 										>

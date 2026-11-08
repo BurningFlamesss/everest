@@ -11,7 +11,7 @@ import {
 } from "@testing-library/react";
 import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { Route } from "#/routes/admin/content.tsx";
+import { Route } from "#/routes/admin/_admin/content.tsx";
 
 const mocks = vi.hoisted(() => ({
 	getContentAdminDataFn: vi.fn(),

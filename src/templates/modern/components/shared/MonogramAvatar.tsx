@@ -1,4 +1,4 @@
-import type { Department } from "#types";
+import type { Department } from "#/types/website";
 
 const HUE: Record<Department, number> = {
   Administration: 34,

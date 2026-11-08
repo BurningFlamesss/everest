@@ -190,7 +190,7 @@ export function NotificationCenter({ open, onOpenChange }: NotificationCenterPro
                                   onClick={() => {
                                     markRead.mutate(item.id);
                                     onOpenChange(false);
-                                    navigate(item.href as string);
+                                    navigate({ to: item.href as never });
                                   }}
                                 >
                                   Open

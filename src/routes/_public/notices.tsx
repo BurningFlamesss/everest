@@ -21,12 +21,11 @@ import {
 import { DownloadButton } from "#/templates/modern/components/shared/DownloadButton";
 import { EmptyState } from "#/templates/modern/components/shared/EmptyState";
 import { FilterChips } from "#/templates/modern/components/shared/FilterChips";
-import { notices as staticNotices } from "#/lib/notices";
+import { type Notice, notices as staticNotices } from "#/lib/notices";
 import { formatAd, relativeDay } from "#/lib/dates";
 import { noticeDoc } from "#/lib/documents";
 import { downloadOfficialPdf } from "#/lib/pdf";
 import { useNotices } from "#/packages/school/hook.tsx";
-import type { Notice } from "#/types";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import { str } from "#/components/cms/block-fields";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
@@ -159,7 +158,11 @@ const NoticeReader = ({ notice }: { notice: Notice }) => (
                   {file.name}
                 </span>
               </span>
-              <span className="t-meta shrink-0">{file.size}</span>
+              <span className="t-meta shrink-0">
+                {String(
+                  (file as { size?: string | number | null }).size ?? "",
+                )}
+              </span>
             </li>
           ))}
         </ul>

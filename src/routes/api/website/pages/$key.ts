@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getWebsitePage, updatePageSeo } from '@/lib/website-content'
-import { actorFrom, getCurrentUser, requirePermission } from '@/lib/auth'
+import { actorFrom, requirePermission } from '@/lib/auth'
 import type { WebsitePageKey } from '@/types'
 
 export const Route = createFileRoute('/api/website/pages/$key')({

@@ -106,8 +106,8 @@ export const saveAttendanceAction = createServerFn()
 	.validator(saveSchema)
 	.handler(async ({ data }) => {
 		try {
-			await requireManager();
-			const session = await saveAttendance(data);
+			const { user } = await requireManager();
+			const session = await saveAttendance({ ...data, markedById: user.id });
 
 			return { success: true as const, session };
 		} catch (error) {

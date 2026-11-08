@@ -25,7 +25,7 @@ import {
 	updateNoticeAction,
 } from "#/packages/content/server.ts";
 
-export const Route = createFileRoute("/admin/content")({
+export const Route = createFileRoute("/admin/_admin/content")({
 	component: AdminContent,
 });
 

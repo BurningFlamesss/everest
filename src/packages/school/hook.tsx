@@ -6,8 +6,26 @@ import {
 	useSchoolConfig as useSchoolConfigStore,
 	useSchoolContent as useSchoolContentStore,
 } from "#/stores/contentStore.ts";
-import type { Notice, Person, Scholarship } from "#/types";
+import type { Person, Scholarship } from "#/types";
+import type { Notice } from "#/types/website";
 import type { SchoolContent } from "#/types/school";
+
+/**
+ * Shape of the root loader `content` payload: the managed CMS pages keyed by
+ * page key, plus the public collections and the sidebar blob.
+ */
+type LoaderContent = {
+	sidebar?: SchoolContent["sidebar"];
+	notices?: Notice[];
+	facultyMembers?: Person[];
+	scholarships?: Scholarship[];
+} & Record<string, unknown>;
+
+function isWebsitePageContent(
+	value: unknown,
+): value is WebsitePageContent & Record<string, unknown> {
+	return typeof value === "object" && value !== null;
+}
 
 export function useSyncContentStore() {
 	const loaderData = RootRoute.useLoaderData();
@@ -19,17 +37,17 @@ export function useSyncContentStore() {
 			setSchoolConfig(loaderData.config);
 		}
 		if (loaderData?.content) {
-			const { sidebar, ...pageContent } = loaderData.content;
+			const { sidebar, ...pageContent } = loaderData.content as unknown as LoaderContent;
 			for (const [key, page] of Object.entries(pageContent)) {
 				// Only managed WebsitePage payloads belong in the websitePages map;
 				// collection arrays (facultyMembers/notices/scholarships) are read
 				// straight from the loader via their dedicated hooks.
-				if (page) {
-					setWebsitePage(key as WebsitePageKey, page as WebsitePageContent);
+				if (page && isWebsitePageContent(page)) {
+					setWebsitePage(key as WebsitePageKey, page);
 				}
 			}
 			if (sidebar) {
-				setSchoolContent(sidebar as SchoolContent["sidebar"]);
+				setSchoolContent(sidebar);
 			}
 		}
 	}, [loaderData, setSchoolConfig, setSchoolContent, setWebsitePage]);
@@ -46,13 +64,10 @@ export function useSchoolConfig() {
 export function useSchoolContent() {
 	const storeContent = useSchoolContentStore();
 	const loaderContent = RootRoute.useLoaderData({
-		select: (data) =>
-			data.content as WebsitePageContent & {
-				sidebar?: SchoolContent["sidebar"];
-			},
+		select: (data) => data.content as unknown as LoaderContent,
 	});
 	return {
-		sidebar: storeContent?.sidebar ?? loaderContent?.sidebar,
+		sidebar: storeContent ?? loaderContent?.sidebar,
 	};
 }
 
@@ -69,7 +84,8 @@ export function useWebsitePageContent(
 	key: ManagedPageKey,
 ): WebsitePageContent | null {
 	const loaderContent = RootRoute.useLoaderData({
-		select: (data) => data.content[key] as WebsitePageContent | undefined,
+		select: (data) =>
+			(data.content as unknown as LoaderContent)[key] as WebsitePageContent | undefined,
 	});
 
 	if (
@@ -91,7 +107,8 @@ export function useWebsitePageContent(
 export function useFacultyDirectory(): Person[] | null {
 	return (
 		RootRoute.useLoaderData({
-			select: (data) => data.content.facultyMembers as Person[] | undefined,
+			select: (data) =>
+				(data.content as unknown as LoaderContent).facultyMembers as Person[] | undefined,
 		}) ?? null
 	);
 }
@@ -100,7 +117,8 @@ export function useFacultyDirectory(): Person[] | null {
 export function useNotices(): Notice[] | null {
 	return (
 		RootRoute.useLoaderData({
-			select: (data) => data.content.notices as Notice[] | undefined,
+			select: (data) =>
+				(data.content as unknown as LoaderContent).notices as Notice[] | undefined,
 		}) ?? null
 	);
 }
@@ -109,7 +127,8 @@ export function useNotices(): Notice[] | null {
 export function useScholarships(): Scholarship[] | null {
 	return (
 		RootRoute.useLoaderData({
-			select: (data) => data.content.scholarships as Scholarship[] | undefined,
+			select: (data) =>
+				(data.content as unknown as LoaderContent).scholarships as Scholarship[] | undefined,
 		}) ?? null
 	);
 }
@@ -118,7 +137,8 @@ export function useScholarships(): Scholarship[] | null {
 function useCollection<T>(key: string): T[] | null {
 	return (
 		RootRoute.useLoaderData({
-			select: (data) => data.content[key] as T[] | undefined,
+			select: (data) =>
+			(data.content as unknown as LoaderContent)[key] as T[] | undefined,
 		}) ?? null
 	);
 }

@@ -9,12 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-<<<<<<< HEAD
 import { Route as OnboardRouteImport } from './routes/_onboard'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdmissionsRouteImport } from './routes/admissions'
+import { Route as ClubsRouteImport } from './routes/clubs'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as EventsRouteImport } from './routes/events'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as MyClassesRouteImport } from './routes/my-classes'
+import { Route as MyFeesRouteImport } from './routes/my-fees'
+import { Route as MyHomeworkRouteImport } from './routes/my-homework'
+import { Route as MyRecordsRouteImport } from './routes/my-records'
+import { Route as MyResultsRouteImport } from './routes/my-results'
+import { Route as NoticesRouteImport } from './routes/notices'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as UserRouteImport } from './routes/user'
+import { Route as OnboardForgotPasswordRouteImport } from './routes/_onboard/forgot-password'
+import { Route as OnboardResetPasswordRouteImport } from './routes/_onboard/reset-password'
+import { Route as OnboardSignupRouteImport } from './routes/_onboard/signup'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as PublicAboutRouteImport } from './routes/_public/about'
 import { Route as PublicCalendarRouteImport } from './routes/_public/calendar'
@@ -30,48 +45,68 @@ import { Route as PublicResourcesRouteImport } from './routes/_public/resources'
 import { Route as PublicResultRouteImport } from './routes/_public/result'
 import { Route as PublicScholarshipRouteImport } from './routes/_public/scholarship'
 import { Route as PublicTransportationRouteImport } from './routes/_public/transportation'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as AdminSplatRouteImport } from './routes/admin/$'
-import { Route as AdminActivityRouteImport } from './routes/admin/activity'
-import { Route as AdminAdmissionsRouteImport } from './routes/admin/admissions'
-import { Route as AdminAttendanceRouteImport } from './routes/admin/attendance'
-import { Route as AdminClassesRouteImport } from './routes/admin/classes'
-import { Route as AdminCoursesRouteImport } from './routes/admin/courses'
-import { Route as AdminEventsRouteImport } from './routes/admin/events'
-import { Route as AdminFacilitiesRouteImport } from './routes/admin/facilities'
-import { Route as AdminFacultyRouteImport } from './routes/admin/faculty'
-import { Route as AdminGalleryRouteImport } from './routes/admin/gallery'
-import { Route as AdminNoticesRouteImport } from './routes/admin/notices'
-import { Route as AdminOverviewRouteImport } from './routes/admin/overview'
-import { Route as AdminPaymentsRouteImport } from './routes/admin/payments'
-import { Route as AdminResourcesRouteImport } from './routes/admin/resources'
-import { Route as AdminResultsRouteImport } from './routes/admin/results'
-import { Route as AdminScholarshipsRouteImport } from './routes/admin/scholarships'
-import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
-import { Route as AdminStaffRouteImport } from './routes/admin/staff'
-import { Route as AdminStudentsRouteImport } from './routes/admin/students'
-import { Route as AdminTransportationRouteImport } from './routes/admin/transportation'
-import { Route as AdminUsersRouteImport } from './routes/admin/users'
-import { Route as AdminWebsiteRouteImport } from './routes/admin/website'
+import { Route as ApiUploadsRouteImport } from './routes/api/uploads'
+import { Route as EventsIndexRouteImport } from './routes/events.index'
+import { Route as EventsSlugRouteImport } from './routes/events.$slug'
+import { Route as NoticesIndexRouteImport } from './routes/notices.index'
+import { Route as NoticesSlugRouteImport } from './routes/notices.$slug'
+import { Route as UploadsSplatRouteImport } from './routes/uploads/$'
 import { Route as UserIndexRouteImport } from './routes/user/index'
-import { Route as OnboardActivateGuardianTokenRouteImport } from './routes/_onboard/activate-guardian.$token'
 import { Route as OnboardActivateIndexRouteImport } from './routes/_onboard/activate.index'
 import { Route as OnboardActivateTokenRouteImport } from './routes/_onboard/activate.$token'
-import { Route as AdminAdmissionsIdRouteImport } from './routes/admin/admissions.$id'
-import { Route as AdminClassesIdRouteImport } from './routes/admin/classes.$id'
-import { Route as AdminCoursesIdRouteImport } from './routes/admin/courses.$id'
-import { Route as AdminEventsIdRouteImport } from './routes/admin/events.$id'
-import { Route as AdminGalleryIdRouteImport } from './routes/admin/gallery.$id'
-import { Route as AdminNoticesIdRouteImport } from './routes/admin/notices.$id'
-import { Route as AdminNoticesNewRouteImport } from './routes/admin/notices.new'
-import { Route as AdminPaymentsIdRouteImport } from './routes/admin/payments.$id'
-import { Route as AdminStaffIdRouteImport } from './routes/admin/staff.$id'
-import { Route as AdminStudentsIdRouteImport } from './routes/admin/students.$id'
+import { Route as AdminAdminIndexRouteImport } from './routes/admin/_admin/index'
+import { Route as AdminAdminSplatRouteImport } from './routes/admin/_admin/$'
+import { Route as AdminAdminAcademicsRouteImport } from './routes/admin/_admin/academics'
+import { Route as AdminAdminActivityRouteImport } from './routes/admin/_admin/activity'
+import { Route as AdminAdminAdmissionsRouteImport } from './routes/admin/_admin/admissions'
+import { Route as AdminAdminAttendanceRouteImport } from './routes/admin/_admin/attendance'
+import { Route as AdminAdminCalendarRouteImport } from './routes/admin/_admin/calendar'
+import { Route as AdminAdminClassesRouteImport } from './routes/admin/_admin/classes'
+import { Route as AdminAdminContentRouteImport } from './routes/admin/_admin/content'
+import { Route as AdminAdminCoursesRouteImport } from './routes/admin/_admin/courses'
+import { Route as AdminAdminDirectoryRouteImport } from './routes/admin/_admin/directory'
+import { Route as AdminAdminEventsRouteImport } from './routes/admin/_admin/events'
+import { Route as AdminAdminExamsRouteImport } from './routes/admin/_admin/exams'
+import { Route as AdminAdminFacilitiesRouteImport } from './routes/admin/_admin/facilities'
+import { Route as AdminAdminFacultyRouteImport } from './routes/admin/_admin/faculty'
+import { Route as AdminAdminFeesRouteImport } from './routes/admin/_admin/fees'
+import { Route as AdminAdminGalleryRouteImport } from './routes/admin/_admin/gallery'
+import { Route as AdminAdminHomeworkRouteImport } from './routes/admin/_admin/homework'
+import { Route as AdminAdminInboxRouteImport } from './routes/admin/_admin/inbox'
+import { Route as AdminAdminInvitesRouteImport } from './routes/admin/_admin/invites'
+import { Route as AdminAdminMailRouteImport } from './routes/admin/_admin/mail'
+import { Route as AdminAdminNoticesRouteImport } from './routes/admin/_admin/notices'
+import { Route as AdminAdminOverviewRouteImport } from './routes/admin/_admin/overview'
+import { Route as AdminAdminPaymentsRouteImport } from './routes/admin/_admin/payments'
+import { Route as AdminAdminPermissionsRouteImport } from './routes/admin/_admin/permissions'
+import { Route as AdminAdminResourcesRouteImport } from './routes/admin/_admin/resources'
+import { Route as AdminAdminResultsRouteImport } from './routes/admin/_admin/results'
+import { Route as AdminAdminScholarshipsRouteImport } from './routes/admin/_admin/scholarships'
+import { Route as AdminAdminSettingsRouteImport } from './routes/admin/_admin/settings'
+import { Route as AdminAdminStaffRouteImport } from './routes/admin/_admin/staff'
+import { Route as AdminAdminStudentsRouteImport } from './routes/admin/_admin/students'
+import { Route as AdminAdminTimetableRouteImport } from './routes/admin/_admin/timetable'
+import { Route as AdminAdminTransportRouteImport } from './routes/admin/_admin/transport'
+import { Route as AdminAdminTransportationRouteImport } from './routes/admin/_admin/transportation'
+import { Route as AdminAdminUsersRouteImport } from './routes/admin/_admin/users'
+import { Route as AdminAdminWebsiteRouteImport } from './routes/admin/_admin/website'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiCronCleanupRouteImport } from './routes/api/cron/cleanup'
 import { Route as ApiWebsitePagesRouteImport } from './routes/api/website/pages'
-import { Route as AdminNoticesIdEditRouteImport } from './routes/admin/notices.$id.edit'
+import { Route as OnboardActivateGuardianTokenRouteImport } from './routes/_onboard/activate.guardian.$token'
+import { Route as AdminAdminAdmissionsIdRouteImport } from './routes/admin/_admin/admissions.$id'
+import { Route as AdminAdminClassesIdRouteImport } from './routes/admin/_admin/classes.$id'
+import { Route as AdminAdminCoursesIdRouteImport } from './routes/admin/_admin/courses.$id'
+import { Route as AdminAdminEventsIdRouteImport } from './routes/admin/_admin/events.$id'
+import { Route as AdminAdminGalleryIdRouteImport } from './routes/admin/_admin/gallery.$id'
+import { Route as AdminAdminNoticesIdRouteImport } from './routes/admin/_admin/notices.$id'
+import { Route as AdminAdminNoticesNewRouteImport } from './routes/admin/_admin/notices.new'
+import { Route as AdminAdminPaymentsIdRouteImport } from './routes/admin/_admin/payments.$id'
+import { Route as AdminAdminStaffIdRouteImport } from './routes/admin/_admin/staff.$id'
+import { Route as AdminAdminStudentsIdRouteImport } from './routes/admin/_admin/students.$id'
 import { Route as ApiWebsitePageKeyRouteImport } from './routes/api/website/page/$key'
 import { Route as ApiWebsitePagesKeyRouteImport } from './routes/api/website/pages/$key'
+import { Route as AdminAdminNoticesIdEditRouteImport } from './routes/admin/_admin/notices.$id.edit'
 import { Route as ApiWebsitePagesKeyBlocksRouteImport } from './routes/api/website/pages/$key/blocks'
 import { Route as ApiWebsitePagesKeyPublishRouteImport } from './routes/api/website/pages/$key/publish'
 import { Route as ApiWebsitePagesKeyUnpublishRouteImport } from './routes/api/website/pages/$key/unpublish'
@@ -80,60 +115,6 @@ import { Route as ApiWebsitePagesKeySectionsSectionTypeRouteImport } from './rou
 
 const OnboardRoute = OnboardRouteImport.update({
   id: '/_onboard',
-=======
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AdmissionsRouteImport } from './routes/admissions'
-import { Route as ClubsRouteImport } from './routes/clubs'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as EventsRouteImport } from './routes/events'
-import { Route as GalleryRouteImport } from './routes/gallery'
-import { Route as MyClassesRouteImport } from './routes/my-classes'
-import { Route as MyFeesRouteImport } from './routes/my-fees'
-import { Route as MyHomeworkRouteImport } from './routes/my-homework'
-import { Route as MyRecordsRouteImport } from './routes/my-records'
-import { Route as MyResultsRouteImport } from './routes/my-results'
-import { Route as NoticesRouteImport } from './routes/notices'
-import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as OnboardForgotPasswordRouteImport } from './routes/_onboard/forgot-password'
-import { Route as OnboardLoginRouteImport } from './routes/_onboard/login'
-import { Route as OnboardResetPasswordRouteImport } from './routes/_onboard/reset-password'
-import { Route as OnboardSignupRouteImport } from './routes/_onboard/signup'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as AdminAcademicsRouteImport } from './routes/admin/academics'
-import { Route as AdminAttendanceRouteImport } from './routes/admin/attendance'
-import { Route as AdminCalendarRouteImport } from './routes/admin/calendar'
-import { Route as AdminContentRouteImport } from './routes/admin/content'
-import { Route as AdminDirectoryRouteImport } from './routes/admin/directory'
-import { Route as AdminExamsRouteImport } from './routes/admin/exams'
-import { Route as AdminFeesRouteImport } from './routes/admin/fees'
-import { Route as AdminGalleryRouteImport } from './routes/admin/gallery'
-import { Route as AdminHomeworkRouteImport } from './routes/admin/homework'
-import { Route as AdminInboxRouteImport } from './routes/admin/inbox'
-import { Route as AdminInvitesRouteImport } from './routes/admin/invites'
-import { Route as AdminMailRouteImport } from './routes/admin/mail'
-import { Route as AdminPermissionsRouteImport } from './routes/admin/permissions'
-import { Route as AdminTimetableRouteImport } from './routes/admin/timetable'
-import { Route as AdminTransportRouteImport } from './routes/admin/transport'
-import { Route as ApiUploadsRouteImport } from './routes/api/uploads'
-import { Route as EventsIndexRouteImport } from './routes/events.index'
-import { Route as EventsSlugRouteImport } from './routes/events.$slug'
-import { Route as NoticesIndexRouteImport } from './routes/notices.index'
-import { Route as NoticesSlugRouteImport } from './routes/notices.$slug'
-import { Route as UploadsSplatRouteImport } from './routes/uploads/$'
-import { Route as OnboardActivateTokenRouteImport } from './routes/_onboard/activate.$token'
-import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as ApiCronCleanupRouteImport } from './routes/api/cron/cleanup'
-import { Route as OnboardActivateGuardianTokenRouteImport } from './routes/_onboard/activate.guardian.$token'
-
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
->>>>>>> scms-local-main
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublicRoute = PublicRouteImport.update({
@@ -145,16 +126,95 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-<<<<<<< HEAD
+const AdmissionsRoute = AdmissionsRouteImport.update({
+  id: '/admissions',
+  path: '/admissions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClubsRoute = ClubsRouteImport.update({
+  id: '/clubs',
+  path: '/clubs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyClassesRoute = MyClassesRouteImport.update({
+  id: '/my-classes',
+  path: '/my-classes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyFeesRoute = MyFeesRouteImport.update({
+  id: '/my-fees',
+  path: '/my-fees',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyHomeworkRoute = MyHomeworkRouteImport.update({
+  id: '/my-homework',
+  path: '/my-homework',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyRecordsRoute = MyRecordsRouteImport.update({
+  id: '/my-records',
+  path: '/my-records',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyResultsRoute = MyResultsRouteImport.update({
+  id: '/my-results',
+  path: '/my-results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticesRoute = NoticesRouteImport.update({
+  id: '/notices',
+  path: '/notices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UserRoute = UserRouteImport.update({
   id: '/user',
   path: '/user',
   getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardForgotPasswordRoute = OnboardForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => OnboardRoute,
+} as any)
+const OnboardResetPasswordRoute = OnboardResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => OnboardRoute,
+} as any)
+const OnboardSignupRoute = OnboardSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => OnboardRoute,
 } as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
@@ -230,360 +290,6 @@ const PublicTransportationRoute = PublicTransportationRouteImport.update({
   id: '/transportation',
   path: '/transportation',
   getParentRoute: () => PublicRoute,
-=======
-const AdmissionsRoute = AdmissionsRouteImport.update({
-  id: '/admissions',
-  path: '/admissions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ClubsRoute = ClubsRouteImport.update({
-  id: '/clubs',
-  path: '/clubs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EventsRoute = EventsRouteImport.update({
-  id: '/events',
-  path: '/events',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GalleryRoute = GalleryRouteImport.update({
-  id: '/gallery',
-  path: '/gallery',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyClassesRoute = MyClassesRouteImport.update({
-  id: '/my-classes',
-  path: '/my-classes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyFeesRoute = MyFeesRouteImport.update({
-  id: '/my-fees',
-  path: '/my-fees',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyHomeworkRoute = MyHomeworkRouteImport.update({
-  id: '/my-homework',
-  path: '/my-homework',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyRecordsRoute = MyRecordsRouteImport.update({
-  id: '/my-records',
-  path: '/my-records',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyResultsRoute = MyResultsRouteImport.update({
-  id: '/my-results',
-  path: '/my-results',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NoticesRoute = NoticesRouteImport.update({
-  id: '/notices',
-  path: '/notices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
-  id: '/robots.txt',
-  path: '/robots.txt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardForgotPasswordRoute = OnboardForgotPasswordRouteImport.update({
-  id: '/_onboard/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardLoginRoute = OnboardLoginRouteImport.update({
-  id: '/_onboard/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardResetPasswordRoute = OnboardResetPasswordRouteImport.update({
-  id: '/_onboard/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardSignupRoute = OnboardSignupRouteImport.update({
-  id: '/_onboard/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
->>>>>>> scms-local-main
-} as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-<<<<<<< HEAD
-const AdminSplatRoute = AdminSplatRouteImport.update({
-  id: '/$',
-  path: '/$',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminActivityRoute = AdminActivityRouteImport.update({
-  id: '/activity',
-  path: '/activity',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAdmissionsRoute = AdminAdmissionsRouteImport.update({
-  id: '/admissions',
-  path: '/admissions',
-=======
-const AdminAcademicsRoute = AdminAcademicsRouteImport.update({
-  id: '/academics',
-  path: '/academics',
->>>>>>> scms-local-main
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAttendanceRoute = AdminAttendanceRouteImport.update({
-  id: '/attendance',
-  path: '/attendance',
-  getParentRoute: () => AdminRoute,
-} as any)
-<<<<<<< HEAD
-const AdminClassesRoute = AdminClassesRouteImport.update({
-  id: '/classes',
-  path: '/classes',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCoursesRoute = AdminCoursesRouteImport.update({
-  id: '/courses',
-  path: '/courses',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminEventsRoute = AdminEventsRouteImport.update({
-  id: '/events',
-  path: '/events',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminFacilitiesRoute = AdminFacilitiesRouteImport.update({
-  id: '/facilities',
-  path: '/facilities',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminFacultyRoute = AdminFacultyRouteImport.update({
-  id: '/faculty',
-  path: '/faculty',
-=======
-const AdminCalendarRoute = AdminCalendarRouteImport.update({
-  id: '/calendar',
-  path: '/calendar',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminContentRoute = AdminContentRouteImport.update({
-  id: '/content',
-  path: '/content',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminDirectoryRoute = AdminDirectoryRouteImport.update({
-  id: '/directory',
-  path: '/directory',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminExamsRoute = AdminExamsRouteImport.update({
-  id: '/exams',
-  path: '/exams',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminFeesRoute = AdminFeesRouteImport.update({
-  id: '/fees',
-  path: '/fees',
->>>>>>> scms-local-main
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminGalleryRoute = AdminGalleryRouteImport.update({
-  id: '/gallery',
-  path: '/gallery',
-  getParentRoute: () => AdminRoute,
-} as any)
-<<<<<<< HEAD
-const AdminNoticesRoute = AdminNoticesRouteImport.update({
-  id: '/notices',
-  path: '/notices',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminOverviewRoute = AdminOverviewRouteImport.update({
-  id: '/overview',
-  path: '/overview',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
-  id: '/payments',
-  path: '/payments',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminResourcesRoute = AdminResourcesRouteImport.update({
-  id: '/resources',
-  path: '/resources',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminResultsRoute = AdminResultsRouteImport.update({
-  id: '/results',
-  path: '/results',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminScholarshipsRoute = AdminScholarshipsRouteImport.update({
-  id: '/scholarships',
-  path: '/scholarships',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSettingsRoute = AdminSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStaffRoute = AdminStaffRouteImport.update({
-  id: '/staff',
-  path: '/staff',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStudentsRoute = AdminStudentsRouteImport.update({
-  id: '/students',
-  path: '/students',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTransportationRoute = AdminTransportationRouteImport.update({
-  id: '/transportation',
-  path: '/transportation',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminUsersRoute = AdminUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminWebsiteRoute = AdminWebsiteRouteImport.update({
-  id: '/website',
-  path: '/website',
-  getParentRoute: () => AdminRoute,
-} as any)
-const UserIndexRoute = UserIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => UserRoute,
-} as any)
-const OnboardActivateGuardianTokenRoute =
-  OnboardActivateGuardianTokenRouteImport.update({
-    id: '/activate-guardian/$token',
-    path: '/activate-guardian/$token',
-    getParentRoute: () => OnboardRoute,
-  } as any)
-const OnboardActivateIndexRoute = OnboardActivateIndexRouteImport.update({
-  id: '/activate/',
-  path: '/activate/',
-  getParentRoute: () => OnboardRoute,
-} as any)
-const OnboardActivateTokenRoute = OnboardActivateTokenRouteImport.update({
-  id: '/activate/$token',
-  path: '/activate/$token',
-  getParentRoute: () => OnboardRoute,
-} as any)
-const AdminAdmissionsIdRoute = AdminAdmissionsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminAdmissionsRoute,
-} as any)
-const AdminClassesIdRoute = AdminClassesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminClassesRoute,
-} as any)
-const AdminCoursesIdRoute = AdminCoursesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminCoursesRoute,
-} as any)
-const AdminEventsIdRoute = AdminEventsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminEventsRoute,
-} as any)
-const AdminGalleryIdRoute = AdminGalleryIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminGalleryRoute,
-} as any)
-const AdminNoticesIdRoute = AdminNoticesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminNoticesRoute,
-} as any)
-const AdminNoticesNewRoute = AdminNoticesNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => AdminNoticesRoute,
-} as any)
-const AdminPaymentsIdRoute = AdminPaymentsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminPaymentsRoute,
-} as any)
-const AdminStaffIdRoute = AdminStaffIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminStaffRoute,
-} as any)
-const AdminStudentsIdRoute = AdminStudentsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminStudentsRoute,
-} as any)
-const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
-=======
-const AdminHomeworkRoute = AdminHomeworkRouteImport.update({
-  id: '/homework',
-  path: '/homework',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminInboxRoute = AdminInboxRouteImport.update({
-  id: '/inbox',
-  path: '/inbox',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminInvitesRoute = AdminInvitesRouteImport.update({
-  id: '/invites',
-  path: '/invites',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminMailRoute = AdminMailRouteImport.update({
-  id: '/mail',
-  path: '/mail',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPermissionsRoute = AdminPermissionsRouteImport.update({
-  id: '/permissions',
-  path: '/permissions',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTimetableRoute = AdminTimetableRouteImport.update({
-  id: '/timetable',
-  path: '/timetable',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTransportRoute = AdminTransportRouteImport.update({
-  id: '/transport',
-  path: '/transport',
-  getParentRoute: () => AdminRoute,
 } as any)
 const ApiUploadsRoute = ApiUploadsRouteImport.update({
   id: '/api/uploads',
@@ -613,7 +319,212 @@ const NoticesSlugRoute = NoticesSlugRouteImport.update({
 const UploadsSplatRoute = UploadsSplatRouteImport.update({
   id: '/uploads/$',
   path: '/uploads/$',
->>>>>>> scms-local-main
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserIndexRoute = UserIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UserRoute,
+} as any)
+const OnboardActivateIndexRoute = OnboardActivateIndexRouteImport.update({
+  id: '/activate/',
+  path: '/activate/',
+  getParentRoute: () => OnboardRoute,
+} as any)
+const OnboardActivateTokenRoute = OnboardActivateTokenRouteImport.update({
+  id: '/activate/$token',
+  path: '/activate/$token',
+  getParentRoute: () => OnboardRoute,
+} as any)
+const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
+  id: '/_admin/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminSplatRoute = AdminAdminSplatRouteImport.update({
+  id: '/_admin/$',
+  path: '/$',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminAcademicsRoute = AdminAdminAcademicsRouteImport.update({
+  id: '/_admin/academics',
+  path: '/academics',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminActivityRoute = AdminAdminActivityRouteImport.update({
+  id: '/_admin/activity',
+  path: '/activity',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminAdmissionsRoute = AdminAdminAdmissionsRouteImport.update({
+  id: '/_admin/admissions',
+  path: '/admissions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminAttendanceRoute = AdminAdminAttendanceRouteImport.update({
+  id: '/_admin/attendance',
+  path: '/attendance',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminCalendarRoute = AdminAdminCalendarRouteImport.update({
+  id: '/_admin/calendar',
+  path: '/calendar',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminClassesRoute = AdminAdminClassesRouteImport.update({
+  id: '/_admin/classes',
+  path: '/classes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminContentRoute = AdminAdminContentRouteImport.update({
+  id: '/_admin/content',
+  path: '/content',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminCoursesRoute = AdminAdminCoursesRouteImport.update({
+  id: '/_admin/courses',
+  path: '/courses',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminDirectoryRoute = AdminAdminDirectoryRouteImport.update({
+  id: '/_admin/directory',
+  path: '/directory',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminEventsRoute = AdminAdminEventsRouteImport.update({
+  id: '/_admin/events',
+  path: '/events',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminExamsRoute = AdminAdminExamsRouteImport.update({
+  id: '/_admin/exams',
+  path: '/exams',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminFacilitiesRoute = AdminAdminFacilitiesRouteImport.update({
+  id: '/_admin/facilities',
+  path: '/facilities',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminFacultyRoute = AdminAdminFacultyRouteImport.update({
+  id: '/_admin/faculty',
+  path: '/faculty',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminFeesRoute = AdminAdminFeesRouteImport.update({
+  id: '/_admin/fees',
+  path: '/fees',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminGalleryRoute = AdminAdminGalleryRouteImport.update({
+  id: '/_admin/gallery',
+  path: '/gallery',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminHomeworkRoute = AdminAdminHomeworkRouteImport.update({
+  id: '/_admin/homework',
+  path: '/homework',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminInboxRoute = AdminAdminInboxRouteImport.update({
+  id: '/_admin/inbox',
+  path: '/inbox',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminInvitesRoute = AdminAdminInvitesRouteImport.update({
+  id: '/_admin/invites',
+  path: '/invites',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminMailRoute = AdminAdminMailRouteImport.update({
+  id: '/_admin/mail',
+  path: '/mail',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminNoticesRoute = AdminAdminNoticesRouteImport.update({
+  id: '/_admin/notices',
+  path: '/notices',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminOverviewRoute = AdminAdminOverviewRouteImport.update({
+  id: '/_admin/overview',
+  path: '/overview',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminPaymentsRoute = AdminAdminPaymentsRouteImport.update({
+  id: '/_admin/payments',
+  path: '/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminPermissionsRoute = AdminAdminPermissionsRouteImport.update({
+  id: '/_admin/permissions',
+  path: '/permissions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminResourcesRoute = AdminAdminResourcesRouteImport.update({
+  id: '/_admin/resources',
+  path: '/resources',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminResultsRoute = AdminAdminResultsRouteImport.update({
+  id: '/_admin/results',
+  path: '/results',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminScholarshipsRoute = AdminAdminScholarshipsRouteImport.update({
+  id: '/_admin/scholarships',
+  path: '/scholarships',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminSettingsRoute = AdminAdminSettingsRouteImport.update({
+  id: '/_admin/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminStaffRoute = AdminAdminStaffRouteImport.update({
+  id: '/_admin/staff',
+  path: '/staff',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminStudentsRoute = AdminAdminStudentsRouteImport.update({
+  id: '/_admin/students',
+  path: '/students',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminTimetableRoute = AdminAdminTimetableRouteImport.update({
+  id: '/_admin/timetable',
+  path: '/timetable',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminTransportRoute = AdminAdminTransportRouteImport.update({
+  id: '/_admin/transport',
+  path: '/transport',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminTransportationRoute =
+  AdminAdminTransportationRouteImport.update({
+    id: '/_admin/transportation',
+    path: '/transportation',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminAdminUsersRoute = AdminAdminUsersRouteImport.update({
+  id: '/_admin/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminWebsiteRoute = AdminAdminWebsiteRouteImport.update({
+  id: '/_admin/website',
+  path: '/website',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronCleanupRoute = ApiCronCleanupRouteImport.update({
+  id: '/api/cron/cleanup',
+  path: '/api/cron/cleanup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiWebsitePagesRoute = ApiWebsitePagesRouteImport.update({
@@ -621,11 +532,61 @@ const ApiWebsitePagesRoute = ApiWebsitePagesRouteImport.update({
   path: '/api/website/pages',
   getParentRoute: () => rootRouteImport,
 } as any)
-<<<<<<< HEAD
-const AdminNoticesIdEditRoute = AdminNoticesIdEditRouteImport.update({
-  id: '/edit',
-  path: '/edit',
-  getParentRoute: () => AdminNoticesIdRoute,
+const OnboardActivateGuardianTokenRoute =
+  OnboardActivateGuardianTokenRouteImport.update({
+    id: '/activate/guardian/$token',
+    path: '/activate/guardian/$token',
+    getParentRoute: () => OnboardRoute,
+  } as any)
+const AdminAdminAdmissionsIdRoute = AdminAdminAdmissionsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminAdminAdmissionsRoute,
+} as any)
+const AdminAdminClassesIdRoute = AdminAdminClassesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminAdminClassesRoute,
+} as any)
+const AdminAdminCoursesIdRoute = AdminAdminCoursesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminAdminCoursesRoute,
+} as any)
+const AdminAdminEventsIdRoute = AdminAdminEventsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminAdminEventsRoute,
+} as any)
+const AdminAdminGalleryIdRoute = AdminAdminGalleryIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminAdminGalleryRoute,
+} as any)
+const AdminAdminNoticesIdRoute = AdminAdminNoticesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminAdminNoticesRoute,
+} as any)
+const AdminAdminNoticesNewRoute = AdminAdminNoticesNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminAdminNoticesRoute,
+} as any)
+const AdminAdminPaymentsIdRoute = AdminAdminPaymentsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminAdminPaymentsRoute,
+} as any)
+const AdminAdminStaffIdRoute = AdminAdminStaffIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminAdminStaffRoute,
+} as any)
+const AdminAdminStudentsIdRoute = AdminAdminStudentsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminAdminStudentsRoute,
 } as any)
 const ApiWebsitePageKeyRoute = ApiWebsitePageKeyRouteImport.update({
   id: '/api/website/page/$key',
@@ -636,6 +597,11 @@ const ApiWebsitePagesKeyRoute = ApiWebsitePagesKeyRouteImport.update({
   id: '/$key',
   path: '/$key',
   getParentRoute: () => ApiWebsitePagesRoute,
+} as any)
+const AdminAdminNoticesIdEditRoute = AdminAdminNoticesIdEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => AdminAdminNoticesIdRoute,
 } as any)
 const ApiWebsitePagesKeyBlocksRoute =
   ApiWebsitePagesKeyBlocksRouteImport.update({
@@ -671,8 +637,24 @@ const ApiWebsitePagesKeySectionsSectionTypeRoute =
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/admissions': typeof AdmissionsRoute
+  '/clubs': typeof ClubsRoute
+  '/dashboard': typeof DashboardRoute
+  '/events': typeof EventsRouteWithChildren
   '/login': typeof LoginRoute
+  '/my-classes': typeof MyClassesRoute
+  '/my-fees': typeof MyFeesRoute
+  '/my-homework': typeof MyHomeworkRoute
+  '/my-records': typeof MyRecordsRoute
+  '/my-results': typeof MyResultsRoute
+  '/notices': typeof PublicNoticesRoute
+  '/notifications': typeof NotificationsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/user': typeof UserRouteWithChildren
+  '/forgot-password': typeof OnboardForgotPasswordRoute
+  '/reset-password': typeof OnboardResetPasswordRoute
+  '/signup': typeof OnboardSignupRoute
   '/about': typeof PublicAboutRoute
   '/calendar': typeof PublicCalendarRoute
   '/contact': typeof PublicContactRoute
@@ -681,119 +663,73 @@ export interface FileRoutesByFullPath {
   '/facilities': typeof PublicFacilitiesRoute
   '/faculty': typeof PublicFacultyRoute
   '/gallery': typeof PublicGalleryRoute
-  '/notices': typeof PublicNoticesRoute
   '/posts': typeof PublicPostsRoute
   '/resources': typeof PublicResourcesRoute
   '/result': typeof PublicResultRoute
   '/scholarship': typeof PublicScholarshipRoute
   '/transportation': typeof PublicTransportationRoute
-  '/admin/$': typeof AdminSplatRoute
-  '/admin/activity': typeof AdminActivityRoute
-  '/admin/admissions': typeof AdminAdmissionsRouteWithChildren
-  '/admin/attendance': typeof AdminAttendanceRoute
-  '/admin/classes': typeof AdminClassesRouteWithChildren
-  '/admin/courses': typeof AdminCoursesRouteWithChildren
-  '/admin/events': typeof AdminEventsRouteWithChildren
-  '/admin/facilities': typeof AdminFacilitiesRoute
-  '/admin/faculty': typeof AdminFacultyRoute
-  '/admin/gallery': typeof AdminGalleryRouteWithChildren
-  '/admin/notices': typeof AdminNoticesRouteWithChildren
-  '/admin/overview': typeof AdminOverviewRoute
-  '/admin/payments': typeof AdminPaymentsRouteWithChildren
-  '/admin/resources': typeof AdminResourcesRoute
-  '/admin/results': typeof AdminResultsRoute
-  '/admin/scholarships': typeof AdminScholarshipsRoute
-  '/admin/settings': typeof AdminSettingsRoute
-  '/admin/staff': typeof AdminStaffRouteWithChildren
-  '/admin/students': typeof AdminStudentsRouteWithChildren
-  '/admin/transportation': typeof AdminTransportationRoute
-  '/admin/users': typeof AdminUsersRoute
-  '/admin/website': typeof AdminWebsiteRoute
-  '/admin/': typeof AdminIndexRoute
-  '/user/': typeof UserIndexRoute
-  '/activate-guardian/$token': typeof OnboardActivateGuardianTokenRoute
-=======
-const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiCronCleanupRoute = ApiCronCleanupRouteImport.update({
-  id: '/api/cron/cleanup',
-  path: '/api/cron/cleanup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardActivateGuardianTokenRoute =
-  OnboardActivateGuardianTokenRouteImport.update({
-    id: '/_onboard/activate/guardian/$token',
-    path: '/activate/guardian/$token',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/admissions': typeof AdmissionsRoute
-  '/clubs': typeof ClubsRoute
-  '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
-  '/events': typeof EventsRouteWithChildren
-  '/gallery': typeof GalleryRoute
-  '/my-classes': typeof MyClassesRoute
-  '/my-fees': typeof MyFeesRoute
-  '/my-homework': typeof MyHomeworkRoute
-  '/my-records': typeof MyRecordsRoute
-  '/my-results': typeof MyResultsRoute
-  '/notices': typeof NoticesRouteWithChildren
-  '/notifications': typeof NotificationsRoute
-  '/robots.txt': typeof RobotsDottxtRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/forgot-password': typeof OnboardForgotPasswordRoute
-  '/login': typeof OnboardLoginRoute
-  '/reset-password': typeof OnboardResetPasswordRoute
-  '/signup': typeof OnboardSignupRoute
-  '/admin/academics': typeof AdminAcademicsRoute
-  '/admin/attendance': typeof AdminAttendanceRoute
-  '/admin/calendar': typeof AdminCalendarRoute
-  '/admin/content': typeof AdminContentRoute
-  '/admin/directory': typeof AdminDirectoryRoute
-  '/admin/exams': typeof AdminExamsRoute
-  '/admin/fees': typeof AdminFeesRoute
-  '/admin/gallery': typeof AdminGalleryRoute
-  '/admin/homework': typeof AdminHomeworkRoute
-  '/admin/inbox': typeof AdminInboxRoute
-  '/admin/invites': typeof AdminInvitesRoute
-  '/admin/mail': typeof AdminMailRoute
-  '/admin/permissions': typeof AdminPermissionsRoute
-  '/admin/timetable': typeof AdminTimetableRoute
-  '/admin/transport': typeof AdminTransportRoute
   '/api/uploads': typeof ApiUploadsRoute
   '/events/$slug': typeof EventsSlugRoute
   '/notices/$slug': typeof NoticesSlugRoute
   '/uploads/$': typeof UploadsSplatRoute
-  '/admin/': typeof AdminIndexRoute
   '/events/': typeof EventsIndexRoute
   '/notices/': typeof NoticesIndexRoute
->>>>>>> scms-local-main
+  '/user/': typeof UserIndexRoute
   '/activate/$token': typeof OnboardActivateTokenRoute
-  '/admin/admissions/$id': typeof AdminAdmissionsIdRoute
-  '/admin/classes/$id': typeof AdminClassesIdRoute
-  '/admin/courses/$id': typeof AdminCoursesIdRoute
-  '/admin/events/$id': typeof AdminEventsIdRoute
-  '/admin/gallery/$id': typeof AdminGalleryIdRoute
-  '/admin/notices/$id': typeof AdminNoticesIdRouteWithChildren
-  '/admin/notices/new': typeof AdminNoticesNewRoute
-  '/admin/payments/$id': typeof AdminPaymentsIdRoute
-  '/admin/staff/$id': typeof AdminStaffIdRoute
-  '/admin/students/$id': typeof AdminStudentsIdRoute
+  '/admin/$': typeof AdminAdminSplatRoute
+  '/admin/academics': typeof AdminAdminAcademicsRoute
+  '/admin/activity': typeof AdminAdminActivityRoute
+  '/admin/admissions': typeof AdminAdminAdmissionsRouteWithChildren
+  '/admin/attendance': typeof AdminAdminAttendanceRoute
+  '/admin/calendar': typeof AdminAdminCalendarRoute
+  '/admin/classes': typeof AdminAdminClassesRouteWithChildren
+  '/admin/content': typeof AdminAdminContentRoute
+  '/admin/courses': typeof AdminAdminCoursesRouteWithChildren
+  '/admin/directory': typeof AdminAdminDirectoryRoute
+  '/admin/events': typeof AdminAdminEventsRouteWithChildren
+  '/admin/exams': typeof AdminAdminExamsRoute
+  '/admin/facilities': typeof AdminAdminFacilitiesRoute
+  '/admin/faculty': typeof AdminAdminFacultyRoute
+  '/admin/fees': typeof AdminAdminFeesRoute
+  '/admin/gallery': typeof AdminAdminGalleryRouteWithChildren
+  '/admin/homework': typeof AdminAdminHomeworkRoute
+  '/admin/inbox': typeof AdminAdminInboxRoute
+  '/admin/invites': typeof AdminAdminInvitesRoute
+  '/admin/mail': typeof AdminAdminMailRoute
+  '/admin/notices': typeof AdminAdminNoticesRouteWithChildren
+  '/admin/overview': typeof AdminAdminOverviewRoute
+  '/admin/payments': typeof AdminAdminPaymentsRouteWithChildren
+  '/admin/permissions': typeof AdminAdminPermissionsRoute
+  '/admin/resources': typeof AdminAdminResourcesRoute
+  '/admin/results': typeof AdminAdminResultsRoute
+  '/admin/scholarships': typeof AdminAdminScholarshipsRoute
+  '/admin/settings': typeof AdminAdminSettingsRoute
+  '/admin/staff': typeof AdminAdminStaffRouteWithChildren
+  '/admin/students': typeof AdminAdminStudentsRouteWithChildren
+  '/admin/timetable': typeof AdminAdminTimetableRoute
+  '/admin/transport': typeof AdminAdminTransportRoute
+  '/admin/transportation': typeof AdminAdminTransportationRoute
+  '/admin/users': typeof AdminAdminUsersRoute
+  '/admin/website': typeof AdminAdminWebsiteRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-<<<<<<< HEAD
+  '/api/cron/cleanup': typeof ApiCronCleanupRoute
   '/api/website/pages': typeof ApiWebsitePagesRouteWithChildren
   '/activate/': typeof OnboardActivateIndexRoute
-  '/admin/notices/$id/edit': typeof AdminNoticesIdEditRoute
+  '/admin/': typeof AdminAdminIndexRoute
+  '/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
+  '/admin/admissions/$id': typeof AdminAdminAdmissionsIdRoute
+  '/admin/classes/$id': typeof AdminAdminClassesIdRoute
+  '/admin/courses/$id': typeof AdminAdminCoursesIdRoute
+  '/admin/events/$id': typeof AdminAdminEventsIdRoute
+  '/admin/gallery/$id': typeof AdminAdminGalleryIdRoute
+  '/admin/notices/$id': typeof AdminAdminNoticesIdRouteWithChildren
+  '/admin/notices/new': typeof AdminAdminNoticesNewRoute
+  '/admin/payments/$id': typeof AdminAdminPaymentsIdRoute
+  '/admin/staff/$id': typeof AdminAdminStaffIdRoute
+  '/admin/students/$id': typeof AdminAdminStudentsIdRoute
   '/api/website/page/$key': typeof ApiWebsitePageKeyRoute
   '/api/website/pages/$key': typeof ApiWebsitePagesKeyRouteWithChildren
+  '/admin/notices/$id/edit': typeof AdminAdminNoticesIdEditRoute
   '/api/website/pages/$key/blocks': typeof ApiWebsitePagesKeyBlocksRouteWithChildren
   '/api/website/pages/$key/publish': typeof ApiWebsitePagesKeyPublishRoute
   '/api/website/pages/$key/unpublish': typeof ApiWebsitePagesKeyUnpublishRoute
@@ -802,58 +738,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
-  '/login': typeof LoginRoute
-  '/about': typeof PublicAboutRoute
-  '/calendar': typeof PublicCalendarRoute
-  '/contact': typeof PublicContactRoute
-  '/course-finder': typeof PublicCourseFinderRoute
-  '/courses': typeof PublicCoursesRoute
-  '/facilities': typeof PublicFacilitiesRoute
-  '/faculty': typeof PublicFacultyRoute
-  '/gallery': typeof PublicGalleryRoute
-  '/notices': typeof PublicNoticesRoute
-  '/posts': typeof PublicPostsRoute
-  '/resources': typeof PublicResourcesRoute
-  '/result': typeof PublicResultRoute
-  '/scholarship': typeof PublicScholarshipRoute
-  '/transportation': typeof PublicTransportationRoute
-  '/admin/$': typeof AdminSplatRoute
-  '/admin/activity': typeof AdminActivityRoute
-  '/admin/admissions': typeof AdminAdmissionsRouteWithChildren
-  '/admin/attendance': typeof AdminAttendanceRoute
-  '/admin/classes': typeof AdminClassesRouteWithChildren
-  '/admin/courses': typeof AdminCoursesRouteWithChildren
-  '/admin/events': typeof AdminEventsRouteWithChildren
-  '/admin/facilities': typeof AdminFacilitiesRoute
-  '/admin/faculty': typeof AdminFacultyRoute
-  '/admin/gallery': typeof AdminGalleryRouteWithChildren
-  '/admin/notices': typeof AdminNoticesRouteWithChildren
-  '/admin/overview': typeof AdminOverviewRoute
-  '/admin/payments': typeof AdminPaymentsRouteWithChildren
-  '/admin/resources': typeof AdminResourcesRoute
-  '/admin/results': typeof AdminResultsRoute
-  '/admin/scholarships': typeof AdminScholarshipsRoute
-  '/admin/settings': typeof AdminSettingsRoute
-  '/admin/staff': typeof AdminStaffRouteWithChildren
-  '/admin/students': typeof AdminStudentsRouteWithChildren
-  '/admin/transportation': typeof AdminTransportationRoute
-  '/admin/users': typeof AdminUsersRoute
-  '/admin/website': typeof AdminWebsiteRoute
-  '/admin': typeof AdminIndexRoute
-  '/user': typeof UserIndexRoute
-  '/activate-guardian/$token': typeof OnboardActivateGuardianTokenRoute
-=======
-  '/api/cron/cleanup': typeof ApiCronCleanupRoute
-  '/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
-}
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/admissions': typeof AdmissionsRoute
   '/clubs': typeof ClubsRoute
-  '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
-  '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/my-classes': typeof MyClassesRoute
   '/my-fees': typeof MyFeesRoute
   '/my-homework': typeof MyHomeworkRoute
@@ -863,50 +751,83 @@ export interface FileRoutesByTo {
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/forgot-password': typeof OnboardForgotPasswordRoute
-  '/login': typeof OnboardLoginRoute
   '/reset-password': typeof OnboardResetPasswordRoute
   '/signup': typeof OnboardSignupRoute
-  '/admin/academics': typeof AdminAcademicsRoute
-  '/admin/attendance': typeof AdminAttendanceRoute
-  '/admin/calendar': typeof AdminCalendarRoute
-  '/admin/content': typeof AdminContentRoute
-  '/admin/directory': typeof AdminDirectoryRoute
-  '/admin/exams': typeof AdminExamsRoute
-  '/admin/fees': typeof AdminFeesRoute
-  '/admin/gallery': typeof AdminGalleryRoute
-  '/admin/homework': typeof AdminHomeworkRoute
-  '/admin/inbox': typeof AdminInboxRoute
-  '/admin/invites': typeof AdminInvitesRoute
-  '/admin/mail': typeof AdminMailRoute
-  '/admin/permissions': typeof AdminPermissionsRoute
-  '/admin/timetable': typeof AdminTimetableRoute
-  '/admin/transport': typeof AdminTransportRoute
+  '/about': typeof PublicAboutRoute
+  '/calendar': typeof PublicCalendarRoute
+  '/contact': typeof PublicContactRoute
+  '/course-finder': typeof PublicCourseFinderRoute
+  '/courses': typeof PublicCoursesRoute
+  '/facilities': typeof PublicFacilitiesRoute
+  '/faculty': typeof PublicFacultyRoute
+  '/gallery': typeof PublicGalleryRoute
+  '/notices': typeof NoticesIndexRoute
+  '/posts': typeof PublicPostsRoute
+  '/resources': typeof PublicResourcesRoute
+  '/result': typeof PublicResultRoute
+  '/scholarship': typeof PublicScholarshipRoute
+  '/transportation': typeof PublicTransportationRoute
   '/api/uploads': typeof ApiUploadsRoute
   '/events/$slug': typeof EventsSlugRoute
   '/notices/$slug': typeof NoticesSlugRoute
   '/uploads/$': typeof UploadsSplatRoute
-  '/admin': typeof AdminIndexRoute
   '/events': typeof EventsIndexRoute
-  '/notices': typeof NoticesIndexRoute
->>>>>>> scms-local-main
+  '/user': typeof UserIndexRoute
   '/activate/$token': typeof OnboardActivateTokenRoute
-  '/admin/admissions/$id': typeof AdminAdmissionsIdRoute
-  '/admin/classes/$id': typeof AdminClassesIdRoute
-  '/admin/courses/$id': typeof AdminCoursesIdRoute
-  '/admin/events/$id': typeof AdminEventsIdRoute
-  '/admin/gallery/$id': typeof AdminGalleryIdRoute
-  '/admin/notices/$id': typeof AdminNoticesIdRouteWithChildren
-  '/admin/notices/new': typeof AdminNoticesNewRoute
-  '/admin/payments/$id': typeof AdminPaymentsIdRoute
-  '/admin/staff/$id': typeof AdminStaffIdRoute
-  '/admin/students/$id': typeof AdminStudentsIdRoute
+  '/admin/$': typeof AdminAdminSplatRoute
+  '/admin/academics': typeof AdminAdminAcademicsRoute
+  '/admin/activity': typeof AdminAdminActivityRoute
+  '/admin/admissions': typeof AdminAdminAdmissionsRouteWithChildren
+  '/admin/attendance': typeof AdminAdminAttendanceRoute
+  '/admin/calendar': typeof AdminAdminCalendarRoute
+  '/admin/classes': typeof AdminAdminClassesRouteWithChildren
+  '/admin/content': typeof AdminAdminContentRoute
+  '/admin/courses': typeof AdminAdminCoursesRouteWithChildren
+  '/admin/directory': typeof AdminAdminDirectoryRoute
+  '/admin/events': typeof AdminAdminEventsRouteWithChildren
+  '/admin/exams': typeof AdminAdminExamsRoute
+  '/admin/facilities': typeof AdminAdminFacilitiesRoute
+  '/admin/faculty': typeof AdminAdminFacultyRoute
+  '/admin/fees': typeof AdminAdminFeesRoute
+  '/admin/gallery': typeof AdminAdminGalleryRouteWithChildren
+  '/admin/homework': typeof AdminAdminHomeworkRoute
+  '/admin/inbox': typeof AdminAdminInboxRoute
+  '/admin/invites': typeof AdminAdminInvitesRoute
+  '/admin/mail': typeof AdminAdminMailRoute
+  '/admin/notices': typeof AdminAdminNoticesRouteWithChildren
+  '/admin/overview': typeof AdminAdminOverviewRoute
+  '/admin/payments': typeof AdminAdminPaymentsRouteWithChildren
+  '/admin/permissions': typeof AdminAdminPermissionsRoute
+  '/admin/resources': typeof AdminAdminResourcesRoute
+  '/admin/results': typeof AdminAdminResultsRoute
+  '/admin/scholarships': typeof AdminAdminScholarshipsRoute
+  '/admin/settings': typeof AdminAdminSettingsRoute
+  '/admin/staff': typeof AdminAdminStaffRouteWithChildren
+  '/admin/students': typeof AdminAdminStudentsRouteWithChildren
+  '/admin/timetable': typeof AdminAdminTimetableRoute
+  '/admin/transport': typeof AdminAdminTransportRoute
+  '/admin/transportation': typeof AdminAdminTransportationRoute
+  '/admin/users': typeof AdminAdminUsersRoute
+  '/admin/website': typeof AdminAdminWebsiteRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-<<<<<<< HEAD
+  '/api/cron/cleanup': typeof ApiCronCleanupRoute
   '/api/website/pages': typeof ApiWebsitePagesRouteWithChildren
   '/activate': typeof OnboardActivateIndexRoute
-  '/admin/notices/$id/edit': typeof AdminNoticesIdEditRoute
+  '/admin': typeof AdminAdminIndexRoute
+  '/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
+  '/admin/admissions/$id': typeof AdminAdminAdmissionsIdRoute
+  '/admin/classes/$id': typeof AdminAdminClassesIdRoute
+  '/admin/courses/$id': typeof AdminAdminCoursesIdRoute
+  '/admin/events/$id': typeof AdminAdminEventsIdRoute
+  '/admin/gallery/$id': typeof AdminAdminGalleryIdRoute
+  '/admin/notices/$id': typeof AdminAdminNoticesIdRouteWithChildren
+  '/admin/notices/new': typeof AdminAdminNoticesNewRoute
+  '/admin/payments/$id': typeof AdminAdminPaymentsIdRoute
+  '/admin/staff/$id': typeof AdminAdminStaffIdRoute
+  '/admin/students/$id': typeof AdminAdminStudentsIdRoute
   '/api/website/page/$key': typeof ApiWebsitePageKeyRoute
   '/api/website/pages/$key': typeof ApiWebsitePagesKeyRouteWithChildren
+  '/admin/notices/$id/edit': typeof AdminAdminNoticesIdEditRoute
   '/api/website/pages/$key/blocks': typeof ApiWebsitePagesKeyBlocksRouteWithChildren
   '/api/website/pages/$key/publish': typeof ApiWebsitePagesKeyPublishRoute
   '/api/website/pages/$key/unpublish': typeof ApiWebsitePagesKeyUnpublishRoute
@@ -918,8 +839,24 @@ export interface FileRoutesById {
   '/_onboard': typeof OnboardRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
+  '/admissions': typeof AdmissionsRoute
+  '/clubs': typeof ClubsRoute
+  '/dashboard': typeof DashboardRoute
+  '/events': typeof EventsRouteWithChildren
   '/login': typeof LoginRoute
+  '/my-classes': typeof MyClassesRoute
+  '/my-fees': typeof MyFeesRoute
+  '/my-homework': typeof MyHomeworkRoute
+  '/my-records': typeof MyRecordsRoute
+  '/my-results': typeof MyResultsRoute
+  '/notices': typeof NoticesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/user': typeof UserRouteWithChildren
+  '/_onboard/forgot-password': typeof OnboardForgotPasswordRoute
+  '/_onboard/reset-password': typeof OnboardResetPasswordRoute
+  '/_onboard/signup': typeof OnboardSignupRoute
   '/_public/about': typeof PublicAboutRoute
   '/_public/calendar': typeof PublicCalendarRoute
   '/_public/contact': typeof PublicContactRoute
@@ -934,167 +871,85 @@ export interface FileRoutesById {
   '/_public/result': typeof PublicResultRoute
   '/_public/scholarship': typeof PublicScholarshipRoute
   '/_public/transportation': typeof PublicTransportationRoute
-  '/admin/$': typeof AdminSplatRoute
-  '/admin/activity': typeof AdminActivityRoute
-  '/admin/admissions': typeof AdminAdmissionsRouteWithChildren
-  '/admin/attendance': typeof AdminAttendanceRoute
-  '/admin/classes': typeof AdminClassesRouteWithChildren
-  '/admin/courses': typeof AdminCoursesRouteWithChildren
-  '/admin/events': typeof AdminEventsRouteWithChildren
-  '/admin/facilities': typeof AdminFacilitiesRoute
-  '/admin/faculty': typeof AdminFacultyRoute
-  '/admin/gallery': typeof AdminGalleryRouteWithChildren
-  '/admin/notices': typeof AdminNoticesRouteWithChildren
-  '/admin/overview': typeof AdminOverviewRoute
-  '/admin/payments': typeof AdminPaymentsRouteWithChildren
-  '/admin/resources': typeof AdminResourcesRoute
-  '/admin/results': typeof AdminResultsRoute
-  '/admin/scholarships': typeof AdminScholarshipsRoute
-  '/admin/settings': typeof AdminSettingsRoute
-  '/admin/staff': typeof AdminStaffRouteWithChildren
-  '/admin/students': typeof AdminStudentsRouteWithChildren
-  '/admin/transportation': typeof AdminTransportationRoute
-  '/admin/users': typeof AdminUsersRoute
-  '/admin/website': typeof AdminWebsiteRoute
-  '/_public/': typeof PublicIndexRoute
-  '/admin/': typeof AdminIndexRoute
-  '/user/': typeof UserIndexRoute
-  '/_onboard/activate-guardian/$token': typeof OnboardActivateGuardianTokenRoute
-=======
-  '/api/cron/cleanup': typeof ApiCronCleanupRoute
-  '/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
-}
-export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/admissions': typeof AdmissionsRoute
-  '/clubs': typeof ClubsRoute
-  '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
-  '/events': typeof EventsRouteWithChildren
-  '/gallery': typeof GalleryRoute
-  '/my-classes': typeof MyClassesRoute
-  '/my-fees': typeof MyFeesRoute
-  '/my-homework': typeof MyHomeworkRoute
-  '/my-records': typeof MyRecordsRoute
-  '/my-results': typeof MyResultsRoute
-  '/notices': typeof NoticesRouteWithChildren
-  '/notifications': typeof NotificationsRoute
-  '/robots.txt': typeof RobotsDottxtRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/_onboard/forgot-password': typeof OnboardForgotPasswordRoute
-  '/_onboard/login': typeof OnboardLoginRoute
-  '/_onboard/reset-password': typeof OnboardResetPasswordRoute
-  '/_onboard/signup': typeof OnboardSignupRoute
-  '/admin/academics': typeof AdminAcademicsRoute
-  '/admin/attendance': typeof AdminAttendanceRoute
-  '/admin/calendar': typeof AdminCalendarRoute
-  '/admin/content': typeof AdminContentRoute
-  '/admin/directory': typeof AdminDirectoryRoute
-  '/admin/exams': typeof AdminExamsRoute
-  '/admin/fees': typeof AdminFeesRoute
-  '/admin/gallery': typeof AdminGalleryRoute
-  '/admin/homework': typeof AdminHomeworkRoute
-  '/admin/inbox': typeof AdminInboxRoute
-  '/admin/invites': typeof AdminInvitesRoute
-  '/admin/mail': typeof AdminMailRoute
-  '/admin/permissions': typeof AdminPermissionsRoute
-  '/admin/timetable': typeof AdminTimetableRoute
-  '/admin/transport': typeof AdminTransportRoute
   '/api/uploads': typeof ApiUploadsRoute
   '/events/$slug': typeof EventsSlugRoute
   '/notices/$slug': typeof NoticesSlugRoute
   '/uploads/$': typeof UploadsSplatRoute
-  '/admin/': typeof AdminIndexRoute
+  '/_public/': typeof PublicIndexRoute
   '/events/': typeof EventsIndexRoute
   '/notices/': typeof NoticesIndexRoute
->>>>>>> scms-local-main
+  '/user/': typeof UserIndexRoute
   '/_onboard/activate/$token': typeof OnboardActivateTokenRoute
-  '/admin/admissions/$id': typeof AdminAdmissionsIdRoute
-  '/admin/classes/$id': typeof AdminClassesIdRoute
-  '/admin/courses/$id': typeof AdminCoursesIdRoute
-  '/admin/events/$id': typeof AdminEventsIdRoute
-  '/admin/gallery/$id': typeof AdminGalleryIdRoute
-  '/admin/notices/$id': typeof AdminNoticesIdRouteWithChildren
-  '/admin/notices/new': typeof AdminNoticesNewRoute
-  '/admin/payments/$id': typeof AdminPaymentsIdRoute
-  '/admin/staff/$id': typeof AdminStaffIdRoute
-  '/admin/students/$id': typeof AdminStudentsIdRoute
+  '/admin/_admin/$': typeof AdminAdminSplatRoute
+  '/admin/_admin/academics': typeof AdminAdminAcademicsRoute
+  '/admin/_admin/activity': typeof AdminAdminActivityRoute
+  '/admin/_admin/admissions': typeof AdminAdminAdmissionsRouteWithChildren
+  '/admin/_admin/attendance': typeof AdminAdminAttendanceRoute
+  '/admin/_admin/calendar': typeof AdminAdminCalendarRoute
+  '/admin/_admin/classes': typeof AdminAdminClassesRouteWithChildren
+  '/admin/_admin/content': typeof AdminAdminContentRoute
+  '/admin/_admin/courses': typeof AdminAdminCoursesRouteWithChildren
+  '/admin/_admin/directory': typeof AdminAdminDirectoryRoute
+  '/admin/_admin/events': typeof AdminAdminEventsRouteWithChildren
+  '/admin/_admin/exams': typeof AdminAdminExamsRoute
+  '/admin/_admin/facilities': typeof AdminAdminFacilitiesRoute
+  '/admin/_admin/faculty': typeof AdminAdminFacultyRoute
+  '/admin/_admin/fees': typeof AdminAdminFeesRoute
+  '/admin/_admin/gallery': typeof AdminAdminGalleryRouteWithChildren
+  '/admin/_admin/homework': typeof AdminAdminHomeworkRoute
+  '/admin/_admin/inbox': typeof AdminAdminInboxRoute
+  '/admin/_admin/invites': typeof AdminAdminInvitesRoute
+  '/admin/_admin/mail': typeof AdminAdminMailRoute
+  '/admin/_admin/notices': typeof AdminAdminNoticesRouteWithChildren
+  '/admin/_admin/overview': typeof AdminAdminOverviewRoute
+  '/admin/_admin/payments': typeof AdminAdminPaymentsRouteWithChildren
+  '/admin/_admin/permissions': typeof AdminAdminPermissionsRoute
+  '/admin/_admin/resources': typeof AdminAdminResourcesRoute
+  '/admin/_admin/results': typeof AdminAdminResultsRoute
+  '/admin/_admin/scholarships': typeof AdminAdminScholarshipsRoute
+  '/admin/_admin/settings': typeof AdminAdminSettingsRoute
+  '/admin/_admin/staff': typeof AdminAdminStaffRouteWithChildren
+  '/admin/_admin/students': typeof AdminAdminStudentsRouteWithChildren
+  '/admin/_admin/timetable': typeof AdminAdminTimetableRoute
+  '/admin/_admin/transport': typeof AdminAdminTransportRoute
+  '/admin/_admin/transportation': typeof AdminAdminTransportationRoute
+  '/admin/_admin/users': typeof AdminAdminUsersRoute
+  '/admin/_admin/website': typeof AdminAdminWebsiteRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-<<<<<<< HEAD
+  '/api/cron/cleanup': typeof ApiCronCleanupRoute
   '/api/website/pages': typeof ApiWebsitePagesRouteWithChildren
   '/_onboard/activate/': typeof OnboardActivateIndexRoute
-  '/admin/notices/$id/edit': typeof AdminNoticesIdEditRoute
+  '/admin/_admin/': typeof AdminAdminIndexRoute
+  '/_onboard/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
+  '/admin/_admin/admissions/$id': typeof AdminAdminAdmissionsIdRoute
+  '/admin/_admin/classes/$id': typeof AdminAdminClassesIdRoute
+  '/admin/_admin/courses/$id': typeof AdminAdminCoursesIdRoute
+  '/admin/_admin/events/$id': typeof AdminAdminEventsIdRoute
+  '/admin/_admin/gallery/$id': typeof AdminAdminGalleryIdRoute
+  '/admin/_admin/notices/$id': typeof AdminAdminNoticesIdRouteWithChildren
+  '/admin/_admin/notices/new': typeof AdminAdminNoticesNewRoute
+  '/admin/_admin/payments/$id': typeof AdminAdminPaymentsIdRoute
+  '/admin/_admin/staff/$id': typeof AdminAdminStaffIdRoute
+  '/admin/_admin/students/$id': typeof AdminAdminStudentsIdRoute
   '/api/website/page/$key': typeof ApiWebsitePageKeyRoute
   '/api/website/pages/$key': typeof ApiWebsitePagesKeyRouteWithChildren
+  '/admin/_admin/notices/$id/edit': typeof AdminAdminNoticesIdEditRoute
   '/api/website/pages/$key/blocks': typeof ApiWebsitePagesKeyBlocksRouteWithChildren
   '/api/website/pages/$key/publish': typeof ApiWebsitePagesKeyPublishRoute
   '/api/website/pages/$key/unpublish': typeof ApiWebsitePagesKeyUnpublishRoute
   '/api/website/pages/$key/blocks/$blockId': typeof ApiWebsitePagesKeyBlocksBlockIdRoute
   '/api/website/pages/$key/sections/$sectionType': typeof ApiWebsitePagesKeySectionsSectionTypeRoute
-=======
-  '/api/cron/cleanup': typeof ApiCronCleanupRoute
-  '/_onboard/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
->>>>>>> scms-local-main
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-<<<<<<< HEAD
-    | '/admin'
-    | '/login'
-    | '/user'
-    | '/about'
-    | '/calendar'
-    | '/contact'
-    | '/course-finder'
-    | '/courses'
-    | '/facilities'
-    | '/faculty'
-    | '/gallery'
-    | '/notices'
-    | '/posts'
-    | '/resources'
-    | '/result'
-    | '/scholarship'
-    | '/transportation'
-    | '/admin/$'
-    | '/admin/activity'
-    | '/admin/admissions'
-    | '/admin/attendance'
-    | '/admin/classes'
-    | '/admin/courses'
-    | '/admin/events'
-    | '/admin/facilities'
-    | '/admin/faculty'
-    | '/admin/gallery'
-    | '/admin/notices'
-    | '/admin/overview'
-    | '/admin/payments'
-    | '/admin/resources'
-    | '/admin/results'
-    | '/admin/scholarships'
-    | '/admin/settings'
-    | '/admin/staff'
-    | '/admin/students'
-    | '/admin/transportation'
-    | '/admin/users'
-    | '/admin/website'
-    | '/admin/'
-    | '/user/'
-    | '/activate-guardian/$token'
-=======
-    | '/about'
     | '/admin'
     | '/admissions'
     | '/clubs'
-    | '/contact'
     | '/dashboard'
     | '/events'
-    | '/gallery'
+    | '/login'
     | '/my-classes'
     | '/my-fees'
     | '/my-homework'
@@ -1104,34 +959,72 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/user'
     | '/forgot-password'
-    | '/login'
     | '/reset-password'
     | '/signup'
+    | '/about'
+    | '/calendar'
+    | '/contact'
+    | '/course-finder'
+    | '/courses'
+    | '/facilities'
+    | '/faculty'
+    | '/gallery'
+    | '/posts'
+    | '/resources'
+    | '/result'
+    | '/scholarship'
+    | '/transportation'
+    | '/api/uploads'
+    | '/events/$slug'
+    | '/notices/$slug'
+    | '/uploads/$'
+    | '/events/'
+    | '/notices/'
+    | '/user/'
+    | '/activate/$token'
+    | '/admin/$'
     | '/admin/academics'
+    | '/admin/activity'
+    | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/calendar'
+    | '/admin/classes'
     | '/admin/content'
+    | '/admin/courses'
     | '/admin/directory'
+    | '/admin/events'
     | '/admin/exams'
+    | '/admin/facilities'
+    | '/admin/faculty'
     | '/admin/fees'
     | '/admin/gallery'
     | '/admin/homework'
     | '/admin/inbox'
     | '/admin/invites'
     | '/admin/mail'
+    | '/admin/notices'
+    | '/admin/overview'
+    | '/admin/payments'
     | '/admin/permissions'
+    | '/admin/resources'
+    | '/admin/results'
+    | '/admin/scholarships'
+    | '/admin/settings'
+    | '/admin/staff'
+    | '/admin/students'
     | '/admin/timetable'
     | '/admin/transport'
-    | '/api/uploads'
-    | '/events/$slug'
-    | '/notices/$slug'
-    | '/uploads/$'
+    | '/admin/transportation'
+    | '/admin/users'
+    | '/admin/website'
+    | '/api/auth/$'
+    | '/api/cron/cleanup'
+    | '/api/website/pages'
+    | '/activate/'
     | '/admin/'
-    | '/events/'
-    | '/notices/'
->>>>>>> scms-local-main
-    | '/activate/$token'
+    | '/activate/guardian/$token'
     | '/admin/admissions/$id'
     | '/admin/classes/$id'
     | '/admin/courses/$id'
@@ -1142,13 +1035,9 @@ export interface FileRouteTypes {
     | '/admin/payments/$id'
     | '/admin/staff/$id'
     | '/admin/students/$id'
-    | '/api/auth/$'
-<<<<<<< HEAD
-    | '/api/website/pages'
-    | '/activate/'
-    | '/admin/notices/$id/edit'
     | '/api/website/page/$key'
     | '/api/website/pages/$key'
+    | '/admin/notices/$id/edit'
     | '/api/website/pages/$key/blocks'
     | '/api/website/pages/$key/publish'
     | '/api/website/pages/$key/unpublish'
@@ -1157,7 +1046,21 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admissions'
+    | '/clubs'
+    | '/dashboard'
     | '/login'
+    | '/my-classes'
+    | '/my-fees'
+    | '/my-homework'
+    | '/my-records'
+    | '/my-results'
+    | '/notifications'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/forgot-password'
+    | '/reset-password'
+    | '/signup'
     | '/about'
     | '/calendar'
     | '/contact'
@@ -1172,79 +1075,54 @@ export interface FileRouteTypes {
     | '/result'
     | '/scholarship'
     | '/transportation'
+    | '/api/uploads'
+    | '/events/$slug'
+    | '/notices/$slug'
+    | '/uploads/$'
+    | '/events'
+    | '/user'
+    | '/activate/$token'
     | '/admin/$'
+    | '/admin/academics'
     | '/admin/activity'
     | '/admin/admissions'
     | '/admin/attendance'
+    | '/admin/calendar'
     | '/admin/classes'
+    | '/admin/content'
     | '/admin/courses'
+    | '/admin/directory'
     | '/admin/events'
+    | '/admin/exams'
     | '/admin/facilities'
     | '/admin/faculty'
-    | '/admin/gallery'
-    | '/admin/notices'
-    | '/admin/overview'
-    | '/admin/payments'
-    | '/admin/resources'
-    | '/admin/results'
-    | '/admin/scholarships'
-    | '/admin/settings'
-    | '/admin/staff'
-    | '/admin/students'
-    | '/admin/transportation'
-    | '/admin/users'
-    | '/admin/website'
-    | '/admin'
-    | '/user'
-    | '/activate-guardian/$token'
-=======
-    | '/api/cron/cleanup'
-    | '/activate/guardian/$token'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/about'
-    | '/admissions'
-    | '/clubs'
-    | '/contact'
-    | '/dashboard'
-    | '/gallery'
-    | '/my-classes'
-    | '/my-fees'
-    | '/my-homework'
-    | '/my-records'
-    | '/my-results'
-    | '/notifications'
-    | '/robots.txt'
-    | '/sitemap.xml'
-    | '/forgot-password'
-    | '/login'
-    | '/reset-password'
-    | '/signup'
-    | '/admin/academics'
-    | '/admin/attendance'
-    | '/admin/calendar'
-    | '/admin/content'
-    | '/admin/directory'
-    | '/admin/exams'
     | '/admin/fees'
     | '/admin/gallery'
     | '/admin/homework'
     | '/admin/inbox'
     | '/admin/invites'
     | '/admin/mail'
+    | '/admin/notices'
+    | '/admin/overview'
+    | '/admin/payments'
     | '/admin/permissions'
+    | '/admin/resources'
+    | '/admin/results'
+    | '/admin/scholarships'
+    | '/admin/settings'
+    | '/admin/staff'
+    | '/admin/students'
     | '/admin/timetable'
     | '/admin/transport'
-    | '/api/uploads'
-    | '/events/$slug'
-    | '/notices/$slug'
-    | '/uploads/$'
+    | '/admin/transportation'
+    | '/admin/users'
+    | '/admin/website'
+    | '/api/auth/$'
+    | '/api/cron/cleanup'
+    | '/api/website/pages'
+    | '/activate'
     | '/admin'
-    | '/events'
-    | '/notices'
->>>>>>> scms-local-main
-    | '/activate/$token'
+    | '/activate/guardian/$token'
     | '/admin/admissions/$id'
     | '/admin/classes/$id'
     | '/admin/courses/$id'
@@ -1255,13 +1133,9 @@ export interface FileRouteTypes {
     | '/admin/payments/$id'
     | '/admin/staff/$id'
     | '/admin/students/$id'
-    | '/api/auth/$'
-<<<<<<< HEAD
-    | '/api/website/pages'
-    | '/activate'
-    | '/admin/notices/$id/edit'
     | '/api/website/page/$key'
     | '/api/website/pages/$key'
+    | '/admin/notices/$id/edit'
     | '/api/website/pages/$key/blocks'
     | '/api/website/pages/$key/publish'
     | '/api/website/pages/$key/unpublish'
@@ -1272,8 +1146,24 @@ export interface FileRouteTypes {
     | '/_onboard'
     | '/_public'
     | '/admin'
+    | '/admissions'
+    | '/clubs'
+    | '/dashboard'
+    | '/events'
     | '/login'
+    | '/my-classes'
+    | '/my-fees'
+    | '/my-homework'
+    | '/my-records'
+    | '/my-results'
+    | '/notices'
+    | '/notifications'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/user'
+    | '/_onboard/forgot-password'
+    | '/_onboard/reset-password'
+    | '/_onboard/signup'
     | '/_public/about'
     | '/_public/calendar'
     | '/_public/contact'
@@ -1288,100 +1178,69 @@ export interface FileRouteTypes {
     | '/_public/result'
     | '/_public/scholarship'
     | '/_public/transportation'
-    | '/admin/$'
-    | '/admin/activity'
-    | '/admin/admissions'
-    | '/admin/attendance'
-    | '/admin/classes'
-    | '/admin/courses'
-    | '/admin/events'
-    | '/admin/facilities'
-    | '/admin/faculty'
-    | '/admin/gallery'
-    | '/admin/notices'
-    | '/admin/overview'
-    | '/admin/payments'
-    | '/admin/resources'
-    | '/admin/results'
-    | '/admin/scholarships'
-    | '/admin/settings'
-    | '/admin/staff'
-    | '/admin/students'
-    | '/admin/transportation'
-    | '/admin/users'
-    | '/admin/website'
-    | '/_public/'
-    | '/admin/'
-    | '/user/'
-    | '/_onboard/activate-guardian/$token'
-=======
-    | '/api/cron/cleanup'
-    | '/activate/guardian/$token'
-  id:
-    | '__root__'
-    | '/'
-    | '/about'
-    | '/admin'
-    | '/admissions'
-    | '/clubs'
-    | '/contact'
-    | '/dashboard'
-    | '/events'
-    | '/gallery'
-    | '/my-classes'
-    | '/my-fees'
-    | '/my-homework'
-    | '/my-records'
-    | '/my-results'
-    | '/notices'
-    | '/notifications'
-    | '/robots.txt'
-    | '/sitemap.xml'
-    | '/_onboard/forgot-password'
-    | '/_onboard/login'
-    | '/_onboard/reset-password'
-    | '/_onboard/signup'
-    | '/admin/academics'
-    | '/admin/attendance'
-    | '/admin/calendar'
-    | '/admin/content'
-    | '/admin/directory'
-    | '/admin/exams'
-    | '/admin/fees'
-    | '/admin/gallery'
-    | '/admin/homework'
-    | '/admin/inbox'
-    | '/admin/invites'
-    | '/admin/mail'
-    | '/admin/permissions'
-    | '/admin/timetable'
-    | '/admin/transport'
     | '/api/uploads'
     | '/events/$slug'
     | '/notices/$slug'
     | '/uploads/$'
-    | '/admin/'
+    | '/_public/'
     | '/events/'
     | '/notices/'
->>>>>>> scms-local-main
+    | '/user/'
     | '/_onboard/activate/$token'
-    | '/admin/admissions/$id'
-    | '/admin/classes/$id'
-    | '/admin/courses/$id'
-    | '/admin/events/$id'
-    | '/admin/gallery/$id'
-    | '/admin/notices/$id'
-    | '/admin/notices/new'
-    | '/admin/payments/$id'
-    | '/admin/staff/$id'
-    | '/admin/students/$id'
+    | '/admin/_admin/$'
+    | '/admin/_admin/academics'
+    | '/admin/_admin/activity'
+    | '/admin/_admin/admissions'
+    | '/admin/_admin/attendance'
+    | '/admin/_admin/calendar'
+    | '/admin/_admin/classes'
+    | '/admin/_admin/content'
+    | '/admin/_admin/courses'
+    | '/admin/_admin/directory'
+    | '/admin/_admin/events'
+    | '/admin/_admin/exams'
+    | '/admin/_admin/facilities'
+    | '/admin/_admin/faculty'
+    | '/admin/_admin/fees'
+    | '/admin/_admin/gallery'
+    | '/admin/_admin/homework'
+    | '/admin/_admin/inbox'
+    | '/admin/_admin/invites'
+    | '/admin/_admin/mail'
+    | '/admin/_admin/notices'
+    | '/admin/_admin/overview'
+    | '/admin/_admin/payments'
+    | '/admin/_admin/permissions'
+    | '/admin/_admin/resources'
+    | '/admin/_admin/results'
+    | '/admin/_admin/scholarships'
+    | '/admin/_admin/settings'
+    | '/admin/_admin/staff'
+    | '/admin/_admin/students'
+    | '/admin/_admin/timetable'
+    | '/admin/_admin/transport'
+    | '/admin/_admin/transportation'
+    | '/admin/_admin/users'
+    | '/admin/_admin/website'
     | '/api/auth/$'
-<<<<<<< HEAD
+    | '/api/cron/cleanup'
     | '/api/website/pages'
     | '/_onboard/activate/'
-    | '/admin/notices/$id/edit'
+    | '/admin/_admin/'
+    | '/_onboard/activate/guardian/$token'
+    | '/admin/_admin/admissions/$id'
+    | '/admin/_admin/classes/$id'
+    | '/admin/_admin/courses/$id'
+    | '/admin/_admin/events/$id'
+    | '/admin/_admin/gallery/$id'
+    | '/admin/_admin/notices/$id'
+    | '/admin/_admin/notices/new'
+    | '/admin/_admin/payments/$id'
+    | '/admin/_admin/staff/$id'
+    | '/admin/_admin/students/$id'
     | '/api/website/page/$key'
     | '/api/website/pages/$key'
+    | '/admin/_admin/notices/$id/edit'
     | '/api/website/pages/$key/blocks'
     | '/api/website/pages/$key/publish'
     | '/api/website/pages/$key/unpublish'
@@ -1393,26 +1252,11 @@ export interface RootRouteChildren {
   OnboardRoute: typeof OnboardRouteWithChildren
   PublicRoute: typeof PublicRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
-  LoginRoute: typeof LoginRoute
-  UserRoute: typeof UserRouteWithChildren
-  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
-  ApiWebsitePagesRoute: typeof ApiWebsitePagesRouteWithChildren
-  ApiWebsitePageKeyRoute: typeof ApiWebsitePageKeyRoute
-=======
-    | '/api/cron/cleanup'
-    | '/_onboard/activate/guardian/$token'
-  fileRoutesById: FileRoutesById
-}
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
-  AdminRoute: typeof AdminRouteWithChildren
   AdmissionsRoute: typeof AdmissionsRoute
   ClubsRoute: typeof ClubsRoute
-  ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
   EventsRoute: typeof EventsRouteWithChildren
-  GalleryRoute: typeof GalleryRoute
+  LoginRoute: typeof LoginRoute
   MyClassesRoute: typeof MyClassesRoute
   MyFeesRoute: typeof MyFeesRoute
   MyHomeworkRoute: typeof MyHomeworkRoute
@@ -1422,22 +1266,17 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  OnboardForgotPasswordRoute: typeof OnboardForgotPasswordRoute
-  OnboardLoginRoute: typeof OnboardLoginRoute
-  OnboardResetPasswordRoute: typeof OnboardResetPasswordRoute
-  OnboardSignupRoute: typeof OnboardSignupRoute
+  UserRoute: typeof UserRouteWithChildren
   ApiUploadsRoute: typeof ApiUploadsRoute
   UploadsSplatRoute: typeof UploadsSplatRoute
-  OnboardActivateTokenRoute: typeof OnboardActivateTokenRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCronCleanupRoute: typeof ApiCronCleanupRoute
-  OnboardActivateGuardianTokenRoute: typeof OnboardActivateGuardianTokenRoute
->>>>>>> scms-local-main
+  ApiWebsitePagesRoute: typeof ApiWebsitePagesRouteWithChildren
+  ApiWebsitePageKeyRoute: typeof ApiWebsitePageKeyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-<<<<<<< HEAD
     '/_onboard': {
       id: '/_onboard'
       path: ''
@@ -1450,19 +1289,6 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof PublicRouteImport
-=======
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -1486,13 +1312,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClubsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -1507,11 +1326,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/gallery': {
-      id: '/gallery'
-      path: '/gallery'
-      fullPath: '/gallery'
-      preLoaderRoute: typeof GalleryRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/my-classes': {
@@ -1577,35 +1396,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_onboard/forgot-password': {
-      id: '/_onboard/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof OnboardForgotPasswordRouteImport
->>>>>>> scms-local-main
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-<<<<<<< HEAD
     '/user': {
       id: '/user'
       path: '/user'
       fullPath: '/user'
       preLoaderRoute: typeof UserRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_onboard/forgot-password': {
+      id: '/_onboard/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof OnboardForgotPasswordRouteImport
+      parentRoute: typeof OnboardRoute
+    }
+    '/_onboard/reset-password': {
+      id: '/_onboard/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof OnboardResetPasswordRouteImport
+      parentRoute: typeof OnboardRoute
+    }
+    '/_onboard/signup': {
+      id: '/_onboard/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof OnboardSignupRouteImport
+      parentRoute: typeof OnboardRoute
     }
     '/_public/': {
       id: '/_public/'
@@ -1711,380 +1528,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/transportation'
       preLoaderRoute: typeof PublicTransportationRouteImport
       parentRoute: typeof PublicRoute
-=======
-    '/_onboard/reset-password': {
-      id: '/_onboard/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof OnboardResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_onboard/signup': {
-      id: '/_onboard/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof OnboardSignupRouteImport
-      parentRoute: typeof rootRouteImport
->>>>>>> scms-local-main
-    }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-<<<<<<< HEAD
-    '/admin/$': {
-      id: '/admin/$'
-      path: '/$'
-      fullPath: '/admin/$'
-      preLoaderRoute: typeof AdminSplatRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/activity': {
-      id: '/admin/activity'
-      path: '/activity'
-      fullPath: '/admin/activity'
-      preLoaderRoute: typeof AdminActivityRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/admissions': {
-      id: '/admin/admissions'
-      path: '/admissions'
-      fullPath: '/admin/admissions'
-      preLoaderRoute: typeof AdminAdmissionsRouteImport
-=======
-    '/admin/academics': {
-      id: '/admin/academics'
-      path: '/academics'
-      fullPath: '/admin/academics'
-      preLoaderRoute: typeof AdminAcademicsRouteImport
->>>>>>> scms-local-main
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/attendance': {
-      id: '/admin/attendance'
-      path: '/attendance'
-      fullPath: '/admin/attendance'
-      preLoaderRoute: typeof AdminAttendanceRouteImport
-      parentRoute: typeof AdminRoute
-    }
-<<<<<<< HEAD
-    '/admin/classes': {
-      id: '/admin/classes'
-      path: '/classes'
-      fullPath: '/admin/classes'
-      preLoaderRoute: typeof AdminClassesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/courses': {
-      id: '/admin/courses'
-      path: '/courses'
-      fullPath: '/admin/courses'
-      preLoaderRoute: typeof AdminCoursesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/events': {
-      id: '/admin/events'
-      path: '/events'
-      fullPath: '/admin/events'
-      preLoaderRoute: typeof AdminEventsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/facilities': {
-      id: '/admin/facilities'
-      path: '/facilities'
-      fullPath: '/admin/facilities'
-      preLoaderRoute: typeof AdminFacilitiesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/faculty': {
-      id: '/admin/faculty'
-      path: '/faculty'
-      fullPath: '/admin/faculty'
-      preLoaderRoute: typeof AdminFacultyRouteImport
-=======
-    '/admin/calendar': {
-      id: '/admin/calendar'
-      path: '/calendar'
-      fullPath: '/admin/calendar'
-      preLoaderRoute: typeof AdminCalendarRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/content': {
-      id: '/admin/content'
-      path: '/content'
-      fullPath: '/admin/content'
-      preLoaderRoute: typeof AdminContentRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/directory': {
-      id: '/admin/directory'
-      path: '/directory'
-      fullPath: '/admin/directory'
-      preLoaderRoute: typeof AdminDirectoryRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/exams': {
-      id: '/admin/exams'
-      path: '/exams'
-      fullPath: '/admin/exams'
-      preLoaderRoute: typeof AdminExamsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/fees': {
-      id: '/admin/fees'
-      path: '/fees'
-      fullPath: '/admin/fees'
-      preLoaderRoute: typeof AdminFeesRouteImport
->>>>>>> scms-local-main
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/gallery': {
-      id: '/admin/gallery'
-      path: '/gallery'
-      fullPath: '/admin/gallery'
-      preLoaderRoute: typeof AdminGalleryRouteImport
-      parentRoute: typeof AdminRoute
-    }
-<<<<<<< HEAD
-    '/admin/notices': {
-      id: '/admin/notices'
-      path: '/notices'
-      fullPath: '/admin/notices'
-      preLoaderRoute: typeof AdminNoticesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/overview': {
-      id: '/admin/overview'
-      path: '/overview'
-      fullPath: '/admin/overview'
-      preLoaderRoute: typeof AdminOverviewRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/payments': {
-      id: '/admin/payments'
-      path: '/payments'
-      fullPath: '/admin/payments'
-      preLoaderRoute: typeof AdminPaymentsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/resources': {
-      id: '/admin/resources'
-      path: '/resources'
-      fullPath: '/admin/resources'
-      preLoaderRoute: typeof AdminResourcesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/results': {
-      id: '/admin/results'
-      path: '/results'
-      fullPath: '/admin/results'
-      preLoaderRoute: typeof AdminResultsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/scholarships': {
-      id: '/admin/scholarships'
-      path: '/scholarships'
-      fullPath: '/admin/scholarships'
-      preLoaderRoute: typeof AdminScholarshipsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/settings': {
-      id: '/admin/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AdminSettingsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/staff': {
-      id: '/admin/staff'
-      path: '/staff'
-      fullPath: '/admin/staff'
-      preLoaderRoute: typeof AdminStaffRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/students': {
-      id: '/admin/students'
-      path: '/students'
-      fullPath: '/admin/students'
-      preLoaderRoute: typeof AdminStudentsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/transportation': {
-      id: '/admin/transportation'
-      path: '/transportation'
-      fullPath: '/admin/transportation'
-      preLoaderRoute: typeof AdminTransportationRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/users': {
-      id: '/admin/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminUsersRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/website': {
-      id: '/admin/website'
-      path: '/website'
-      fullPath: '/admin/website'
-      preLoaderRoute: typeof AdminWebsiteRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/user/': {
-      id: '/user/'
-      path: '/'
-      fullPath: '/user/'
-      preLoaderRoute: typeof UserIndexRouteImport
-      parentRoute: typeof UserRoute
-    }
-    '/_onboard/activate-guardian/$token': {
-      id: '/_onboard/activate-guardian/$token'
-      path: '/activate-guardian/$token'
-      fullPath: '/activate-guardian/$token'
-      preLoaderRoute: typeof OnboardActivateGuardianTokenRouteImport
-      parentRoute: typeof OnboardRoute
-    }
-    '/_onboard/activate/': {
-      id: '/_onboard/activate/'
-      path: '/activate'
-      fullPath: '/activate/'
-      preLoaderRoute: typeof OnboardActivateIndexRouteImport
-      parentRoute: typeof OnboardRoute
-    }
-    '/_onboard/activate/$token': {
-      id: '/_onboard/activate/$token'
-      path: '/activate/$token'
-      fullPath: '/activate/$token'
-      preLoaderRoute: typeof OnboardActivateTokenRouteImport
-      parentRoute: typeof OnboardRoute
-    }
-    '/admin/admissions/$id': {
-      id: '/admin/admissions/$id'
-      path: '/$id'
-      fullPath: '/admin/admissions/$id'
-      preLoaderRoute: typeof AdminAdmissionsIdRouteImport
-      parentRoute: typeof AdminAdmissionsRoute
-    }
-    '/admin/classes/$id': {
-      id: '/admin/classes/$id'
-      path: '/$id'
-      fullPath: '/admin/classes/$id'
-      preLoaderRoute: typeof AdminClassesIdRouteImport
-      parentRoute: typeof AdminClassesRoute
-    }
-    '/admin/courses/$id': {
-      id: '/admin/courses/$id'
-      path: '/$id'
-      fullPath: '/admin/courses/$id'
-      preLoaderRoute: typeof AdminCoursesIdRouteImport
-      parentRoute: typeof AdminCoursesRoute
-    }
-    '/admin/events/$id': {
-      id: '/admin/events/$id'
-      path: '/$id'
-      fullPath: '/admin/events/$id'
-      preLoaderRoute: typeof AdminEventsIdRouteImport
-      parentRoute: typeof AdminEventsRoute
-    }
-    '/admin/gallery/$id': {
-      id: '/admin/gallery/$id'
-      path: '/$id'
-      fullPath: '/admin/gallery/$id'
-      preLoaderRoute: typeof AdminGalleryIdRouteImport
-      parentRoute: typeof AdminGalleryRoute
-    }
-    '/admin/notices/$id': {
-      id: '/admin/notices/$id'
-      path: '/$id'
-      fullPath: '/admin/notices/$id'
-      preLoaderRoute: typeof AdminNoticesIdRouteImport
-      parentRoute: typeof AdminNoticesRoute
-    }
-    '/admin/notices/new': {
-      id: '/admin/notices/new'
-      path: '/new'
-      fullPath: '/admin/notices/new'
-      preLoaderRoute: typeof AdminNoticesNewRouteImport
-      parentRoute: typeof AdminNoticesRoute
-    }
-    '/admin/payments/$id': {
-      id: '/admin/payments/$id'
-      path: '/$id'
-      fullPath: '/admin/payments/$id'
-      preLoaderRoute: typeof AdminPaymentsIdRouteImport
-      parentRoute: typeof AdminPaymentsRoute
-    }
-    '/admin/staff/$id': {
-      id: '/admin/staff/$id'
-      path: '/$id'
-      fullPath: '/admin/staff/$id'
-      preLoaderRoute: typeof AdminStaffIdRouteImport
-      parentRoute: typeof AdminStaffRoute
-    }
-    '/admin/students/$id': {
-      id: '/admin/students/$id'
-      path: '/$id'
-      fullPath: '/admin/students/$id'
-      preLoaderRoute: typeof AdminStudentsIdRouteImport
-      parentRoute: typeof AdminStudentsRoute
-    }
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatRouteImport
-=======
-    '/admin/homework': {
-      id: '/admin/homework'
-      path: '/homework'
-      fullPath: '/admin/homework'
-      preLoaderRoute: typeof AdminHomeworkRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/inbox': {
-      id: '/admin/inbox'
-      path: '/inbox'
-      fullPath: '/admin/inbox'
-      preLoaderRoute: typeof AdminInboxRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/invites': {
-      id: '/admin/invites'
-      path: '/invites'
-      fullPath: '/admin/invites'
-      preLoaderRoute: typeof AdminInvitesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/mail': {
-      id: '/admin/mail'
-      path: '/mail'
-      fullPath: '/admin/mail'
-      preLoaderRoute: typeof AdminMailRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/permissions': {
-      id: '/admin/permissions'
-      path: '/permissions'
-      fullPath: '/admin/permissions'
-      preLoaderRoute: typeof AdminPermissionsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/timetable': {
-      id: '/admin/timetable'
-      path: '/timetable'
-      fullPath: '/admin/timetable'
-      preLoaderRoute: typeof AdminTimetableRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/transport': {
-      id: '/admin/transport'
-      path: '/transport'
-      fullPath: '/admin/transport'
-      preLoaderRoute: typeof AdminTransportRouteImport
-      parentRoute: typeof AdminRoute
     }
     '/api/uploads': {
       id: '/api/uploads'
@@ -2126,7 +1569,293 @@ declare module '@tanstack/react-router' {
       path: '/uploads/$'
       fullPath: '/uploads/$'
       preLoaderRoute: typeof UploadsSplatRouteImport
->>>>>>> scms-local-main
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/': {
+      id: '/user/'
+      path: '/'
+      fullPath: '/user/'
+      preLoaderRoute: typeof UserIndexRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/_onboard/activate/': {
+      id: '/_onboard/activate/'
+      path: '/activate'
+      fullPath: '/activate/'
+      preLoaderRoute: typeof OnboardActivateIndexRouteImport
+      parentRoute: typeof OnboardRoute
+    }
+    '/_onboard/activate/$token': {
+      id: '/_onboard/activate/$token'
+      path: '/activate/$token'
+      fullPath: '/activate/$token'
+      preLoaderRoute: typeof OnboardActivateTokenRouteImport
+      parentRoute: typeof OnboardRoute
+    }
+    '/admin/_admin/': {
+      id: '/admin/_admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminAdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/$': {
+      id: '/admin/_admin/$'
+      path: '/$'
+      fullPath: '/admin/$'
+      preLoaderRoute: typeof AdminAdminSplatRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/academics': {
+      id: '/admin/_admin/academics'
+      path: '/academics'
+      fullPath: '/admin/academics'
+      preLoaderRoute: typeof AdminAdminAcademicsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/activity': {
+      id: '/admin/_admin/activity'
+      path: '/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AdminAdminActivityRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/admissions': {
+      id: '/admin/_admin/admissions'
+      path: '/admissions'
+      fullPath: '/admin/admissions'
+      preLoaderRoute: typeof AdminAdminAdmissionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/attendance': {
+      id: '/admin/_admin/attendance'
+      path: '/attendance'
+      fullPath: '/admin/attendance'
+      preLoaderRoute: typeof AdminAdminAttendanceRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/calendar': {
+      id: '/admin/_admin/calendar'
+      path: '/calendar'
+      fullPath: '/admin/calendar'
+      preLoaderRoute: typeof AdminAdminCalendarRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/classes': {
+      id: '/admin/_admin/classes'
+      path: '/classes'
+      fullPath: '/admin/classes'
+      preLoaderRoute: typeof AdminAdminClassesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/content': {
+      id: '/admin/_admin/content'
+      path: '/content'
+      fullPath: '/admin/content'
+      preLoaderRoute: typeof AdminAdminContentRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/courses': {
+      id: '/admin/_admin/courses'
+      path: '/courses'
+      fullPath: '/admin/courses'
+      preLoaderRoute: typeof AdminAdminCoursesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/directory': {
+      id: '/admin/_admin/directory'
+      path: '/directory'
+      fullPath: '/admin/directory'
+      preLoaderRoute: typeof AdminAdminDirectoryRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/events': {
+      id: '/admin/_admin/events'
+      path: '/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AdminAdminEventsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/exams': {
+      id: '/admin/_admin/exams'
+      path: '/exams'
+      fullPath: '/admin/exams'
+      preLoaderRoute: typeof AdminAdminExamsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/facilities': {
+      id: '/admin/_admin/facilities'
+      path: '/facilities'
+      fullPath: '/admin/facilities'
+      preLoaderRoute: typeof AdminAdminFacilitiesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/faculty': {
+      id: '/admin/_admin/faculty'
+      path: '/faculty'
+      fullPath: '/admin/faculty'
+      preLoaderRoute: typeof AdminAdminFacultyRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/fees': {
+      id: '/admin/_admin/fees'
+      path: '/fees'
+      fullPath: '/admin/fees'
+      preLoaderRoute: typeof AdminAdminFeesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/gallery': {
+      id: '/admin/_admin/gallery'
+      path: '/gallery'
+      fullPath: '/admin/gallery'
+      preLoaderRoute: typeof AdminAdminGalleryRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/homework': {
+      id: '/admin/_admin/homework'
+      path: '/homework'
+      fullPath: '/admin/homework'
+      preLoaderRoute: typeof AdminAdminHomeworkRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/inbox': {
+      id: '/admin/_admin/inbox'
+      path: '/inbox'
+      fullPath: '/admin/inbox'
+      preLoaderRoute: typeof AdminAdminInboxRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/invites': {
+      id: '/admin/_admin/invites'
+      path: '/invites'
+      fullPath: '/admin/invites'
+      preLoaderRoute: typeof AdminAdminInvitesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/mail': {
+      id: '/admin/_admin/mail'
+      path: '/mail'
+      fullPath: '/admin/mail'
+      preLoaderRoute: typeof AdminAdminMailRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/notices': {
+      id: '/admin/_admin/notices'
+      path: '/notices'
+      fullPath: '/admin/notices'
+      preLoaderRoute: typeof AdminAdminNoticesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/overview': {
+      id: '/admin/_admin/overview'
+      path: '/overview'
+      fullPath: '/admin/overview'
+      preLoaderRoute: typeof AdminAdminOverviewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/payments': {
+      id: '/admin/_admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminAdminPaymentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/permissions': {
+      id: '/admin/_admin/permissions'
+      path: '/permissions'
+      fullPath: '/admin/permissions'
+      preLoaderRoute: typeof AdminAdminPermissionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/resources': {
+      id: '/admin/_admin/resources'
+      path: '/resources'
+      fullPath: '/admin/resources'
+      preLoaderRoute: typeof AdminAdminResourcesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/results': {
+      id: '/admin/_admin/results'
+      path: '/results'
+      fullPath: '/admin/results'
+      preLoaderRoute: typeof AdminAdminResultsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/scholarships': {
+      id: '/admin/_admin/scholarships'
+      path: '/scholarships'
+      fullPath: '/admin/scholarships'
+      preLoaderRoute: typeof AdminAdminScholarshipsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/settings': {
+      id: '/admin/_admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminAdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/staff': {
+      id: '/admin/_admin/staff'
+      path: '/staff'
+      fullPath: '/admin/staff'
+      preLoaderRoute: typeof AdminAdminStaffRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/students': {
+      id: '/admin/_admin/students'
+      path: '/students'
+      fullPath: '/admin/students'
+      preLoaderRoute: typeof AdminAdminStudentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/timetable': {
+      id: '/admin/_admin/timetable'
+      path: '/timetable'
+      fullPath: '/admin/timetable'
+      preLoaderRoute: typeof AdminAdminTimetableRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/transport': {
+      id: '/admin/_admin/transport'
+      path: '/transport'
+      fullPath: '/admin/transport'
+      preLoaderRoute: typeof AdminAdminTransportRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/transportation': {
+      id: '/admin/_admin/transportation'
+      path: '/transportation'
+      fullPath: '/admin/transportation'
+      preLoaderRoute: typeof AdminAdminTransportationRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/users': {
+      id: '/admin/_admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminAdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/website': {
+      id: '/admin/_admin/website'
+      path: '/website'
+      fullPath: '/admin/website'
+      preLoaderRoute: typeof AdminAdminWebsiteRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/cleanup': {
+      id: '/api/cron/cleanup'
+      path: '/api/cron/cleanup'
+      fullPath: '/api/cron/cleanup'
+      preLoaderRoute: typeof ApiCronCleanupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/website/pages': {
@@ -2136,13 +1865,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiWebsitePagesRouteImport
       parentRoute: typeof rootRouteImport
     }
-<<<<<<< HEAD
-    '/admin/notices/$id/edit': {
-      id: '/admin/notices/$id/edit'
-      path: '/edit'
-      fullPath: '/admin/notices/$id/edit'
-      preLoaderRoute: typeof AdminNoticesIdEditRouteImport
-      parentRoute: typeof AdminNoticesIdRoute
+    '/_onboard/activate/guardian/$token': {
+      id: '/_onboard/activate/guardian/$token'
+      path: '/activate/guardian/$token'
+      fullPath: '/activate/guardian/$token'
+      preLoaderRoute: typeof OnboardActivateGuardianTokenRouteImport
+      parentRoute: typeof OnboardRoute
+    }
+    '/admin/_admin/admissions/$id': {
+      id: '/admin/_admin/admissions/$id'
+      path: '/$id'
+      fullPath: '/admin/admissions/$id'
+      preLoaderRoute: typeof AdminAdminAdmissionsIdRouteImport
+      parentRoute: typeof AdminAdminAdmissionsRoute
+    }
+    '/admin/_admin/classes/$id': {
+      id: '/admin/_admin/classes/$id'
+      path: '/$id'
+      fullPath: '/admin/classes/$id'
+      preLoaderRoute: typeof AdminAdminClassesIdRouteImport
+      parentRoute: typeof AdminAdminClassesRoute
+    }
+    '/admin/_admin/courses/$id': {
+      id: '/admin/_admin/courses/$id'
+      path: '/$id'
+      fullPath: '/admin/courses/$id'
+      preLoaderRoute: typeof AdminAdminCoursesIdRouteImport
+      parentRoute: typeof AdminAdminCoursesRoute
+    }
+    '/admin/_admin/events/$id': {
+      id: '/admin/_admin/events/$id'
+      path: '/$id'
+      fullPath: '/admin/events/$id'
+      preLoaderRoute: typeof AdminAdminEventsIdRouteImport
+      parentRoute: typeof AdminAdminEventsRoute
+    }
+    '/admin/_admin/gallery/$id': {
+      id: '/admin/_admin/gallery/$id'
+      path: '/$id'
+      fullPath: '/admin/gallery/$id'
+      preLoaderRoute: typeof AdminAdminGalleryIdRouteImport
+      parentRoute: typeof AdminAdminGalleryRoute
+    }
+    '/admin/_admin/notices/$id': {
+      id: '/admin/_admin/notices/$id'
+      path: '/$id'
+      fullPath: '/admin/notices/$id'
+      preLoaderRoute: typeof AdminAdminNoticesIdRouteImport
+      parentRoute: typeof AdminAdminNoticesRoute
+    }
+    '/admin/_admin/notices/new': {
+      id: '/admin/_admin/notices/new'
+      path: '/new'
+      fullPath: '/admin/notices/new'
+      preLoaderRoute: typeof AdminAdminNoticesNewRouteImport
+      parentRoute: typeof AdminAdminNoticesRoute
+    }
+    '/admin/_admin/payments/$id': {
+      id: '/admin/_admin/payments/$id'
+      path: '/$id'
+      fullPath: '/admin/payments/$id'
+      preLoaderRoute: typeof AdminAdminPaymentsIdRouteImport
+      parentRoute: typeof AdminAdminPaymentsRoute
+    }
+    '/admin/_admin/staff/$id': {
+      id: '/admin/_admin/staff/$id'
+      path: '/$id'
+      fullPath: '/admin/staff/$id'
+      preLoaderRoute: typeof AdminAdminStaffIdRouteImport
+      parentRoute: typeof AdminAdminStaffRoute
+    }
+    '/admin/_admin/students/$id': {
+      id: '/admin/_admin/students/$id'
+      path: '/$id'
+      fullPath: '/admin/students/$id'
+      preLoaderRoute: typeof AdminAdminStudentsIdRouteImport
+      parentRoute: typeof AdminAdminStudentsRoute
     }
     '/api/website/page/$key': {
       id: '/api/website/page/$key'
@@ -2157,6 +1955,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/website/pages/$key'
       preLoaderRoute: typeof ApiWebsitePagesKeyRouteImport
       parentRoute: typeof ApiWebsitePagesRoute
+    }
+    '/admin/_admin/notices/$id/edit': {
+      id: '/admin/_admin/notices/$id/edit'
+      path: '/edit'
+      fullPath: '/admin/notices/$id/edit'
+      preLoaderRoute: typeof AdminAdminNoticesIdEditRouteImport
+      parentRoute: typeof AdminAdminNoticesIdRoute
     }
     '/api/website/pages/$key/blocks': {
       id: '/api/website/pages/$key/blocks'
@@ -2192,136 +1997,26 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/website/pages/$key/sections/$sectionType'
       preLoaderRoute: typeof ApiWebsitePagesKeySectionsSectionTypeRouteImport
       parentRoute: typeof ApiWebsitePagesKeyRoute
-=======
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/cron/cleanup': {
-      id: '/api/cron/cleanup'
-      path: '/api/cron/cleanup'
-      fullPath: '/api/cron/cleanup'
-      preLoaderRoute: typeof ApiCronCleanupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_onboard/activate/guardian/$token': {
-      id: '/_onboard/activate/guardian/$token'
-      path: '/activate/guardian/$token'
-      fullPath: '/activate/guardian/$token'
-      preLoaderRoute: typeof OnboardActivateGuardianTokenRouteImport
-      parentRoute: typeof rootRouteImport
->>>>>>> scms-local-main
     }
   }
 }
 
-<<<<<<< HEAD
 interface OnboardRouteChildren {
-  OnboardActivateGuardianTokenRoute: typeof OnboardActivateGuardianTokenRoute
+  OnboardForgotPasswordRoute: typeof OnboardForgotPasswordRoute
+  OnboardResetPasswordRoute: typeof OnboardResetPasswordRoute
+  OnboardSignupRoute: typeof OnboardSignupRoute
   OnboardActivateTokenRoute: typeof OnboardActivateTokenRoute
   OnboardActivateIndexRoute: typeof OnboardActivateIndexRoute
+  OnboardActivateGuardianTokenRoute: typeof OnboardActivateGuardianTokenRoute
 }
 
 const OnboardRouteChildren: OnboardRouteChildren = {
-  OnboardActivateGuardianTokenRoute: OnboardActivateGuardianTokenRoute,
-=======
-interface AdminRouteChildren {
-  AdminAcademicsRoute: typeof AdminAcademicsRoute
-  AdminAttendanceRoute: typeof AdminAttendanceRoute
-  AdminCalendarRoute: typeof AdminCalendarRoute
-  AdminContentRoute: typeof AdminContentRoute
-  AdminDirectoryRoute: typeof AdminDirectoryRoute
-  AdminExamsRoute: typeof AdminExamsRoute
-  AdminFeesRoute: typeof AdminFeesRoute
-  AdminGalleryRoute: typeof AdminGalleryRoute
-  AdminHomeworkRoute: typeof AdminHomeworkRoute
-  AdminInboxRoute: typeof AdminInboxRoute
-  AdminInvitesRoute: typeof AdminInvitesRoute
-  AdminMailRoute: typeof AdminMailRoute
-  AdminPermissionsRoute: typeof AdminPermissionsRoute
-  AdminTimetableRoute: typeof AdminTimetableRoute
-  AdminTransportRoute: typeof AdminTransportRoute
-  AdminIndexRoute: typeof AdminIndexRoute
-}
-
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminAcademicsRoute: AdminAcademicsRoute,
-  AdminAttendanceRoute: AdminAttendanceRoute,
-  AdminCalendarRoute: AdminCalendarRoute,
-  AdminContentRoute: AdminContentRoute,
-  AdminDirectoryRoute: AdminDirectoryRoute,
-  AdminExamsRoute: AdminExamsRoute,
-  AdminFeesRoute: AdminFeesRoute,
-  AdminGalleryRoute: AdminGalleryRoute,
-  AdminHomeworkRoute: AdminHomeworkRoute,
-  AdminInboxRoute: AdminInboxRoute,
-  AdminInvitesRoute: AdminInvitesRoute,
-  AdminMailRoute: AdminMailRoute,
-  AdminPermissionsRoute: AdminPermissionsRoute,
-  AdminTimetableRoute: AdminTimetableRoute,
-  AdminTransportRoute: AdminTransportRoute,
-  AdminIndexRoute: AdminIndexRoute,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
-
-interface EventsRouteChildren {
-  EventsSlugRoute: typeof EventsSlugRoute
-  EventsIndexRoute: typeof EventsIndexRoute
-}
-
-const EventsRouteChildren: EventsRouteChildren = {
-  EventsSlugRoute: EventsSlugRoute,
-  EventsIndexRoute: EventsIndexRoute,
-}
-
-const EventsRouteWithChildren =
-  EventsRoute._addFileChildren(EventsRouteChildren)
-
-interface NoticesRouteChildren {
-  NoticesSlugRoute: typeof NoticesSlugRoute
-  NoticesIndexRoute: typeof NoticesIndexRoute
-}
-
-const NoticesRouteChildren: NoticesRouteChildren = {
-  NoticesSlugRoute: NoticesSlugRoute,
-  NoticesIndexRoute: NoticesIndexRoute,
-}
-
-const NoticesRouteWithChildren =
-  NoticesRoute._addFileChildren(NoticesRouteChildren)
-
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
-  AdminRoute: AdminRouteWithChildren,
-  AdmissionsRoute: AdmissionsRoute,
-  ClubsRoute: ClubsRoute,
-  ContactRoute: ContactRoute,
-  DashboardRoute: DashboardRoute,
-  EventsRoute: EventsRouteWithChildren,
-  GalleryRoute: GalleryRoute,
-  MyClassesRoute: MyClassesRoute,
-  MyFeesRoute: MyFeesRoute,
-  MyHomeworkRoute: MyHomeworkRoute,
-  MyRecordsRoute: MyRecordsRoute,
-  MyResultsRoute: MyResultsRoute,
-  NoticesRoute: NoticesRouteWithChildren,
-  NotificationsRoute: NotificationsRoute,
-  RobotsDottxtRoute: RobotsDottxtRoute,
-  SitemapDotxmlRoute: SitemapDotxmlRoute,
   OnboardForgotPasswordRoute: OnboardForgotPasswordRoute,
-  OnboardLoginRoute: OnboardLoginRoute,
   OnboardResetPasswordRoute: OnboardResetPasswordRoute,
   OnboardSignupRoute: OnboardSignupRoute,
-  ApiUploadsRoute: ApiUploadsRoute,
-  UploadsSplatRoute: UploadsSplatRoute,
->>>>>>> scms-local-main
   OnboardActivateTokenRoute: OnboardActivateTokenRoute,
   OnboardActivateIndexRoute: OnboardActivateIndexRoute,
+  OnboardActivateGuardianTokenRoute: OnboardActivateGuardianTokenRoute,
 }
 
 const OnboardRouteWithChildren =
@@ -2366,181 +2061,224 @@ const PublicRouteChildren: PublicRouteChildren = {
 const PublicRouteWithChildren =
   PublicRoute._addFileChildren(PublicRouteChildren)
 
-interface AdminAdmissionsRouteChildren {
-  AdminAdmissionsIdRoute: typeof AdminAdmissionsIdRoute
+interface AdminAdminAdmissionsRouteChildren {
+  AdminAdminAdmissionsIdRoute: typeof AdminAdminAdmissionsIdRoute
 }
 
-const AdminAdmissionsRouteChildren: AdminAdmissionsRouteChildren = {
-  AdminAdmissionsIdRoute: AdminAdmissionsIdRoute,
+const AdminAdminAdmissionsRouteChildren: AdminAdminAdmissionsRouteChildren = {
+  AdminAdminAdmissionsIdRoute: AdminAdminAdmissionsIdRoute,
 }
 
-const AdminAdmissionsRouteWithChildren = AdminAdmissionsRoute._addFileChildren(
-  AdminAdmissionsRouteChildren,
+const AdminAdminAdmissionsRouteWithChildren =
+  AdminAdminAdmissionsRoute._addFileChildren(AdminAdminAdmissionsRouteChildren)
+
+interface AdminAdminClassesRouteChildren {
+  AdminAdminClassesIdRoute: typeof AdminAdminClassesIdRoute
+}
+
+const AdminAdminClassesRouteChildren: AdminAdminClassesRouteChildren = {
+  AdminAdminClassesIdRoute: AdminAdminClassesIdRoute,
+}
+
+const AdminAdminClassesRouteWithChildren =
+  AdminAdminClassesRoute._addFileChildren(AdminAdminClassesRouteChildren)
+
+interface AdminAdminCoursesRouteChildren {
+  AdminAdminCoursesIdRoute: typeof AdminAdminCoursesIdRoute
+}
+
+const AdminAdminCoursesRouteChildren: AdminAdminCoursesRouteChildren = {
+  AdminAdminCoursesIdRoute: AdminAdminCoursesIdRoute,
+}
+
+const AdminAdminCoursesRouteWithChildren =
+  AdminAdminCoursesRoute._addFileChildren(AdminAdminCoursesRouteChildren)
+
+interface AdminAdminEventsRouteChildren {
+  AdminAdminEventsIdRoute: typeof AdminAdminEventsIdRoute
+}
+
+const AdminAdminEventsRouteChildren: AdminAdminEventsRouteChildren = {
+  AdminAdminEventsIdRoute: AdminAdminEventsIdRoute,
+}
+
+const AdminAdminEventsRouteWithChildren =
+  AdminAdminEventsRoute._addFileChildren(AdminAdminEventsRouteChildren)
+
+interface AdminAdminGalleryRouteChildren {
+  AdminAdminGalleryIdRoute: typeof AdminAdminGalleryIdRoute
+}
+
+const AdminAdminGalleryRouteChildren: AdminAdminGalleryRouteChildren = {
+  AdminAdminGalleryIdRoute: AdminAdminGalleryIdRoute,
+}
+
+const AdminAdminGalleryRouteWithChildren =
+  AdminAdminGalleryRoute._addFileChildren(AdminAdminGalleryRouteChildren)
+
+interface AdminAdminNoticesIdRouteChildren {
+  AdminAdminNoticesIdEditRoute: typeof AdminAdminNoticesIdEditRoute
+}
+
+const AdminAdminNoticesIdRouteChildren: AdminAdminNoticesIdRouteChildren = {
+  AdminAdminNoticesIdEditRoute: AdminAdminNoticesIdEditRoute,
+}
+
+const AdminAdminNoticesIdRouteWithChildren =
+  AdminAdminNoticesIdRoute._addFileChildren(AdminAdminNoticesIdRouteChildren)
+
+interface AdminAdminNoticesRouteChildren {
+  AdminAdminNoticesIdRoute: typeof AdminAdminNoticesIdRouteWithChildren
+  AdminAdminNoticesNewRoute: typeof AdminAdminNoticesNewRoute
+}
+
+const AdminAdminNoticesRouteChildren: AdminAdminNoticesRouteChildren = {
+  AdminAdminNoticesIdRoute: AdminAdminNoticesIdRouteWithChildren,
+  AdminAdminNoticesNewRoute: AdminAdminNoticesNewRoute,
+}
+
+const AdminAdminNoticesRouteWithChildren =
+  AdminAdminNoticesRoute._addFileChildren(AdminAdminNoticesRouteChildren)
+
+interface AdminAdminPaymentsRouteChildren {
+  AdminAdminPaymentsIdRoute: typeof AdminAdminPaymentsIdRoute
+}
+
+const AdminAdminPaymentsRouteChildren: AdminAdminPaymentsRouteChildren = {
+  AdminAdminPaymentsIdRoute: AdminAdminPaymentsIdRoute,
+}
+
+const AdminAdminPaymentsRouteWithChildren =
+  AdminAdminPaymentsRoute._addFileChildren(AdminAdminPaymentsRouteChildren)
+
+interface AdminAdminStaffRouteChildren {
+  AdminAdminStaffIdRoute: typeof AdminAdminStaffIdRoute
+}
+
+const AdminAdminStaffRouteChildren: AdminAdminStaffRouteChildren = {
+  AdminAdminStaffIdRoute: AdminAdminStaffIdRoute,
+}
+
+const AdminAdminStaffRouteWithChildren = AdminAdminStaffRoute._addFileChildren(
+  AdminAdminStaffRouteChildren,
 )
 
-interface AdminClassesRouteChildren {
-  AdminClassesIdRoute: typeof AdminClassesIdRoute
+interface AdminAdminStudentsRouteChildren {
+  AdminAdminStudentsIdRoute: typeof AdminAdminStudentsIdRoute
 }
 
-const AdminClassesRouteChildren: AdminClassesRouteChildren = {
-  AdminClassesIdRoute: AdminClassesIdRoute,
+const AdminAdminStudentsRouteChildren: AdminAdminStudentsRouteChildren = {
+  AdminAdminStudentsIdRoute: AdminAdminStudentsIdRoute,
 }
 
-const AdminClassesRouteWithChildren = AdminClassesRoute._addFileChildren(
-  AdminClassesRouteChildren,
-)
-
-interface AdminCoursesRouteChildren {
-  AdminCoursesIdRoute: typeof AdminCoursesIdRoute
-}
-
-const AdminCoursesRouteChildren: AdminCoursesRouteChildren = {
-  AdminCoursesIdRoute: AdminCoursesIdRoute,
-}
-
-const AdminCoursesRouteWithChildren = AdminCoursesRoute._addFileChildren(
-  AdminCoursesRouteChildren,
-)
-
-interface AdminEventsRouteChildren {
-  AdminEventsIdRoute: typeof AdminEventsIdRoute
-}
-
-const AdminEventsRouteChildren: AdminEventsRouteChildren = {
-  AdminEventsIdRoute: AdminEventsIdRoute,
-}
-
-const AdminEventsRouteWithChildren = AdminEventsRoute._addFileChildren(
-  AdminEventsRouteChildren,
-)
-
-interface AdminGalleryRouteChildren {
-  AdminGalleryIdRoute: typeof AdminGalleryIdRoute
-}
-
-const AdminGalleryRouteChildren: AdminGalleryRouteChildren = {
-  AdminGalleryIdRoute: AdminGalleryIdRoute,
-}
-
-const AdminGalleryRouteWithChildren = AdminGalleryRoute._addFileChildren(
-  AdminGalleryRouteChildren,
-)
-
-interface AdminNoticesIdRouteChildren {
-  AdminNoticesIdEditRoute: typeof AdminNoticesIdEditRoute
-}
-
-const AdminNoticesIdRouteChildren: AdminNoticesIdRouteChildren = {
-  AdminNoticesIdEditRoute: AdminNoticesIdEditRoute,
-}
-
-const AdminNoticesIdRouteWithChildren = AdminNoticesIdRoute._addFileChildren(
-  AdminNoticesIdRouteChildren,
-)
-
-interface AdminNoticesRouteChildren {
-  AdminNoticesIdRoute: typeof AdminNoticesIdRouteWithChildren
-  AdminNoticesNewRoute: typeof AdminNoticesNewRoute
-}
-
-const AdminNoticesRouteChildren: AdminNoticesRouteChildren = {
-  AdminNoticesIdRoute: AdminNoticesIdRouteWithChildren,
-  AdminNoticesNewRoute: AdminNoticesNewRoute,
-}
-
-const AdminNoticesRouteWithChildren = AdminNoticesRoute._addFileChildren(
-  AdminNoticesRouteChildren,
-)
-
-interface AdminPaymentsRouteChildren {
-  AdminPaymentsIdRoute: typeof AdminPaymentsIdRoute
-}
-
-const AdminPaymentsRouteChildren: AdminPaymentsRouteChildren = {
-  AdminPaymentsIdRoute: AdminPaymentsIdRoute,
-}
-
-const AdminPaymentsRouteWithChildren = AdminPaymentsRoute._addFileChildren(
-  AdminPaymentsRouteChildren,
-)
-
-interface AdminStaffRouteChildren {
-  AdminStaffIdRoute: typeof AdminStaffIdRoute
-}
-
-const AdminStaffRouteChildren: AdminStaffRouteChildren = {
-  AdminStaffIdRoute: AdminStaffIdRoute,
-}
-
-const AdminStaffRouteWithChildren = AdminStaffRoute._addFileChildren(
-  AdminStaffRouteChildren,
-)
-
-interface AdminStudentsRouteChildren {
-  AdminStudentsIdRoute: typeof AdminStudentsIdRoute
-}
-
-const AdminStudentsRouteChildren: AdminStudentsRouteChildren = {
-  AdminStudentsIdRoute: AdminStudentsIdRoute,
-}
-
-const AdminStudentsRouteWithChildren = AdminStudentsRoute._addFileChildren(
-  AdminStudentsRouteChildren,
-)
+const AdminAdminStudentsRouteWithChildren =
+  AdminAdminStudentsRoute._addFileChildren(AdminAdminStudentsRouteChildren)
 
 interface AdminRouteChildren {
-  AdminSplatRoute: typeof AdminSplatRoute
-  AdminActivityRoute: typeof AdminActivityRoute
-  AdminAdmissionsRoute: typeof AdminAdmissionsRouteWithChildren
-  AdminAttendanceRoute: typeof AdminAttendanceRoute
-  AdminClassesRoute: typeof AdminClassesRouteWithChildren
-  AdminCoursesRoute: typeof AdminCoursesRouteWithChildren
-  AdminEventsRoute: typeof AdminEventsRouteWithChildren
-  AdminFacilitiesRoute: typeof AdminFacilitiesRoute
-  AdminFacultyRoute: typeof AdminFacultyRoute
-  AdminGalleryRoute: typeof AdminGalleryRouteWithChildren
-  AdminNoticesRoute: typeof AdminNoticesRouteWithChildren
-  AdminOverviewRoute: typeof AdminOverviewRoute
-  AdminPaymentsRoute: typeof AdminPaymentsRouteWithChildren
-  AdminResourcesRoute: typeof AdminResourcesRoute
-  AdminResultsRoute: typeof AdminResultsRoute
-  AdminScholarshipsRoute: typeof AdminScholarshipsRoute
-  AdminSettingsRoute: typeof AdminSettingsRoute
-  AdminStaffRoute: typeof AdminStaffRouteWithChildren
-  AdminStudentsRoute: typeof AdminStudentsRouteWithChildren
-  AdminTransportationRoute: typeof AdminTransportationRoute
-  AdminUsersRoute: typeof AdminUsersRoute
-  AdminWebsiteRoute: typeof AdminWebsiteRoute
-  AdminIndexRoute: typeof AdminIndexRoute
+  AdminAdminSplatRoute: typeof AdminAdminSplatRoute
+  AdminAdminAcademicsRoute: typeof AdminAdminAcademicsRoute
+  AdminAdminActivityRoute: typeof AdminAdminActivityRoute
+  AdminAdminAdmissionsRoute: typeof AdminAdminAdmissionsRouteWithChildren
+  AdminAdminAttendanceRoute: typeof AdminAdminAttendanceRoute
+  AdminAdminCalendarRoute: typeof AdminAdminCalendarRoute
+  AdminAdminClassesRoute: typeof AdminAdminClassesRouteWithChildren
+  AdminAdminContentRoute: typeof AdminAdminContentRoute
+  AdminAdminCoursesRoute: typeof AdminAdminCoursesRouteWithChildren
+  AdminAdminDirectoryRoute: typeof AdminAdminDirectoryRoute
+  AdminAdminEventsRoute: typeof AdminAdminEventsRouteWithChildren
+  AdminAdminExamsRoute: typeof AdminAdminExamsRoute
+  AdminAdminFacilitiesRoute: typeof AdminAdminFacilitiesRoute
+  AdminAdminFacultyRoute: typeof AdminAdminFacultyRoute
+  AdminAdminFeesRoute: typeof AdminAdminFeesRoute
+  AdminAdminGalleryRoute: typeof AdminAdminGalleryRouteWithChildren
+  AdminAdminHomeworkRoute: typeof AdminAdminHomeworkRoute
+  AdminAdminInboxRoute: typeof AdminAdminInboxRoute
+  AdminAdminInvitesRoute: typeof AdminAdminInvitesRoute
+  AdminAdminMailRoute: typeof AdminAdminMailRoute
+  AdminAdminNoticesRoute: typeof AdminAdminNoticesRouteWithChildren
+  AdminAdminOverviewRoute: typeof AdminAdminOverviewRoute
+  AdminAdminPaymentsRoute: typeof AdminAdminPaymentsRouteWithChildren
+  AdminAdminPermissionsRoute: typeof AdminAdminPermissionsRoute
+  AdminAdminResourcesRoute: typeof AdminAdminResourcesRoute
+  AdminAdminResultsRoute: typeof AdminAdminResultsRoute
+  AdminAdminScholarshipsRoute: typeof AdminAdminScholarshipsRoute
+  AdminAdminSettingsRoute: typeof AdminAdminSettingsRoute
+  AdminAdminStaffRoute: typeof AdminAdminStaffRouteWithChildren
+  AdminAdminStudentsRoute: typeof AdminAdminStudentsRouteWithChildren
+  AdminAdminTimetableRoute: typeof AdminAdminTimetableRoute
+  AdminAdminTransportRoute: typeof AdminAdminTransportRoute
+  AdminAdminTransportationRoute: typeof AdminAdminTransportationRoute
+  AdminAdminUsersRoute: typeof AdminAdminUsersRoute
+  AdminAdminWebsiteRoute: typeof AdminAdminWebsiteRoute
+  AdminAdminIndexRoute: typeof AdminAdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminSplatRoute: AdminSplatRoute,
-  AdminActivityRoute: AdminActivityRoute,
-  AdminAdmissionsRoute: AdminAdmissionsRouteWithChildren,
-  AdminAttendanceRoute: AdminAttendanceRoute,
-  AdminClassesRoute: AdminClassesRouteWithChildren,
-  AdminCoursesRoute: AdminCoursesRouteWithChildren,
-  AdminEventsRoute: AdminEventsRouteWithChildren,
-  AdminFacilitiesRoute: AdminFacilitiesRoute,
-  AdminFacultyRoute: AdminFacultyRoute,
-  AdminGalleryRoute: AdminGalleryRouteWithChildren,
-  AdminNoticesRoute: AdminNoticesRouteWithChildren,
-  AdminOverviewRoute: AdminOverviewRoute,
-  AdminPaymentsRoute: AdminPaymentsRouteWithChildren,
-  AdminResourcesRoute: AdminResourcesRoute,
-  AdminResultsRoute: AdminResultsRoute,
-  AdminScholarshipsRoute: AdminScholarshipsRoute,
-  AdminSettingsRoute: AdminSettingsRoute,
-  AdminStaffRoute: AdminStaffRouteWithChildren,
-  AdminStudentsRoute: AdminStudentsRouteWithChildren,
-  AdminTransportationRoute: AdminTransportationRoute,
-  AdminUsersRoute: AdminUsersRoute,
-  AdminWebsiteRoute: AdminWebsiteRoute,
-  AdminIndexRoute: AdminIndexRoute,
+  AdminAdminSplatRoute: AdminAdminSplatRoute,
+  AdminAdminAcademicsRoute: AdminAdminAcademicsRoute,
+  AdminAdminActivityRoute: AdminAdminActivityRoute,
+  AdminAdminAdmissionsRoute: AdminAdminAdmissionsRouteWithChildren,
+  AdminAdminAttendanceRoute: AdminAdminAttendanceRoute,
+  AdminAdminCalendarRoute: AdminAdminCalendarRoute,
+  AdminAdminClassesRoute: AdminAdminClassesRouteWithChildren,
+  AdminAdminContentRoute: AdminAdminContentRoute,
+  AdminAdminCoursesRoute: AdminAdminCoursesRouteWithChildren,
+  AdminAdminDirectoryRoute: AdminAdminDirectoryRoute,
+  AdminAdminEventsRoute: AdminAdminEventsRouteWithChildren,
+  AdminAdminExamsRoute: AdminAdminExamsRoute,
+  AdminAdminFacilitiesRoute: AdminAdminFacilitiesRoute,
+  AdminAdminFacultyRoute: AdminAdminFacultyRoute,
+  AdminAdminFeesRoute: AdminAdminFeesRoute,
+  AdminAdminGalleryRoute: AdminAdminGalleryRouteWithChildren,
+  AdminAdminHomeworkRoute: AdminAdminHomeworkRoute,
+  AdminAdminInboxRoute: AdminAdminInboxRoute,
+  AdminAdminInvitesRoute: AdminAdminInvitesRoute,
+  AdminAdminMailRoute: AdminAdminMailRoute,
+  AdminAdminNoticesRoute: AdminAdminNoticesRouteWithChildren,
+  AdminAdminOverviewRoute: AdminAdminOverviewRoute,
+  AdminAdminPaymentsRoute: AdminAdminPaymentsRouteWithChildren,
+  AdminAdminPermissionsRoute: AdminAdminPermissionsRoute,
+  AdminAdminResourcesRoute: AdminAdminResourcesRoute,
+  AdminAdminResultsRoute: AdminAdminResultsRoute,
+  AdminAdminScholarshipsRoute: AdminAdminScholarshipsRoute,
+  AdminAdminSettingsRoute: AdminAdminSettingsRoute,
+  AdminAdminStaffRoute: AdminAdminStaffRouteWithChildren,
+  AdminAdminStudentsRoute: AdminAdminStudentsRouteWithChildren,
+  AdminAdminTimetableRoute: AdminAdminTimetableRoute,
+  AdminAdminTransportRoute: AdminAdminTransportRoute,
+  AdminAdminTransportationRoute: AdminAdminTransportationRoute,
+  AdminAdminUsersRoute: AdminAdminUsersRoute,
+  AdminAdminWebsiteRoute: AdminAdminWebsiteRoute,
+  AdminAdminIndexRoute: AdminAdminIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface EventsRouteChildren {
+  EventsSlugRoute: typeof EventsSlugRoute
+  EventsIndexRoute: typeof EventsIndexRoute
+}
+
+const EventsRouteChildren: EventsRouteChildren = {
+  EventsSlugRoute: EventsSlugRoute,
+  EventsIndexRoute: EventsIndexRoute,
+}
+
+const EventsRouteWithChildren =
+  EventsRoute._addFileChildren(EventsRouteChildren)
+
+interface NoticesRouteChildren {
+  NoticesSlugRoute: typeof NoticesSlugRoute
+  NoticesIndexRoute: typeof NoticesIndexRoute
+}
+
+const NoticesRouteChildren: NoticesRouteChildren = {
+  NoticesSlugRoute: NoticesSlugRoute,
+  NoticesIndexRoute: NoticesIndexRoute,
+}
+
+const NoticesRouteWithChildren =
+  NoticesRoute._addFileChildren(NoticesRouteChildren)
 
 interface UserRouteChildren {
   UserIndexRoute: typeof UserIndexRoute
@@ -2600,16 +2338,27 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardRoute: OnboardRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
+  AdmissionsRoute: AdmissionsRoute,
+  ClubsRoute: ClubsRoute,
+  DashboardRoute: DashboardRoute,
+  EventsRoute: EventsRouteWithChildren,
   LoginRoute: LoginRoute,
+  MyClassesRoute: MyClassesRoute,
+  MyFeesRoute: MyFeesRoute,
+  MyHomeworkRoute: MyHomeworkRoute,
+  MyRecordsRoute: MyRecordsRoute,
+  MyResultsRoute: MyResultsRoute,
+  NoticesRoute: NoticesRouteWithChildren,
+  NotificationsRoute: NotificationsRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   UserRoute: UserRouteWithChildren,
+  ApiUploadsRoute: ApiUploadsRoute,
+  UploadsSplatRoute: UploadsSplatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-<<<<<<< HEAD
+  ApiCronCleanupRoute: ApiCronCleanupRoute,
   ApiWebsitePagesRoute: ApiWebsitePagesRouteWithChildren,
   ApiWebsitePageKeyRoute: ApiWebsitePageKeyRoute,
-=======
-  ApiCronCleanupRoute: ApiCronCleanupRoute,
-  OnboardActivateGuardianTokenRoute: OnboardActivateGuardianTokenRoute,
->>>>>>> scms-local-main
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

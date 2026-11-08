@@ -142,7 +142,7 @@ export function PhotoScanDialog({
   return (
     <Dialog
       open={open}
-      onOpenChange={(next) => {
+      onOpenChange={(next: boolean) => {
         onOpenChange(next);
         if (!next) reset();
       }}

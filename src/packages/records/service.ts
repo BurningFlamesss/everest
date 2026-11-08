@@ -30,11 +30,11 @@ export interface StudentRecords {
 	}>;
 	recentAttendance: Array<{
 		id: string;
-		date: Date;
+		date: Date | null;
 		status: string;
 		note: string | null;
-		courseCode: string;
-		courseName: string;
+		courseCode: string | null;
+		courseName: string | null;
 	}>;
 	transport: Array<{
 		id: string;
@@ -142,7 +142,7 @@ export async function getMyRecords(userId: string): Promise<MyRecords> {
 			orderBy: { user: { name: "asc" } },
 		}),
 		prisma.attendanceRecord.groupBy({
-			by: ["studentId", "status"],
+			by: ["studentId", "state"],
 			where: { studentId: { in: studentIds } },
 			_count: { _all: true },
 		}),
@@ -155,7 +155,7 @@ export async function getMyRecords(userId: string): Promise<MyRecords> {
 					where: { studentId },
 					select: {
 						id: true,
-						status: true,
+						state: true,
 						note: true,
 						session: {
 							select: {
@@ -174,6 +174,7 @@ export async function getMyRecords(userId: string): Promise<MyRecords> {
 	const summaries = new Map<string, AttendanceSummary>();
 
 	for (const row of summaryRows) {
+		if (!row.studentId) continue;
 		const entry = summaries.get(row.studentId) ?? {
 			present: 0,
 			absent: 0,
@@ -182,12 +183,13 @@ export async function getMyRecords(userId: string): Promise<MyRecords> {
 			total: 0,
 		};
 
-		entry.total += row._count._all;
+		const count = row._count?._all ?? 0;
+		entry.total += count;
 
-		if (row.status === "PRESENT") entry.present += row._count._all;
-		if (row.status === "ABSENT") entry.absent += row._count._all;
-		if (row.status === "LATE") entry.late += row._count._all;
-		if (row.status === "EXCUSED") entry.excused += row._count._all;
+		if (row.state === "PRESENT") entry.present += count;
+		if (row.state === "ABSENT") entry.absent += count;
+		if (row.state === "LATE") entry.late += count;
+		if (row.state === "EXCUSED") entry.excused += count;
 
 		summaries.set(row.studentId, entry);
 	}
@@ -229,11 +231,11 @@ export async function getMyRecords(userId: string): Promise<MyRecords> {
 				recentRows.find((group) => group.studentId === entry.id)?.rows ?? []
 			).map((row) => ({
 				id: row.id,
-				date: row.session.date,
-				status: row.status,
+				date: row.session?.date ?? null,
+				status: row.state,
 				note: row.note,
-				courseCode: row.session.course.code,
-				courseName: row.session.course.name,
+				courseCode: row.session?.course.code ?? null,
+				courseName: row.session?.course.name ?? null,
 			})),
 			transport: entry.transportAssignments.map((assignment) => ({
 				id: assignment.id,

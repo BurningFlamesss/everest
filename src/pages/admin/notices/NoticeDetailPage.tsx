@@ -33,7 +33,7 @@ import {
 import type { NoticeStatus } from "#/types";
 
 export default function NoticeDetailPage() {
-	const { id = "" } = useParams();
+	const { id = "" } = useParams({ strict: false }) as { id?: string };
 	const { actor, can } = useAuth();
 	const navigate = useNavigate();
 	const qc = useQueryClient();
@@ -78,7 +78,7 @@ export default function NoticeDetailPage() {
 		onSuccess: () => {
 			toast.success("Notice deleted");
 			invalidate();
-			navigate("/admin/notices");
+			navigate({ to: "/admin/notices" });
 		},
 		onError: (error: Error) => toast.error(error.message),
 	});
@@ -93,7 +93,7 @@ export default function NoticeDetailPage() {
 					title="That notice no longer exists"
 					description="It may have been deleted. Head back to the notice board to see everything that's live."
 					primaryLabel="Back to notices"
-					onPrimary={() => navigate("/admin/notices")}
+					onPrimary={() => navigate({ to: "/admin/notices" })}
 					testId="notice-not-found-empty"
 				/>
 			</div>
@@ -142,7 +142,8 @@ export default function NoticeDetailPage() {
 						{can("notices.manage") && (
 							<Button asChild variant="outline" size="sm" className="gap-1.5">
 								<Link
-									to={`/admin/notices/${notice.id}/edit`}
+									to="/admin/notices/$id/edit"
+									params={{ id: notice.id }}
 									data-testid="notice-detail-edit"
 								>
 									<Pencil className="h-3.5 w-3.5" /> Edit

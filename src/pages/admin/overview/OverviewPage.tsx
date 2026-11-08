@@ -255,7 +255,8 @@ export default function OverviewPage() {
 												{attendance.unmarkedClasses.slice(0, 8).map((cls) => (
 													<Link
 														key={cls.id}
-														to={`/admin/attendance?class=${cls.id}`}
+														to="/admin/attendance"
+															search={{ class: cls.id }}
 														className="rounded-full border border-hairline bg-surface-1 px-2 py-0.5 text-[11px] text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
 													>
 														{cls.name}
@@ -480,7 +481,7 @@ export default function OverviewPage() {
 									primaryLabel={
 										can("events.manage") ? "Schedule an event" : undefined
 									}
-									onPrimary={() => navigate("/admin/events?new=1")}
+									onPrimary={() => navigate({ to: "/admin/events", search: { new: 1 } })}
 									testId="overview-events-empty"
 								/>
 							) : (
@@ -488,7 +489,8 @@ export default function OverviewPage() {
 									{data.upcomingEvents.map((event) => (
 										<li key={event.id}>
 											<Link
-												to={`/admin/events/${event.id}`}
+												to="/admin/events/$id"
+															params={{ id: event.id }}
 												className="flex items-center gap-3 rounded-md px-2 py-2.5 transition-colors hover:bg-surface-2 focus-ring"
 												data-testid={`overview-event-${event.id}`}
 											>
@@ -550,14 +552,15 @@ export default function OverviewPage() {
 									primaryLabel={
 										can("notices.manage") ? "Write a notice" : undefined
 									}
-									onPrimary={() => navigate("/admin/notices/new")}
+									onPrimary={() => navigate({ to: "/admin/notices/new" })}
 								/>
 							) : (
 								<ul className="divide-y divide-hairline">
 									{data.recentNotices.map((notice) => (
 										<li key={notice.id}>
 											<Link
-												to={`/admin/notices/${notice.id}`}
+												to="/admin/notices/$id"
+															params={{ id: notice.id }}
 												className="group flex items-start gap-3 rounded-md px-2 py-2.5 transition-colors hover:bg-surface-2 focus-ring"
 												data-testid={`overview-notice-${notice.id}`}
 											>
@@ -660,7 +663,8 @@ export default function OverviewPage() {
 											name={`${student.firstName} ${student.lastName}`}
 											subtitle={student.admissionNo}
 											avatarUrl={student.avatarUrl}
-											to={`/admin/students/${student.id}`}
+											to="/admin/students/$id"
+															params={{ id: student.id }}
 											mono
 											testId={`overview-student-${student.id}`}
 										/>

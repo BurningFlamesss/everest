@@ -1,4 +1,6 @@
-import { school, notices, departments, stats } from './school';
+import { school, notices } from './school';
+
+export { notices };
 
 export const footerLinks = [
   ['Home', '/'],
@@ -32,5 +34,5 @@ export const siteSchool = {
   phoneNtc: school.phones.find(p => p.label === 'NTC')?.value ?? '',
   phoneNcell: school.phones.find(p => p.label === 'Ncell')?.value ?? '',
   email: school.email,
-  registration: school.registrationNo,
+  registration: school.regNo,
 };

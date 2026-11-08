@@ -6,7 +6,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("#/packages/db/index.ts", () => ({
-	prisma: { notice: { findMany: mocks.findMany } },
+	prisma: { scmsNotice: { findMany: mocks.findMany } },
 }));
 
 // content-service only needs slugify from this module; the rest of it reaches

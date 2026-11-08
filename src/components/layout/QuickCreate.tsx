@@ -40,7 +40,7 @@ export function QuickCreate() {
         <DropdownMenuLabel className="text-xs">Quick create</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {available.map((action, index) => (
-          <DropdownMenuItem key={action.to} data-testid={action.testId} onClick={() => navigate(action.to)}>
+          <DropdownMenuItem key={action.to} data-testid={action.testId} onClick={() => navigate({ to: action.to as never })}>
             <action.icon className="mr-2 h-4 w-4 text-muted-foreground" />
             {action.label}
             {index < 3 && <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>}

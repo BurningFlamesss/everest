@@ -6,8 +6,6 @@ import { createFileRoute, useSearch } from "@tanstack/react-router";
 import {
 	PageFrame,
 	PageHeader,
-	Section,
-	SectionHeading,
 } from "#/templates/modern/components/chrome/PageFrame";
 import { ResultsChart } from "#/templates/modern/components/utilities/ResultsChart";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
@@ -44,10 +42,6 @@ function RouteComponent() {
 	const headerSection = {
 		...sectionDefaults("headline"),
 		...getSectionFields(cmsData?.blocks, "headline"),
-	};
-	const statsSection = {
-		...sectionDefaults("stats"),
-		...getSectionFields(cmsData?.blocks, "stats"),
 	};
 
 	const onSelectSection = (sectionType: BlockType) => {

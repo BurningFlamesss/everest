@@ -42,7 +42,7 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: "Operations",
     items: [
-      { label: "Overview", to: "/admin/overview", icon: LayoutDashboard, permission: "overview.view" },
+      { label: "Overview", to: "/admin", icon: LayoutDashboard, permission: "overview.view" },
       {
         label: "Attendance",
         to: "/admin/attendance",
@@ -96,8 +96,8 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: "Academics",
     items: [
-      { label: "Classes & Sections", to: "/admin/classes", icon: GalleryVerticalEnd, permission: "classes.view" },
-      { label: "Courses & Subjects", to: "/admin/courses", icon: Library, permission: "courses.view" },
+      { label: "Classes & Sections", to: "/admin/academics", icon: GalleryVerticalEnd, permission: "classes.view" },
+      { label: "Courses & Subjects", to: "/admin/academics", icon: Library, permission: "courses.view" },
       { label: "Board Results", to: "/admin/results", icon: GraduationCap, permission: "overview.view" },
     ],
   },
@@ -106,7 +106,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       {
         label: "Notices",
-        to: "/admin/notices",
+        to: "/admin/directory",
         icon: Megaphone,
         permission: "notices.view",
         badgeKey: "draftNotices",

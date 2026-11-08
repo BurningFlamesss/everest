@@ -240,7 +240,8 @@ export function StaffRegister({ date, canMark }: StaffRegisterProps) {
                       name={`${entry.staff.firstName} ${entry.staff.lastName}`}
                       subtitle={entry.staff.employeeId}
                       avatarUrl={entry.staff.avatarUrl}
-                      to={`/staff/${entry.staff.id}`}
+                      to="/admin/staff/$id"
+                      params={{ id: entry.staff.id }}
                       size="sm"
                       mono
                       testId={`staff-attendance-link-${entry.staff.id}`}

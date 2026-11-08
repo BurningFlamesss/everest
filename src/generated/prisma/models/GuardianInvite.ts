@@ -32,6 +32,7 @@ export type GuardianInviteMinAggregateOutputType = {
   expiresAt: Date | null
   usedAt: Date | null
   createdAt: Date | null
+  userId: string | null
 }
 
 export type GuardianInviteMaxAggregateOutputType = {
@@ -42,6 +43,7 @@ export type GuardianInviteMaxAggregateOutputType = {
   expiresAt: Date | null
   usedAt: Date | null
   createdAt: Date | null
+  userId: string | null
 }
 
 export type GuardianInviteCountAggregateOutputType = {
@@ -52,6 +54,7 @@ export type GuardianInviteCountAggregateOutputType = {
   expiresAt: number
   usedAt: number
   createdAt: number
+  userId: number
   _all: number
 }
 
@@ -64,6 +67,7 @@ export type GuardianInviteMinAggregateInputType = {
   expiresAt?: true
   usedAt?: true
   createdAt?: true
+  userId?: true
 }
 
 export type GuardianInviteMaxAggregateInputType = {
@@ -74,6 +78,7 @@ export type GuardianInviteMaxAggregateInputType = {
   expiresAt?: true
   usedAt?: true
   createdAt?: true
+  userId?: true
 }
 
 export type GuardianInviteCountAggregateInputType = {
@@ -84,6 +89,7 @@ export type GuardianInviteCountAggregateInputType = {
   expiresAt?: true
   usedAt?: true
   createdAt?: true
+  userId?: true
   _all?: true
 }
 
@@ -167,6 +173,7 @@ export type GuardianInviteGroupByOutputType = {
   expiresAt: Date
   usedAt: Date | null
   createdAt: Date
+  userId: string | null
   _count: GuardianInviteCountAggregateOutputType | null
   _min: GuardianInviteMinAggregateOutputType | null
   _max: GuardianInviteMaxAggregateOutputType | null
@@ -198,7 +205,9 @@ export type GuardianInviteWhereInput = {
   expiresAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
   usedAt?: Prisma.DateTimeNullableFilter<"GuardianInvite"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
+  userId?: Prisma.StringNullableFilter<"GuardianInvite"> | string | null
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type GuardianInviteOrderByWithRelationInput = {
@@ -209,7 +218,9 @@ export type GuardianInviteOrderByWithRelationInput = {
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   student?: Prisma.StudentOrderByWithRelationInput
+  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type GuardianInviteWhereUniqueInput = Prisma.AtLeast<{
@@ -223,7 +234,9 @@ export type GuardianInviteWhereUniqueInput = Prisma.AtLeast<{
   expiresAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
   usedAt?: Prisma.DateTimeNullableFilter<"GuardianInvite"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
+  userId?: Prisma.StringNullableFilter<"GuardianInvite"> | string | null
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id" | "token">
 
 export type GuardianInviteOrderByWithAggregationInput = {
@@ -234,6 +247,7 @@ export type GuardianInviteOrderByWithAggregationInput = {
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.GuardianInviteCountOrderByAggregateInput
   _max?: Prisma.GuardianInviteMaxOrderByAggregateInput
   _min?: Prisma.GuardianInviteMinOrderByAggregateInput
@@ -250,6 +264,7 @@ export type GuardianInviteScalarWhereWithAggregatesInput = {
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"GuardianInvite"> | Date | string
   usedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"GuardianInvite"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"GuardianInvite"> | Date | string
+  userId?: Prisma.StringNullableWithAggregatesFilter<"GuardianInvite"> | string | null
 }
 
 export type GuardianInviteCreateInput = {
@@ -260,6 +275,7 @@ export type GuardianInviteCreateInput = {
   usedAt?: Date | string | null
   createdAt?: Date | string
   student: Prisma.StudentCreateNestedOneWithoutGuardianInvitesInput
+  user?: Prisma.UserCreateNestedOneWithoutGuardianInvitesInput
 }
 
 export type GuardianInviteUncheckedCreateInput = {
@@ -270,6 +286,7 @@ export type GuardianInviteUncheckedCreateInput = {
   expiresAt: Date | string
   usedAt?: Date | string | null
   createdAt?: Date | string
+  userId?: string | null
 }
 
 export type GuardianInviteUpdateInput = {
@@ -280,6 +297,7 @@ export type GuardianInviteUpdateInput = {
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   student?: Prisma.StudentUpdateOneRequiredWithoutGuardianInvitesNestedInput
+  user?: Prisma.UserUpdateOneWithoutGuardianInvitesNestedInput
 }
 
 export type GuardianInviteUncheckedUpdateInput = {
@@ -290,6 +308,7 @@ export type GuardianInviteUncheckedUpdateInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type GuardianInviteCreateManyInput = {
@@ -300,6 +319,7 @@ export type GuardianInviteCreateManyInput = {
   expiresAt: Date | string
   usedAt?: Date | string | null
   createdAt?: Date | string
+  userId?: string | null
 }
 
 export type GuardianInviteUpdateManyMutationInput = {
@@ -319,6 +339,7 @@ export type GuardianInviteUncheckedUpdateManyInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type GuardianInviteListRelationFilter = {
@@ -339,6 +360,7 @@ export type GuardianInviteCountOrderByAggregateInput = {
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
 }
 
 export type GuardianInviteMaxOrderByAggregateInput = {
@@ -349,6 +371,7 @@ export type GuardianInviteMaxOrderByAggregateInput = {
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
 }
 
 export type GuardianInviteMinOrderByAggregateInput = {
@@ -359,6 +382,49 @@ export type GuardianInviteMinOrderByAggregateInput = {
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+}
+
+export type GuardianInviteCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.GuardianInviteCreateWithoutUserInput, Prisma.GuardianInviteUncheckedCreateWithoutUserInput> | Prisma.GuardianInviteCreateWithoutUserInput[] | Prisma.GuardianInviteUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.GuardianInviteCreateOrConnectWithoutUserInput | Prisma.GuardianInviteCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.GuardianInviteCreateManyUserInputEnvelope
+  connect?: Prisma.GuardianInviteWhereUniqueInput | Prisma.GuardianInviteWhereUniqueInput[]
+}
+
+export type GuardianInviteUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.GuardianInviteCreateWithoutUserInput, Prisma.GuardianInviteUncheckedCreateWithoutUserInput> | Prisma.GuardianInviteCreateWithoutUserInput[] | Prisma.GuardianInviteUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.GuardianInviteCreateOrConnectWithoutUserInput | Prisma.GuardianInviteCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.GuardianInviteCreateManyUserInputEnvelope
+  connect?: Prisma.GuardianInviteWhereUniqueInput | Prisma.GuardianInviteWhereUniqueInput[]
+}
+
+export type GuardianInviteUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.GuardianInviteCreateWithoutUserInput, Prisma.GuardianInviteUncheckedCreateWithoutUserInput> | Prisma.GuardianInviteCreateWithoutUserInput[] | Prisma.GuardianInviteUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.GuardianInviteCreateOrConnectWithoutUserInput | Prisma.GuardianInviteCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.GuardianInviteUpsertWithWhereUniqueWithoutUserInput | Prisma.GuardianInviteUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.GuardianInviteCreateManyUserInputEnvelope
+  set?: Prisma.GuardianInviteWhereUniqueInput | Prisma.GuardianInviteWhereUniqueInput[]
+  disconnect?: Prisma.GuardianInviteWhereUniqueInput | Prisma.GuardianInviteWhereUniqueInput[]
+  delete?: Prisma.GuardianInviteWhereUniqueInput | Prisma.GuardianInviteWhereUniqueInput[]
+  connect?: Prisma.GuardianInviteWhereUniqueInput | Prisma.GuardianInviteWhereUniqueInput[]
+  update?: Prisma.GuardianInviteUpdateWithWhereUniqueWithoutUserInput | Prisma.GuardianInviteUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.GuardianInviteUpdateManyWithWhereWithoutUserInput | Prisma.GuardianInviteUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.GuardianInviteScalarWhereInput | Prisma.GuardianInviteScalarWhereInput[]
+}
+
+export type GuardianInviteUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.GuardianInviteCreateWithoutUserInput, Prisma.GuardianInviteUncheckedCreateWithoutUserInput> | Prisma.GuardianInviteCreateWithoutUserInput[] | Prisma.GuardianInviteUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.GuardianInviteCreateOrConnectWithoutUserInput | Prisma.GuardianInviteCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.GuardianInviteUpsertWithWhereUniqueWithoutUserInput | Prisma.GuardianInviteUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.GuardianInviteCreateManyUserInputEnvelope
+  set?: Prisma.GuardianInviteWhereUniqueInput | Prisma.GuardianInviteWhereUniqueInput[]
+  disconnect?: Prisma.GuardianInviteWhereUniqueInput | Prisma.GuardianInviteWhereUniqueInput[]
+  delete?: Prisma.GuardianInviteWhereUniqueInput | Prisma.GuardianInviteWhereUniqueInput[]
+  connect?: Prisma.GuardianInviteWhereUniqueInput | Prisma.GuardianInviteWhereUniqueInput[]
+  update?: Prisma.GuardianInviteUpdateWithWhereUniqueWithoutUserInput | Prisma.GuardianInviteUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.GuardianInviteUpdateManyWithWhereWithoutUserInput | Prisma.GuardianInviteUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.GuardianInviteScalarWhereInput | Prisma.GuardianInviteScalarWhereInput[]
 }
 
 export type GuardianInviteCreateNestedManyWithoutStudentInput = {
@@ -403,6 +469,66 @@ export type GuardianInviteUncheckedUpdateManyWithoutStudentNestedInput = {
   deleteMany?: Prisma.GuardianInviteScalarWhereInput | Prisma.GuardianInviteScalarWhereInput[]
 }
 
+export type GuardianInviteCreateWithoutUserInput = {
+  id?: string
+  token: string
+  guardianEmail?: string | null
+  expiresAt: Date | string
+  usedAt?: Date | string | null
+  createdAt?: Date | string
+  student: Prisma.StudentCreateNestedOneWithoutGuardianInvitesInput
+}
+
+export type GuardianInviteUncheckedCreateWithoutUserInput = {
+  id?: string
+  token: string
+  studentId: string
+  guardianEmail?: string | null
+  expiresAt: Date | string
+  usedAt?: Date | string | null
+  createdAt?: Date | string
+}
+
+export type GuardianInviteCreateOrConnectWithoutUserInput = {
+  where: Prisma.GuardianInviteWhereUniqueInput
+  create: Prisma.XOR<Prisma.GuardianInviteCreateWithoutUserInput, Prisma.GuardianInviteUncheckedCreateWithoutUserInput>
+}
+
+export type GuardianInviteCreateManyUserInputEnvelope = {
+  data: Prisma.GuardianInviteCreateManyUserInput | Prisma.GuardianInviteCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type GuardianInviteUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.GuardianInviteWhereUniqueInput
+  update: Prisma.XOR<Prisma.GuardianInviteUpdateWithoutUserInput, Prisma.GuardianInviteUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.GuardianInviteCreateWithoutUserInput, Prisma.GuardianInviteUncheckedCreateWithoutUserInput>
+}
+
+export type GuardianInviteUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.GuardianInviteWhereUniqueInput
+  data: Prisma.XOR<Prisma.GuardianInviteUpdateWithoutUserInput, Prisma.GuardianInviteUncheckedUpdateWithoutUserInput>
+}
+
+export type GuardianInviteUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.GuardianInviteScalarWhereInput
+  data: Prisma.XOR<Prisma.GuardianInviteUpdateManyMutationInput, Prisma.GuardianInviteUncheckedUpdateManyWithoutUserInput>
+}
+
+export type GuardianInviteScalarWhereInput = {
+  AND?: Prisma.GuardianInviteScalarWhereInput | Prisma.GuardianInviteScalarWhereInput[]
+  OR?: Prisma.GuardianInviteScalarWhereInput[]
+  NOT?: Prisma.GuardianInviteScalarWhereInput | Prisma.GuardianInviteScalarWhereInput[]
+  id?: Prisma.StringFilter<"GuardianInvite"> | string
+  token?: Prisma.StringFilter<"GuardianInvite"> | string
+  studentId?: Prisma.StringFilter<"GuardianInvite"> | string
+  guardianEmail?: Prisma.StringNullableFilter<"GuardianInvite"> | string | null
+  expiresAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
+  usedAt?: Prisma.DateTimeNullableFilter<"GuardianInvite"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
+  userId?: Prisma.StringNullableFilter<"GuardianInvite"> | string | null
+}
+
 export type GuardianInviteCreateWithoutStudentInput = {
   id?: string
   token: string
@@ -410,6 +536,7 @@ export type GuardianInviteCreateWithoutStudentInput = {
   expiresAt: Date | string
   usedAt?: Date | string | null
   createdAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutGuardianInvitesInput
 }
 
 export type GuardianInviteUncheckedCreateWithoutStudentInput = {
@@ -419,6 +546,7 @@ export type GuardianInviteUncheckedCreateWithoutStudentInput = {
   expiresAt: Date | string
   usedAt?: Date | string | null
   createdAt?: Date | string
+  userId?: string | null
 }
 
 export type GuardianInviteCreateOrConnectWithoutStudentInput = {
@@ -447,17 +575,44 @@ export type GuardianInviteUpdateManyWithWhereWithoutStudentInput = {
   data: Prisma.XOR<Prisma.GuardianInviteUpdateManyMutationInput, Prisma.GuardianInviteUncheckedUpdateManyWithoutStudentInput>
 }
 
-export type GuardianInviteScalarWhereInput = {
-  AND?: Prisma.GuardianInviteScalarWhereInput | Prisma.GuardianInviteScalarWhereInput[]
-  OR?: Prisma.GuardianInviteScalarWhereInput[]
-  NOT?: Prisma.GuardianInviteScalarWhereInput | Prisma.GuardianInviteScalarWhereInput[]
-  id?: Prisma.StringFilter<"GuardianInvite"> | string
-  token?: Prisma.StringFilter<"GuardianInvite"> | string
-  studentId?: Prisma.StringFilter<"GuardianInvite"> | string
-  guardianEmail?: Prisma.StringNullableFilter<"GuardianInvite"> | string | null
-  expiresAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
-  usedAt?: Prisma.DateTimeNullableFilter<"GuardianInvite"> | Date | string | null
-  createdAt?: Prisma.DateTimeFilter<"GuardianInvite"> | Date | string
+export type GuardianInviteCreateManyUserInput = {
+  id?: string
+  token: string
+  studentId: string
+  guardianEmail?: string | null
+  expiresAt: Date | string
+  usedAt?: Date | string | null
+  createdAt?: Date | string
+}
+
+export type GuardianInviteUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  student?: Prisma.StudentUpdateOneRequiredWithoutGuardianInvitesNestedInput
+}
+
+export type GuardianInviteUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type GuardianInviteUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type GuardianInviteCreateManyStudentInput = {
@@ -467,6 +622,7 @@ export type GuardianInviteCreateManyStudentInput = {
   expiresAt: Date | string
   usedAt?: Date | string | null
   createdAt?: Date | string
+  userId?: string | null
 }
 
 export type GuardianInviteUpdateWithoutStudentInput = {
@@ -476,6 +632,7 @@ export type GuardianInviteUpdateWithoutStudentInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutGuardianInvitesNestedInput
 }
 
 export type GuardianInviteUncheckedUpdateWithoutStudentInput = {
@@ -485,6 +642,7 @@ export type GuardianInviteUncheckedUpdateWithoutStudentInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type GuardianInviteUncheckedUpdateManyWithoutStudentInput = {
@@ -494,6 +652,7 @@ export type GuardianInviteUncheckedUpdateManyWithoutStudentInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -506,7 +665,9 @@ export type GuardianInviteSelect<ExtArgs extends runtime.Types.Extensions.Intern
   expiresAt?: boolean
   usedAt?: boolean
   createdAt?: boolean
+  userId?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.GuardianInvite$userArgs<ExtArgs>
 }, ExtArgs["result"]["guardianInvite"]>
 
 export type GuardianInviteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -517,7 +678,9 @@ export type GuardianInviteSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   expiresAt?: boolean
   usedAt?: boolean
   createdAt?: boolean
+  userId?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.GuardianInvite$userArgs<ExtArgs>
 }, ExtArgs["result"]["guardianInvite"]>
 
 export type GuardianInviteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -528,7 +691,9 @@ export type GuardianInviteSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   expiresAt?: boolean
   usedAt?: boolean
   createdAt?: boolean
+  userId?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.GuardianInvite$userArgs<ExtArgs>
 }, ExtArgs["result"]["guardianInvite"]>
 
 export type GuardianInviteSelectScalar = {
@@ -539,23 +704,28 @@ export type GuardianInviteSelectScalar = {
   expiresAt?: boolean
   usedAt?: boolean
   createdAt?: boolean
+  userId?: boolean
 }
 
-export type GuardianInviteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "token" | "studentId" | "guardianEmail" | "expiresAt" | "usedAt" | "createdAt", ExtArgs["result"]["guardianInvite"]>
+export type GuardianInviteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "token" | "studentId" | "guardianEmail" | "expiresAt" | "usedAt" | "createdAt" | "userId", ExtArgs["result"]["guardianInvite"]>
 export type GuardianInviteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.GuardianInvite$userArgs<ExtArgs>
 }
 export type GuardianInviteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.GuardianInvite$userArgs<ExtArgs>
 }
 export type GuardianInviteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.GuardianInvite$userArgs<ExtArgs>
 }
 
 export type $GuardianInvitePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "GuardianInvite"
   objects: {
     student: Prisma.$StudentPayload<ExtArgs>
+    user: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -569,6 +739,7 @@ export type $GuardianInvitePayload<ExtArgs extends runtime.Types.Extensions.Inte
     expiresAt: Date
     usedAt: Date | null
     createdAt: Date
+    userId: string | null
   }, ExtArgs["result"]["guardianInvite"]>
   composites: {}
 }
@@ -964,6 +1135,7 @@ readonly fields: GuardianInviteFieldRefs;
 export interface Prisma__GuardianInviteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   student<T extends Prisma.StudentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StudentDefaultArgs<ExtArgs>>): Prisma.Prisma__StudentClient<runtime.Types.Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.GuardianInvite$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GuardianInvite$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1000,6 +1172,7 @@ export interface GuardianInviteFieldRefs {
   readonly expiresAt: Prisma.FieldRef<"GuardianInvite", 'DateTime'>
   readonly usedAt: Prisma.FieldRef<"GuardianInvite", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"GuardianInvite", 'DateTime'>
+  readonly userId: Prisma.FieldRef<"GuardianInvite", 'String'>
 }
     
 
@@ -1398,6 +1571,25 @@ export type GuardianInviteDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many GuardianInvites to delete.
    */
   limit?: number
+}
+
+/**
+ * GuardianInvite.user
+ */
+export type GuardianInvite$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

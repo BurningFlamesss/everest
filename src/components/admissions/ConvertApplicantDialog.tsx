@@ -45,7 +45,8 @@ export function ConvertApplicantDialog({ application, onOpenChange }: ConvertApp
   }, [application?.id, options[0]?.id, application]);
 
   const mutation = useMutation({
-    mutationFn: () => convertApplicant(application?.id, classId, actor),
+    mutationFn: () =>
+      application?.id ? convertApplicant(application.id, classId, actor) : Promise.reject(new Error("No application selected")),
     onSuccess: ({ student }) => {
       toast.success(`${student.firstName} ${student.lastName} enrolled as ${student.admissionNo}`);
       qc.invalidateQueries({ queryKey: ["applications"] });
@@ -54,7 +55,7 @@ export function ConvertApplicantDialog({ application, onOpenChange }: ConvertApp
       qc.invalidateQueries({ queryKey: ["classes"] });
       qc.invalidateQueries({ queryKey: ["overview"] });
       onOpenChange(false);
-      navigate(`/students/${student.id}`);
+      navigate({ to: "/admin/students/$id", params: { id: student.id } });
     },
     onError: (error: Error) => toast.error(error.message),
   });

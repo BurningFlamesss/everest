@@ -207,7 +207,8 @@ export function PaymentsAnalytics() {
                   name={`${student.firstName} ${student.lastName}`}
                   subtitle={`${student.grade} · ${student.guardian.name}`}
                   avatarUrl={student.avatarUrl}
-                  to={`/admin/students/${student.id}`}
+                  to="/admin/students/$id"
+                  params={{ id: student.id }}
                   size="sm"
                 />
               </div>

@@ -42,14 +42,11 @@ export default function PaymentsPage() {
 
 	const setParam = (key: string, value: string) => {
 		navigate({
-			search: (prev: Record<string, any>) => {
-				const next = { ...prev };
-				if (value === "all" || !value) delete next[key];
-				else next[key] = value;
-				return next;
-			},
+			search: (value === "all" || !value
+				? Object.fromEntries(Object.entries(searchParams).filter(([k]) => k !== key))
+				: { ...searchParams, [key]: value }) as Record<string, string | undefined>,
 			replace: true,
-		});
+		} as any);
 	};
 
 	const { data: summary } = useQuery({
@@ -163,13 +160,11 @@ export default function PaymentsPage() {
 						data-testid={`payments-kpi-${kpi.key}`}
 						onClick={() => {
 							navigate({
-								search: (prev: Record<string, any>) => {
-									const next = { ...prev };
-									next.tab = "invoices";
-									if (kpi.status === "all") delete next.status;
-									else next.status = kpi.status;
-									return next;
-								},
+								search: {
+									...searchParams,
+									tab: "invoices",
+									...(kpi.status === "all" ? {} : { status: kpi.status }),
+								} as Record<string, string | undefined>,
 								replace: true,
 							});
 						}}

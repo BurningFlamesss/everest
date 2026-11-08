@@ -17,7 +17,7 @@ import type {
 	DirectoryTab,
 } from "#/packages/people/directory-service.ts";
 
-export const Route = createFileRoute("/admin/directory")({
+export const Route = createFileRoute("/admin/_admin/directory")({
 	component: AdminDirectory,
 });
 

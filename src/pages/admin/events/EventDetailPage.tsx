@@ -34,7 +34,7 @@ import {
 import type { EventStatus } from "#/types";
 
 export default function EventDetailPage() {
-	const { id = "" } = useParams();
+	const { id = "" } = useParams({ strict: false }) as { id?: string };
 	const { actor, can } = useAuth();
 	const navigate = useNavigate();
 	const qc = useQueryClient();
@@ -67,7 +67,7 @@ export default function EventDetailPage() {
 		onSuccess: () => {
 			toast.success("Event removed from the calendar");
 			invalidate();
-			navigate("/admin/events");
+			navigate({ to: "/admin/events" });
 		},
 		onError: (error: Error) => toast.error(error.message),
 	});
@@ -82,7 +82,7 @@ export default function EventDetailPage() {
 					title="That event no longer exists"
 					description="It may have been deleted. Return to the calendar to see everything that is scheduled."
 					primaryLabel="Back to events"
-					onPrimary={() => navigate("/admin/events")}
+					onPrimary={() => navigate({ to: "/admin/events" })}
 					testId="event-not-found-empty"
 				/>
 			</div>

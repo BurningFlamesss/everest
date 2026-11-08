@@ -704,3 +704,37 @@ export async function revokeInvite(input: {
 }
 
 export type InviteListEntry = Awaited<ReturnType<typeof listInvites>>[number];
+
+/** ScMS-compatible alias: CSV import rows carry a camelCased payload. */
+export async function issueUserInvite(input: {
+	name: string;
+	email: string;
+	type: "STAFF" | "STUDENT";
+	payload?: {
+		grade?: string;
+		section?: string;
+		rollNo?: string;
+		designation?: string;
+		department?: string;
+		employeeId?: string;
+	};
+}): Promise<{ inviteUrl: string; emailed: boolean; reason?: string }> {
+	const { name, email, type, payload = {} } = input;
+	const created =
+		type === "STUDENT"
+			? await createStudentInvite({
+					name,
+					email,
+					grade: payload.grade,
+					section: payload.section,
+					rollNo: payload.rollNo,
+				})
+			: await createStaffInvite({
+					name,
+					email,
+					designation: payload.designation,
+					department: payload.department,
+					employeeId: payload.employeeId,
+				});
+	return { inviteUrl: created.url, emailed: created.emailSent };
+}

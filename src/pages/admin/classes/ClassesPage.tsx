@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { GalleryVerticalEnd, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -36,7 +36,6 @@ import { listStaff } from "#/services/staff";
 
 export default function ClassesPage() {
 	const { actor, can } = useAuth();
-	const _navigate = useNavigate();
 	const qc = useQueryClient();
 	const [search, setSearch] = useState("");
 	const [grade, setGrade] = useState("all");
@@ -185,7 +184,8 @@ export default function ClassesPage() {
 									return (
 										<Link
 											key={cls.id}
-											to={`/admin/classes/${cls.id}`}
+											to="/admin/classes/$id"
+											params={{ id: cls.id }}
 											data-testid={`class-card-${cls.id}`}
 											className="panel group p-4 transition-colors hover:border-primary/35 focus-ring"
 										>

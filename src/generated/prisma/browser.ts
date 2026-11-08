@@ -165,3 +165,145 @@ export type Program = Prisma.ProgramModel
  * 
  */
 export type CalendarEvent = Prisma.CalendarEventModel
+/**
+ * Model AcademicYear
+ * 
+ */
+export type AcademicYear = Prisma.AcademicYearModel
+/**
+ * Model Term
+ * 
+ */
+export type Term = Prisma.TermModel
+/**
+ * Model Exam
+ * 
+ */
+export type Exam = Prisma.ExamModel
+/**
+ * Model ExamSchedule
+ * 
+ */
+export type ExamSchedule = Prisma.ExamScheduleModel
+/**
+ * Model Mark
+ * 
+ */
+export type Mark = Prisma.MarkModel
+/**
+ * Model Assignment
+ * 
+ */
+export type Assignment = Prisma.AssignmentModel
+/**
+ * Model AttendanceSession
+ * 
+ */
+export type AttendanceSession = Prisma.AttendanceSessionModel
+/**
+ * Model Club
+ * 
+ */
+export type Club = Prisma.ClubModel
+/**
+ * Model Event
+ * 
+ */
+export type Event = Prisma.EventModel
+/**
+ * Model UserPermission
+ * 
+ */
+export type UserPermission = Prisma.UserPermissionModel
+/**
+ * Model RolePermission
+ * 
+ */
+export type RolePermission = Prisma.RolePermissionModel
+/**
+ * Model InviteRequest
+ * 
+ */
+export type InviteRequest = Prisma.InviteRequestModel
+/**
+ * Model Enrollment
+ * 
+ */
+export type Enrollment = Prisma.EnrollmentModel
+/**
+ * Model Classroom
+ * 
+ */
+export type Classroom = Prisma.ClassroomModel
+/**
+ * Model Course
+ * 
+ */
+export type Course = Prisma.CourseModel
+/**
+ * Model FileAsset
+ * 
+ */
+export type FileAsset = Prisma.FileAssetModel
+/**
+ * Model Attachment
+ * 
+ */
+export type Attachment = Prisma.AttachmentModel
+/**
+ * Model ContactMessage
+ * 
+ */
+export type ContactMessage = Prisma.ContactMessageModel
+/**
+ * Model TransportRoute
+ * 
+ */
+export type TransportRoute = Prisma.TransportRouteModel
+/**
+ * Model TransportStop
+ * 
+ */
+export type TransportStop = Prisma.TransportStopModel
+/**
+ * Model TransportAssignment
+ * 
+ */
+export type TransportAssignment = Prisma.TransportAssignmentModel
+/**
+ * Model FeeStructure
+ * 
+ */
+export type FeeStructure = Prisma.FeeStructureModel
+/**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
+ * Model MailLog
+ * 
+ */
+export type MailLog = Prisma.MailLogModel
+/**
+ * Model GalleryImage
+ * 
+ */
+export type GalleryImage = Prisma.GalleryImageModel
+/**
+ * Model TimetableSlot
+ * 
+ */
+export type TimetableSlot = Prisma.TimetableSlotModel
+/**
+ * Model ScmsNotice
+ * ScMS publishing fields grafted onto the Everest CMS Notice row. `ref`,
+ * bilingual dates, bullets and table are Everest-only; a ScMS-published
+ * notice simply leaves them null/empty.
+ */
+export type ScmsNotice = Prisma.ScmsNoticeModel

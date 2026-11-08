@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { footerLinks, siteSchool } from "#content/site";
 const isOpen=()=>{const now=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kathmandu'}));const day=now.getDay(),h=now.getHours();return day!==6&&h>=9&&h<16};

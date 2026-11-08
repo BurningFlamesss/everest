@@ -3,7 +3,7 @@ import { collectOrphanedFileAssets } from "./cleanup.ts";
 
 const prismaMock = vi.hoisted(() => ({
 	fileAsset: { findMany: vi.fn(), deleteMany: vi.fn() },
-	notice: { findMany: vi.fn() },
+	scmsNotice: { findMany: vi.fn() },
 	event: { findMany: vi.fn() },
 	club: { findMany: vi.fn() },
 	attachment: { findMany: vi.fn() },
@@ -27,7 +27,7 @@ beforeEach(() => {
 	vi.clearAllMocks();
 
 	prismaMock.fileAsset.findMany.mockResolvedValue([]);
-	prismaMock.notice.findMany.mockResolvedValue([]);
+	prismaMock.scmsNotice.findMany.mockResolvedValue([]);
 	prismaMock.event.findMany.mockResolvedValue([]);
 	prismaMock.club.findMany.mockResolvedValue([]);
 	prismaMock.attachment.findMany.mockResolvedValue([]);
@@ -62,7 +62,7 @@ describe("collectOrphanedFileAssets", () => {
 			eventCover,
 			clubCover,
 		]);
-		prismaMock.notice.findMany.mockResolvedValue([
+		prismaMock.scmsNotice.findMany.mockResolvedValue([
 			{ coverImage: noticeCover.url },
 		]);
 		prismaMock.event.findMany.mockResolvedValue([
@@ -123,7 +123,7 @@ describe("collectOrphanedFileAssets", () => {
 	it("matches legacy cover values stored as a storage key", async () => {
 		const cover = asset("cover-key");
 		prismaMock.fileAsset.findMany.mockResolvedValue([cover]);
-		prismaMock.notice.findMany.mockResolvedValue([{ coverImage: cover.key }]);
+		prismaMock.scmsNotice.findMany.mockResolvedValue([{ coverImage: cover.key }]);
 
 		await collectOrphanedFileAssets();
 

@@ -32,13 +32,21 @@ export interface WebsitePageContent {
   createdAt: string;
 }
 
+/**
+ * Fields are free-form JSON authored in the CMS editor. They are typed as
+ * string-valued so the object stays provably serializable across TanStack
+ * Start server-function boundaries; consumers coerce the specific keys they
+ * render.
+ */
+export type ContentBlockFields = Record<string, string>;
+
 export interface ContentBlock {
   id: string;
   type: string;
   label: string;
   visible: boolean;
   order: number;
-  fields: Record<string, unknown>;
+  fields: ContentBlockFields;
   updatedAt: string;
   createdAt: string;
 }

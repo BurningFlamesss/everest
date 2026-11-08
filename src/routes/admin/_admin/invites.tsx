@@ -27,7 +27,7 @@ import {
 import { StaffImport } from "#/packages/invite/staff-import.tsx";
 import { StudentImport } from "#/packages/invite/student-import.tsx";
 
-export const Route = createFileRoute("/admin/invites")({
+export const Route = createFileRoute("/admin/_admin/invites")({
 	component: AdminInvites,
 });
 

@@ -13,7 +13,7 @@ import {
 	saveMarksAction,
 } from "#/packages/academics/exams-server.ts";
 
-export const Route = createFileRoute("/admin/exams")({
+export const Route = createFileRoute("/admin/_admin/exams")({
 	beforeLoad: ({ context }) => {
 		if (!context.viewer.permissions.includes("MANAGE_EXAMS")) {
 			throw redirect({ to: "/admin" });

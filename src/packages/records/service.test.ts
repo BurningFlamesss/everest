@@ -110,10 +110,10 @@ describe("getMyRecords", () => {
 			studentRow("s2"),
 		]);
 		prismaMock.attendanceRecord.groupBy.mockResolvedValue([
-			{ studentId: "s1", status: "PRESENT", _count: { _all: 3 } },
-			{ studentId: "s1", status: "ABSENT", _count: { _all: 1 } },
-			{ studentId: "s1", status: "LATE", _count: { _all: 2 } },
-			{ studentId: "s1", status: "EXCUSED", _count: { _all: 1 } },
+			{ studentId: "s1", state: "PRESENT", _count: { _all: 3 } },
+			{ studentId: "s1", state: "ABSENT", _count: { _all: 1 } },
+			{ studentId: "s1", state: "LATE", _count: { _all: 2 } },
+			{ studentId: "s1", state: "EXCUSED", _count: { _all: 1 } },
 		]);
 
 		const result = await getMyRecords("user-1");
@@ -203,7 +203,7 @@ describe("getMyRecords", () => {
 					return [
 						{
 							id: "r1",
-							status: "PRESENT",
+							state: "PRESENT",
 							note: null,
 							session: {
 								date: new Date("2026-04-30T00:00:00.000Z"),
@@ -216,7 +216,7 @@ describe("getMyRecords", () => {
 				return [
 					{
 						id: "r2",
-						status: "LATE",
+						state: "LATE",
 						note: "Traffic",
 						session: {
 							date: new Date("2026-04-29T00:00:00.000Z"),

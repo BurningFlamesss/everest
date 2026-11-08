@@ -17,7 +17,7 @@ import {
 	saveAttendanceAction,
 } from "#/packages/attendance/server.ts";
 
-export const Route = createFileRoute("/admin/attendance")({
+export const Route = createFileRoute("/admin/_admin/attendance")({
 	beforeLoad: ({ context }) => {
 		if (!context.viewer.permissions.includes("MANAGE_ATTENDANCE")) {
 			throw redirect({ to: "/admin" });
@@ -166,7 +166,7 @@ function AdminAttendance() {
 			return;
 		}
 
-		const loaded = response.session as SessionDetail;
+		const loaded = response.session as unknown as SessionDetail;
 		setSession(loaded);
 		setRecords(loaded.records);
 		setNotice(
@@ -187,7 +187,7 @@ function AdminAttendance() {
 			return;
 		}
 
-		const loaded = response.session as SessionDetail;
+		const loaded = response.session as unknown as SessionDetail;
 		setSession(loaded);
 		setRecords(loaded.records);
 	};
@@ -217,7 +217,7 @@ function AdminAttendance() {
 			return;
 		}
 
-		const loaded = response.session as SessionDetail;
+		const loaded = response.session as unknown as SessionDetail;
 		setSession(loaded);
 		setRecords(loaded.records);
 		setNotice("Attendance saved.");

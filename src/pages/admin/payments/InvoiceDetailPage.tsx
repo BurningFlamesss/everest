@@ -49,7 +49,7 @@ import {
 import type { PaymentTransaction } from "#/types";
 
 export default function InvoiceDetailPage() {
-	const { id = "" } = useParams();
+	const { id = "" } = useParams({ strict: false }) as { id?: string };
 	const navigate = useNavigate();
 	const qc = useQueryClient();
 	const { actor, can } = useAuth();
@@ -96,7 +96,7 @@ export default function InvoiceDetailPage() {
 			toast.success("Invoice deleted");
 			qc.invalidateQueries({ queryKey: ["invoices"] });
 			qc.invalidateQueries({ queryKey: ["payments-summary"] });
-			navigate("/admin/payments");
+			navigate({ to: "/admin/payments" });
 		},
 		onError: (error: Error) => toast.error(error.message),
 	});
@@ -127,7 +127,7 @@ export default function InvoiceDetailPage() {
 					title="Invoice not found"
 					description="It may have been deleted. Head back to the ledger to pick another invoice."
 					primaryLabel="Back to payments"
-					onPrimary={() => navigate("/admin/payments")}
+					onPrimary={() => navigate({ to: "/admin/payments" })}
 					testId="invoice-detail-missing"
 				/>
 			</div>
@@ -194,7 +194,8 @@ export default function InvoiceDetailPage() {
 						{!settled && (
 							<Button asChild variant="outline" size="sm" className="gap-1.5">
 								<Link
-									to={`/admin/payments/checkout/${invoice.id}`}
+									to="/admin/payments/$id"
+											params={{ id: invoice.id }}
 									data-testid="invoice-pay-online"
 								>
 									<CreditCard className="h-3.5 w-3.5" /> Pay online
@@ -425,7 +426,8 @@ export default function InvoiceDetailPage() {
 									name={`${student.firstName} ${student.lastName}`}
 									subtitle={student.admissionNo}
 									avatarUrl={student.avatarUrl}
-									to={`/admin/students/${student.id}`}
+									to="/admin/students/$id"
+											params={{ id: student.id }}
 									size="lg"
 									mono
 									testId="invoice-student-link"

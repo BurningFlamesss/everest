@@ -1,5 +1,4 @@
 import { useMemo, useRef, useState } from 'react';
-import { Link } from '@tanstack/react-router';
 import { motion, useReducedMotion } from 'motion/react';
 import { Search, X, ArrowRight } from 'lucide-react';
 import { RevealUp } from '../motion';
@@ -211,7 +210,7 @@ export function BusFinder() {
             <div className='flex flex-col gap-1 border-t border-border pt-4 mt-2'>
               <span className='u-label text-muted-foreground'>Assigned Driver</span>
               <span className='u-label text-foreground'>
-                Shri {best!.route.driver || "Ram Bahadur"} — <a href={`tel:${best!.route.phone || "+977 984XXXXXXX"}`} className="text-accent underline underline-offset-4">{best!.route.phone || "+977 984XXXXXXX"}</a>
+                Shri {best!.route.driverName || "Ram Bahadur"} — <a href={`tel:${best!.route.driverPhone || "+977 71 540 000"}`} className="text-accent underline underline-offset-4">{best!.route.driverPhone || "+977 71 540 000"}</a>
               </span>
             </div>
           </RevealUp>

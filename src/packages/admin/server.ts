@@ -39,8 +39,8 @@ export const getAdminStatsFn = createServerFn().handler(async () => {
 			prisma.guardianInvite.count({
 				where: { usedAt: null, expiresAt: { gt: now } },
 			}),
-			prisma.notice.count({ where: { isPublished: false } }),
-			prisma.notice.count({ where: { isPublished: true } }),
+			prisma.scmsNotice.count({ where: { isPublished: false } }),
+			prisma.scmsNotice.count({ where: { isPublished: true } }),
 			prisma.event.count({
 				where: { isPublished: true, startsAt: { gte: now } },
 			}),

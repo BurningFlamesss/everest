@@ -111,10 +111,14 @@ export async function openAttendanceSession(input: {
 			date,
 			topic: input.topic?.trim() || null,
 			takenById: input.takenById || null,
+			// AttendanceRecord.markedBy is required, unlike takenById above.
 			records: {
 				create: course.enrollments.map((enrollment) => ({
 					studentId: enrollment.studentId,
-					status: "PRESENT",
+					date,
+					personType: "STUDENT" as const,
+					state: "PRESENT" as const,
+					markedBy: input.takenById || "system",
 				})),
 			},
 		},
@@ -127,19 +131,20 @@ export async function openAttendanceSession(input: {
 export async function saveAttendance(input: {
 	sessionId: string;
 	records: Array<{ studentId: string; status: AttendanceMark; note?: string }>;
+	markedById?: string;
 }) {
-	const [session, existing] = await Promise.all([
+	const [register, existing] = await Promise.all([
 		prisma.attendanceSession.findUnique({
 			where: { id: input.sessionId },
-			select: { id: true },
+			select: { id: true, date: true },
 		}),
 		prisma.attendanceRecord.findMany({
 			where: { sessionId: input.sessionId },
-			select: { id: true, studentId: true, status: true, note: true },
+			select: { id: true, studentId: true, state: true, note: true },
 		}),
 	]);
 
-	if (!session) throw new Error("SESSION_NOT_FOUND");
+	if (!register) throw new Error("SESSION_NOT_FOUND");
 
 	const saved = new Map(
 		existing.map((record) => [record.studentId, record] as const),
@@ -152,8 +157,11 @@ export async function saveAttendance(input: {
 	const creates: Array<{
 		sessionId: string;
 		studentId: string;
-		status: AttendanceMark;
+		personType: "STUDENT";
+		state: AttendanceMark;
 		note: string | null;
+		markedBy: string;
+		date: Date;
 	}> = [];
 
 	// Only send the rows that actually changed. Most saves are a re-submit of a
@@ -166,13 +174,16 @@ export async function saveAttendance(input: {
 			creates.push({
 				sessionId: input.sessionId,
 				studentId: record.studentId,
-				status: record.status,
+				personType: "STUDENT",
+				state: record.status,
 				note,
+				markedBy: input.markedById ?? "system",
+				date: register.date,
 			});
 			continue;
 		}
 
-		if (current.status === record.status && (current.note ?? null) === note) {
+		if (current.state === record.status && (current.note ?? null) === note) {
 			continue;
 		}
 
@@ -184,7 +195,7 @@ export async function saveAttendance(input: {
 			noteUpdates.push(
 				prisma.attendanceRecord.update({
 					where: { id: current.id },
-					data: { status: record.status, note },
+					data: { state: record.status, note },
 				}),
 			);
 		}
@@ -199,7 +210,7 @@ export async function saveAttendance(input: {
 					sessionId: input.sessionId,
 					studentId: { in: studentIds },
 				},
-				data: { status, note: null },
+				data: { state: status, note: null },
 			}),
 		);
 	}
@@ -230,7 +241,7 @@ export async function getAttendanceSummary(courseId: string) {
 	// Aggregate in PostgreSQL instead of loading every record (and its student)
 	// into the app; a course accumulates thousands of rows over a school year.
 	const rows = await prisma.attendanceRecord.groupBy({
-		by: ["studentId", "status"],
+		by: ["studentId", "state"],
 		where: { session: { courseId } },
 		_count: { _all: true },
 	});
@@ -238,12 +249,18 @@ export async function getAttendanceSummary(courseId: string) {
 	if (rows.length === 0) return [];
 
 	const students = await prisma.student.findMany({
-		where: { id: { in: rows.map((row) => row.studentId) } },
+		where: {
+			id: {
+				in: rows
+					.map((row) => (row as { studentId?: string | null }).studentId)
+					.filter((id): id is string => Boolean(id)),
+			},
+		},
 		select: { id: true, user: { select: { name: true } } },
 	});
 
 	const names = new Map(
-		students.map((student) => [student.id, student.user.name] as const),
+		students.map((student) => [student.id, student.user?.name] as const),
 	);
 	const byStudent = new Map<
 		string,
@@ -259,6 +276,7 @@ export async function getAttendanceSummary(courseId: string) {
 	>();
 
 	for (const row of rows) {
+		if (!row.studentId) continue;
 		const entry = byStudent.get(row.studentId) ?? {
 			id: row.studentId,
 			name: names.get(row.studentId) ?? "Student",
@@ -269,11 +287,12 @@ export async function getAttendanceSummary(courseId: string) {
 			total: 0,
 		};
 
-		entry.total += row._count._all;
-		if (row.status === "PRESENT") entry.present += row._count._all;
-		if (row.status === "ABSENT") entry.absent += row._count._all;
-		if (row.status === "LATE") entry.late += row._count._all;
-		if (row.status === "EXCUSED") entry.excused += row._count._all;
+		const count = row._count?._all ?? 0;
+		entry.total += count;
+		if (row.state === "PRESENT") entry.present += count;
+		if (row.state === "ABSENT") entry.absent += count;
+		if (row.state === "LATE") entry.late += count;
+		if (row.state === "EXCUSED") entry.excused += count;
 		byStudent.set(row.studentId, entry);
 	}
 

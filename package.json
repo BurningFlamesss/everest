@@ -12,6 +12,7 @@
   "scripts": {
     "dev": "vite dev --port 3000",
     "generate-routes": "tsr generate",
+		"generate-routes:tree": "tsr generate --route-tree",
     "build": "node -e \"const fs=require('fs'); fs.rmSync('.nitro', {recursive:true,force:true}); fs.rmSync('.vercel', {recursive:true,force:true});\" && vite build",
     "preview": "vite preview",
     "test": "vitest run",

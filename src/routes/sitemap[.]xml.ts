@@ -30,7 +30,7 @@ export const Route = createFileRoute("/sitemap.xml")({
 				const now = new Date();
 
 				const [notices, events] = await Promise.all([
-					prisma.notice.findMany({
+					prisma.scmsNotice.findMany({
 						where: {
 							isPublished: true,
 							publishedAt: { lte: now },

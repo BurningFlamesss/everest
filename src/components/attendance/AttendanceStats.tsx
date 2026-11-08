@@ -175,7 +175,8 @@ export function AttendanceStats() {
                     name={`${row.student.firstName} ${row.student.lastName}`}
                     subtitle={`${row.student.grade} · ${row.student.section}`}
                     avatarUrl={row.student.avatarUrl}
-                    to={`/admin/students/${row.student.id}`}
+                    to="/admin/students/$id"
+                    params={{ id: row.student.id }}
                     size="sm"
                     testId={`attendance-watchlist-${row.student.id}`}
                   />
@@ -187,7 +188,8 @@ export function AttendanceStats() {
         )}
         <div className="px-2 pt-2">
           <Link
-            to="/admin/students?status=active"
+            to="/admin/students"
+            search={{ status: "active" }}
             className="text-xs text-primary underline-offset-2 hover:underline"
             data-testid="attendance-watchlist-all"
           >

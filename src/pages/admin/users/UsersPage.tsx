@@ -46,7 +46,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatDateTime, relativeTime } from "@/lib/format";
+import { relativeTime } from "@/lib/format";
 import { ROLE_DESCRIPTION, ROLE_LABEL } from "@/lib/permissions";
 import { useAuth } from "@/providers/AuthProvider";
 import {
@@ -78,8 +78,9 @@ export default function UsersPage() {
 	const { actor, can } = useAuth();
 	const navigate = useNavigate();
 	const qc = useQueryClient();
-	const searchParams =
-		(useSearch({ strict: false }) as Record<string, string | undefined>) || {};
+	const searchParams = useSearch({
+		from: "/admin/_admin/users",
+	});
 	const tab = searchParams.tab ?? "directory";
 
 	const [search, setSearch] = useState("");
@@ -439,13 +440,9 @@ export default function UsersPage() {
 				value={tab}
 				onValueChange={(value: string) => {
 					navigate({
-						search: (prev: Record<string, any>) => {
-							const next = { ...prev };
-							next.tab = value;
-							return next;
-						},
+						search: (prev: any) => ({ ...prev, tab: value }),
 						replace: true,
-					});
+					} as any);
 				}}
 			>
 				<TabsList className="mb-4 h-9">
@@ -765,17 +762,13 @@ export default function UsersPage() {
 
 			<Dialog
 				open={createOpen}
-				onOpenChange={(open) => {
+				onOpenChange={(open: boolean) => {
 					setCreateOpen(open);
 					if (!open) {
 						navigate({
-							search: (prev: Record<string, any>) => {
-								const next = { ...prev };
-								delete next.new;
-								return next;
-							},
+							search: (prev: any) => ({ ...prev, new: undefined }),
 							replace: true,
-						});
+						} as any);
 					}
 				}}
 			>

@@ -19,7 +19,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { ConfirmDialog } from "#/components/common/ConfirmDialog";
 import { EmptyState } from "#/components/common/EmptyState";
-import { PageHeader } from "#/components/common/PageHeader";
 import { KeyValue, Panel } from "#/components/common/Panel";
 import { DetailSkeleton } from "#/components/common/Skeletons";
 import { StatusBadge } from "#/components/common/StatusBadge";
@@ -61,7 +60,7 @@ const TABS = [
 ];
 
 export default function StudentProfilePage() {
-	const { id = "" } = useParams();
+	const { id = "" } = useParams({ strict: false }) as { id?: string };
 	const navigate = useNavigate();
 	const qc = useQueryClient();
 	const { actor, can } = useAuth();
@@ -130,7 +129,7 @@ export default function StudentProfilePage() {
 		mutationFn: () => deleteStudent(id, actor),
 		onSuccess: () => {
 			toast.success("Student record deleted");
-			navigate("/admin/students");
+			navigate({ to: "/admin/students" });
 		},
 	});
 
@@ -143,7 +142,7 @@ export default function StudentProfilePage() {
 					title="Student not found"
 					description="This record may have been deleted or the link is out of date."
 					primaryLabel="Back to register"
-					onPrimary={() => navigate("/admin/students")}
+					onPrimary={() => navigate({ to: "/admin/students" })}
 					testId="student-not-found"
 				/>
 			</div>
@@ -544,7 +543,8 @@ export default function StudentProfilePage() {
 												</span>
 												<div className="min-w-0 flex-1">
 													<Link
-														to={`/admin/courses/${course.id}`}
+														to="/admin/courses/$id"
+															params={{ id: course.id }}
 														className="block truncate text-sm text-foreground hover:text-primary"
 													>
 														{course.name}
@@ -699,7 +699,8 @@ export default function StudentProfilePage() {
 								label="Class"
 								value={
 									<Link
-										to={`/admin/classes/${student.classId}`}
+										to="/admin/classes/$id"
+											params={{ id: student.classId }}
 										className="text-primary hover:underline"
 									>
 										{student.grade} · {student.section}

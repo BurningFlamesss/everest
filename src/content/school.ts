@@ -6,6 +6,7 @@ export const school = {
   nameNe: 'श्री एभरेस्ट इङ्लिश बोर्डिङ माध्यमिक विद्यालय',
   shortEn: 'Everest EBSS',
   wordmark: ['EVEREST', 'ENGLISH BOARDING'],
+  affiliation: 'Butwal, Rupandehi, Nepal',
   /** Editable CMS field. Left as a clear placeholder — no motto has been adopted. */
   tagline: {
     value: '',
@@ -14,7 +15,15 @@ export const school = {
   },
   establishedBs: 2042,
   establishedAd: 1985,
-  registrationNo: 'Reg. 116/052/053, Kaski District Education Office',
+  established: '2042 BS · 1985 AD',
+  regNo: 'Reg. 116/052/053, Kaski District Education Office',
+  name: 'Everest English Boarding Secondary School',
+  fullAddress: 'Butwal-8, Sukkhanagar, Butwal Sub-Metropolitan City, Rupandehi, Lumbini Province, Nepal',
+  principal: 'Dr Rajendra Bahadur Thapa',
+  motto: 'Cultural Heritage, Academic Excellence',
+  phone: '+977-61-460218',
+  email: 'info@everestebss.edu.np',
+  admissionsEmail: 'admissions@everestebss.edu.np',
   address: {
     line1: 'Butwal-8, Sukkhanagar',
     line2: 'Butwal Sub-Metropolitan City',
@@ -28,8 +37,6 @@ export const school = {
     { label: 'NTC', value: '+977-61-460218', href: 'tel:+97761460218' },
     { label: 'Ncell', value: '+977-9806512340', href: 'tel:+9779806512340' },
   ],
-  email: 'info@everestebss.edu.np',
-  admissionsEmail: 'admissions@everestebss.edu.np',
   /** Sunday to Friday. Saturday is the weekly holiday. */
   hours: [
     { weekday: 0, name: 'Sunday', open: '07:00', close: '16:30' },
@@ -40,6 +47,8 @@ export const school = {
     { weekday: 5, name: 'Friday', open: '07:00', close: '14:00' },
     { weekday: 6, name: 'Saturday', open: null, close: null },
   ] as Array<{ weekday: number; name: string; open: string | null; close: string | null }>,
+  levels: ['Early Years', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'],
+  streams: ['Science', 'Management'],
   admissions: {
     windowLabel: 'Admissions 2026 — 2083 BS intake',
     openBs: '2083-11-01',

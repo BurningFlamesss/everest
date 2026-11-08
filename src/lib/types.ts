@@ -1,5 +1,21 @@
 export type Img={src:string;alt:string;width:number;height:number};
-export type Notice={id:string;title:string;publishedAt:string;href?:string;pinned:boolean};
+export type Notice={
+  id: string;
+  title: string;
+  slug?: string;
+  category?: string;
+  audience?: string;
+  dateBs?: string;
+  dateAd?: string;
+  issuedBy?: string;
+  body?: string[];
+  bullets?: string[];
+  table?: { columns: string[]; rows: string[]; caption?: string };
+  pinned?: boolean;
+  publishedAt?: string;
+  href?: string;
+  coverImage?: string;
+};
 export type Stat={id:string;label:string;value:number;suffix?:string};
 export type Pillar={id:string;label:string;title:string;blurb:string;href:string;image:Img};
 export type Frame={src:string;alt:string;caption?:string};

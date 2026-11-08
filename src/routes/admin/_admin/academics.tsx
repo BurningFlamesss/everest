@@ -27,7 +27,7 @@ import {
 } from "#/packages/academics/server.ts";
 import type { StudentOption } from "#/packages/people/directory-service.ts";
 
-export const Route = createFileRoute("/admin/academics")({
+export const Route = createFileRoute("/admin/_admin/academics")({
 	beforeLoad: ({ context }) => {
 		if (!context.viewer.permissions.includes("MANAGE_ACADEMICS")) {
 			throw redirect({ to: "/admin" });

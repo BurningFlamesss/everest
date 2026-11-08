@@ -1,6 +1,6 @@
-import type { KeyDate } from "../content/keyDates";
+import type { CalEvent } from "../content/types";
 import { school } from "../content/school";
-import type { Level, Notice, Program, Scholarship } from "../types";
+import type { Level, Notice, Program, Scholarship } from "../types/website";
 import { formatAd, formatNpr } from "./dates";
 import type { DocBlock, OfficialDocument } from "./pdf";
 
@@ -229,7 +229,7 @@ export function savedNoticesDigestDoc(list: Notice[]): OfficialDocument {
 
 /* --------------------------- Term calendar --------------------------- */
 
-export function termCalendarDoc(dates: KeyDate[]): OfficialDocument {
+export function termCalendarDoc(dates: CalEvent[]): OfficialDocument {
   return {
     fileName: "Everest-Term-Calendar-2083",
     eyebrow: "Term calendar · Session 2083 BS",
@@ -246,8 +246,8 @@ export function termCalendarDoc(dates: KeyDate[]): OfficialDocument {
         type: "table",
         columns: ["Date (BS)", "Date (AD)", "Event", "Category"],
         rows: [...dates]
-          .sort((a, b) => a.dateAd.localeCompare(b.dateAd))
-          .map((d) => [d.dateBs, formatAd(d.dateAd), d.label, d.kind]),
+          .sort((a, b) => a.date.ad.localeCompare(b.date.ad))
+          .map((d) => [d.date.bs, formatAd(d.date.ad), d.title, d.kind]),
         caption: `${dates.length} dated commitments for session 2083 BS.`,
       },
       { type: "heading", text: "Notes" },

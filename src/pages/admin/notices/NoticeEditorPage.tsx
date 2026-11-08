@@ -103,7 +103,7 @@ const EMPTY_FORM: NoticeInput = {
 };
 
 export default function NoticeEditorPage() {
-	const { id } = useParams();
+	const { id } = useParams({ strict: false }) as { id?: string };
 	const isEdit = Boolean(id);
 	const { actor, can } = useAuth();
 	const navigate = useNavigate();
@@ -172,7 +172,7 @@ export default function NoticeEditorPage() {
 					? `“${notice.title}” published to ${formatNumber(reach)} recipients`
 					: `“${notice.title}” saved as ${notice.status}`,
 			);
-			navigate(`/admin/notices/${notice.id}`);
+			navigate({ to: "/admin/notices/$id", params: { id: notice.id } });
 		},
 		onError: (error: Error) => toast.error(error.message),
 	});

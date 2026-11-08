@@ -9,7 +9,7 @@ import {
 } from "#/packages/academics/homework-server.ts";
 import { getAcademicsDataFn } from "#/packages/academics/server.ts";
 
-export const Route = createFileRoute("/admin/homework")({
+export const Route = createFileRoute("/admin/_admin/homework")({
 	beforeLoad: ({ context }) => {
 		if (!context.viewer.permissions.includes("MANAGE_ACADEMICS")) {
 			throw redirect({ to: "/admin" });

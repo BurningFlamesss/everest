@@ -53,7 +53,7 @@ import { listBranches } from "#/services/website";
 import type { ApplicationStatus } from "#/types";
 
 export default function ApplicationDetailPage() {
-	const { id = "" } = useParams();
+	const { id = "" } = useParams({ strict: false }) as { id?: string };
 	const navigate = useNavigate();
 	const qc = useQueryClient();
 	const { actor, can } = useAuth();
@@ -128,7 +128,7 @@ export default function ApplicationDetailPage() {
 		onSuccess: () => {
 			toast.success("Application deleted");
 			qc.invalidateQueries({ queryKey: ["applications"] });
-			navigate("/admin/admissions");
+			navigate({ to: "/admin/admissions" });
 		},
 		onError: (error: Error) => toast.error(error.message),
 	});
@@ -152,7 +152,7 @@ export default function ApplicationDetailPage() {
 					title="Application not found"
 					description="It may have been deleted or converted. Head back to the pipeline to pick another one."
 					primaryLabel="Back to admissions"
-					onPrimary={() => navigate("/admin/admissions")}
+					onPrimary={() => navigate({ to: "/admin/admissions" })}
 					testId="application-detail-missing"
 				/>
 			</div>
@@ -190,7 +190,8 @@ export default function ApplicationDetailPage() {
 						</span>
 						{application.convertedStudentId && (
 							<Link
-								to={`/admin/students/${application.convertedStudentId}`}
+								to="/admin/students/$id"
+											params={{ id: application.convertedStudentId }}
 								className="text-primary hover:underline"
 								data-testid="application-student-link"
 							>

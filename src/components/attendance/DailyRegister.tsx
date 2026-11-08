@@ -370,7 +370,8 @@ export function DailyRegister({ date, classId, onClassChange, canMark }: DailyRe
                           name={`${entry.student.firstName} ${entry.student.lastName}`}
                           subtitle={entry.student.admissionNo}
                           avatarUrl={entry.student.avatarUrl}
-                          to={`/students/${entry.student.id}`}
+                          to="/admin/students/$id"
+                          params={{ id: entry.student.id }}
                           size="sm"
                           mono
                           testId={`attendance-student-link-${entry.student.id}`}

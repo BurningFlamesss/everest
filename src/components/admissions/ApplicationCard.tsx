@@ -37,7 +37,8 @@ export function ApplicationCard({ application, canManage }: ApplicationCardProps
         />
         <div className="min-w-0 flex-1">
           <Link
-            to={`/admissions/${application.id}`}
+            to="/admin/admissions/$id"
+            params={{ id: application.id }}
             className="block truncate text-sm font-medium text-foreground transition-colors hover:text-primary focus-ring"
             data-testid={`admissions-card-link-${application.id}`}
           >

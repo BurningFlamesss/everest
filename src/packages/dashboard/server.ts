@@ -9,16 +9,18 @@ function startOfToday() {
 
 async function attendanceRate(studentId: string) {
 	const rows = await prisma.attendanceRecord.groupBy({
-		by: ["status"],
+		by: ["state"],
 		where: { studentId },
 		_count: { _all: true },
 	});
 
+	const counted = (row: (typeof rows)[number]) => row._count?._all ?? 0;
+
 	const counts = Object.fromEntries(
-		rows.map((row) => [row.status, row._count._all]),
+		rows.map((row) => [row.state, counted(row)]),
 	) as Record<string, number>;
 
-	const total = rows.reduce((sum, row) => sum + row._count._all, 0);
+	const total = rows.reduce((sum, row) => sum + counted(row), 0);
 	const present = counts.PRESENT ?? 0;
 
 	return {

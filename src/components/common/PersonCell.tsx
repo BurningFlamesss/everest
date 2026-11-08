@@ -6,6 +6,7 @@ interface PersonCellProps {
   subtitle?: string;
   avatarUrl?: string;
   to?: string;
+  params?: Record<string, string>;
   size?: "sm" | "md" | "lg";
   mono?: boolean;
   testId?: string;
@@ -22,6 +23,7 @@ export function PersonCell({
   subtitle,
   avatarUrl,
   to,
+  params,
   size = "md",
   mono = false,
   testId,
@@ -64,6 +66,7 @@ export function PersonCell({
     return (
       <Link
         to={to}
+        params={params}
         className="inline-flex min-w-0 max-w-full rounded transition-colors hover:text-primary focus-ring"
         data-testid={testId}
         onClick={(e) => e.stopPropagation()}

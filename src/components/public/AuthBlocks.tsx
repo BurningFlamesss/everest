@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import {
 	AlertCircle,
 	ArrowLeft,
-	Check,
 	Eye,
 	EyeOff,
 	LoaderCircle,
@@ -106,7 +105,6 @@ function LoginForm({ fields }: { fields: Record<string, unknown> }) {
 		}
 		setStatus("loading");
 
-		let signedIn = false;
 		let userName = "";
 		let isSuperOrAdmin = false;
 
@@ -122,7 +120,6 @@ function LoginForm({ fields }: { fields: Record<string, unknown> }) {
         }
 
         if (result.data?.user) {
-			signedIn = true;
 			userName = result.data.user.name ?? values.email.split("@")[0];
 			const userRole = (result.data.user as { role?: string }).role;
 			isSuperOrAdmin = userRole === "super_admin" || userRole === "admin";

@@ -9,7 +9,7 @@ import {
 	updateGalleryImageAction,
 } from "#/packages/content/server.ts";
 
-export const Route = createFileRoute("/admin/gallery")({
+export const Route = createFileRoute("/admin/_admin/gallery")({
 	beforeLoad: ({ context }) => {
 		if (!context.viewer.permissions.includes("MANAGE_CONTENT")) {
 			throw redirect({ to: "/admin" });

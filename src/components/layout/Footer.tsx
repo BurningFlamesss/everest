@@ -23,6 +23,8 @@ export function Footer() {
 	const { sidebar } = useSchoolContent();
 	const year = new Date().getFullYear();
 
+	if (!sidebar) return null;
+
 	return (
 		<footer className="bg-foreground pb-10 pt-20 text-background">
 			<div className="mx-auto w-full max-w-6xl px-6 md:px-16">

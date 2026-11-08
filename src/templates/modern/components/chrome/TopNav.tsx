@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, useLocation } from "@tanstack/react-router";
 import { school } from "#content/school";
 import { DUR, EASE } from "#lib/motion";
 import { Button } from "../kit";
@@ -57,34 +57,33 @@ const NavItem = ({
   testId: string;
   indicatorId: string;
   indicatorClass: string;
-}) => (
-  <NavLink
-    to={to}
-    data-testid={testId}
-    className={({ isActive }) =>
-      [
+}) => {
+  const location = useLocation();
+  const isActive = location.pathname.startsWith(to);
+
+  return (
+    <Link
+      to={to}
+      data-testid={testId}
+      className={[
         "relative shrink-0 rounded-chip px-3 py-2 text-sm transition-colors duration-fast",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         isActive
           ? "font-medium text-foreground"
           : "text-muted-foreground hover:text-foreground",
-      ].join(" ")
-    }
-  >
-    {({ isActive }) => (
-      <>
-        <span className="relative z-[1] whitespace-nowrap">{label}</span>
-        {isActive ? (
-          <motion.span
-            layoutId={indicatorId}
-            className={`absolute inset-x-2.5 h-[2px] rounded-full bg-accent ${indicatorClass}`}
-            transition={{ duration: DUR.base, ease: EASE }}
-          />
-        ) : null}
-      </>
-    )}
-  </NavLink>
-);
+      ].join(" ")}
+    >
+      <span className="relative z-[1] whitespace-nowrap">{label}</span>
+      {isActive ? (
+        <motion.span
+          layoutId={indicatorId}
+          className={`absolute inset-x-2.5 h-[2px] rounded-full bg-accent ${indicatorClass}`}
+          transition={{ duration: DUR.base, ease: EASE }}
+        />
+      ) : null}
+    </Link>
+  );
+};
 
 export const TopNav = () => {
   const location = useLocation();
@@ -99,7 +98,7 @@ export const TopNav = () => {
       className="no-print sticky top-0 z-nav border-b border-border bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70"
     >
       <div className="mx-auto flex h-14 max-w-frame items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
-        <NavLink
+        <Link
           to="/courses"
           data-testid="top-nav-brand"
           className="flex min-w-0 items-baseline gap-2.5 rounded-chip focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -108,9 +107,9 @@ export const TopNav = () => {
             {school.wordmark}
           </span>
           <span className="hidden font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground sm:inline">
-            {school.address}
+            {`${school.address.line1}, ${school.address.district}`}
           </span>
-        </NavLink>
+        </Link>
 
         <div className="flex items-center gap-1">
           <nav

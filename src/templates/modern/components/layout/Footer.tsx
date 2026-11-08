@@ -16,6 +16,7 @@ const exploreLinks: Array<[string, string]> = [
  */
 export function Footer() {
 	const { sidebar } = useSchoolContent();
+	if (!sidebar) return null;
 	return (
 		<footer className="bg-black pb-10 pt-16 text-white" data-testid="footer">
 			<div className="mx-8">

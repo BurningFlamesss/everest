@@ -104,12 +104,9 @@ export default function StudentsPage() {
 
 	const clearParams = () => {
 		navigate({
-			search: (prev: Record<string, any>) => {
-				const next = { ...prev };
-				delete next.new;
-				delete next.import;
-				return next;
-			},
+			search: Object.fromEntries(
+				Object.entries(searchParams).filter(([k]) => k !== "new" && k !== "import"),
+			),
 			replace: true,
 		});
 	};
@@ -225,7 +222,8 @@ export default function StudentsPage() {
 					name={`${student.firstName} ${student.lastName}`}
 					subtitle={student.admissionNo}
 					avatarUrl={student.avatarUrl}
-					to={`/students/${student.id}`}
+					to="/admin/students/$id"
+						params={{ id: student.id }}
 					mono
 					testId={`student-link-${student.id}`}
 				/>
@@ -349,7 +347,7 @@ export default function StudentsPage() {
 							</DropdownMenuLabel>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
-								onClick={() => navigate(`/students/${student.id}`)}
+								onClick={() => navigate({ to: "/admin/students/$id", params: { id: student.id } })}
 								data-testid={`student-view-${student.id}`}
 							>
 								View profile
@@ -594,7 +592,7 @@ export default function StudentsPage() {
 				loading={isLoading}
 				error={isError ? true : undefined}
 				onRetry={() => refetch()}
-				onRowClick={(student) => navigate(`/students/${student.id}`)}
+				onRowClick={(student) => navigate({ to: "/admin/students/$id", params: { id: student.id } })}
 				selectable={can("students.manage")}
 				selected={selected}
 				onSelectedChange={setSelected}

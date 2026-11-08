@@ -235,7 +235,7 @@ export function Topbar({ onOpenMobileNav, onOpenPalette, onToggleSidebar }: Topb
               className="text-primary focus:text-primary"
               onClick={() => {
                 signOut();
-                navigate("/login", { replace: true });
+                navigate({ to: "/login", replace: true });
               }}
             >
               <LogOut className="mr-2 h-4 w-4" /> Sign out

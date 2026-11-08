@@ -205,7 +205,8 @@ export default function StaffPage() {
 					name={`${member.firstName} ${member.lastName}`}
 					subtitle={member.employeeId}
 					avatarUrl={member.avatarUrl}
-					to={`/staff/${member.id}`}
+					to="/admin/staff/$id"
+						params={{ id: member.id }}
 					mono
 					testId={`staff-link-${member.id}`}
 				/>
@@ -290,7 +291,7 @@ export default function StaffPage() {
 							{member.firstName} {member.lastName}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={() => navigate(`/staff/${member.id}`)}>
+						<DropdownMenuItem onClick={() => navigate({ to: "/admin/staff/$id", params: { id: member.id } })}>
 							View profile
 						</DropdownMenuItem>
 						{can("staff.manage") && (
@@ -507,7 +508,7 @@ export default function StaffPage() {
 				loading={isLoading}
 				error={isError ? true : undefined}
 				onRetry={() => refetch()}
-				onRowClick={(m) => navigate(`/staff/${m.id}`)}
+				onRowClick={(m) => navigate({ to: "/admin/staff/$id", params: { id: m.id } })}
 				sort={sort}
 				onSortChange={setSort}
 				page={data?.page ?? 1}
@@ -531,11 +532,7 @@ export default function StaffPage() {
 					setFormOpen(open);
 					if (!open) {
 						navigate({
-							search: (prev: Record<string, any>) => {
-								const next = { ...prev };
-								delete next.new;
-								return next;
-							},
+							search: Object.fromEntries(Object.entries(searchParams).filter(([k]) => k !== "new")),
 							replace: true,
 						});
 					}

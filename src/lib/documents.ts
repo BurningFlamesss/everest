@@ -9,7 +9,7 @@ import type {
   Program,
   Routine,
   Scholarship,
-} from "../types";
+} from "../types/website";
 
 const issuedLine = (): string => `Issued ${formatAd(new Date().toISOString().slice(0, 10))}`;
 
@@ -110,7 +110,7 @@ export function academicProspectusDoc(
         ["Institution", school.name],
         ["Address", school.fullAddress],
         ["Established", school.established],
-        ["Levels offered", school.levels],
+        ["Levels offered", school.levels.join(", ")],
         ["+2 streams", school.streams.join(" and ")],
         ["Registration", school.regNo],
       ],

@@ -157,7 +157,8 @@ export function InvoicesTable({
           name={row.studentName}
           subtitle={row.invoiceNo}
           avatarUrl={row.studentAvatar}
-          to={`/payments/invoices/${row.id}`}
+          to="/admin/payments/$id"
+          params={{ id: row.id }}
           mono
           testId={`invoices-row-link-${row.id}`}
         />
@@ -256,7 +257,7 @@ export function InvoicesTable({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               data-testid={`invoices-open-${row.id}`}
-              onClick={() => navigate(`/payments/invoices/${row.id}`)}
+              onClick={() => navigate({ to: "/admin/payments/$id", params: { id: row.id } })}
             >
               <FileText className="mr-2 h-3.5 w-3.5" /> Open invoice
             </DropdownMenuItem>
@@ -268,7 +269,7 @@ export function InvoicesTable({
             {row.status !== "paid" && row.status !== "void" && (
               <DropdownMenuItem
                 data-testid={`invoices-checkout-${row.id}`}
-                onClick={() => navigate(`/payments/checkout/${row.id}`)}
+                onClick={() => navigate({ to: "/admin/payments/$id", params: { id: row.id } })}
               >
                 <CreditCard className="mr-2 h-3.5 w-3.5" /> Pay online (demo)
               </DropdownMenuItem>
@@ -371,7 +372,7 @@ export function InvoicesTable({
         loading={isLoading}
         error={isError ? true : undefined}
         onRetry={() => refetch()}
-        onRowClick={(row) => navigate(`/payments/invoices/${row.id}`)}
+        onRowClick={(row) => navigate({ to: "/admin/payments/$id", params: { id: row.id } })}
         selectable
         selected={selected}
         onSelectedChange={setSelected}

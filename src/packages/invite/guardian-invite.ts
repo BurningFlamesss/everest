@@ -5,8 +5,8 @@ import { serverEnv } from "#/env/server.ts";
 import { getSessionMiddleware } from "#/packages/auth/middleware/auth.middleware.ts";
 import { prisma } from "#/packages/db/index.ts";
 import {
-	inviteEmailHtml,
 	isMailConfigured,
+	renderMailTemplate,
 	sendMail,
 } from "#/packages/notifications/mail.ts";
 import { getOrgContext } from "#/packages/school/context.ts";
@@ -15,7 +15,7 @@ const GUARDIAN_INVITE_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
 
 function buildGuardianInviteUrl(token: string): string {
 	const base = serverEnv.APP_URL.replace(/\/+$/, "");
-	return `${base}/activate-guardian/${token}`;
+	return `${base}/activate/guardian/${token}`;
 }
 
 const CreateGuardianInviteSchema = z.object({
@@ -86,15 +86,15 @@ async function issueGuardianInvite(args: {
 		const result = await sendMail({
 			to: guardianEmail,
 			subject: `${serverEnv.ORGANIZATION_NAME}: guardian access for ${student.user.name}`,
-			html: inviteEmailHtml({
-				recipientName: guardianName,
-				schoolName: serverEnv.ORGANIZATION_NAME,
-				roleLabel: `the guardian of ${student.user.name}`,
-				inviteUrl,
+			html: renderMailTemplate({
+				title: `Guardian access for ${student.user.name}`,
+				body: `Hello ${guardianName}, ${serverEnv.ORGANIZATION_NAME} has invited you to follow updates for ${student.user.name}. Set a password to activate your guardian account.`,
+				actionLabel: "Activate guardian account",
+				actionUrl: inviteUrl,
 			}),
 		});
 		emailed = result.success;
-		reason = result.reason;
+		reason = result.details?.error ?? result.message;
 	} else {
 		reason = "mail_unconfigured";
 	}

@@ -1,18 +1,18 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { SchoolConfig, SchoolContent } from "#/types/school";
+import type { SchoolConfig, SidebarContent } from "#/types/school";
 import type { WebsitePageContent } from "#/lib/website-content-loader";
 
 interface ContentState {
   schoolConfig: SchoolConfig | null;
-  schoolContent: SchoolContent | null;
+  schoolContent: SidebarContent | null;
   websitePages: Map<string, WebsitePageContent>;
   lastFetched: Map<string, number>;
   isLoading: boolean;
   error: string | null;
 
   setSchoolConfig: (config: SchoolConfig) => void;
-  setSchoolContent: (content: SchoolContent) => void;
+  setSchoolContent: (content: SidebarContent) => void;
   setWebsitePage: (key: string, page: WebsitePageContent) => void;
   getWebsitePage: (key: string) => WebsitePageContent | undefined;
   hasValidCache: (key: string, maxAge?: number) => boolean;

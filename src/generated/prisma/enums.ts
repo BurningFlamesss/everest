@@ -158,3 +158,76 @@ export const BlockType = {
 } as const
 
 export type BlockType = (typeof BlockType)[keyof typeof BlockType]
+
+
+export const AttendanceStatus = {
+  PRESENT: 'PRESENT',
+  ABSENT: 'ABSENT',
+  LATE: 'LATE',
+  EXCUSED: 'EXCUSED'
+} as const
+
+export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
+
+
+export const NoticeAudience = {
+  ALL: 'ALL',
+  STUDENTS: 'STUDENTS',
+  STAFF: 'STAFF',
+  GUARDIANS: 'GUARDIANS'
+} as const
+
+export type NoticeAudience = (typeof NoticeAudience)[keyof typeof NoticeAudience]
+
+
+export const PermissionKey = {
+  MANAGE_DASHBOARD: 'MANAGE_DASHBOARD',
+  MANAGE_INVITES: 'MANAGE_INVITES',
+  MANAGE_DIRECTORY: 'MANAGE_DIRECTORY',
+  MANAGE_CONTENT: 'MANAGE_CONTENT',
+  MANAGE_ACADEMICS: 'MANAGE_ACADEMICS',
+  MANAGE_ATTENDANCE: 'MANAGE_ATTENDANCE',
+  MANAGE_TRANSPORT: 'MANAGE_TRANSPORT',
+  MANAGE_PERMISSIONS: 'MANAGE_PERMISSIONS',
+  MANAGE_INBOX: 'MANAGE_INBOX',
+  MANAGE_TIMETABLE: 'MANAGE_TIMETABLE',
+  MANAGE_EXAMS: 'MANAGE_EXAMS',
+  MANAGE_FEES: 'MANAGE_FEES'
+} as const
+
+export type PermissionKey = (typeof PermissionKey)[keyof typeof PermissionKey]
+
+
+export const InviteRequestStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type InviteRequestStatus = (typeof InviteRequestStatus)[keyof typeof InviteRequestStatus]
+
+
+export const EnrollmentStatus = {
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED',
+  DROPPED: 'DROPPED'
+} as const
+
+export type EnrollmentStatus = (typeof EnrollmentStatus)[keyof typeof EnrollmentStatus]
+
+
+export const ContactMessageStatus = {
+  NEW: 'NEW',
+  HANDLED: 'HANDLED'
+} as const
+
+export type ContactMessageStatus = (typeof ContactMessageStatus)[keyof typeof ContactMessageStatus]
+
+
+export const TransportDirection = {
+  PICKUP: 'PICKUP',
+  DROPOFF: 'DROPOFF',
+  BOTH: 'BOTH'
+} as const
+
+export type TransportDirection = (typeof TransportDirection)[keyof typeof TransportDirection]

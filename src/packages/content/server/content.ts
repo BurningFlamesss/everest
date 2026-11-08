@@ -2,8 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { setResponseHeaders } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { prisma } from "#/lib/prisma";
-import type { WebsitePageContent } from "#/lib/website-content-loader";
-import type { Notice, Person, Scholarship } from "#/types";
+import type {
+	ContentBlockFields,
+	WebsitePageContent,
+} from "#/lib/website-content-loader";
+import type { Person, Scholarship } from "#/types";
+import type { Notice } from "#/types/website";
 import type {
 	SchoolConfig,
 	SchoolContent,
@@ -71,7 +75,7 @@ function toWebsitePageContent(
 			label: block.label,
 			visible: block.visible,
 			order: block.order,
-			fields: block.fields as Record<string, unknown>,
+			fields: (block.fields ?? {}) as ContentBlockFields,
 			updatedAt: block.updatedAt.toISOString(),
 			createdAt: block.createdAt.toISOString(),
 		})),
@@ -93,7 +97,7 @@ export const getWebsitePageServer = createServerFn({ method: "GET" })
 				blocks: { where: { visible: true }, orderBy: { order: "asc" } },
 			},
 		});
-		return page ? toWebsitePageContent(page) : null;
+		return (page ? toWebsitePageContent(page) : null) as unknown as WebsitePageContent;
 	});
 
 /**
@@ -109,7 +113,7 @@ export const getWebsitePagePreviewServer = createServerFn({ method: "GET" })
 				blocks: { where: { visible: true }, orderBy: { order: "asc" } },
 			},
 		});
-		return page ? toWebsitePageContent(page) : null;
+		return (page ? toWebsitePageContent(page) : null) as unknown as WebsitePageContent;
 	});
 
 export const getSchoolConfigServer = createServerFn({ method: "GET" })
@@ -221,7 +225,7 @@ export const getAllPublishedPagesServer = createServerFn({
 			blocks: { where: { visible: true }, orderBy: { order: "asc" } },
 		},
 	});
-	return pages.map(toWebsitePageContent);
+	return pages.map(toWebsitePageContent) as unknown as WebsitePageContent[];
 });
 
 // ---------------------------------------------------------------------------
@@ -267,42 +271,43 @@ function toPerson(row: FacultyMemberRow): Person {
 	};
 }
 
-interface NoticeRow {
-	ref: string;
+/**
+ * The public notice board is served from the ScMS `ScmsNotice` model but
+ * rendered with the curated `Notice` view type. ScMS notices have no AD/BS
+ * pair or table/bullet blocks, so the publication date is used for both
+ * calendars and attachments are not surfaced on this board.
+ */
+function toNotice(row: {
+	slug: string;
 	title: string;
-	category: string;
-	dateAd: string;
-	dateBs: string;
-	audience: string;
-	issuedBy: string;
-	summary: string;
-	body: unknown;
-	bullets: unknown;
-	table: unknown;
-	attachments: unknown;
-	pinned: boolean;
+	summary: string | null;
+	body: string;
+	category: string | null;
+	audience: string | null;
+	publishedAt: Date | null;
+	createdAt: Date;
+}): Notice {
+	const publishedOn = row.publishedAt ?? row.createdAt;
+	const date = publishedOn.toISOString().slice(0, 10);
+
+	const notice: Notice = {
+		id: row.slug,
+		ref: row.slug,
+		title: row.title,
+		category: (row.category ?? "General") as Notice["category"],
+		dateAd: date,
+		dateBs: date,
+		audience: row.audience ?? "ALL",
+		issuedBy: "School Office",
+		summary: row.summary ?? "",
+		body: row.body ? [row.body] : [],
+		attachments: [],
+		...(row.publishedAt ? { pinned: false } : {}),
+	};
+
+	return notice;
 }
 
-function toNotice(row: NoticeRow): Notice {
-	return {
-		id: row.ref,
-		ref: row.ref,
-		title: row.title,
-		category: row.category as Notice["category"],
-		dateAd: row.dateAd,
-		dateBs: row.dateBs,
-		audience: row.audience,
-		issuedBy: row.issuedBy,
-		summary: row.summary,
-		body: Array.isArray(row.body) ? (row.body as string[]) : [],
-		bullets: Array.isArray(row.bullets) ? (row.bullets as string[]) : undefined,
-		table: row.table ? (row.table as Notice["table"]) : undefined,
-		attachments: Array.isArray(row.attachments)
-			? (row.attachments as Notice["attachments"])
-			: [],
-		pinned: row.pinned || undefined,
-	};
-}
 
 interface ScholarshipRow {
 	ref: string;
@@ -368,10 +373,11 @@ export const getFacultyMembersServer = createServerFn({
 
 /** Public notice board, pinned first then newest date first. */
 export const getNoticesServer = createServerFn({ method: "GET" }).handler(
-	async () => {
+	async (): Promise<Notice[]> => {
 		setResponseHeaders(PUBLIC_CACHE_HEADERS);
-		const rows = await prisma.notice.findMany({
-			orderBy: [{ pinned: "desc" }, { dateAd: "desc" }],
+		const rows = await prisma.scmsNotice.findMany({
+			where: { isPublished: true },
+			orderBy: [{ pinnedAt: "desc" }, { publishedAt: "desc" }],
 		});
 		return rows.map(toNotice);
 	},

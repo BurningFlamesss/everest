@@ -5,7 +5,7 @@ import {
 	useNavigate,
 	useSearch,
 } from "@tanstack/react-router";
-import { AlertCircle, ArrowLeft, LoaderCircle } from "lucide-react";
+import { AlertCircle, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { pageCopy } from "#/lib/site";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";

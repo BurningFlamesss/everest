@@ -1,34 +1,13 @@
 import { ERROR_CODES } from "#/lib/error-codes.ts";
 import { prisma } from "#/packages/db/index.ts";
 import { slugify } from "#/packages/invite/invite-service.ts";
-import { notifyRoles } from "#/packages/notifications/notification-service.ts";
 
-async function notifyNoticeAudience(
-	audience: NoticeAudience,
-	noticeId: string,
-	title: string,
-) {
-	const roles =
-		audience === "STUDENTS"
-			? ["STUDENT"]
-			: audience === "STAFF"
-				? ["STAFF"]
-				: audience === "GUARDIANS"
-					? ["GUARDIAN"]
-					: ["SUPERADMIN", "ADMIN", "STAFF", "STUDENT", "GUARDIAN"];
-
-	await notifyRoles({
-		roles,
-		type: "NOTICE_PUBLISHED",
-		title: `New notice: ${title}`,
-		body: "Open the dashboard to read it.",
-		refType: "notice",
-		refId: noticeId,
-	});
-}
-
-export type NoticeAudience = "ALL" | "STUDENTS" | "STAFF" | "GUARDIANS";
-
+/**
+ * Notices are persisted in the ScMS `ScmsNotice` model, which owns the
+ * slug/publishing/audience columns. It is kept separate from the curated public
+ * `Notice` board the editorial site renders (see `src/content/school.ts`).
+ * Events and clubs use the shared `Event` and `Club` models.
+ */
 export interface AttachmentInput {
 	fileAssetId: string;
 	label?: string;
@@ -41,8 +20,9 @@ export interface NoticeInput {
 	category?: string;
 	coverImage?: string;
 	attachments?: Array<AttachmentInput>;
-	audience?: NoticeAudience;
+	audience?: "ALL" | "STUDENTS" | "STAFF" | "GUARDIANS";
 	isPublished?: boolean;
+	publishedAt?: Date | string | null;
 	expiresAt?: Date | string | null;
 	organizationId?: string | null;
 	branchId?: string | null;
@@ -97,7 +77,7 @@ async function uniqueNoticeSlug(title: string, ignoreId?: string) {
 	let suffix = 1;
 
 	while (
-		await prisma.notice.findFirst({
+		await prisma.scmsNotice.findFirst({
 			where: { slug, ...(ignoreId ? { id: { not: ignoreId } } : {}) },
 			select: { id: true },
 		})
@@ -143,7 +123,9 @@ async function uniqueClubSlug(name: string, ignoreId?: string) {
 }
 
 export async function createNotice(input: NoticeInput) {
-	const notice = await prisma.notice.create({
+	const isPublished = input.isPublished ?? false;
+
+	return prisma.scmsNotice.create({
 		data: {
 			title: input.title.trim(),
 			slug: await uniqueNoticeSlug(input.title),
@@ -155,32 +137,24 @@ export async function createNotice(input: NoticeInput) {
 				? { create: attachmentCreates(input.attachments) }
 				: undefined,
 			audience: input.audience ?? "ALL",
-			isPublished: input.isPublished ?? false,
-			publishedAt: input.isPublished ? new Date() : null,
+			isPublished,
+			publishedAt: isPublished
+				? (toDate(input.publishedAt) ?? new Date())
+				: toDate(input.publishedAt),
 			expiresAt: toDate(input.expiresAt),
 			organizationId: input.organizationId ?? null,
 			branchId: input.branchId ?? null,
 			authorId: input.authorId ?? null,
 		},
 	});
-
-	if (notice.isPublished) {
-		await notifyNoticeAudience(notice.audience, notice.id, notice.title);
-	}
-
-	return notice;
 }
 
 export async function updateNotice(id: string, input: Partial<NoticeInput>) {
-	const existing = await prisma.notice.findUnique({ where: { id } });
+	const existing = await prisma.scmsNotice.findUnique({ where: { id } });
 
 	if (!existing) throw new Error(ERROR_CODES.NOTICE_NOT_FOUND);
 
-	const publishChanged =
-		input.isPublished !== undefined &&
-		input.isPublished !== existing.isPublished;
-
-	const updated = await prisma.notice.update({
+	return prisma.scmsNotice.update({
 		where: { id },
 		data: {
 			...(input.title !== undefined
@@ -219,33 +193,24 @@ export async function updateNotice(id: string, input: Partial<NoticeInput>) {
 			...(input.expiresAt !== undefined
 				? { expiresAt: toDate(input.expiresAt) }
 				: {}),
-			...(publishChanged && input.isPublished
-				? { publishedAt: new Date() }
-				: {}),
 		},
 	});
-
-	if (publishChanged && updated.isPublished) {
-		await notifyNoticeAudience(updated.audience, updated.id, updated.title);
-	}
-
-	return updated;
 }
 
 export async function deleteNotice(id: string) {
-	return prisma.notice.delete({ where: { id } });
+	return prisma.scmsNotice.delete({ where: { id } });
 }
 
 export async function listNotices(options?: {
 	includeDrafts?: boolean;
 	limit?: number;
-	audience?: NoticeAudience;
+	audience?: NoticeInput["audience"];
 	search?: string;
 }) {
 	const now = new Date();
 	const search = options?.search?.trim();
 
-	return prisma.notice.findMany({
+	return prisma.scmsNotice.findMany({
 		where: {
 			...(options?.includeDrafts
 				? {}
@@ -290,7 +255,7 @@ export async function listNotices(options?: {
 
 /** Admin editor variant: includes the article body and attachments. */
 export async function listNoticesForAdmin() {
-	return prisma.notice.findMany({
+	return prisma.scmsNotice.findMany({
 		include: {
 			attachments: {
 				include: {
@@ -305,7 +270,7 @@ export async function listNoticesForAdmin() {
 }
 
 export async function getNoticeBySlug(slug: string, includeDrafts = false) {
-	const notice = await prisma.notice.findUnique({
+	const notice = await prisma.scmsNotice.findUnique({
 		where: { slug },
 		include: {
 			attachments: {
@@ -327,6 +292,7 @@ export async function getNoticeBySlug(slug: string, includeDrafts = false) {
 	if (!notice) return null;
 	if (!includeDrafts) {
 		if (!notice.isPublished) return null;
+		if (notice.publishedAt && notice.publishedAt > new Date()) return null;
 		if (notice.expiresAt && notice.expiresAt <= new Date()) return null;
 	}
 
@@ -338,6 +304,8 @@ export async function createEvent(input: EventInput) {
 	const endsAt = toDate(input.endsAt);
 
 	if (!startsAt) throw new Error(ERROR_CODES.EVENT_START_REQUIRED);
+
+	const isPublished = input.isPublished ?? false;
 
 	return prisma.event.create({
 		data: {
@@ -351,8 +319,8 @@ export async function createEvent(input: EventInput) {
 				: undefined,
 			startsAt,
 			endsAt,
-			isPublished: input.isPublished ?? false,
-			publishedAt: input.isPublished ? new Date() : null,
+			isPublished,
+			publishedAt: isPublished ? new Date() : null,
 			organizationId: input.organizationId ?? null,
 			branchId: input.branchId ?? null,
 			authorId: input.authorId ?? null,

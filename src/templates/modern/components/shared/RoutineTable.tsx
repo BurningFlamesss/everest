@@ -1,9 +1,9 @@
 import { CalendarClock, CircleDot } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { routineDoc } from "#lib/documents";
-import { minutesOfDay, nowMinutes, todaySchoolWeekday } from "#lib/dates";
-import { downloadOfficialPdf } from "#lib/pdf";
-import type { Routine } from "#types";
+import { routineDoc } from "#/lib/documents";
+import { minutesOfDay, nowMinutes, todaySchoolWeekday } from "#/lib/dates";
+import { downloadOfficialPdf } from "#/lib/pdf";
+import type { Routine } from "#/types";
 import { Button } from "../kit";
 import { DownloadButton } from "./DownloadButton";
 

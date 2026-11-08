@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { Download, UserCheck } from "lucide-react";
+import { Download } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { AttendanceStats } from "#/components/attendance/AttendanceStats";
@@ -40,7 +40,7 @@ export default function AttendancePage() {
 
 	const setParam = (key: string, value: string) => {
 		navigate({
-			search: (prev: Record<string, any>) => ({ ...prev, [key]: value }),
+			search: { ...searchParams, [key]: value },
 			replace: true,
 		});
 	};

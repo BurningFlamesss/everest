@@ -28,7 +28,7 @@ import {
 import { toast } from "sonner";
 import { DownloadButton } from "#/templates/modern/components/shared/DownloadButton";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
-import { str, rows } from "#/components/cms/block-fields";
+import { str } from "#/components/cms/block-fields";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import type { BlockType } from "#/types";
 import { FilterChips } from "#/templates/modern/components/shared/FilterChips";

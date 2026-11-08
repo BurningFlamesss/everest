@@ -9,7 +9,7 @@ import {
 	getCalendarDataFn,
 } from "#/packages/academics/calendar-server.ts";
 
-export const Route = createFileRoute("/admin/calendar")({
+export const Route = createFileRoute("/admin/_admin/calendar")({
 	beforeLoad: ({ context }) => {
 		if (!context.viewer.permissions.includes("MANAGE_ACADEMICS")) {
 			throw redirect({ to: "/admin" });

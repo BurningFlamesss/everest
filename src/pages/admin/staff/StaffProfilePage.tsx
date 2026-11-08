@@ -23,7 +23,7 @@ import { listClasses, listCourses } from "#/services/academics";
 import { getStaff, inviteStaff } from "#/services/staff";
 
 export default function StaffProfilePage() {
-	const { id = "" } = useParams();
+	const { id = "" } = useParams({ strict: false }) as { id?: string };
 	const navigate = useNavigate();
 	const qc = useQueryClient();
 	const { actor, can } = useAuth();
@@ -58,7 +58,7 @@ export default function StaffProfilePage() {
 					title="Staff member not found"
 					description="This record may have been removed from the directory."
 					primaryLabel="Back to directory"
-					onPrimary={() => navigate("/admin/staff")}
+					onPrimary={() => navigate({ to: "/admin/staff" })}
 				/>
 			</div>
 		);
@@ -230,7 +230,8 @@ export default function StaffProfilePage() {
 													className="flex items-center gap-3 px-2 py-2.5"
 												>
 													<Link
-														to={`/admin/classes/${cls.id}`}
+														to="/admin/classes/$id"
+															params={{ id: cls.id }}
 														className="text-sm text-foreground hover:text-primary"
 													>
 														{cls.name}
@@ -271,7 +272,8 @@ export default function StaffProfilePage() {
 													className="flex items-center gap-3 px-2 py-2.5"
 												>
 													<Link
-														to={`/admin/courses/${course.id}`}
+														to="/admin/courses/$id"
+															params={{ id: course.id }}
 														className="text-sm text-foreground hover:text-primary"
 													>
 														{course.name}

@@ -3,6 +3,16 @@ config({ path: '.env.local' });
 
 import { serverEnv } from '#/env/server.js';
 import { PrismaClient } from '../src/generated/prisma/client.js'
+
+/**
+ * Serialise a value for a Prisma `Json` column. Prisma's `InputJsonValue` does
+ * not accept `undefined`, so absent fields are dropped rather than written as
+ * a JSON `null`.
+ */
+function toJson<T>(value: T): T {
+  return value === undefined ? (undefined as T) : JSON.parse(JSON.stringify(value));
+}
+import type { BlockType, Role, WebsitePageKey } from '../src/generated/prisma/enums.js'
 import { people } from '#/lib/faculty';
 import { notices } from '#/lib/notices';
 import { scholarships } from '#/lib/scholarships';
@@ -192,23 +202,27 @@ async function main() {
   })
 
   // A small set of starter content so the public pages are never empty.
-  await prisma.notice.upsert({
-    where: { slug: "welcome-to-the-new-school-year" },
-    update: {},
-    create: {
+  // Notices are public content with no unique key besides `id`, so this is a
+  // delete-and-recreate rather than an upsert.
+  await prisma.notice.deleteMany({ where: { ref: "STARTER/2083/001" } })
+  await prisma.notice.create({
+    data: {
+      ref: "STARTER/2083/001",
       title: "Welcome to the new school year",
-      slug: "welcome-to-the-new-school-year",
       summary:
         "The school office shares the key dates and reminders for the start of the academic session.",
-      body:
-        "Welcome back, everyone.\n\nClasses resume on the first working day of the new session. Students should arrive by 9:00 with their uniforms, notebooks and a completed emergency contact form.\n\nThe office will publish the full calendar, including examination dates and parent meetings, under Events. Please check the Notices page regularly for updates.",
+      dateAd: new Date().toISOString().slice(0, 10),
+      dateBs: "2083-01-01",
+      audience: "All",
+      issuedBy: "School Office",
       category: "General",
-      audience: "ALL",
-      isPublished: true,
-      publishedAt: new Date(),
-      organizationId: organization.id,
-      branchId: branch.id,
-      authorId: user.id,
+      body: [
+        "Welcome back, everyone.",
+        "Classes resume on the first working day of the new session. Students should arrive by 9:00 with their uniforms, notebooks and a completed emergency contact form.",
+        "The office will publish the full calendar, including examination dates and parent meetings, under Events. Please check the Notices page regularly for updates.",
+      ],
+      attachments: [],
+      order: 0,
     },
   })
 
@@ -264,8 +278,18 @@ async function main() {
 }
 
 async function seedTestUsers(organizationId: string, branchId: string) {
-  const testUsers = [
-    { email: "admin@gmail.com", password: "everestadmin", name: "Admin", role: "SUPERADMIN" },
+  const testUsers: Array<{
+    email: string;
+    password: string;
+    name: string;
+    role: Role;
+  }> = [
+    {
+      email: "admin@gmail.com",
+      password: "everestadmin",
+      name: "Admin",
+      role: "SUPERADMIN",
+    },
   ];
 
   for (const testUser of testUsers) {
@@ -335,15 +359,16 @@ async function seedTestUsers(organizationId: string, branchId: string) {
   }
 }
 
-async function seedWebsitePages(authorId: string, authorName: string, pages: Record<string, ContentPage>) {
+async function seedWebsitePages(_authorId: string, authorName: string, pages: Record<string, ContentPage>) {
   console.log('🌱 Seeding website pages from content.json...');
 
-  for (const [pageKey, pageData] of Object.entries(pages)) {
-    const page = await prisma.websitePage.upsert({
-      where: { key: pageData.key },
+  for (const pageData of Object.values(pages)) {
+    const key = pageData.key as WebsitePageKey;
+    await prisma.websitePage.upsert({
+      where: { key },
       update: {},
       create: {
-        key: pageData.key,
+        key,
         title: pageData.title,
         path: pageData.path,
         status: pageData.status as "draft" | "published",
@@ -354,8 +379,11 @@ async function seedWebsitePages(authorId: string, authorName: string, pages: Rec
         updatedBy: authorName,
         blocks: {
           create: pageData.blocks.map((block, index) => ({
-            ...block,
+            type: block.type as BlockType,
+            label: block.label,
+            visible: block.visible,
             order: block.order ?? index,
+            fields: block.fields as Record<string, string>,
           })),
         },
       },
@@ -363,7 +391,7 @@ async function seedWebsitePages(authorId: string, authorName: string, pages: Rec
 
     if (pageData.status === "published") {
       await prisma.websitePage.update({
-        where: { key: pageData.key },
+        where: { key },
         data: { publishedAt: new Date() },
       });
     }
@@ -408,10 +436,10 @@ async function seedPublicCollections() {
       audience: notice.audience,
       issuedBy: notice.issuedBy,
       summary: notice.summary,
-      body: notice.body,
-      bullets: notice.bullets,
-      table: notice.table,
-      attachments: notice.attachments,
+      body: toJson(notice.body) as never,
+      bullets: toJson(notice.bullets) as never,
+      table: toJson(notice.table) as never,
+      attachments: toJson(notice.attachments) as never,
       pinned: Boolean(notice.pinned),
       order: index,
     })),
@@ -434,10 +462,10 @@ async function seedPublicCollections() {
       appliesTo: scholarship.appliesTo,
       summary: scholarship.summary,
       description: scholarship.description,
-      eligibility: scholarship.eligibility,
-      benefits: scholarship.benefits,
-      documents: scholarship.documents,
-      process: scholarship.process,
+      eligibility: toJson(scholarship.eligibility) as never,
+      benefits: toJson(scholarship.benefits) as never,
+      documents: toJson(scholarship.documents) as never,
+      process: toJson(scholarship.process) as never,
       renewal: scholarship.renewal,
       contact: scholarship.contact,
       spotlight: Boolean(scholarship.spotlight),

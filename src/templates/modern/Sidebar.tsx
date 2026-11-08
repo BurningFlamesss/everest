@@ -71,6 +71,7 @@ function Sidebar() {
 					className={cn(isSidebarOpened ? "" : "rotate-180")}
 				/>
 			</button>
+			{sidebar && (
 			<section
 				className={cn(
 					"h-full flex flex-col justify-between overflow-hidden",
@@ -137,6 +138,7 @@ function Sidebar() {
 					)}
 				</footer>
 			</section>
+			)}
 		</aside>
 	);
 }

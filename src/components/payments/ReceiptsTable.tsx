@@ -122,7 +122,7 @@ export function ReceiptsTable({ canManage }: { canManage: boolean }) {
           data-testid={`receipts-invoice-${row.id}`}
           onClick={(event) => {
             event.stopPropagation();
-            navigate(`/payments/invoices/${row.invoiceId}`);
+            navigate({ to: "/admin/payments/$id", params: { id: row.invoiceId } });
           }}
         >
           {row.invoiceNo}
@@ -197,7 +197,7 @@ export function ReceiptsTable({ canManage }: { canManage: boolean }) {
             <DropdownMenuItem data-testid={`receipts-view-${row.id}`} onClick={() => setViewing(row)}>
               <Receipt className="mr-2 h-3.5 w-3.5" /> View receipt
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate(`/payments/invoices/${row.invoiceId}`)}>
+            <DropdownMenuItem onClick={() => navigate({ to: "/admin/payments/$id", params: { id: row.invoiceId } })}>
               <FileText className="mr-2 h-3.5 w-3.5" /> Open invoice
             </DropdownMenuItem>
             {canManage && row.status === "succeeded" && (

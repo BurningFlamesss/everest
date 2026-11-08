@@ -1,5 +1,4 @@
 import { useId, useRef } from 'react';
-import { Check } from 'lucide-react';
 import { cn } from '#/lib/utils';
 
 export type SegmentOption<T extends string> = { value: T; label: string };
@@ -16,7 +15,6 @@ export function Segmented<T extends string>({
   onChange,
   className,
   testId,
-  size = 'md',
 }: {
   label: string;
   options: Array<SegmentOption<T>>;
@@ -24,7 +22,6 @@ export function Segmented<T extends string>({
   onChange: (v: T) => void;
   className?: string;
   testId?: string;
-  size?: 'sm' | 'md';
 }) {
   const id = useId();
   const refs = useRef<Array<HTMLButtonElement | null>>([]);

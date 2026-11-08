@@ -739,16 +739,6 @@ export type {
   CrestPart,
 } from "../content/types";
 
-export interface Album {
-  id: string;
-  event: string;
-  year: string;
-  category: string;
-  date?: string;
-  photos: { src: string; alt: string; width: number; height: number }[];
-  order: number;
-}
-
 export interface Resource {
   id: string;
   title: string;

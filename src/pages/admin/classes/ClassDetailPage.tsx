@@ -15,7 +15,7 @@ import { getClassDetail } from "#/services/academics";
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"] as const;
 
 export default function ClassDetailPage() {
-	const { id = "" } = useParams();
+	const { id = "" } = useParams({ strict: false }) as { id?: string };
 	const navigate = useNavigate();
 	const { can } = useAuth();
 	const { data, isLoading } = useQuery({
@@ -31,7 +31,7 @@ export default function ClassDetailPage() {
 					title="Class not found"
 					description="This class may have been removed for the current academic year."
 					primaryLabel="Back to classes"
-					onPrimary={() => navigate("/admin/classes")}
+					onPrimary={() => navigate({ to: "/admin/classes" })}
 				/>
 			</div>
 		);
@@ -84,7 +84,8 @@ export default function ClassDetailPage() {
 							asChild
 							data-testid="class-mark-attendance"
 						>
-							<Link to={`/admin/attendance?class=${cls.id}`}>
+							<Link to="/admin/attendance"
+												search={{ class: cls.id }}>
 								<ClipboardCheck className="h-3.5 w-3.5" /> Mark attendance
 							</Link>
 						</Button>
@@ -143,7 +144,8 @@ export default function ClassDetailPage() {
 														name={`${student.firstName} ${student.lastName}`}
 														subtitle={student.admissionNo}
 														avatarUrl={student.avatarUrl}
-														to={`/admin/students/${student.id}`}
+														to="/admin/students/$id"
+															params={{ id: student.id }}
 														mono
 													/>
 													<span className="num ml-auto shrink-0 text-xs text-muted-foreground">
@@ -180,7 +182,8 @@ export default function ClassDetailPage() {
 											</span>
 											<div className="min-w-0 flex-1">
 												<Link
-													to={`/admin/courses/${course.id}`}
+													to="/admin/courses/$id"
+															params={{ id: course.id }}
 													className="block truncate text-sm text-foreground hover:text-primary"
 												>
 													{course.name}
@@ -247,7 +250,8 @@ export default function ClassDetailPage() {
 								/>
 								<div className="min-w-0">
 									<Link
-										to={`/admin/staff/${teacher.id}`}
+										to="/admin/staff/$id"
+													params={{ id: teacher.id }}
 										className="block truncate text-sm font-medium text-foreground hover:text-primary"
 									>
 										{teacher.firstName} {teacher.lastName}

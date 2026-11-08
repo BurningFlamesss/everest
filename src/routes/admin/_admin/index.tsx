@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { getAdminStatsFn } from "#/packages/admin/server.ts";
 
-export const Route = createFileRoute("/admin/")({
+export const Route = createFileRoute("/admin/_admin/")({
 	beforeLoad: ({ context }) => {
 		if (!context.viewer.permissions.includes("MANAGE_DASHBOARD")) {
 			throw redirect({ to: "/dashboard" });

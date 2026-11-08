@@ -34,8 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   } : null;
 
   const signOut = useCallback(async () => {
-    document.cookie = "scms_demo_session=; path=/; max-age=0;";
-    try {
+        try {
       await authClient.signOut();
       window.location.href = "/login";
     } catch {

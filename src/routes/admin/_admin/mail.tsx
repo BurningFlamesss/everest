@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { MailCheck, MailX } from "lucide-react";
 import { getMailLogFn } from "#/packages/notifications/mail-log-server.ts";
 
-export const Route = createFileRoute("/admin/mail")({
+export const Route = createFileRoute("/admin/_admin/mail")({
 	loader: () => getMailLogFn(),
 	component: AdminMail,
 });

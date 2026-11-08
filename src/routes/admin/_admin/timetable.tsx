@@ -8,7 +8,7 @@ import {
 	getTimetableOptionsFn,
 } from "#/packages/academics/timetable-server.ts";
 
-export const Route = createFileRoute("/admin/timetable")({
+export const Route = createFileRoute("/admin/_admin/timetable")({
 	beforeLoad: ({ context }) => {
 		if (!context.viewer.permissions.includes("MANAGE_TIMETABLE")) {
 			throw redirect({ to: "/admin" });

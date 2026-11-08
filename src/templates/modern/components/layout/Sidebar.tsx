@@ -6,15 +6,8 @@ import { cn } from "#/lib/utils";
 import { authClient } from "#/packages/auth/auth-client.ts";
 import { useSchoolContent } from "#/packages/school/hook.tsx";
 import type { ItemDetail } from "#/types/school";
-import { Crest, type CrestTone } from "./Crest";
 
 const SIDEBAR_W = 240;
-
-const crestTone: CrestTone = {
-	line: "#FFFFFF",
-	solid: "#EAB308",
-	onSolid: "#000000",
-};
 
 function setNavWidth(open: boolean) {
 	document.documentElement.style.setProperty(

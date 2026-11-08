@@ -15,36 +15,10 @@ export const getSessionMiddleware = createMiddleware({
 		session = null;
 	}
 
-	if (!session) {
-		const cookieHeader = headers.get("cookie") || "";
-		const match = cookieHeader.match(/scms_demo_session=([^;]+)/);
-		if (match) {
-			try {
-				const decoded = JSON.parse(decodeURIComponent(match[1]));
-				if (decoded && decoded.user) {
-					session = {
-						user: decoded.user,
-						session: {
-							id: "demo-session-id",
-							userId: decoded.user.id,
-							expiresAt: new Date(Date.now() + 86400000).toISOString(),
-						},
-					};
-				}
-			} catch {
-				session = null;
-			}
-		}
-	}
-
 	// Populate `user.role` from the UserRole table. better-auth's User model has
 	// no role field, so without this every role-based guard/redirect falls back
-	// to the demo cookie. Demo-cookie sessions carry their own role already.
-	if (
-		session?.user &&
-		!session.user.role &&
-		session.session?.id !== "demo-session-id"
-	) {
+	// to "unprivileged".
+	if (session?.user && !session.user.role) {
 		try {
 			const { resolveUserRole } = await import(
 				"#/packages/auth/server/resolve-role"

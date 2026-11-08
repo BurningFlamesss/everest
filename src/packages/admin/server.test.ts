@@ -10,7 +10,7 @@ const mocks = vi.hoisted(() => ({
 	guardianCount: vi.fn(),
 	inviteCount: vi.fn(),
 	guardianInviteCount: vi.fn(),
-	noticeCount: vi.fn(),
+	scmsNoticeCount: vi.fn(),
 	eventCount: vi.fn(),
 	clubCount: vi.fn(),
 }));
@@ -50,7 +50,7 @@ vi.mock("#/packages/db/index.ts", () => ({
 		guardian: { count: mocks.guardianCount },
 		invite: { count: mocks.inviteCount },
 		guardianInvite: { count: mocks.guardianInviteCount },
-		notice: { count: mocks.noticeCount },
+		scmsNotice: { count: mocks.scmsNoticeCount },
 		event: { count: mocks.eventCount },
 		club: { count: mocks.clubCount },
 	},
@@ -66,7 +66,7 @@ beforeEach(() => {
 	mocks.inviteCount.mockResolvedValue(3);
 	mocks.guardianInviteCount.mockResolvedValue(2);
 	// Two notice counts (drafts then published).
-	mocks.noticeCount.mockResolvedValueOnce(4).mockResolvedValueOnce(11);
+	mocks.scmsNoticeCount.mockResolvedValueOnce(4).mockResolvedValueOnce(11);
 	mocks.eventCount.mockResolvedValue(6);
 	mocks.clubCount.mockResolvedValue(7);
 });

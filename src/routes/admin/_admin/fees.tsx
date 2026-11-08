@@ -9,7 +9,7 @@ import {
 	recordPaymentAction,
 } from "#/packages/finance/server.ts";
 
-export const Route = createFileRoute("/admin/fees")({
+export const Route = createFileRoute("/admin/_admin/fees")({
 	beforeLoad: ({ context }) => {
 		if (!context.viewer.permissions.includes("MANAGE_FEES")) {
 			throw redirect({ to: "/admin" });

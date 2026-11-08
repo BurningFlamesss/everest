@@ -6,7 +6,7 @@ import {
 	markContactMessageHandledAction,
 } from "#/packages/contact/server.ts";
 
-export const Route = createFileRoute("/admin/inbox")({
+export const Route = createFileRoute("/admin/_admin/inbox")({
 	beforeLoad: ({ context }) => {
 		if (!context.viewer.permissions.includes("MANAGE_INBOX")) {
 			throw redirect({ to: "/dashboard" });

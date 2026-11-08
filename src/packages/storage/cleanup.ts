@@ -37,7 +37,7 @@ export async function collectOrphanedFileAssets(options?: {
 				orderBy: { createdAt: "asc" },
 				take: limit,
 			}),
-			prisma.notice.findMany({
+			prisma.scmsNotice.findMany({
 				where: { coverImage: { not: null } },
 				select: { coverImage: true },
 			}),

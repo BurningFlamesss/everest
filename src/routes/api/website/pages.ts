@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { getPublishedPage, listWebsitePages, ensureDefaultPages } from '@/lib/website-content'
+import { listWebsitePages, ensureDefaultPages } from '@/lib/website-content'
 
 export const Route = createFileRoute('/api/website/pages')({
   server: {

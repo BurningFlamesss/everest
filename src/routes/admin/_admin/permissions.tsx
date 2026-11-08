@@ -20,7 +20,7 @@ import {
 	setRolePermissionAction,
 } from "#/packages/auth/permissions-server.ts";
 
-export const Route = createFileRoute("/admin/permissions")({
+export const Route = createFileRoute("/admin/_admin/permissions")({
 	beforeLoad: ({ context }) => {
 		if (!context.viewer.permissions.includes("MANAGE_PERMISSIONS")) {
 			throw redirect({ to: "/admin" });

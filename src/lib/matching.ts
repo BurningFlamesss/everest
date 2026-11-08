@@ -1,4 +1,4 @@
-import { scholarships } from "../content/scholarships";
+import { scholarships } from "./scholarships";
 import type { Scholarship } from "../types";
 
 export type MatcherLevel =

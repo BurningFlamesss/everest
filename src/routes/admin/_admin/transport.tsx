@@ -24,7 +24,7 @@ import {
 	updateTransportStopAction,
 } from "#/packages/transport/server.ts";
 
-export const Route = createFileRoute("/admin/transport")({
+export const Route = createFileRoute("/admin/_admin/transport")({
 	beforeLoad: ({ context }) => {
 		if (!context.viewer.permissions.includes("MANAGE_TRANSPORT")) {
 			throw redirect({ to: "/admin" });

@@ -200,13 +200,9 @@ export default function WebsiteContentPage() {
 
 	const changePage = (value: string) => {
 		navigate({
-			search: (prev: Record<string, string | undefined>) => {
-				const next = { ...prev };
-				next.page = value;
-				return next;
-			},
+			search: (prev: any) => ({ ...prev, page: value }),
 			replace: true,
-		});
+		} as any);
 	};
 
 	return (

@@ -10,7 +10,7 @@ import { Button } from "#/components/ui/button";
 import { getCourseDetail } from "#/services/academics";
 
 export default function CourseDetailPage() {
-	const { id = "" } = useParams();
+	const { id = "" } = useParams({ strict: false }) as { id?: string };
 	const navigate = useNavigate();
 	const { data, isLoading } = useQuery({
 		queryKey: ["course-detail", id],
@@ -25,7 +25,7 @@ export default function CourseDetailPage() {
 					title="Subject not found"
 					description="This subject may have been removed from the catalogue."
 					primaryLabel="Back to catalogue"
-					onPrimary={() => navigate("/admin/courses")}
+					onPrimary={() => navigate({ to: "/admin/courses" })}
 				/>
 			</div>
 		);
@@ -132,7 +132,8 @@ export default function CourseDetailPage() {
 								{classes.map((cls) => (
 									<li key={cls.id}>
 										<Link
-											to={`/admin/classes/${cls.id}`}
+											to="/admin/classes/$id"
+												params={{ id: cls.id }}
 											className="block rounded-md border border-hairline bg-surface-2 px-2.5 py-2 text-xs text-foreground transition-colors hover:border-primary/40"
 										>
 											{cls.name}
@@ -163,7 +164,8 @@ export default function CourseDetailPage() {
 											name={`${teacher.firstName} ${teacher.lastName}`}
 											subtitle={`${teacher.designation} · ${teacher.department}`}
 											avatarUrl={teacher.avatarUrl}
-											to={`/admin/staff/${teacher.id}`}
+											to="/admin/staff/$id"
+												params={{ id: teacher.id }}
 										/>
 									</li>
 								))}

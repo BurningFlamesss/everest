@@ -12,53 +12,32 @@ export interface AuthUser {
   image?: string;
 }
 
-/** Resolve a session from better-auth, falling back to the demo console cookie. */
+/** Resolve a session from better-auth. No demo-session fallback; all role-based
+  guards go through `requirePermission` / `hasPermission` using the merged
+  permission system (MANAGE_* keys + UserPermission/RolePermission pattern). */
 async function resolveSession(): Promise<{ user: AuthUser; session: Session } | null> {
   const headers = getRequestHeaders();
 
   try {
     const session = await auth.api.getSession({ headers });
     if (session?.user) {
+      const betterAuthUser = session.user as typeof session.user & { role?: string };
       return {
         user: {
           id: session.user.id,
           name: session.user.name,
           email: session.user.email,
-          role: session.user.role || "staff",
-          image: session.user.image,
+          role: betterAuthUser.role || "staff",
+          image: session.user.image ?? undefined,
         },
-        session: session.session,
+        session: session.session as unknown as Session,
       };
     }
   } catch {
-    // fall through to the demo-session fallback below
-  }
-
-  const cookieHeader = headers.get("cookie") || "";
-  const match = cookieHeader.match(/scms_demo_session=([^;]+)/);
-  if (!match) return null;
-
-  try {
-    const decoded = JSON.parse(decodeURIComponent(match[1]));
-    if (!decoded?.user) return null;
-    const demoUser = decoded.user as Record<string, unknown>;
-    return {
-      user: {
-        id: String(demoUser.id ?? "usr_demo"),
-        name: String(demoUser.name ?? "Demo Admin"),
-        email: String(demoUser.email ?? ""),
-        role: String(demoUser.role ?? "admin"),
-        image: typeof demoUser.image === "string" ? demoUser.image : undefined,
-      },
-      session: {
-        id: "demo-session-id",
-        userId: String(demoUser.id ?? "usr_demo"),
-        expiresAt: new Date(Date.now() + 86400000),
-      } as unknown as Session,
-    };
-  } catch {
     return null;
   }
+
+  return null;
 }
 
 export async function getCurrentUser(_request: Request): Promise<AuthUser | null> {
