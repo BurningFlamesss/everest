@@ -7,7 +7,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { getSessionFn } from "#/packages/auth/middleware/auth.middleware.ts";
 import { AuthProvider } from "#/providers/AuthProvider";
-import Sidebar from "#/templates/modern/Sidebar";
+import { Sidebar } from "#/templates/modern/components/layout/Sidebar";
 import themeCss from "#/templates/modern/components/tokens/theme.css?url";
 import type { MyRouterContext } from "#/types/router-context.ts";
 import appCss from "../app.css?url";

@@ -8,10 +8,10 @@
 	},
 	"theme": {
 		"template": "modern",
-		"primary": "#ef4444",
-		"accent": "#facc15",
+		"primary": "#DC2626",
+		"accent": "#EAB308",
 		"background": "#f6f1e8",
-		"sidebar": "#f87171"
+		"sidebar": "#DC2626"
 	},
 	"features": {
 		"clubs": true,
