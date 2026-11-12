@@ -245,7 +245,7 @@ async function main() {
     },
   })
 
-  await prisma.club.upsert({
+  const scienceClub = await prisma.club.upsert({
     where: { slug: "science-club" },
     update: {},
     create: {
@@ -259,6 +259,48 @@ async function main() {
       branchId: branch.id,
     },
   })
+
+  // Default role board. Permissions are comma-separated keys from
+  // `src/packages/clubs/permissions.ts`; a plain Member has none and cannot
+  // publish to the club feed. Admins can edit these under Content → Clubs → Roles.
+  const defaultRoles = [
+    {
+      name: "President",
+      description: "Leads the club and its feed.",
+      permissions: "posts.create,posts.editAny,posts.pin,members.manage",
+      isBoard: true,
+      sortOrder: 0,
+    },
+    {
+      name: "Vice President",
+      description: "Supports the president and can publish.",
+      permissions: "posts.create,posts.editAny",
+      isBoard: true,
+      sortOrder: 1,
+    },
+    {
+      name: "Secretary",
+      description: "Writes club updates.",
+      permissions: "posts.create",
+      isBoard: true,
+      sortOrder: 2,
+    },
+    {
+      name: "Member",
+      description: "Belongs to the club; cannot publish posts.",
+      permissions: "",
+      isBoard: false,
+      sortOrder: 3,
+    },
+  ]
+
+  for (const role of defaultRoles) {
+    await prisma.clubRole.upsert({
+      where: { clubId_name: { clubId: scienceClub.id, name: role.name } },
+      update: {},
+      create: { ...role, clubId: scienceClub.id },
+    })
+  }
 
   console.log(`
     SUPER ADMIN created:

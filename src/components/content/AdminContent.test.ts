@@ -18,6 +18,9 @@ const mocks = vi.hoisted(() => ({
 	createClubAction: vi.fn(),
 	updateClubAction: vi.fn(),
 	deleteClubAction: vi.fn(),
+	getClubBoardFn: vi.fn(),
+	saveClubRolesAction: vi.fn(),
+	saveClubMembersAction: vi.fn(),
 }));
 
 vi.mock("@tanstack/react-router", () => ({
@@ -35,11 +38,20 @@ vi.mock("#/packages/content/server.ts", () => ({
 	updateNoticeAction: vi.fn(),
 }));
 
+vi.mock("#/packages/clubs/server.ts", () => ({
+	getAllMyClubAccessFn: vi.fn(),
+	getClubBoardFn: mocks.getClubBoardFn,
+	saveClubRolesAction: mocks.saveClubRolesAction,
+	saveClubMembersAction: mocks.saveClubMembersAction,
+	ALL_CLUB_PERMISSIONS: [],
+}));
+
 const fetchMock = vi.fn<typeof fetch>();
 const pickerLabel = /Add a PDF, Word, Excel, CSV or text file/;
 const clubs = [
 	{
 		id: "robotics",
+		slug: "robotics-club",
 		name: "Robotics Club",
 		description: "Build robots",
 		meetingSchedule: "Fridays",
@@ -68,6 +80,7 @@ const clubs = [
 	},
 	{
 		id: "art",
+		slug: "art-club",
 		name: "Art Club",
 		description: null,
 		meetingSchedule: null,

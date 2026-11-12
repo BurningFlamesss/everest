@@ -21,6 +21,10 @@ vi.mock("#/packages/content/server.ts", () => ({
 	getClubsFn: vi.fn(),
 }));
 
+vi.mock("#/packages/clubs/server.ts", () => ({
+	getAllMyClubAccessFn: vi.fn(),
+}));
+
 vi.mock("#/packages/content/server/content.ts", () => ({
 	getWebsitePagePreviewServer: vi.fn(),
 }));
@@ -99,7 +103,11 @@ const club = {
 
 beforeEach(() => {
 	route.useLoaderData.mockReset();
-	route.useLoaderData.mockReturnValue({ clubs: [club], previewPage: null });
+	route.useLoaderData.mockReturnValue({
+		clubs: [club],
+		accessBySlug: {},
+		previewPage: null,
+	});
 });
 
 afterEach(() => {
@@ -143,6 +151,7 @@ describe("ClubsPage", () => {
 					],
 				},
 			],
+			accessBySlug: {},
 			previewPage: null,
 		});
 
@@ -156,6 +165,7 @@ describe("ClubsPage", () => {
 	it("renders a club without an attachment section when it has no attachments", () => {
 		route.useLoaderData.mockReturnValue({
 			clubs: [{ ...club, attachments: [] }],
+			accessBySlug: {},
 			previewPage: null,
 		});
 
@@ -171,7 +181,11 @@ describe("ClubsPage", () => {
 	});
 
 	it("renders the empty state when there are no clubs", () => {
-		route.useLoaderData.mockReturnValue({ clubs: [], previewPage: null });
+		route.useLoaderData.mockReturnValue({
+			clubs: [],
+			accessBySlug: {},
+			previewPage: null,
+		});
 
 		render(React.createElement(route.component));
 

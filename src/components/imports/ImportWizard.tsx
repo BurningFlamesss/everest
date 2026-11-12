@@ -6,6 +6,7 @@ import {
 	Download,
 	FileSpreadsheet,
 	Loader2,
+	MessageSquare,
 	UploadCloud,
 } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
@@ -31,6 +32,8 @@ export interface ImportWizardResult {
 	errors: Array<{ row: number; email: string; message: string }>;
 	error?: string;
 }
+
+const escapeCsv = (value: string) => `"${value.replaceAll('"', '""')}"`;
 
 export interface ImportWizardProps {
 	config: ImportConfig;
@@ -65,7 +68,6 @@ function downloadText(filename: string, content: string) {
 function errorsToCsv(
 	errors: Array<{ row: number; email: string; message: string }>,
 ): string {
-	const escapeCsv = (value: string) => `"${value.replaceAll('"', '""')}"`;
 	return [
 		"row,email,message",
 		...errors.map((error) =>
@@ -74,6 +76,38 @@ function errorsToCsv(
 				.join(","),
 		),
 	].join("\n");
+}
+
+/**
+ * Build the CSV of created rows (name, email, activation link) so an admin can
+ * hand the details to an SMS gateway or keep them on file when email delivery
+ * is unavailable.
+ */
+function createdToCsv(
+	created: Array<{ name: string; email: string; url?: string; token?: string }>,
+): string {
+	return [
+		"name,email,activation_link",
+		...created.map((entry) =>
+			[entry.name, entry.email, entry.url ?? entry.token ?? ""]
+				.map((value) => escapeCsv(String(value ?? "")))
+				.join(","),
+		),
+	].join("\n");
+}
+
+/** One line per student, formatted for pasting into an SMS sender. */
+function createdToSmsText(
+	created: Array<{ name: string; email: string; url?: string; token?: string }>,
+): string {
+	return created
+		.map(
+			(entry) =>
+				`${entry.name} (${entry.email}) — activate your Everest account: ${
+					entry.url ?? entry.token ?? ""
+				}`,
+		)
+		.join("\n");
 }
 
 export function ImportWizard({
@@ -95,6 +129,9 @@ export function ImportWizard({
 	const [isImporting, setIsImporting] = useState(false);
 	const [error, setError] = useState("");
 	const [isDragging, setIsDragging] = useState(false);
+	const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">(
+		"idle",
+	);
 
 	const allFields = useMemo(
 		() => [
@@ -200,7 +237,35 @@ export function ImportWizard({
 		setPreview(null);
 		setResult(null);
 		setError("");
+		setCopyState("idle");
 		if (inputRef.current) inputRef.current.value = "";
+	};
+
+	/**
+	 * Copy every created student's details + activation link in one click, so
+	 * the block can be pasted straight into an SMS sender when email delivery
+	 * is not available.
+	 */
+	const copyAllDetails = async () => {
+		if (!result || result.created.length === 0) return;
+		const text = createdToSmsText(result.created);
+
+		try {
+			await navigator.clipboard.writeText(text);
+			setCopyState("copied");
+		} catch {
+			setCopyState("failed");
+		}
+
+		window.setTimeout(() => setCopyState("idle"), 2500);
+	};
+
+	const downloadCreatedCsv = () => {
+		if (!result || result.created.length === 0) return;
+		downloadText(
+			`imported-${config.name.toLowerCase().replaceAll(" ", "-")}.csv`,
+			createdToCsv(result.created),
+		);
 	};
 
 	return (
@@ -498,6 +563,31 @@ export function ImportWizard({
 							</p>
 						) : null}
 					</div>
+
+					{result.created.length > 0 ? (
+						<div className="flex flex-wrap gap-2">
+							<button
+								type="button"
+								onClick={() => void copyAllDetails()}
+								className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50"
+							>
+								<MessageSquare className="h-4 w-4 text-red-500" />
+								{copyState === "copied"
+									? "Copied — paste into your SMS sender"
+									: copyState === "failed"
+										? "Copy failed — use the CSV download"
+										: "Copy all details + activation links"}
+							</button>
+							<button
+								type="button"
+								onClick={downloadCreatedCsv}
+								className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50"
+							>
+								<Download className="h-4 w-4 text-red-500" />
+								Download CSV (details + links)
+							</button>
+						</div>
+					) : null}
 
 					{result.created.length > 0 ? (
 						<div className="max-h-64 overflow-auto rounded-lg border border-gray-200">

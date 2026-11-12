@@ -72,6 +72,47 @@ const attachmentInclude = {
 		},
 		orderBy: { createdAt: "asc" },
 	},
+	members: {
+		orderBy: {
+			createdAt: "asc",
+		},
+		select: {
+			id: true,
+			role: {
+				select: {
+					id: true,
+					isBoard: true,
+					name: true,
+				},
+			},
+			student: {
+				select: {
+					grade: true,
+					id: true,
+					section: true,
+					user: {
+						select: {
+							id: true,
+							name: true,
+						},
+					},
+				},
+			},
+		},
+	},
+	roles: {
+		orderBy: {
+			sortOrder: "asc",
+		},
+		select: {
+			description: true,
+			id: true,
+			isBoard: true,
+			name: true,
+			permissions: true,
+			sortOrder: true,
+		},
+	},
 };
 
 beforeEach(() => {

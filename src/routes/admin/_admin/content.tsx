@@ -6,11 +6,18 @@ import {
 	Plus,
 	RefreshCw,
 	Trash2,
+	Users,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { AttachmentUploadField } from "#/components/content/AttachmentUploadField.tsx";
 import { ImageUploadField } from "#/components/content/ImageUploadField.tsx";
 import { cn } from "#/lib/utils.ts";
+import { CLUB_PERMISSIONS } from "#/packages/clubs/permissions.ts";
+import {
+	getClubBoardFn,
+	saveClubMembersAction,
+	saveClubRolesAction,
+} from "#/packages/clubs/server.ts";
 import {
 	collectOrphanedAssetsAction,
 	createClubAction,
@@ -69,6 +76,7 @@ interface EventRow {
 
 interface ClubRow {
 	id: string;
+	slug: string;
 	name: string;
 	description: string | null;
 	meetingSchedule: string | null;
@@ -80,6 +88,40 @@ interface ClubRow {
 interface AttachmentPayload {
 	fileAssetId: string;
 	label?: string;
+}
+
+/** Shape of one role as returned by `getClubBoardFn`. */
+export interface BoardRole {
+	id: string;
+	/** Stable React key for roles that are not saved yet (id is ""). */
+	key: string;
+	name: string;
+	description: string | null;
+	permissions: Array<string>;
+	isBoard: boolean;
+	sortOrder: number;
+	members: Array<{
+		id: string;
+		name: string;
+		grade: string | null;
+		section: string | null;
+	}>;
+}
+
+interface BoardMember {
+	id: string;
+	name: string;
+	grade: string | null;
+	section: string | null;
+	/** Role assigned to this member; matched by name when saving. */
+	roleName: string | null;
+}
+
+function permissionsToKeys(raw: string): Array<string> {
+	return raw
+		.split(",")
+		.map((key) => key.trim())
+		.filter(Boolean);
 }
 
 function pad(value: number) {
@@ -159,6 +201,11 @@ function AdminContent() {
 	const [isSavingAttachments, setIsSavingAttachments] = useState(false);
 	const [isSavingContent, setIsSavingContent] = useState(false);
 	const [isEditingUpload, setIsEditingUpload] = useState(false);
+	const [boardClub, setBoardClub] = useState<ClubRow | null>(null);
+	const [boardRoles, setBoardRoles] = useState<Array<BoardRole>>([]);
+	const [boardMembers, setBoardMembers] = useState<Array<BoardMember>>([]);
+	const [isLoadingBoard, setIsLoadingBoard] = useState(false);
+	const [isSavingBoard, setIsSavingBoard] = useState(false);
 
 	const load = useCallback(async () => {
 		setIsLoading(true);
@@ -440,6 +487,187 @@ function AdminContent() {
 		});
 		if (!response.success) setError(response.error);
 		else await load();
+	};
+
+	const openClubBoard = async (club: ClubRow) => {
+		setError("");
+		setNoticeMessage("");
+		setBoardClub(club);
+		setBoardRoles([]);
+		setBoardMembers([]);
+		setIsLoadingBoard(true);
+
+		try {
+			const result = await getClubBoardFn({ data: { slug: club.slug } });
+			if (!result.success) {
+				setError(result.error);
+				return;
+			}
+			setBoardRoles(
+				result.roles.map((role) => ({
+					...role,
+					key: role.id,
+					permissions: permissionsToKeys(role.permissions),
+				})),
+			);
+			setBoardMembers(
+				result.roles.flatMap((role) =>
+					role.members.map((member) => ({
+						id: member.id,
+						name: member.name,
+						grade: member.grade,
+						section: member.section,
+						roleName: role.name,
+					})),
+				),
+			);
+		} catch (boardError) {
+			setError(
+				boardError instanceof Error
+					? boardError.message
+					: "Could not load club roles.",
+			);
+		} finally {
+			setIsLoadingBoard(false);
+		}
+	};
+
+	const saveClubBoard = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (!boardClub || isSavingBoard) return;
+
+		setError("");
+		setNoticeMessage("");
+		for (const role of boardRoles) {
+			if (!role.name.trim()) {
+				setError("Every role needs a name.");
+				return;
+			}
+		}
+
+		setIsSavingBoard(true);
+		try {
+			const rolesResult = await saveClubRolesAction({
+				data: {
+					slug: boardClub.slug,
+					roles: boardRoles.map((role_, index) => ({
+						id: role_.id || undefined,
+						name: role_.name,
+						description: role_.description ?? "",
+						permissions: role_.permissions,
+						isBoard: role_.isBoard,
+						sortOrder: index,
+					})),
+				},
+			});
+
+			if (!rolesResult.success) {
+				setError(rolesResult.error);
+				return;
+			}
+
+			// Re-read the roles so members moving to a newly created role get its
+			// real id, and members left in deleted roles are dropped.
+			const refreshed = await getClubBoardFn({
+				data: { slug: boardClub.slug },
+			});
+			if (!refreshed.success) {
+				setError(refreshed.error);
+				return;
+			}
+
+			const freshRoles = refreshed.roles.map((role) => ({
+				...role,
+				key: role.id,
+				permissions: permissionsToKeys(role.permissions),
+			}));
+			// A member's role is matched by name: renamed roles and roles that were
+			// just created (and therefore have no id yet) resolve correctly.
+			const freshIdByName = new Map(
+				freshRoles.map((role) => [role.name.trim().toLowerCase(), role.id]),
+			);
+
+			const membersResult = await saveClubMembersAction({
+				data: {
+					slug: boardClub.slug,
+					members: boardMembers.map((member) => ({
+						studentId: member.id,
+						roleId:
+							freshIdByName.get(member.roleName?.trim().toLowerCase() ?? "") ??
+							null,
+					})),
+				},
+			});
+
+			if (!membersResult.success) {
+				setError(membersResult.error);
+				return;
+			}
+
+			setNoticeMessage("Club roles and members saved.");
+			setBoardClub(null);
+			await load();
+		} catch (saveError) {
+			setError(
+				saveError instanceof Error
+					? saveError.message
+					: "Could not save club roles.",
+			);
+		} finally {
+			setIsSavingBoard(false);
+		}
+	};
+
+	const toggleRolePermission = (
+		roleIndex: number,
+		key: string,
+		enabled: boolean,
+	) => {
+		setBoardRoles((current) =>
+			current.map((role, index) =>
+				index === roleIndex
+					? {
+							...role,
+							permissions: enabled
+								? [...new Set([...role.permissions, key])]
+								: role.permissions.filter((item) => item !== key),
+						}
+					: role,
+			),
+		);
+	};
+
+	const addBoardRole = () => {
+		setBoardRoles((current) => [
+			...current,
+			{
+				id: "",
+				key: `new-${current.length}`,
+				name: "New role",
+				description: "",
+				permissions: [],
+				isBoard: false,
+				sortOrder: current.length,
+				members: [],
+			},
+		]);
+	};
+
+	const removeBoardRole = (index: number) => {
+		const removedName = boardRoles[index]?.name.trim().toLowerCase();
+		setBoardRoles((current) =>
+			current.filter((_, itemIndex) => itemIndex !== index),
+		);
+		// Members in a removed role fall back to no role until reassigned.
+		if (removedName) {
+			setBoardMembers((current) =>
+				current.map((member) =>
+					member.roleName?.trim().toLowerCase() === removedName
+						? { ...member, roleName: null }
+						: member,
+				),
+			);
+		}
 	};
 
 	const remove = async (kind: Tab, id: string) => {
@@ -1005,6 +1233,198 @@ function AdminContent() {
 				</section>
 			) : null}
 
+			{tab === "clubs" && boardClub ? (
+				<section className="rounded-2xl border border-gray-200 bg-white p-6">
+					<h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-gray-900">
+						<Pencil className="h-5 w-5 text-red-500" /> Roles & permissions —{" "}
+						{boardClub.name}
+					</h2>
+					<p className="mb-4 text-sm text-gray-500">
+						A plain Member role with no permissions cannot publish posts. The
+						President and officers can — permissions are editable here.
+					</p>
+
+					<form
+						onSubmit={(event) => void saveClubBoard(event)}
+						className="space-y-6"
+					>
+						<div className="space-y-4">
+							{boardRoles.map((role, index) => (
+								<div
+									key={role.key}
+									className="rounded-xl border border-gray-200 p-4"
+								>
+									<div className="flex flex-wrap items-center gap-3">
+										<Input
+											label="Role name"
+											className="min-w-[200px] flex-1"
+											value={role.name}
+											onChange={(event) =>
+												setBoardRoles((current) =>
+													current.map((item, itemIndex) =>
+														itemIndex === index
+															? { ...item, name: event.target.value }
+															: item,
+													),
+												)
+											}
+										/>
+										<button
+											type="button"
+											disabled={isSavingBoard}
+											onClick={() => removeBoardRole(index)}
+											className="mt-6 inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60"
+										>
+											<Trash2 className="h-3.5 w-3.5" /> Remove role
+										</button>
+									</div>
+									<label className="mt-3 flex items-center gap-2 text-sm text-gray-700">
+										<input
+											type="checkbox"
+											checked={role.isBoard}
+											onChange={(event) =>
+												setBoardRoles((current) =>
+													current.map((item, itemIndex) =>
+														itemIndex === index
+															? { ...item, isBoard: event.target.checked }
+															: item,
+													),
+												)
+											}
+										/>
+										Show on the public club board
+									</label>
+									<fieldset className="mt-3">
+										<legend className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+											Permissions
+										</legend>
+										<div className="mt-2 grid gap-2 sm:grid-cols-2">
+											{CLUB_PERMISSIONS.map((permission) => (
+												<label
+													key={permission.key}
+													className="flex items-start gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-700"
+												>
+													<input
+														type="checkbox"
+														className="mt-0.5"
+														checked={role.permissions.includes(permission.key)}
+														onChange={(event) =>
+															toggleRolePermission(
+																index,
+																permission.key,
+																event.target.checked,
+															)
+														}
+													/>
+													<span>
+														<span className="block font-medium text-gray-900">
+															{permission.label}
+														</span>
+														<span className="block text-xs text-gray-500">
+															{permission.description}
+														</span>
+													</span>
+												</label>
+											))}
+										</div>
+									</fieldset>
+								</div>
+							))}
+						</div>
+
+						<button
+							type="button"
+							disabled={isSavingBoard || isLoadingBoard}
+							onClick={addBoardRole}
+							className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+						>
+							<Plus className="h-3.5 w-3.5" /> Add role
+						</button>
+
+						<div className="border-t border-gray-200 pt-4">
+							<h3 className="text-sm font-semibold text-gray-900">
+								Members &amp; assignments
+							</h3>
+							<p className="mb-3 text-xs text-gray-500">
+								{isLoadingBoard
+									? "Loading members…"
+									: `${boardMembers.length} member${boardMembers.length === 1 ? "" : "s"}. Members without a role can read the club but cannot publish.`}
+							</p>
+							{boardMembers.length === 0 ? (
+								<p className="text-sm text-gray-500">
+									No members yet. Students join a club from the member area.
+								</p>
+							) : (
+								<ul className="space-y-2">
+									{boardMembers.map((member, memberIndex) => (
+										<li
+											key={member.id}
+											className="flex flex-wrap items-center gap-3 rounded-lg bg-gray-50 px-3 py-2"
+										>
+											<span className="min-w-0 flex-1 text-sm font-medium text-gray-900">
+												{member.name}
+												{member.grade ? (
+													<span className="ml-2 text-xs text-gray-500">
+														Grade {member.grade}
+														{member.section ? ` · ${member.section}` : ""}
+													</span>
+												) : null}
+											</span>
+											<select
+												value={member.roleName ?? ""}
+												onChange={(event) =>
+													setBoardMembers((current) =>
+														current.map((item, itemIndex) =>
+															itemIndex === memberIndex
+																? {
+																		...item,
+																		roleName: event.target.value || null,
+																	}
+																: item,
+														),
+													)
+												}
+												className="rounded-lg border border-gray-300 px-2 py-1 text-sm"
+											>
+												<option value="">No role (cannot publish)</option>
+												{boardRoles.map((role) => (
+													<option key={role.key} value={role.name}>
+														{role.name}
+													</option>
+												))}
+											</select>
+										</li>
+									))}
+								</ul>
+							)}
+						</div>
+
+						<div className="flex gap-3">
+							<button
+								type="submit"
+								disabled={isSavingBoard || isLoadingBoard}
+								className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+							>
+								{isSavingBoard ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : (
+									<Pencil className="h-4 w-4" />
+								)}
+								{isSavingBoard ? "Saving…" : "Save roles & members"}
+							</button>
+							<button
+								type="button"
+								disabled={isSavingBoard}
+								onClick={() => setBoardClub(null)}
+								className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 disabled:opacity-60"
+							>
+								Close
+							</button>
+						</div>
+					</form>
+				</section>
+			) : null}
+
 			<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
 				<header className="border-b border-gray-200 px-5 py-4">
 					<h2 className="font-semibold capitalize text-gray-900">All {tab}</h2>
@@ -1082,6 +1502,14 @@ function AdminContent() {
 							setEditingClub(clubs.find((club) => club.id === id) ?? null);
 							setEditingClubDetails(null);
 						}}
+						onEditRoles={(id) => {
+							const club = clubs.find((item) => item.id === id);
+							if (club) {
+								setEditingClub(null);
+								setEditingClubDetails(null);
+								void openClubBoard(club);
+							}
+						}}
 					/>
 				)}
 			</section>
@@ -1130,6 +1558,7 @@ function ContentList({
 	onDelete,
 	onEdit,
 	onEditAttachments,
+	onEditRoles,
 	disabled = false,
 }: {
 	items: Array<{
@@ -1145,6 +1574,7 @@ function ContentList({
 	onDelete: (id: string) => void;
 	onEdit?: (id: string) => void;
 	onEditAttachments?: (id: string) => void;
+	onEditRoles?: (id: string) => void;
 	disabled?: boolean;
 }) {
 	if (items.length === 0) {
@@ -1200,6 +1630,16 @@ function ContentList({
 							className="inline-flex items-center gap-1 text-xs font-medium text-gray-600 hover:text-red-600"
 						>
 							<Paperclip className="h-3.5 w-3.5" /> Edit attachments
+						</button>
+					) : null}
+					{onEditRoles ? (
+						<button
+							type="button"
+							onClick={() => onEditRoles(item.id)}
+							disabled={disabled}
+							className="inline-flex items-center gap-1 text-xs font-medium text-gray-600 hover:text-red-600"
+						>
+							<Users className="h-3.5 w-3.5" /> Roles
 						</button>
 					) : null}
 					<button

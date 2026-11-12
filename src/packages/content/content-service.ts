@@ -551,6 +551,32 @@ export async function listClubs(options?: {
 				},
 				orderBy: { createdAt: "asc" },
 			},
+			roles: {
+				select: {
+					id: true,
+					name: true,
+					description: true,
+					permissions: true,
+					isBoard: true,
+					sortOrder: true,
+				},
+				orderBy: { sortOrder: "asc" },
+			},
+			members: {
+				select: {
+					id: true,
+					role: { select: { id: true, name: true, isBoard: true } },
+					student: {
+						select: {
+							id: true,
+							grade: true,
+							section: true,
+							user: { select: { id: true, name: true } },
+						},
+					},
+				},
+				orderBy: { createdAt: "asc" },
+			},
 		},
 		orderBy: { name: "asc" },
 	});
