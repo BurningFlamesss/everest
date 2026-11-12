@@ -561,7 +561,7 @@ export interface ContentBlock {
   updatedAt: string;
 }
 
-export type WebsitePageKey = "home" | "about" | "courses" | "facilities" | "gallery" | "calendar" | "contact" | "resources" | "result" | "transportation" | "notices" | "scholarship" | "faculty" | "login" | "activate" | "course_finder";
+export type WebsitePageKey = "home" | "about" | "courses" | "facilities" | "gallery" | "calendar" | "contact" | "resources" | "result" | "transportation" | "notices" | "scholarship" | "faculty" | "login" | "activate" | "course_finder" | "posts" | "admissions" | "clubs" | "events";
 
 export type WebsitePageStatus = "draft" | "published";
 

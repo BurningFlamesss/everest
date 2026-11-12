@@ -44,6 +44,14 @@ function RouteComponent() {
 		...getSectionFields(cmsData?.blocks, "headline"),
 	};
 
+	const statsSection = {
+		...sectionDefaults("stats"),
+		...getSectionFields(cmsData?.blocks, "stats"),
+	};
+
+	const statsTitle = str(statsSection, "title").trim();
+	const statsBody = str(statsSection, "body").trim();
+
 	const onSelectSection = (sectionType: BlockType) => {
 		window.parent?.postMessage(
 			{
@@ -81,6 +89,16 @@ function RouteComponent() {
 				testId="cms-section-hit-result-stats"
 			>
 				<div className="mt-10 mb-16">
+					{statsTitle || statsBody ? (
+						<div className="mb-6 flex flex-col gap-1">
+							{statsTitle ? (
+								<h2 className="font-semibold text-foreground">{statsTitle}</h2>
+							) : null}
+							{statsBody ? (
+								<p className="text-sm text-muted-foreground">{statsBody}</p>
+							) : null}
+						</div>
+					) : null}
 					<ResultsChart dbResults={results} />
 				</div>
 			</CmsSectionBox>

@@ -50,4 +50,4 @@ export const STAFF_IMPORT_FIELDS = [
 export const STAFF_SAMPLE_CSV = `First Name,Last Name,Email,Designation,Department,Employee ID
 Sita,Sharma,sita.sharma@everest.edu,Mathematics Teacher,Mathematics,EMP-001
 Binod,Adhikari,binod.adhikari@everest.edu,Science Teacher,Science,EMP-002
-Maya,Gurung,maya.gurung@everest.edu,Accountant,Administration,EMP-003`;
+Rita,Karki,rita.karki@everest.edu,Accountant,Administration,EMP-003`;

@@ -96,7 +96,7 @@ export function ReceiptsTable({ canManage }: { canManage: boolean }) {
         recordedBy: row.recordedBy,
       })),
     );
-    downloadTextFile(`northfield-receipts-${Date.now()}.csv`, csv);
+    downloadTextFile(`everest-receipts-${Date.now()}.csv`, csv);
     toast.success(`Exported ${sorted.length} receipts`);
   };
 

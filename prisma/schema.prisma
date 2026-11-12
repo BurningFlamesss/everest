@@ -572,6 +572,9 @@ enum WebsitePageKey {
   scholarship
   posts
   course_finder
+  admissions
+  clubs
+  events
 }
 
 enum WebsitePageStatus {

@@ -196,11 +196,18 @@ export default function LandingPage({ page = null, preview = false }: Partial<La
 								{rows(discover, "cards").map((card, i) => {
 									const href = str(card, "href", "/");
 									const Icon = DISCOVER_ICONS[href] ?? Info;
+									const image = str(card, "image", "");
 									return (
 										<Link key={i} to={href as never} className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
-											<div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 sm:h-14 sm:w-14">
-												<Icon className="h-6 w-6 text-accent" aria-hidden="true" />
-											</div>
+											{image ? (
+												<div className="mb-2 h-[160px] w-full overflow-hidden rounded-md border border-border bg-secondary">
+													<img src={image} alt="" className="h-full w-full object-cover transition-transform duration-[400ms] group-hover:scale-105" />
+												</div>
+											) : (
+												<div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 sm:h-14 sm:w-14">
+													<Icon className="h-6 w-6 text-accent" aria-hidden="true" />
+												</div>
+											)}
 											<p className="t-eyebrow mt-6">{str(card, "eyebrow")}</p>
 											<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
 												{str(card, "title")}
@@ -280,14 +287,18 @@ export default function LandingPage({ page = null, preview = false }: Partial<La
 										<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
 											{person.name}
 										</h3>
-										<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
-											{person.qualification}
-										</p>
+										{person.qualification ? (
+											<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
+												{person.qualification}
+											</p>
+										) : null}
 										<div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-rule-soft pt-4">
 											<span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[11.5px] leading-normal text-muted-foreground">
 												{person.department}
 											</span>
-											<span className="t-meta">Ext. {person.extension}</span>
+											{person.extension ? (
+												<span className="t-meta">Ext. {person.extension}</span>
+											) : null}
 										</div>
 										<span className="mt-4 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
 											View directory

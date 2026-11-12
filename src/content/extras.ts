@@ -154,7 +154,7 @@ export const thenNow: ThenNow[] = [
     nowLabel: '2083 BS',
     then: photos.campusFacade,
     now: photos.campusMorning,
-    note: 'Eight rooms and an office when the school moved to Sriman Marga. Twenty-eight rooms now, on the same footprint plus one floor.',
+    note: 'Eight rooms and an office when the school moved to Sukkhanagar. Twenty-eight rooms now, on the same footprint plus one floor.',
   },
   {
     id: 'tn-ground',

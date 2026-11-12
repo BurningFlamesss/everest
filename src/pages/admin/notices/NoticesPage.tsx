@@ -126,9 +126,13 @@ export default function NoticesPage() {
 
 	const changeStatusTab = (value: string) => {
 		navigate({
-			search: (value === "all"
-					? Object.fromEntries(Object.entries(searchParams).filter(([k]) => k !== "status"))
-					: { ...searchParams, status: value }) as Record<string, string | undefined>,
+			to: "/admin/notices",
+			search: (prev) => {
+				const next: Record<string, string | undefined> = { ...prev };
+				if (value === "all") delete next.status;
+				else next.status = value;
+				return next;
+			},
 			replace: true,
 		});
 	};

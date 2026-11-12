@@ -11,8 +11,8 @@ export interface LatLng {
   lng: number;
 }
 
-/** Northfield Academy main campus (demo coordinate). */
-export const CAMPUS: LatLng = { lat: 42.6526, lng: -73.7562 };
+/** Everest main campus, Sukkhanagar, Butwal-8. */
+export const CAMPUS: LatLng = { lat: 27.7, lng: 83.4486 };
 
 const KM_PER_DEG_LAT = 110.574;
 

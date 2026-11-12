@@ -1,5 +1,5 @@
 import type { SchoolConfig } from "#/types/school.ts";
-import type { WebsitePageKey } from "#/types";
+import type { BlockType, WebsitePageKey } from "#/types";
 import { getPublishedPage } from "@/lib/website-content";
 
 const configs = import.meta.glob("../../schools/*/config.json", {
@@ -42,7 +42,7 @@ export type ContentBlockFields = Record<string, string>;
 
 export interface ContentBlock {
   id: string;
-  type: string;
+  type: BlockType;
   label: string;
   visible: boolean;
   order: number;

@@ -43,7 +43,7 @@ function tokenScore(token: string, q: string): number {
 /**
  * Fuzzy match over ward numbers, area names and landmarks in both English and
  * Nepali. A stop's own name outranks a match on its wider area, so searching
- * “Bagar” surfaces the Bagar stop rather than the first stop on its route.
+ * “Sukkhanagar” surfaces the Sukkhanagar stop rather than the first stop on its route.
  * Returns [] for a genuine no-match — which is the most valuable state here.
  */
 export function findPickup(query: string): PickupMatch[] {

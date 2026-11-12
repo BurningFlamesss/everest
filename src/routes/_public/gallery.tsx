@@ -9,6 +9,7 @@ import {
   PageFrame,
   PageHeader,
   Section,
+  SectionHeading,
 } from "#/templates/modern/components/chrome/PageFrame";
 import { LedgerCount, RevealUp } from "#/templates/modern/components/motion";
 import { PhotoFan } from "#/templates/modern/components/interactions/PhotoFan";
@@ -72,6 +73,11 @@ export default function RouteComponent() {
   const headerSection = {
     ...sectionDefaults("headline"),
     ...getSectionFields(cmsData?.blocks, "headline"),
+  };
+
+  const gridSection = {
+    ...sectionDefaults("gallery_grid"),
+    ...getSectionFields(cmsData?.blocks, "gallery_grid"),
   };
 
   const onSelectSection = (sectionType: BlockType) => {
@@ -196,6 +202,19 @@ export default function RouteComponent() {
         </div>
       </Section>
 
+      <CmsSectionBox
+        preview={preview}
+        sectionType="gallery_grid"
+        onSelect={onSelectSection}
+        testId="cms-section-hit-gallery-gallery_grid"
+      >
+      {str(gridSection, "title") ? (
+        <SectionHeading
+          title={str(gridSection, "title")}
+          className="mt-10"
+          testId="gallery-grid-title"
+        />
+      ) : null}
       <div className="mt-10 mb-16" data-testid="gallery-body">
         <AnimatePresence mode="wait">
           {entered ? (
@@ -316,6 +335,7 @@ export default function RouteComponent() {
           )}
         </AnimatePresence>
       </div>
+      </CmsSectionBox>
 
       {lightbox ? (
         <Lightbox

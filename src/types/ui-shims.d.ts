@@ -343,6 +343,13 @@ declare module "#/components/ui/carousel" {
   export const CarouselPrevious: UIComponent;
   export const CarouselNext: UIComponent;
 }
+declare module "#/components/ui/carousel.jsx" {
+  export const Carousel: UIComponent;
+  export const CarouselContent: UIComponent;
+  export const CarouselItem: UIComponent;
+  export const CarouselPrevious: UIComponent;
+  export const CarouselNext: UIComponent;
+}
 declare module "#/components/ui/checkbox" {
   export const Checkbox: UIComponent;
 }

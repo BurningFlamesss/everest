@@ -4,7 +4,7 @@ import { useWebsitePageContent } from "#/packages/school/hook.tsx";
 import { useSearch } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Facebook, Instagram, Twitter, Youtube, Linkedin } from "lucide-react";
 import { departments as staticDepartments, school } from "#/lib/site";
 import { Button } from "#/templates/modern/components/kit";
 import { Segmented } from "#/templates/modern/components/Segmented";
@@ -50,19 +50,43 @@ function RouteComponent() {
   const mapSection = { ...sectionDefaults("map"), ...getSectionFields(cmsData?.blocks, "map") } as Record<string, unknown>;
   const deptSection = { ...sectionDefaults("department_list"), ...getSectionFields(cmsData?.blocks, "department_list") } as Record<string, unknown>;
 
-  const phoneNtc = str(contactSection, "phone", school.phoneNtc);
-  const phoneNcell = str(contactSection, "secondaryPhone", school.phoneNcell);
-  const mapEmbed = str(mapSection, "embedUrl", "https://www.google.com/maps?q=Butwal-8+Sukkhanagar&output=embed");
+  const phoneNtc = str(contactSection, "phone", "") || school.phoneNtc;
+  const phoneNcell = str(contactSection, "secondaryPhone", "") || school.phoneNcell;
+  const contactEmail = str(contactSection, "email", "") || school.email;
+  const admissionsEmail = str(contactSection, "admissionsEmail", "") || "admissions@everestbutwal.edu.np";
+  const hoursNote = str(hoursSection, "note", "");
+  const mapEmbed = str(mapSection, "embedUrl", "") || "https://www.google.com/maps?q=Butwal-8+Sukkhanagar&output=embed";
+  const mapLabel = str(mapSection, "label", "") || "Main Campus";
+  const mapDirections = str(mapSection, "directions", "");
+  const mapLat = str(mapSection, "latitude", "");
+  const mapLng = str(mapSection, "longitude", "");
+  const mapQuery = mapLat && mapLng ? `${mapLat},${mapLng}` : mapLabel;
 
+  const weekdayHours = str(hoursSection, "weekdays", "") || "09:00–16:00";
   const weekHours: Array<[string, string]> = [
-    ["SUNDAY", str(hoursSection, "sunday", "09:00–16:00")],
-    ["MONDAY", str(hoursSection, "weekdays", "09:00–16:00")],
-    ["TUESDAY", str(hoursSection, "weekdays", "09:00–16:00")],
-    ["WEDNESDAY", str(hoursSection, "weekdays", "09:00–16:00")],
-    ["THURSDAY", str(hoursSection, "weekdays", "09:00–16:00")],
-    ["FRIDAY", str(hoursSection, "weekdays", "09:00–16:00")],
-    ["SATURDAY", str(hoursSection, "saturday", "CLOSED")],
+    ["SUNDAY", str(hoursSection, "sunday", "") || "09:00–16:00"],
+    ["MONDAY", weekdayHours],
+    ["TUESDAY", weekdayHours],
+    ["WEDNESDAY", weekdayHours],
+    ["THURSDAY", weekdayHours],
+    ["FRIDAY", weekdayHours],
+    ["SATURDAY", str(hoursSection, "saturday", "") || "CLOSED"],
   ];
+
+  const social_linksSection = {
+    ...sectionDefaults("social_links"),
+    ...getSectionFields(cmsData?.blocks, "social_links"),
+  } as Record<string, unknown>;
+
+  const socialItems = ([
+    { key: "facebook", label: "Facebook", icon: Facebook, href: str(social_linksSection, "facebook", "https://facebook.com/everestbutwal") },
+    { key: "instagram", label: "Instagram", icon: Instagram, href: str(social_linksSection, "instagram", "https://instagram.com/everestbutwal") },
+    { key: "x", label: "X", icon: Twitter, href: str(social_linksSection, "x", "") },
+    { key: "youtube", label: "YouTube", icon: Youtube, href: str(social_linksSection, "youtube", "https://youtube.com/@everestbutwal") },
+    { key: "linkedin", label: "LinkedIn", icon: Linkedin, href: str(social_linksSection, "linkedin", "") },
+  ] as { key: string; label: string; icon: typeof Facebook; href: string }[]).filter(
+    (item) => item.href !== "",
+  );
 
   const cmsDepts = rows(deptSection, "departments").map((d, i) => ({
     id: `dept-${i}`,
@@ -104,12 +128,12 @@ function RouteComponent() {
 				<aside>
 					<p className="devanagari">{school.nepali}</p>
 					<h2 className="t-page-title text-foreground">{school.name}</h2>
-					<p>{str(contactSection, "address", school.address)}</p>
+					<p>{str(contactSection, "address", "") || school.address}</p>
 					<CmsSectionBox preview={preview} sectionType="office_hours" onSelect={onSelectSection} testId="cms-section-hit-office_hours">
 					<div className="time-card mt-8 rounded-card border border-border bg-transparent p-6">
 						<div className="flex items-center gap-2 mb-4">
 							<strong data-testid="contact-open-state" className="font-display text-base tracking-wider uppercase text-foreground">
-								OPEN TODAY · {str(hoursSection, "weekdays", "09:00–16:00")}
+								OPEN TODAY · {weekdayHours}
 							</strong>
 						</div>
 						<span data-testid="kathmandu-time" className="block text-base text-muted-foreground mb-6 pb-4 border-b border-rule-soft">
@@ -123,6 +147,11 @@ function RouteComponent() {
 								</li>
 							))}
 						</ul>
+						{hoursNote ? (
+							<p data-testid="office-hours-note" className="text-sm text-muted-foreground mb-6 pb-6 border-b border-rule-soft">
+								{hoursNote}
+							</p>
+						) : null}
 						<CmsSectionBox preview={preview} sectionType="contact_details" onSelect={onSelectSection} testId="cms-section-hit-contact_details">
 						<div className="flex flex-col gap-3">
 							<a href={`tel:${phoneNtc}`} data-testid="contact-ntc-link" className="flex justify-between items-center text-base font-medium hover:text-accent transition-colors">
@@ -133,8 +162,16 @@ function RouteComponent() {
 								<span className="text-muted-foreground">NCELL</span>
 								<span>{phoneNcell}</span>
 							</a>
+							<a href={`mailto:${contactEmail}`} data-testid="contact-email-link" className="flex justify-between items-center text-base font-medium hover:text-accent transition-colors">
+								<span className="text-muted-foreground">EMAIL</span>
+								<span>{contactEmail}</span>
+							</a>
+							<a href={`mailto:${admissionsEmail}`} data-testid="contact-admissions-email-link" className="flex justify-between items-center text-base font-medium hover:text-accent transition-colors">
+								<span className="text-muted-foreground">ADMISSIONS</span>
+								<span>{admissionsEmail}</span>
+							</a>
 							<a
-								href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(str(contactSection, "address", "Pokhara 5 Nepal"))}`}
+								href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(str(contactSection, "address", "") || "Butwal-8, Sukkhanagar, Rupandehi, Nepal")}`}
 								data-testid="contact-directions-link"
 								className="inline-flex mt-2 items-center justify-center font-medium text-base text-accent hover:text-accent/80 transition-colors"
 							>
@@ -248,9 +285,15 @@ function RouteComponent() {
 			<CmsSectionBox preview={preview} sectionType="map" onSelect={onSelectSection} testId="cms-section-hit-map">
 			<section
 				className="map-panel content"
-				aria-label="School map placeholder"
+				aria-label={mapLabel}
 				data-testid="school-map"
 			>
+				<div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+					<h2 className="t-h2 text-foreground">{mapLabel}</h2>
+					{mapDirections ? (
+						<p className="text-sm text-muted-foreground">{mapDirections}</p>
+					) : null}
+				</div>
 				<iframe
 					src={mapEmbed}
 					width="100%"
@@ -260,22 +303,66 @@ function RouteComponent() {
 					loading="lazy"
 					referrerPolicy="no-referrer-when-downgrade"
 				></iframe>
+				{mapLat && mapLng ? (
+					<p className="mt-3 text-sm text-muted-foreground">
+						<a
+							href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`}
+							target="_blank"
+							rel="noreferrer"
+							className="inline-flex items-center gap-1 font-medium text-accent hover:text-accent/80 transition-colors"
+						>
+							Open in Google Maps <span className="text-base leading-none">↗</span>
+						</a>
+						<span className="ml-3 font-mono text-xs text-muted-foreground/70">
+							{mapLat}, {mapLng}
+						</span>
+					</p>
+				) : null}
 			</section>
 			</CmsSectionBox>
 			<CmsSectionBox preview={preview} sectionType="department_list" onSelect={onSelectSection} testId="cms-section-hit-department_list">
 			<section className="departments content">
-				<h2 className="t-h2 text-foreground">{str(deptSection, "title", "WHO TO ASK")}</h2>
+				{str(deptSection, "eyebrow") ? (
+					<p className="t-eyebrow mb-2">{str(deptSection, "eyebrow")}</p>
+				) : null}
+				<h2 className="t-h2 text-foreground">{str(deptSection, "title", "") || "WHO TO ASK"}</h2>
 				<div>
 					{departments.map((d) => (
 						<article key={d.id} data-testid={`department-${d.id}`}>
 							<span>{d.name}</span>
 							<h3 className="font-display text-xl text-foreground font-semibold">{d.contact}</h3>
-							<a href={`mailto:${d.email}`}>{d.email}</a>
-							<p>{d.hours}</p>
+							{d.email ? (
+								<a href={`mailto:${d.email}`}>{d.email}</a>
+							) : null}
+							{d.hours ? <p>{d.hours}</p> : null}
 						</article>
 					))}
 				</div>
 			</section>
+			</CmsSectionBox>
+			<CmsSectionBox preview={preview} sectionType="social_links" onSelect={onSelectSection} testId="cms-section-hit-contact-social_links">
+				<section className="contact-social strip mt-12 rounded-2xl border border-border bg-card p-6">
+					<h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground mb-3">FOLLOW</h3>
+					<h2 className="t-h2 text-foreground mb-4">Follow the school</h2>
+					{socialItems.length > 0 ? (
+						<div className="flex flex-wrap gap-4">
+							{socialItems.map((item) => (
+								<a
+									key={item.key}
+									href={item.href}
+									target="_blank"
+									rel="noreferrer"
+									className="flex items-center gap-2 rounded-lg bg-secondary px-3 py-2 text-sm text-foreground hover:bg-secondary/70"
+								>
+									<item.icon className="h-4 w-4" />
+									<span className="font-medium">{item.label}</span>
+								</a>
+							))}
+						</div>
+					) : preview ? (
+						<p className="text-sm text-muted-foreground">Social links section — click to edit.</p>
+					) : null}
+				</section>
 			</CmsSectionBox>
 		</>
 	);

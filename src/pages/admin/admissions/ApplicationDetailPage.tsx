@@ -177,7 +177,7 @@ export default function ApplicationDetailPage() {
 			<PageHeader
 				eyebrow="Admissions"
 				title={application.applicantName}
-				description={`${application.applicationNo} · applied for ${application.gradeApplied} at ${branch?.name ?? "Northfield"}`}
+				description={`${application.applicationNo} · applied for ${application.gradeApplied} at ${branch?.name ?? "Everest"}`}
 				meta={
 					<>
 						<StatusBadge

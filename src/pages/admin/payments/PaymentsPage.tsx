@@ -160,11 +160,12 @@ export default function PaymentsPage() {
 						data-testid={`payments-kpi-${kpi.key}`}
 						onClick={() => {
 							navigate({
-								search: {
-									...searchParams,
+								to: "/admin/payments",
+								search: (prev) => ({
+									...prev,
 									tab: "invoices",
 									...(kpi.status === "all" ? {} : { status: kpi.status }),
-								} as Record<string, string | undefined>,
+								}),
 								replace: true,
 							});
 						}}

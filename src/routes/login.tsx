@@ -23,7 +23,8 @@ export const Route = createFileRoute("/login")({
 		}
 	},
 	loader: async ({ location }) => {
-		if (String(location.search.cms ?? "") === "1") {
+		const search = location.search as { cms?: string };
+		if (String(search.cms ?? "") === "1") {
 			const previewPage = await getWebsitePagePreviewServer({
 				data: { key: "login" },
 			});

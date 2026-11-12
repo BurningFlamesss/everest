@@ -135,7 +135,7 @@ export function InvoicesTable({
         status: row.status,
       })),
     );
-    downloadTextFile(`northfield-invoices-${Date.now()}.csv`, csv);
+    downloadTextFile(`everest-invoices-${Date.now()}.csv`, csv);
     toast.success(`Exported ${list.length} invoices`);
   };
 

@@ -330,6 +330,11 @@ function RouteComponent() {
     ...getSectionFields(cmsData?.blocks, "headline"),
   };
 
+  const academicsSection = {
+    ...sectionDefaults("academics"),
+    ...getSectionFields(cmsData?.blocks, "academics"),
+  };
+
   const onSelectSection = (sectionType: BlockType) => {
     window.parent?.postMessage(
       {
@@ -569,12 +574,19 @@ function RouteComponent() {
 
           {/* Programme index — stacked editorial rows, not a card grid */}
           <Section>
-            <SectionHeading
-              eyebrow="Programme index"
-              title={`${levelPrograms.length} programmes at ${level.short}`}
-              description="Each row opens into the full subject list, credit hours, fee table and progression routes for that programme."
-              testId="program-index-title"
-            />
+            <CmsSectionBox
+              preview={preview}
+              sectionType="academics"
+              onSelect={onSelectSection}
+              testId="cms-section-hit-courses-academics"
+            >
+              <SectionHeading
+                eyebrow="Programme index"
+                title={str(academicsSection, "title") || `${levelPrograms.length} programmes at ${level.short}`}
+                description={str(academicsSection, "body") || "Each row opens into the full subject list, credit hours, fee table and progression routes for that programme."}
+                testId="program-index-title"
+              />
+            </CmsSectionBox>
             <Accordion
               type="single"
               collapsible

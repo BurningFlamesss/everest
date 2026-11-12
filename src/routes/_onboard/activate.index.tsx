@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { AlertCircle, ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import { str } from "#/components/cms/block-fields";
 import { pageCopy } from "#/lib/site";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
@@ -142,27 +143,24 @@ function RouteComponent() {
 					}}
 				>
 					<ImageReveal
-						src={
-							(visual?.fields?.image as any)?.url ||
-							"/public/schools/everest/landing-footage/frame_0001.jpeg"
-						}
-						alt="School architecture"
+						src={str(
+								visual?.fields ?? {},
+								"image",
+								"/schools/everest/landing-footage/frame_0001.jpeg",
+							)}
+						alt="School architecture marking the entrance to Everest"
 						eager
 						testId="activate-visual-image"
 					/>
 					<div className="auth-visual__overlay">
-						<SectionLabel
-							number={String(visual?.fields?.kicker || "04")}
-							inverse
-						>
-							{String(visual?.fields?.title || "Welcome")}
+						<SectionLabel number="04" inverse>
+							{str(visual?.fields ?? {}, "eyebrow", "Everest entrance")}
 						</SectionLabel>
-						<p>{String(visual?.fields?.subtitle || "Account Activation")}</p>
+						<p>
+							{str(visual?.fields ?? {}, "headline", "The digital entrance to the school.")}
+						</p>
 						<span>
-							{String(
-								visual?.fields?.description ||
-									"One community / connected responsibly",
-							)}
+							{str(visual?.fields ?? {}, "subheadline", "One community / connected responsibly")}
 						</span>
 					</div>
 				</div>
@@ -175,16 +173,16 @@ function RouteComponent() {
 					style={{ color: "var(--c-black)" }}
 				>
 					<ArrowLeft aria-hidden="true" style={{ color: "var(--c-red)" }} />
-					Public website
+					{str(formBlock?.fields ?? {}, "backLabel", "Public website")}
 				</Link>
 				<div className="auth-panel__inner">
 					<CmsSectionBox type="auth_intro" onSelect={onSelectSection}>
 						<header>
 							<span className="auth-kicker">
-								{String(intro?.fields?.title || pageCopy.activate.eyebrow)}
+								{str(intro?.fields ?? {}, "kicker", pageCopy.activate.eyebrow)}
 							</span>
 							<h1 id="activate-title" className="t-page-title text-foreground">
-								{String(intro?.fields?.body || pageCopy.activate.title)
+								{str(intro?.fields ?? {}, "title", pageCopy.activate.title)
 									.split("\n")
 									.map((line: string, i: number) => (
 										<span key={i}>
@@ -194,8 +192,10 @@ function RouteComponent() {
 									))}
 							</h1>
 							<p className="auth-lead" data-testid="activate-support-copy">
-								{String(
-									intro?.fields?.callToAction || pageCopy.activate.support,
+								{str(
+									intro?.fields ?? {},
+									"intro",
+									pageCopy.activate.support,
 								)}
 							</p>
 						</header>
@@ -204,7 +204,7 @@ function RouteComponent() {
 					<CmsSectionBox type="auth_form" onSelect={onSelectSection}>
 						<form onSubmit={submit} className="auth-form" noValidate>
 							<h2 className="t-label mt-8 mb-4 border-b pb-2 text-foreground">
-								{String(formBlock?.fields?.title || "Security verification")}
+								{str(formBlock?.fields ?? {}, "emailLabel", "Security verification")}
 							</h2>
 
 							{error && (
@@ -244,7 +244,7 @@ function RouteComponent() {
 									className="w-full justify-between"
 									testId="activate-submit-btn"
 								>
-									<span>Verify code</span>
+									<span>{str(formBlock?.fields ?? {}, "submitLabel", "Verify code")}</span>
 									<span aria-hidden="true">→</span>
 								</Button>
 							</div>

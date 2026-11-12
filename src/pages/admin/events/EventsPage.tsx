@@ -83,7 +83,12 @@ export default function EventsPage() {
 			setEditing(null);
 			setFormOpen(true);
 			navigate({
-				search: Object.fromEntries(Object.entries(searchParams).filter(([k]) => k !== "new")),
+				to: "/admin/events",
+				search: (prev) => {
+					const next: Record<string, string | undefined> = { ...prev };
+					delete next.new;
+					return next;
+				},
 				replace: true,
 			});
 		}

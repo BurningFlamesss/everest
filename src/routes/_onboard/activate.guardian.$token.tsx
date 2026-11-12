@@ -148,7 +148,7 @@ function RouteComponent() {
 					<p className="font-medium text-gray-900">{invite.user.name}</p>
 					<p className="text-gray-500">{invite.user.email}</p>
 					<p className="mt-2 text-gray-600">
-						Linked to {invite.student.user.name} as {invite.relation}.
+						Linked to {invite.student.user.name} as their guardian.
 					</p>
 				</div>
 

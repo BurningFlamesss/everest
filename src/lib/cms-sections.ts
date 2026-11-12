@@ -11,7 +11,27 @@ import type { BlockType, ContentBlock } from "@/types";
 // been saved yet.
 // ---------------------------------------------------------------------------
 
-export type CmsPageKey = "home" | "about" | "courses" | "facilities" | "gallery" | "calendar" | "contact" | "resources" | "result" | "transportation" | "notices" | "scholarship" | "faculty" | "login" | "activate" | "course_finder";
+export type CmsPageKey =
+	| "home"
+	| "about"
+	| "courses"
+	| "facilities"
+	| "gallery"
+	| "calendar"
+	| "contact"
+	| "resources"
+	| "result"
+	| "transportation"
+	| "notices"
+	| "scholarship"
+	| "faculty"
+	| "login"
+	| "activate"
+	| "course_finder"
+	| "posts"
+	| "admissions"
+	| "clubs"
+	| "events";
 
 export const LOGIN_SECTION_TYPES: BlockType[] = [
 	"auth_visual",
@@ -37,19 +57,23 @@ export function pageSectionTypes(pageKey: CmsPageKey): BlockType[] {
 		case "faculty": return FACULTY_SECTION_TYPES;
 		case "login": return LOGIN_SECTION_TYPES;
 		case "activate": return ACTIVATE_SECTION_TYPES;
-		case "home": return ["landing_hero", "landing_facts", "discover_cards", "landing_section_headings", "stats", "featured_events", "gallery_grid"];
-		case "about": return ["chapters", "history", "mission_vision", "principal_message"];
+		case "home": return ["landing_hero", "landing_facts", "discover_cards", "landing_section_headings"];
+		case "about": return ["chapters"];
 		case "contact": return ["contact_details", "department_list", "office_hours", "map", "social_links"];
 		case "courses": return ["headline", "academics"];
-		case "course_finder": return ["headline", "rich_text"];
-		case "facilities": return ["headline", "facilities"];
+		case "course_finder": return ["headline"];
+		case "facilities": return ["facilities"];
 		case "gallery": return ["headline", "gallery_grid"];
 		case "calendar": return ["headline", "featured_events"];
 		case "resources": return ["headline", "rich_text"];
 		case "result": return ["headline", "stats"];
 		case "transportation": return ["headline", "contact_details"];
-		case "notices": return ["headline", "announcements", "featured_notices"];
-		case "scholarship": return ["headline", "admissions_info"];
+		case "notices": return ["headline"];
+		case "scholarship": return ["headline"];
+		case "posts": return ["headline"];
+		case "admissions": return ["hero", "admissions_info", "cta"];
+		case "clubs": return ["headline"];
+		case "events": return ["headline"];
 		default: return ["rich_text"];
 	}
 }
@@ -68,6 +92,27 @@ export const SECTION_LABELS: Partial<Record<BlockType, string>> = {
 	chapters: "Chapters",
 	department_list: "Departments",
 	landing_section_headings: "Section headings",
+	stats: "Results chart",
+	featured_events: "Featured events",
+	featured_notices: "Featured notices",
+	gallery_grid: "Gallery section",
+	social_links: "Social links",
+	rich_text: "Rich text",
+	history: "History",
+	mission_vision: "Mission & vision",
+	principal_message: "Principal's message",
+	academics: "Academics",
+	facilities: "Facilities section",
+	headline: "Headline",
+	hero: "Hero",
+	cta: "Call to action",
+	contact_details: "Contact details",
+	office_hours: "Office hours",
+	map: "Map & directions",
+	admissions_info: "Application steps",
+	announcements: "Announcements",
+	intro: "Intro",
+	achievements: "Achievements",
 };
 
 /** Default copy for every fixed section — mirrors the static public fallbacks. */
@@ -76,7 +121,7 @@ export const SECTION_DEFAULTS: Partial<
 > = {
 	auth_visual: {
 		image: "/schools/everest/landing-footage/frame_0001.jpeg",
-		eyebrow: "ScMS entrance",
+		eyebrow: "Everest entrance",
 		headline: "The digital entrance to the school.",
 		subheadline: "One community / connected responsibly",
 	},
@@ -109,7 +154,7 @@ export const SECTION_DEFAULTS: Partial<
 		eyebrow: "Leadership",
 		title: "Who runs what",
 		description:
-			"The six people who carry responsibility for the school. Select a card to see the full profile, office hours and contact details.",
+			"The four people who carry responsibility for the school. Select a card to see the full profile, office hours and contact details.",
 	},
 	faculty_directory: {
 		eyebrow: "Directory",
@@ -155,7 +200,7 @@ export const SECTION_DEFAULTS: Partial<
 			{ name: "Our Story", category: "Foundation", description: "Welcome to Everest English Boarding Secondary School, a premier institution dedicated to nurturing young minds. For over three decades, we have provided an environment that balances rigorous academic standards with holistic personal development.", image: "", inCharge: "School Board", since: "1995", block: "Overall Campus", studentsLove: "A home away from home where every student is known, valued, and inspired to succeed." },
 			{ name: "Vision & Mission", category: "Foundation", description: "Our vision is to be a center of excellence that shapes global citizens. Our mission is to foster academic excellence while developing strong character and integrity in every student, making disciplined learning feel personal and connected.", image: "", inCharge: "Academic Council", since: "1995", block: "Institutional Policy", studentsLove: "Education is not just about filling minds, but igniting curiosity that lasts a lifetime." },
 			{ name: "Principal's Message", category: "Leadership", description: "Education is a shared commitment between dedicated teachers, motivated students, and enthusiastic parents. We strive to create a dynamic environment where every child is empowered to discover their potential and achieve their dreams.", image: "", inCharge: "Principal's Office", since: "2010", block: "Administration", studentsLove: "The principal's door is always open—leadership here is about listening and guiding." },
-			{ name: "Legacy & Heritage", category: "History", description: "What started as a small cohort of dedicated educators has blossomed into a vibrant, multi-building campus. Everest EBSS has consistently ranked among the top educational institutions in the Gandaki Province, shaping regional standards.", image: "", inCharge: "Founding Members", since: "1995", block: "Legacy & Timeline", studentsLove: "The history of our school is reflected in every brick and every lesson." },
+			{ name: "Legacy & Heritage", category: "History", description: "What started as a small cohort of dedicated educators has blossomed into a vibrant, multi-building campus. Everest EBSS has consistently ranked among the top educational institutions in the Lumbini Province, shaping regional standards.", image: "", inCharge: "Founding Members", since: "1995", block: "Legacy & Timeline", studentsLove: "The history of our school is reflected in every brick and every lesson." },
 			{ name: "Core Values", category: "Student Life", description: "We are guided by respect, responsibility, curiosity, and resilience. Everest encourages active participation in extracurricular activities, social service programs, and leadership councils to ensure students grow both inside and outside the classroom.", image: "", inCharge: "Student Council", since: "2000", block: "Student Governance", studentsLove: "The strength of Everest lies in the diversity of its community and the shared commitment to excellence." },
 			{ name: "Accreditations", category: "Academics", description: "Fully accredited by the National Examinations Board (NEB) and the Ministry of Education, Nepal. We maintain rigorous standards across all our primary, secondary, and +2 programs ensuring our students are prepared for higher education globally.", image: "", inCharge: "Examination Board", since: "1995", block: "Academic Quality", studentsLove: "Knowing our education is recognized everywhere gives us the confidence to aim high." },
 		],
@@ -165,16 +210,16 @@ export const SECTION_DEFAULTS: Partial<
 		phone: "+977 71 535962",
 		secondaryPhone: "+977 71 531342",
 		email: "everestbutwal@gmail.com",
-		admissionsEmail: "admissions@everestpokhara.edu.np",
+		admissionsEmail: "admissions@everestbutwal.edu.np",
 		address: "Butwal-8, Sukkhanagar, Rupandehi, Lumbini Province, Nepal",
 	},
 	department_list: {
 		eyebrow: "Contact Everest",
 		title: "Who to ask",
 		departments: [
-			{ name: "Admissions Office", contact: "Anita Shrestha", email: "admissions@everestpokhara.edu.np", hours: "Sun–Fri, 09:00–16:00" },
-			{ name: "Accounts Office", contact: "Bikash Rana", email: "accounts@everestpokhara.edu.np", hours: "Sun–Fri, 10:00–15:00" },
-			{ name: "Principal's Office", contact: "Maya Gurung", email: "principal@everestpokhara.edu.np", hours: "By appointment" },
+			{ name: "Admissions Office", contact: "Admissions Office", email: "admissions@everestbutwal.edu.np", hours: "Sun–Fri, 09:00–16:00" },
+			{ name: "Accounts Office", contact: "Accounts Office", email: "accounts@everestbutwal.edu.np", hours: "Sun–Fri, 10:00–15:00" },
+			{ name: "Principal's Office", contact: "Krishna Neupane", email: "principal@everestbutwal.edu.np", hours: "By appointment" },
 		],
 	},
 	office_hours: {
@@ -189,6 +234,24 @@ export const SECTION_DEFAULTS: Partial<
 		longitude: "83.45",
 		directions: "Butwal-8, Sukkhanagar — see the map below.",
 		embedUrl: "https://www.google.com/maps?q=Butwal-8+Sukkhanagar&output=embed",
+	},
+	// Admissions page (/admissions): mirror the route's inline copy so the page
+	// renders identically before any admin edit.
+	admissions_info: {
+		title: "How to apply",
+		body: "The process is simple, and the school office will guide you at every step.",
+		deadline: "",
+		steps: [
+			{ title: "1. Start an enquiry", description: "Send the contact form with your child's current grade and the year you are applying for." },
+			{ title: "2. Visit the campus", description: "The office arranges a tour and a short conversation with the year coordinator." },
+			{ title: "3. Submit documents", description: "Bring the previous report card, transfer certificate, birth certificate and photographs." },
+		],
+	},
+	cta: {
+		title: "Questions before you apply?",
+		body: "We reply within one working day.",
+		buttonLabel: "Contact the office",
+		buttonHref: "/contact",
 	},
 	// Landing page editorial section headings (the four SectionHeading strips).
 	landing_section_headings: {
@@ -207,6 +270,39 @@ export const SECTION_DEFAULTS: Partial<
 		facultyEyebrow: "Leadership",
 		facultyTitle: "Our Faculty",
 		facultyDesc: "The educators leading our academic departments and steering the school's vision.",
+	},
+	// Contact page (/contact): mirrors the route copy.
+	social_links: {
+		facebook: "https://facebook.com/everestbutwal",
+		instagram: "https://instagram.com/everestbutwal",
+		linkedin: "https://linkedin.com/school/everestbutwal",
+		x: "",
+		youtube: "https://youtube.com/@everestbutwal",
+	},
+	// Courses page (/courses): mirrors the route copy.
+	academics: {
+		body: "Each row opens into the full subject list, credit hours, fee table and progression routes for that programme.",
+		title: "",
+	},
+	// Facilities page (/facilities): mirrors the route copy.
+	facilities: {
+		eyebrow: "Campus",
+		title: "Facilities & Infrastructure",
+		body: "Capacity, opening hours and the member of staff who holds the key, for every space on the Butwal-8 campus.",
+	},
+	// Gallery page (/gallery): mirrors the route copy.
+	gallery_grid: {
+		title: "",
+	},
+	// Calendar page (/calendar): mirrors the route copy.
+	featured_events: {
+		count: 47,
+		title: "Every date this session",
+	},
+	// Result page (/result): mirrors the route copy.
+	stats: {
+		title: "",
+		body: "",
 	},
 };
 

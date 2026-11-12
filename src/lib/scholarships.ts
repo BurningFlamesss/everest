@@ -66,7 +66,7 @@ export const scholarships: Scholarship[] = [
       "Receive the written decision within seven working days",
     ],
     renewal: `Continues into Grade 12 provided the holder maintains a Grade 11 GPA of 3.40 or above with no subject below a B grade, and attendance of at least 85 percent.`,
-    contact: "Nisha Baral, Admissions Officer · admissions@everestbutwal.edu.np · Ext. 110",
+    contact: "Admissions Office · admissions@everestbutwal.edu.np",
     spotlight: true,
   },
   {
@@ -126,7 +126,7 @@ export const scholarships: Scholarship[] = [
       "Confirm acceptance in writing within five working days",
     ],
     renewal: `Renewed for Grade 12 if the holder maintains a Grade 11 GPA of 3.00 or above and attendance of at least 80 percent.`,
-    contact: "Nisha Baral, Admissions Officer · admissions@everestbutwal.edu.np · Ext. 110",
+    contact: "Admissions Office · admissions@everestbutwal.edu.np",
   },
   {
     id: "government-quota",
@@ -193,7 +193,7 @@ export const scholarships: Scholarship[] = [
       "File any written complaint within fifteen days of publication",
     ],
     renewal: `Continues year to year as long as the category conditions still apply and attendance remains at or above 75 percent. Re-declaration is required each session.`,
-    contact: "Dinesh Gharti, Accounts & Services Officer · accounts@everestbutwal.edu.np · Ext. 111",
+    contact: "Accounts Office · accounts@everestbutwal.edu.np",
     spotlight: true,
   },
   {
@@ -254,7 +254,7 @@ export const scholarships: Scholarship[] = [
       "Meet your assigned mentor in the first week of the award",
     ],
     renewal: `Renewed annually on continued income eligibility, a GPA of 2.20 or above, and attendance of at least 80 percent.`,
-    contact: "Sarita Gurung, Vice Principal (Academics) · vp.academics@everestbutwal.edu.np · Ext. 102",
+    contact: "Umesh Regmi, Vice Principal · info@everestbutwal.edu.np",
   },
   {
     id: "community-support",
@@ -315,7 +315,7 @@ export const scholarships: Scholarship[] = [
       "Stipend disbursement begins from the following month at the accounts desk",
     ],
     renewal: `Continues year to year on passing the grade and maintaining 75 percent attendance. Re-declaration of income is required each session.`,
-    contact: "Dr. Bishnu Prasad Sharma, Principal · principal@everestbutwal.edu.np · Ext. 101",
+    contact: "Krishna Neupane, Principal · principal@everestbutwal.edu.np",
   },
   {
     id: "sports-excellence",
@@ -331,7 +331,7 @@ export const scholarships: Scholarship[] = [
     deadlineBs: "Mangsir 19, 2083",
     appliesTo: "Grade 9 to Grade 12",
     summary: `For students competing at district level or above, with a timetable adjustment built into the award rather than negotiated later.`,
-    description: `Athletes who train seriously lose class time, and pretending otherwise is how sports scholarships fail. This award carries a formal timetable accommodation: holders get a documented catch-up arrangement with each subject teacher, plus kit and travel support for representative fixtures. Selection is by trial with the Head of Physical Education and a district association representative.`,
+    description: `Athletes who train seriously lose class time, and pretending otherwise is how sports scholarships fail. This award carries a formal timetable accommodation: holders get a documented catch-up arrangement with each subject teacher, plus kit and travel support for representative fixtures. Selection is by trial with the Physical Education Department and a district association representative.`,
     eligibility: [
       {
         id: "level",
@@ -375,7 +375,7 @@ export const scholarships: Scholarship[] = [
       "Written decision and catch-up plan issued together by Mangsir 25",
     ],
     renewal: `Renewed annually on continued representation, passing all subjects, and attendance of at least 70 percent counting authorised fixture absence as present.`,
-    contact: "Tek Bahadur Rai, Head of Physical Education · t.rai@everestbutwal.edu.np · Ext. 270",
+    contact: "Physical Education Department · info@everestbutwal.edu.np",
   },
   {
     id: "arts-grant",
@@ -430,7 +430,7 @@ export const scholarships: Scholarship[] = [
       "Written decision issued by Poush 18",
     ],
     renewal: `Renewed annually on completing the public performance or exhibition commitment and passing all subjects.`,
-    contact: "Rekha Subedi, Head of English & Arts Committee · r.subedi@everestbutwal.edu.np · Ext. 230",
+    contact: "Arts & Culture Committee · info@everestbutwal.edu.np",
   },
   {
     id: "single-parent-support",
@@ -486,7 +486,7 @@ export const scholarships: Scholarship[] = [
       "Fee schedule agreed at the accounts desk before the next invoice",
     ],
     renewal: `Renewed annually on continued status and income eligibility and on passing the grade. No re-interview is required.`,
-    contact: "Nisha Baral, Admissions Officer · admissions@everestbutwal.edu.np · Ext. 110",
+    contact: "Admissions Office · admissions@everestbutwal.edu.np",
   },
   {
     id: "municipality-talent",
@@ -546,7 +546,7 @@ export const scholarships: Scholarship[] = [
       "Register your contribution activity with the faculty advisor",
     ],
     renewal: `Renewed annually on completing the twenty logged contribution hours, maintaining GPA 2.60, and continued residence in the sub-metropolitan area.`,
-    contact: "Kabita Shrestha, Coordinator (Secondary Level) · coord.secondary@everestbutwal.edu.np · Ext. 120",
+    contact: "Academic Office · info@everestbutwal.edu.np",
   },
 ];
 

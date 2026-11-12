@@ -345,24 +345,9 @@
         @apply font-mono text-[11px] tabular-nums tracking-[0.02em] text-muted-foreground;
     }
 
-    /* Slim editorial scrollbar for rails */
+    /* Rails inherit the single site-wide scrollbar (see styles.css). */
     .rail-scroll {
         scrollbar-width: thin;
-        scrollbar-color: hsl(var(--border)) transparent;
-    }
-
-    .rail-scroll::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-    }
-
-    .rail-scroll::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    .rail-scroll::-webkit-scrollbar-thumb {
-        background-color: hsl(var(--border));
-        border-radius: 9999px;
     }
 
     .no-scrollbar {
@@ -567,6 +552,19 @@
 
     .border-b-rule {
         border-bottom-width: 2px;
+    }
+
+    /* Underline field: keeps a visible 2px yellow accent when focused/hovered. */
+    .field-underline {
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+        transition: border-bottom-color 120ms ease;
+    }
+
+    .field-underline:focus,
+    .field-underline:focus-visible,
+    .field-underline:hover {
+        border-bottom-color: var(--color-yellow, #EAB308) !important;
     }
 
     /* Layout metrics (named, non-spacing) */

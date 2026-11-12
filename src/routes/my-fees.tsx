@@ -109,10 +109,12 @@ function MyFees() {
 														{invoice.feeStructure?.name ?? "School fee"}
 													</td>
 													<td className="px-3 py-3 text-muted-foreground">
-														{invoice.term.name}
+														{invoice.term?.name ?? "—"}
 													</td>
 													<td className="px-3 py-3 text-muted-foreground">
-														{new Date(invoice.dueDate).toLocaleDateString()}
+														{invoice.dueDate
+															? new Date(invoice.dueDate).toLocaleDateString()
+															: "—"}
 													</td>
 													<td className="px-3 py-3 text-foreground">
 														{money(invoice.amount)}

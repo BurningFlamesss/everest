@@ -15,7 +15,7 @@ export const milestones: Milestone[] = [
     title: 'Six teachers, two rented rooms',
     blurb: '2052 BS · 1995 AD',
     body: [
-      'The school opened in Shrawan 2052 with fifty-four pupils across grades one to three, in two rented rooms behind the old Nadipur patan. Fees were collected monthly in cash and recorded in a single ledger that the accounts office still keeps.',
+      'The school opened in Shrawan 2052 with fifty-four pupils across grades one to three, in two rented rooms behind the old Sukkhanagar bazaar. Fees were collected monthly in cash and recorded in a single ledger that the accounts office still keeps.',
       'The founding intent was narrow and has not changed: teach in English properly, keep class sizes under forty, and publish everything a parent needs in order to decide.',
     ],
     image: photos.classroomEmpty,
@@ -23,7 +23,7 @@ export const milestones: Milestone[] = [
   {
     index: 2,
     marker: 'THE CAMPUS',
-    title: 'The move to Sriman Marga',
+    title: 'The move to Sukkhanagar',
     blurb: '2057 BS · 2000 AD',
     body: [
       'Land in ward eight was bought with a loan against the founders’ own property. The first block — eight rooms and an office — was finished before the monsoon and the school moved in over a single weekend.',
@@ -59,7 +59,7 @@ export const milestones: Milestone[] = [
     title: 'Residential places for eighty',
     blurb: '2074 BS · 2017 AD',
     body: [
-      'A residential hostel was opened for students from Myagdi, Baglung and Parbat whose families wanted them in Pokhara for the +2 years. Eighty places, a resident warden, and a study hall supervised until nine each evening.',
+      'A residential hostel was opened for students from Palpa, Gulmi and Kapilvastu whose families wanted them in Butwal for the +2 years. Eighty places, a resident warden, and a study hall supervised until nine each evening.',
       'A medical room with a resident health assistant was added at the same time and is open through the whole school day.',
     ],
     image: photos.hostelRoom,
@@ -70,7 +70,7 @@ export const milestones: Milestone[] = [
     title: 'Twelve hundred students, eight buses',
     blurb: '2083 BS · 2026 AD',
     body: [
-      'The school now teaches one thousand two hundred and eighty-four students from grade one to grade twelve, with seventy-eight teaching staff and eight buses covering the valley from Hemja to Birauta.',
+      'The school now teaches one thousand two hundred and eighty-four students from grade one to grade twelve, with twenty-three teaching staff and eight buses covering Rupandehi from Devdaha to Sunauli.',
       'The routine, the calendar, the fee structure and the bus timings are all published on this site and updated from the school office rather than reprinted once a year.',
     ],
     image: photos.assemblyAerial,
@@ -143,38 +143,27 @@ export const crestParts: CrestPart[] = [
 export const leadership: Person[] = [
   {
     id: 'l-principal',
-    name: 'Dr Rajendra Bahadur Thapa',
-    role: 'Principal · since 2066 BS',
-    quote: 'A school is judged on the child it was least sure about.',
+    name: 'Krishna Neupane',
+    role: 'Principal',
     photo: photos.portraitPrincipal,
   },
   {
     id: 'l-vice',
-    name: 'Sabitri Baral',
-    role: 'Vice Principal · Academics',
-    quote: 'We publish the routine because a family plans its week around it.',
+    name: 'Umesh Regmi',
+    role: 'Vice Principal · Nepali',
     photo: photos.portraitVice,
   },
   {
-    id: 'l-coordinator',
-    name: 'Nabin Shrestha',
-    role: 'Academic Coordinator · Secondary',
-    quote: 'Grade ten is not a wall. It is a corridor with three doors.',
+    id: 'l-vice-admin',
+    name: 'Bhimsen Gautam',
+    role: 'Vice Principal',
     photo: photos.portraitCoordinator,
   },
   {
-    id: 'l-science',
-    name: 'Dr Pratima Sharma',
-    role: 'Head of Department · Science',
-    quote: 'Nobody learns chemistry by copying a practical notebook.',
+    id: 'l-coordinator',
+    name: 'Narayan Dhakal',
+    role: 'Coordinator · +2 Science',
     photo: photos.portraitScience,
-  },
-  {
-    id: 'l-primary',
-    name: 'Kamala Gurung',
-    role: 'Head of Basic Level · Grades 1 to 5',
-    quote: 'At six years old the only thing that matters is wanting to come back tomorrow.',
-    photo: photos.portraitPrimary,
   },
 ];
 
@@ -183,7 +172,7 @@ export const triptych = [
     id: 't-mission',
     numeral: '01',
     title: 'Mission',
-    body: 'To teach in English to a standard that lets a student from Pokhara sit any national board examination, or any entrance examination, without needing a second school to prepare them for it.',
+    body: 'To teach in English to a standard that lets a student from Butwal sit any national board examination, or any entrance examination, without needing a second school to prepare them for it.',
   },
   {
     id: 't-vision',

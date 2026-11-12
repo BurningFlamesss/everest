@@ -43,7 +43,7 @@ import {
 	PageHeader,
 } from "#/templates/modern/components/chrome/PageFrame";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
-import { str } from "#/components/cms/block-fields";
+import { num, str } from "#/components/cms/block-fields";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import type { BlockType } from "#/types";
 import { Segmented } from "#/templates/modern/components/Segmented";
@@ -121,6 +121,11 @@ function RouteComponent() {
   const headerSection = {
     ...sectionDefaults("headline"),
     ...getSectionFields(cmsData?.blocks, "headline"),
+  };
+
+  const featuredSection = {
+    ...sectionDefaults("featured_events"),
+    ...getSectionFields(cmsData?.blocks, "featured_events"),
   };
 
   // Calendar events: DB-driven via the root loader, with the static calendar
@@ -597,46 +602,54 @@ function RouteComponent() {
 				</div>
 			</ChromeSection>
 
-			<ChromeSection testId="calendar-list">
-				<h2
-					id="allnotices-heading"
-					className="u-display mb-8 text-display-l text-ink"
-				>
-					Every date this session
-				</h2>
-				<ul className="flex flex-col">
-					{events
-						.filter((e) => visibleKinds.includes(e.kind))
-						.map((e) => (
-							<li
-								key={e.id}
-								className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t-hair border-n-200 py-3 last:border-b-hair"
-							>
-								<span
-									className={cn(
-										"u-label inline-flex w-[152px] items-center gap-2",
-										KIND_TEXT[e.kind],
-									)}
+			<CmsSectionBox
+				preview={preview}
+				sectionType="featured_events"
+				onSelect={onSelectSection}
+				testId="cms-section-hit-calendar-featured_events"
+			>
+				<ChromeSection testId="calendar-list">
+					<h2
+						id="allnotices-heading"
+						className="u-display mb-8 text-display-l text-ink"
+					>
+						{str(featuredSection, "title") || "Every date this session"}
+					</h2>
+					<ul className="flex flex-col">
+						{events
+							.filter((e) => visibleKinds.includes(e.kind))
+							.slice(0, num(featuredSection, "count", 47))
+							.map((e) => (
+								<li
+									key={e.id}
+									className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t-hair border-n-200 py-3 last:border-b-hair"
 								>
-									<Glyph kind={e.kind} />
-									{eventKindMeta[e.kind].label}
-								</span>
-								<span className="min-w-0 flex-1 text-body-m text-ink">
-									{e.title}
-								</span>
-								<span className="u-label tnum hidden md:block text-n-600">
-									{formatBs(e.date.bs)} BS
-								</span>
-								<span className="u-label tnum md:hidden text-n-600 shrink-0 text-right">
-									{formatBs(e.date.bs).split(" ").slice(0, 2).join(" ")}
-								</span>
-								<span className="u-label tnum hidden w-[168px] text-right text-n-600 md:block">
-									{formatAd(e.date.ad)}
-								</span>
-							</li>
-						))}
-				</ul>
-			</ChromeSection>
+									<span
+										className={cn(
+											"u-label inline-flex w-[152px] items-center gap-2",
+											KIND_TEXT[e.kind],
+										)}
+									>
+										<Glyph kind={e.kind} />
+										{eventKindMeta[e.kind].label}
+									</span>
+									<span className="min-w-0 flex-1 text-body-m text-ink">
+										{e.title}
+									</span>
+									<span className="u-label tnum hidden md:block text-n-600">
+										{formatBs(e.date.bs)} BS
+									</span>
+									<span className="u-label tnum md:hidden text-n-600 shrink-0 text-right">
+										{formatBs(e.date.bs).split(" ").slice(0, 2).join(" ")}
+									</span>
+									<span className="u-label tnum hidden w-[168px] text-right text-n-600 md:block">
+										{formatAd(e.date.ad)}
+									</span>
+								</li>
+							))}
+					</ul>
+				</ChromeSection>
+			</CmsSectionBox>
 
 			<ChromeSection testId="calendar-routine">
 				<RoutineViewer />

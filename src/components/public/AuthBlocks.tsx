@@ -33,7 +33,7 @@ function AuthVisual({ fields }: { fields: Record<string, unknown> }) {
 			/>
 			<div className="auth-visual__overlay">
 				<SectionLabel number="04" inverse>
-					{str(fields, "eyebrow", "ScMS entrance")}
+					{str(fields, "eyebrow", "Everest entrance")}
 				</SectionLabel>
 				<p>{str(fields, "headline", "The digital entrance to the school.")}</p>
 				<span>
@@ -231,7 +231,7 @@ function LoginForm({ fields }: { fields: Record<string, unknown> }) {
 					role="status"
 					data-testid="password-recovery-note"
 				>
-					Password recovery requires the connected ScMS service. Contact the
+					Password recovery requires the connected Everest service. Contact the
 					school office for account assistance.
 				</div>
 			) : null}

@@ -8,7 +8,6 @@ import type {
   AttendanceState,
   AuditEvent,
   Branch,
-  ContentBlock,
   Course,
   Driver,
   DocumentFile,
@@ -53,7 +52,7 @@ const LAST = [
   "Duarte", "Kowalski", "Whitfield", "Ibarra", "Kimura", "Ferreira", "Novak", "Osei", "Delacroix", "Sandoval",
 ];
 const STREETS = ["Maple", "Oak", "Birch", "Cedar", "Aspen", "Juniper", "Willow", "Linden"];
-const CITIES = ["Northfield", "Riverside", "Ashbourne", "Kingsmere"];
+const CITIES = ["Everest", "Riverside", "Ashbourne", "Kingsmere"];
 const BLOOD = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+"];
 const HOUSES = ["Aurora", "Meridian", "Summit", "Vanguard"];
 const OCCUPATIONS = ["Engineer", "Physician", "Architect", "Entrepreneur", "Teacher", "Accountant", "Designer", "Logistics Manager"];
@@ -149,8 +148,8 @@ export function buildSeed(): Collections {
     {
       id: "branch_main",
       name: "EEBSS Main Campus",
-      code: "NFA-MAIN",
-      address: "120 Academy Drive, Northfield",
+      code: "EEBSS-MAIN",
+      address: "120 Academy Drive, Everest",
       phone: "+1 (555) 240-1100",
       isMain: true,
       studentCount: 0,
@@ -158,7 +157,7 @@ export function buildSeed(): Collections {
     {
       id: "branch_riverside",
       name: "Riverside Campus",
-      code: "NFA-RIV",
+      code: "EEBSS-RIV",
       address: "8 Riverbank Road, Riverside",
       phone: "+1 (555) 240-1180",
       isMain: false,
@@ -198,9 +197,9 @@ export function buildSeed(): Collections {
   // -------------------------------------------------------------------- staff
   const staff: StaffMember[] = [];
   const fixedStaff: Partial<StaffMember>[] = [
-    { id: "stf_super", firstName: "Amara", lastName: "Whitfield", department: "Administration", designation: "Principal", role: "super_admin", email: "super@northfield.edu", gender: "female" },
-    { id: "stf_admin", firstName: "Dana", lastName: "Whitfield", department: "Administration", designation: "Registrar", role: "admin", email: "admin@northfield.edu", gender: "female" },
-    { id: "stf_staff", firstName: "Musa", lastName: "Okafor", department: "Science", designation: "Senior Teacher", role: "staff", email: "staff@northfield.edu", gender: "male" },
+    { id: "stf_super", firstName: "Krishna", lastName: "Neupane", department: "Administration", designation: "Principal", role: "super_admin", email: "super@everest.edu", gender: "male" },
+    { id: "stf_admin", firstName: "Umesh", lastName: "Regmi", department: "Administration", designation: "Vice Principal", role: "admin", email: "admin@everest.edu", gender: "male" },
+    { id: "stf_staff", firstName: "Amrit", lastName: "Ranabhat", department: "Computer Science", designation: "Computer Teacher", role: "staff", email: "staff@everest.edu", gender: "male" },
   ];
 
   const totalStaff = 44;
@@ -226,7 +225,7 @@ export function buildSeed(): Collections {
       lastName: nm.lastName,
       avatarUrl: avatarFor(full),
       gender,
-      email: fixed?.email ?? `${nm.firstName}.${nm.lastName}@northfield.edu`.toLowerCase(),
+      email: fixed?.email ?? `${nm.firstName}.${nm.lastName}@everest.edu`.toLowerCase(),
       phone: phone(rng),
       department,
       designation,
@@ -265,7 +264,7 @@ export function buildSeed(): Collections {
       code: def.code,
       name: def.name,
       department: def.department,
-      description: `${def.name} builds conceptual depth through inquiry-led lessons, continuous assessment and practical work aligned to the Northfield academic framework.`,
+      description: `${def.name} builds conceptual depth through inquiry-led lessons, continuous assessment and practical work aligned to the Everest academic framework.`,
       credits: intBetween(rng, 2, 6),
       weeklyHours: intBetween(rng, 2, 6),
       teacherIds: assigned,
@@ -342,7 +341,7 @@ export function buildSeed(): Collections {
         rng() > 0.93 ? pick(rng, ["inactive", "transferred", "suspended"] as const) : "active";
       students.push({
         id: `stu_${String(studentIndex).padStart(4, "0")}`,
-        admissionNo: `NFA-${admissionYear}-${String(1000 + studentIndex).slice(-4)}`,
+        admissionNo: `EEBSS-${admissionYear}-${String(1000 + studentIndex).slice(-4)}`,
         firstName: nm.firstName,
         lastName: nm.lastName,
         avatarUrl: avatarFor(full),
@@ -356,7 +355,7 @@ export function buildSeed(): Collections {
         admissionYear,
         admissionDate: `${admissionYear}-08-${String(intBetween(rng, 10, 28)).padStart(2, "0")}`,
         status,
-        email: `${nm.firstName}.${nm.lastName}${studentIndex}@student.northfield.edu`.toLowerCase(),
+        email: `${nm.firstName}.${nm.lastName}${studentIndex}@student.everest.edu`.toLowerCase(),
         phone: phone(rng),
         address: `${intBetween(rng, 10, 980)} ${pick(rng, STREETS)} Street`,
         city: pick(rng, CITIES),
@@ -467,10 +466,10 @@ export function buildSeed(): Collections {
   }));
 
   const sessions: SessionRecord[] = [
-    { id: "ses_1", userId: "usr_admin", userName: "Dana Whitfield", device: "MacBook Pro", browser: "Chrome 141", ip: "172.58.20.14", location: "Northfield, US", lastActiveAt: nowIso, current: true },
-    { id: "ses_2", userId: "usr_admin", userName: "Dana Whitfield", device: "iPhone 16", browser: "Safari Mobile", ip: "172.58.44.90", location: "Northfield, US", lastActiveAt: iso(1), current: false },
-    { id: "ses_3", userId: "usr_super", userName: "Amara Whitfield", device: "iPad Pro", browser: "Safari 18", ip: "104.28.14.2", location: "Riverside, US", lastActiveAt: iso(0.2), current: false },
-    { id: "ses_4", userId: "usr_staff", userName: "Musa Okafor", device: "Windows 11 Desktop", browser: "Edge 140", ip: "98.44.12.66", location: "Northfield, US", lastActiveAt: iso(2), current: false },
+    { id: "ses_1", userId: "usr_admin", userName: "Umesh Regmi", device: "MacBook Pro", browser: "Chrome 141", ip: "172.58.20.14", location: "Everest, US", lastActiveAt: nowIso, current: true },
+    { id: "ses_2", userId: "usr_admin", userName: "Umesh Regmi", device: "iPhone 16", browser: "Safari Mobile", ip: "172.58.44.90", location: "Everest, US", lastActiveAt: iso(1), current: false },
+    { id: "ses_3", userId: "usr_super", userName: "Krishna Neupane", device: "iPad Pro", browser: "Safari 18", ip: "104.28.14.2", location: "Riverside, US", lastActiveAt: iso(0.2), current: false },
+    { id: "ses_4", userId: "usr_staff", userName: "Amrit Ranabhat", device: "Windows 11 Desktop", browser: "Edge 140", ip: "98.44.12.66", location: "Everest, US", lastActiveAt: iso(2), current: false },
   ];
 
   // --------------------------------------------------------------- attendance
@@ -492,7 +491,7 @@ export function buildSeed(): Collections {
         personId: s.id,
         classId: s.classId,
         state,
-        markedBy: "Dana Whitfield",
+        markedBy: "Umesh Regmi",
         markedAt: `${date}T08:${intBetween(rng, 10, 55)}:00.000Z`,
         note: state === "excused" ? pick(rng, ["Medical appointment", "Family travel", "Sports fixture"]) : undefined,
       });
@@ -597,7 +596,7 @@ export function buildSeed(): Collections {
   // ------------------------------------------------------------------- events
   const EVENT_SEEDS: [string, EventCategory, number, string][] = [
     ["Mid-term Examinations — Grade 9 & 10", "exam", 6, "Examination Halls A–C"],
-    ["Inter-house Athletics Meet", "sports", 12, "Northfield Sports Ground"],
+    ["Inter-house Athletics Meet", "sports", 12, "Everest Sports Ground"],
     ["Spring Cultural Evening", "cultural", 19, "Main Auditorium"],
     ["Grade 8 Geology Field Trip", "trip", 9, "Ashbourne Ridge"],
     ["Regional Mathematics Olympiad", "competition", 24, "Riverside Campus Hall"],
@@ -612,7 +611,7 @@ export function buildSeed(): Collections {
     ["Music Recital — Winter Ensemble", "cultural", -6, "Recital Hall"],
     ["Grade 6 Orientation Morning", "program", -12, "Assembly Hall"],
     ["Term 1 Final Examinations", "exam", -22, "Examination Halls A–C"],
-    ["Founders' Cup Football Final", "sports", -30, "Northfield Sports Ground"],
+    ["Founders' Cup Football Final", "sports", -30, "Everest Sports Ground"],
     ["Art & Design Exhibition", "cultural", -18, "Gallery Wing"],
     ["Guardians' Finance Briefing", "meeting", 2, "Auditorium Annexe"],
     ["Spelling Bee Finals", "competition", 1, "Library Commons"],
@@ -628,7 +627,7 @@ export function buildSeed(): Collections {
     return {
       id: `evt_${String(i + 1).padStart(3, "0")}`,
       title,
-      description: `${title} is part of the Northfield academic and co-curricular calendar. Coordinators will publish detailed schedules and duty rosters one week in advance.`,
+      description: `${title} is part of the Everest academic and co-curricular calendar. Coordinators will publish detailed schedules and duty rosters one week in advance.`,
       category,
       status: i === 16 ? "cancelled" : status,
       startDate: toDateKey(start),
@@ -658,7 +657,7 @@ export function buildSeed(): Collections {
     ["Annual Sports Day 2026", "Track finals, house relays and the closing ceremony."],
     ["Spring Cultural Evening", "Dance, drama and the senior choir performance."],
     ["Science Fair Highlights", "Student-built prototypes and judging rounds."],
-    ["Campus Life", "Everyday moments across the Northfield campus."],
+    ["Campus Life", "Everyday moments across the Everest campus."],
     ["Grade 8 Field Trip", "Geology field study at Ashbourne Ridge."],
     ["Founders' Day", "Assembly, awards and the alumni address."],
     ["Art & Design Exhibition", "Portfolio work from the visual arts programme."],
@@ -742,7 +741,7 @@ export function buildSeed(): Collections {
           ? [
               {
                 id: `apn_${i}`,
-                author: "Dana Whitfield",
+                author: "Umesh Regmi",
                 text: pick(rng, [
                   "Guardian requested a campus tour before confirming.",
                   "Strong entrance assessment; recommend interview fast-track.",
@@ -766,7 +765,7 @@ export function buildSeed(): Collections {
           id: `tl_${i}_2`,
           label: "Documents reviewed",
           description: "Registrar verified submitted documents.",
-          actor: "Dana Whitfield",
+          actor: "Umesh Regmi",
           at: iso(intBetween(rng, 1, 20)),
           tone: "neutral",
         },
@@ -776,7 +775,7 @@ export function buildSeed(): Collections {
                 id: `tl_${i}_3`,
                 label: "Offer extended",
                 description: `Seat offered for ${gradeApplied}.`,
-                actor: "Amara Whitfield",
+                actor: "Krishna Neupane",
                 at: iso(intBetween(rng, 0, 8)),
                 tone: "positive" as const,
               },
@@ -788,7 +787,7 @@ export function buildSeed(): Collections {
                 id: `tl_${i}_3`,
                 label: "Application declined",
                 description: "Grade cohort at capacity for this academic year.",
-                actor: "Amara Whitfield",
+                actor: "Krishna Neupane",
                 at: iso(intBetween(rng, 0, 8)),
                 tone: "negative" as const,
               },
@@ -925,7 +924,7 @@ export function buildSeed(): Collections {
         reference: `TXN${intBetween(rng, 100000, 999999)}`,
         status: rng() > 0.96 ? "pending" : "succeeded",
         paidAt: iso(intBetween(rng, 0, 40)),
-        recordedBy: "Dana Whitfield",
+        recordedBy: "Umesh Regmi",
       });
     }
   });
@@ -952,7 +951,7 @@ export function buildSeed(): Collections {
     kind: n.kind as AppNotification["kind"],
     severity: n.severity as AppNotification["severity"],
     read: i > 5,
-    actorName: i % 3 === 0 ? "Dana Whitfield" : i % 3 === 1 ? "System" : "Amara Whitfield",
+    actorName: i % 3 === 0 ? "Umesh Regmi" : i % 3 === 1 ? "System" : "Krishna Neupane",
     createdAt: iso(i * 0.35),
   }));
 
@@ -973,9 +972,9 @@ export function buildSeed(): Collections {
   ];
 
   const auditActors = [
-    { id: "usr_admin", name: "Dana Whitfield", role: "admin" as const },
-    { id: "usr_super", name: "Amara Whitfield", role: "super_admin" as const },
-    { id: "usr_staff", name: "Musa Okafor", role: "staff" as const },
+    { id: "usr_admin", name: "Umesh Regmi", role: "admin" as const },
+    { id: "usr_super", name: "Krishna Neupane", role: "super_admin" as const },
+    { id: "usr_staff", name: "Amrit Ranabhat", role: "staff" as const },
   ];
 
   const auditEvents: AuditEvent[] = Array.from({ length: 42 }, (_, i) => {
@@ -1003,14 +1002,6 @@ export function buildSeed(): Collections {
   });
 
   // ------------------------------------------------------------------ website
-  const block = (
-    id: string,
-    type: ContentBlock["type"],
-    label: string,
-    order: number,
-    fields: Record<string, unknown>,
-    visible = true,
-  ): ContentBlock => ({ id, type, label, visible, order, fields, updatedAt: iso(intBetween(rng, 0, 14)) });
 
   const websitePages: WebsitePage[] = [
     {
@@ -1023,58 +1014,12 @@ export function buildSeed(): Collections {
       createdAt: iso(20),
       updatedAt: iso(0.4),
       publishedAt: iso(6),
-      updatedBy: "Dana Whitfield",
-      seoTitle: "Northfield Academy — Learning that lasts",
+      updatedBy: "Umesh Regmi",
+      seoTitle: "Everest Academy — Learning that lasts",
       seoDescription:
-        "An independent day school for Grades 6–12 in Northfield, offering inquiry-led academics, arts and athletics.",
-      seoKeywords: "school, northfield academy, admissions, grades 6-12",
-      blocks: [
-        block("blk_home_hero", "hero", "Hero", 0, {
-          headline: "A modern education, grounded in character.",
-          subheadline:
-            "Northfield Academy prepares curious students for a changing world through inquiry-led academics, a strong arts programme and competitive athletics.",
-          primaryCtaLabel: "Start an application",
-          primaryCtaHref: "/admissions",
-          secondaryCtaLabel: "Book a campus tour",
-          secondaryCtaHref: "/contact",
-          image: photoFor("cms-hero-campus", 1600, 900),
-          eyebrow: "Admissions open for 2026 – 2027",
-        }),
-        block("blk_home_stats", "stats", "Key statistics", 1, {
-          items: [
-            { label: "Students", value: "1,180" },
-            { label: "Faculty", value: "96" },
-            { label: "Student–teacher ratio", value: "12:1" },
-            { label: "University placement", value: "98%" },
-          ],
-        }),
-        block("blk_home_intro", "intro", "Introduction", 2, {
-          title: "Where curiosity becomes capability",
-          body:
-            "Our programme balances academic rigour with creative and physical development. Small classes, specialist faculty and a culture of mentorship help every student find their strengths.",
-          image: photoFor("cms-intro-library", 1200, 800),
-        }),
-        block("blk_home_featured_notices", "featured_notices", "Featured notices", 3, {
-          title: "Latest from the school office",
-          count: 3,
-          source: "published",
-        }),
-        block("blk_home_featured_events", "featured_events", "Featured events", 4, {
-          title: "What's coming up",
-          count: 4,
-        }),
-        block("blk_home_cta", "cta", "Call to action", 5, {
-          title: "Applications for 2026 – 2027 are open",
-          body: "Submit an enquiry and our admissions team will guide you through assessments, visits and enrolment.",
-          buttonLabel: "Enquire now",
-          buttonHref: "/admissions",
-        }),
-        block("blk_home_headline", "headline", "Announcement banner", 6, {
-          eyebrow: "Notice",
-          title: "Founders' Day — campus closed",
-          body: "The campus and transport services will be closed on Founders' Day.",
-        }, false),
-      ],
+        "An independent day school for Grades 6–12 in Everest, offering inquiry-led academics, arts and athletics.",
+      seoKeywords: "school, everest academy, admissions, grades 6-12",
+      blocks: [],
     },
     {
       id: "wp_about",
@@ -1086,54 +1031,12 @@ export function buildSeed(): Collections {
       createdAt: iso(30),
       updatedAt: iso(9),
       publishedAt: iso(9),
-      updatedBy: "Amara Whitfield",
-      seoTitle: "About Northfield Academy",
+      updatedBy: "Krishna Neupane",
+      seoTitle: "About Everest Academy",
       seoDescription:
-        "Our history, mission and the people who shape Northfield Academy.",
+        "Our history, mission and the people who shape Everest Academy.",
       seoKeywords: "about, history, mission, vision, principal",
-      blocks: [
-        block("blk_about_history", "history", "School history", 0, {
-          title: "Sixty years of Northfield",
-          body:
-            "Founded in 1966 as a small day school of forty students, Northfield Academy has grown into an independent institution serving families across three districts — while keeping the intimacy of its founding classrooms.",
-          image: photoFor("cms-history", 1200, 800),
-          milestones: [
-            { year: "1966", title: "Northfield opens with 40 students" },
-            { year: "1984", title: "Science and arts wings added" },
-            { year: "2003", title: "Riverside campus established" },
-            { year: "2024", title: "New library commons opened" },
-          ],
-        }),
-        block("blk_about_mission", "mission_vision", "Mission & vision", 1, {
-          mission:
-            "To educate confident, thoughtful students who contribute to their communities with integrity and curiosity.",
-          vision:
-            "A school where every student is known, challenged and supported — academically, creatively and personally.",
-          values: ["Curiosity", "Integrity", "Respect", "Perseverance", "Service"],
-        }),
-        block("blk_about_principal", "principal_message", "Principal's message", 2, {
-          name: "Amara Whitfield",
-          role: "Principal",
-          message:
-            "Our promise is simple: every child is known by name and taught by people who care about how they think, not only what they score. Visit us and you will feel it in the corridors.",
-          photo: avatarFor("Amara Whitfield"),
-        }),
-        block("blk_about_facilities", "facilities", "Facilities", 3, {
-          items: [
-            { title: "Library Commons", description: "18,000 volumes, quiet study pods and a media lab.", image: photoFor("cms-fac-library", 800, 600) },
-            { title: "Science Block", description: "Six specialist laboratories for physics, chemistry and biology.", image: photoFor("cms-fac-science", 800, 600) },
-            { title: "Sports Ground", description: "400m track, football pitch and an indoor multi-sport hall.", image: photoFor("cms-fac-sports", 800, 600) },
-            { title: "Arts Wing", description: "Studios for visual arts, ceramics, music and drama.", image: photoFor("cms-fac-arts", 800, 600) },
-          ],
-        }),
-        block("blk_about_achievements", "achievements", "Achievements", 4, {
-          items: [
-            { year: "2026", title: "Regional Mathematics Olympiad — 1st place", description: "Senior team placed first among 42 schools." },
-            { year: "2025", title: "National Debate Championship — finalists", description: "Grade 11 team reached the national final." },
-            { year: "2025", title: "Inter-school Athletics — overall champions", description: "Won the aggregate trophy for the third year." },
-          ],
-        }),
-      ],
+      blocks: [],
     },
     {
       id: "wp_contact",
@@ -1145,39 +1048,12 @@ export function buildSeed(): Collections {
       createdAt: iso(40),
       updatedAt: iso(14),
       publishedAt: iso(14),
-      updatedBy: "Dana Whitfield",
-      seoTitle: "Contact Northfield Academy",
+      updatedBy: "Umesh Regmi",
+      seoTitle: "Contact Everest Academy",
       seoDescription:
         "Office hours, phone, email and directions to both campuses.",
       seoKeywords: "contact, address, phone, office hours",
-      blocks: [
-        block("blk_contact_details", "contact_details", "Contact details", 0, {
-          phone: "+1 (555) 240-1100",
-          secondaryPhone: "+1 (555) 240-1180",
-          email: "office@northfield.edu",
-          admissionsEmail: "admissions@northfield.edu",
-          address: "120 Academy Drive, Northfield",
-        }),
-        block("blk_contact_hours", "office_hours", "Office hours", 1, {
-          weekdays: "8:00 AM – 4:30 PM",
-          saturday: "9:00 AM – 12:30 PM",
-          sunday: "Closed",
-          note: "Admissions counsellors are available by appointment during term time.",
-        }),
-        block("blk_contact_social", "social_links", "Social links", 2, {
-          facebook: "https://facebook.com/northfieldacademy",
-          instagram: "https://instagram.com/northfieldacademy",
-          x: "https://x.com/northfieldacad",
-          youtube: "https://youtube.com/@northfieldacademy",
-          linkedin: "https://linkedin.com/school/northfield-academy",
-        }),
-        block("blk_contact_map", "map", "Map & directions", 3, {
-          label: "Main Campus",
-          latitude: "41.8781",
-          longitude: "-87.6298",
-          directions: "Enter from Academy Drive; visitor parking is available beside the reception block.",
-        }),
-      ],
+      blocks: [],
     },
     {
       id: "wp_other",
@@ -1189,48 +1065,12 @@ export function buildSeed(): Collections {
       createdAt: iso(15),
       updatedAt: iso(1.2),
       publishedAt: null,
-      updatedBy: "Dana Whitfield",
+      updatedBy: "Umesh Regmi",
       seoTitle: "Academics, admissions & gallery",
       seoDescription:
         "Supporting content blocks used across the public website.",
       seoKeywords: "academics, admissions, gallery, faculty",
-      blocks: [
-        block("blk_other_announcements", "announcements", "Announcements", 0, {
-          items: [
-            { title: "Term 2 fee window open", body: "Instalments can be paid through the guardian portal.", date: toDateKey(addDays(now, -2)) },
-            { title: "Uniform shop timings", body: "Open Tuesday and Thursday, 9:00 AM – 1:00 PM.", date: toDateKey(addDays(now, -8)) },
-          ],
-        }),
-        block("blk_other_academics", "academics", "Academic information", 1, {
-          title: "A programme built around depth",
-          body: "Students progress through a middle-years foundation into specialised senior pathways with guided electives.",
-          programs: [
-            { title: "Middle Years (6–8)", description: "Broad foundation with integrated science and languages." },
-            { title: "Senior School (9–10)", description: "Specialist sciences, humanities and first electives." },
-            { title: "Advanced Pathways (11–12)", description: "Focused streams with university counselling." },
-          ],
-        }),
-        block("blk_other_admissions", "admissions_info", "Admission information", 2, {
-          title: "How admissions work",
-          body: "Four straightforward steps from enquiry to enrolment.",
-          deadline: toDateKey(addDays(now, 46)),
-          steps: [
-            { title: "Enquiry", description: "Submit the online enquiry form." },
-            { title: "Assessment", description: "Grade-appropriate assessment and interaction." },
-            { title: "Offer", description: "Offer letter with fee schedule." },
-            { title: "Enrolment", description: "Document verification and seat confirmation." },
-          ],
-        }),
-        block("blk_other_faculty", "faculty", "Faculty information", 3, {
-          title: "Taught by specialists",
-          body: "96 faculty members across ten departments, with an average of eleven years of classroom experience.",
-          highlightStaffIds: staff.slice(0, 4).map((s) => s.id),
-        }),
-        block("blk_other_gallery", "gallery_grid", "Gallery grid", 4, {
-          title: "Life at Northfield",
-          albumIds: ["alb_1", "alb_2", "alb_4"],
-        }),
-      ],
+      blocks: [],
     },
     {
       id: "wp_sys_0",
@@ -1431,27 +1271,27 @@ export function buildSeed(): Collections {
     tagline: "Learning that lasts",
     description:
       "An independent day school for Grades 6–12 offering inquiry-led academics, a strong arts programme and competitive athletics across two campuses.",
-    email: "office@northfield.edu",
+    email: "office@everest.edu",
     phone: "+1 (555) 240-1100",
     address: "120 Academy Drive",
-    city: "Northfield",
+    city: "Everest",
     country: "United States",
-    website: "https://northfield.edu",
+    website: "https://everest.edu",
     officeHours: "Mon – Fri · 8:00 AM – 4:30 PM",
     established: 1966,
     branding: { primaryHue: "Institutional Blue", accentHue: "Signal Orange", logoMark: "NA" },
     socials: {
-      facebook: "https://facebook.com/northfieldacademy",
-      instagram: "https://instagram.com/northfieldacademy",
-      x: "https://x.com/northfieldacad",
-      youtube: "https://youtube.com/@northfieldacademy",
-      linkedin: "https://linkedin.com/school/northfield-academy",
+      facebook: "https://facebook.com/everestacademy",
+      instagram: "https://instagram.com/everestacademy",
+      x: "https://x.com/everestacad",
+      youtube: "https://youtube.com/@everestacademy",
+      linkedin: "https://linkedin.com/school/everest-academy",
     },
     seo: {
-      metaTitle: "Northfield Academy — Learning that lasts",
+      metaTitle: "Everest Academy — Learning that lasts",
       metaDescription:
-        "Independent day school for Grades 6–12. Inquiry-led academics, arts and athletics in Northfield.",
-      keywords: "school, academy, admissions, grades 6-12, northfield",
+        "Independent day school for Grades 6–12. Inquiry-led academics, arts and athletics in Everest.",
+      keywords: "school, academy, admissions, grades 6-12, everest",
       indexable: true,
     },
     notifications: {

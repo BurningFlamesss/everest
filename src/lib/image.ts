@@ -26,12 +26,12 @@ export function fileToDataUrl(file: File, maxWidth = 1200, quality = 0.72): Prom
 }
 
 export const STOCK_LIBRARY: { label: string; url: string }[] = [
-  { label: "Campus exterior", url: "https://picsum.photos/seed/nfa-campus/1200/800" },
-  { label: "Library commons", url: "https://picsum.photos/seed/nfa-library/1200/800" },
-  { label: "Science lab", url: "https://picsum.photos/seed/nfa-lab/1200/800" },
-  { label: "Sports ground", url: "https://picsum.photos/seed/nfa-sports/1200/800" },
-  { label: "Arts studio", url: "https://picsum.photos/seed/nfa-arts/1200/800" },
-  { label: "Assembly hall", url: "https://picsum.photos/seed/nfa-hall/1200/800" },
-  { label: "Classroom", url: "https://picsum.photos/seed/nfa-class/1200/800" },
-  { label: "Graduation", url: "https://picsum.photos/seed/nfa-grad/1200/800" },
+  { label: "Campus exterior", url: "https://picsum.photos/seed/eebss-campus/1200/800" },
+  { label: "Library commons", url: "https://picsum.photos/seed/eebss-library/1200/800" },
+  { label: "Science lab", url: "https://picsum.photos/seed/eebss-lab/1200/800" },
+  { label: "Sports ground", url: "https://picsum.photos/seed/eebss-sports/1200/800" },
+  { label: "Arts studio", url: "https://picsum.photos/seed/eebss-arts/1200/800" },
+  { label: "Assembly hall", url: "https://picsum.photos/seed/eebss-hall/1200/800" },
+  { label: "Classroom", url: "https://picsum.photos/seed/eebss-class/1200/800" },
+  { label: "Graduation", url: "https://picsum.photos/seed/eebss-grad/1200/800" },
 ];

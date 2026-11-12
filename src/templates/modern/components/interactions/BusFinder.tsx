@@ -99,7 +99,7 @@ export function BusFinder() {
             type='search'
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder='Lakeside, Ward 15, बागर …'
+            placeholder='Sukkhanagar, Ward 8, सुख्खानगर …'
             data-testid='bus-search'
             className='min-h-[52px] w-full bg-transparent text-[19px] leading-snug text-foreground placeholder:text-muted-foreground'
             style={{ boxShadow: 'none', outline: 'none', border: 'none' }}
@@ -140,7 +140,7 @@ export function BusFinder() {
 
       {!searched ? (
         <p className='text-body-l text-muted-foreground' data-testid='bus-empty'>
-          Three routes cover the valley from Hemja in the north-west to Birauta in the south. Start
+          Three routes cover Rupandehi from Devdaha in the north-east to Sunauli in the south. Start
           typing, or choose one of the common areas above.
         </p>
       ) : matches.length === 0 ? (

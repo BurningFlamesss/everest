@@ -159,7 +159,7 @@ export function ApplicationFormDialog({
               <Input
                 id="app-name"
                 value={form.applicantName}
-                placeholder="Amara Whitfield"
+                placeholder="Applicant's full name"
                 data-testid="application-form-name"
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => set("applicantName", event.target.value)}
               />
@@ -235,7 +235,7 @@ export function ApplicationFormDialog({
               <Input
                 id="app-address"
                 value={form.address}
-                placeholder="12 Maple Street, Northfield"
+                placeholder="12 Maple Street, Everest"
                 data-testid="application-form-address"
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => set("address", event.target.value)}
               />

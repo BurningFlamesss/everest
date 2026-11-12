@@ -104,9 +104,13 @@ export default function StudentsPage() {
 
 	const clearParams = () => {
 		navigate({
-			search: Object.fromEntries(
-				Object.entries(searchParams).filter(([k]) => k !== "new" && k !== "import"),
-			),
+			to: "/admin/students",
+			search: (prev) => {
+				const next: Record<string, string | undefined> = { ...prev };
+				delete next.new;
+				delete next.import;
+				return next;
+			},
 			replace: true,
 		});
 	};
@@ -208,7 +212,7 @@ export default function StudentsPage() {
 				feeBalance: s.feeBalance,
 			})),
 		);
-		downloadTextFile(`northfield-students-${Date.now()}.csv`, csv);
+		downloadTextFile(`everest-students-${Date.now()}.csv`, csv);
 		toast.success(`Exported ${rows.length} student records`);
 	};
 
@@ -732,7 +736,7 @@ export default function StudentsPage() {
 
 			<Dialog
 				open={Boolean(transferTarget)}
-				onOpenChange={(open) => !open && setTransferTarget(null)}
+				onOpenChange={(open: boolean) => !open && setTransferTarget(null)}
 			>
 				<DialogContent
 					className="bg-popover sm:max-w-md"

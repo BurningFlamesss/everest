@@ -105,7 +105,10 @@ export const WebsitePageKey = {
   notices: 'notices',
   scholarship: 'scholarship',
   posts: 'posts',
-  course_finder: 'course_finder'
+  course_finder: 'course_finder',
+  admissions: 'admissions',
+  clubs: 'clubs',
+  events: 'events'
 } as const
 
 export type WebsitePageKey = (typeof WebsitePageKey)[keyof typeof WebsitePageKey]

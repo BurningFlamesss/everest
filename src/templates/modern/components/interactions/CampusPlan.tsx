@@ -270,7 +270,7 @@ export function CampusPlan() {
 								letterSpacing="2"
 								fontFamily="'IBM Plex Mono', monospace"
 							>
-								SRIMAN MARGA · MAIN GATE
+								SUKKHANAGAR · MAIN GATE
 							</text>
 							{facilities.map((f) => {
 								const on = active === f.id;

@@ -155,7 +155,7 @@ export async function convertApplicant(
   const year = new Date().getFullYear();
   const student: Student = {
     id: uid("stu"),
-    admissionNo: `NFA-${year}-${String(1000 + db().students.length + 1).slice(-4)}`,
+    admissionNo: `EEBSS-${year}-${String(1000 + db().students.length + 1).slice(-4)}`,
     firstName,
     lastName,
     avatarUrl: app.avatarUrl || avatarFor(app.applicantName),
@@ -172,7 +172,7 @@ export async function convertApplicant(
     email: app.email,
     phone: app.phone,
     address: app.address,
-    city: "Northfield",
+    city: "Everest",
     bloodGroup: "O+",
     nationality: "American",
     guardian: app.guardian,

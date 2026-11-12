@@ -49,6 +49,8 @@ function Sidebar() {
 		}
 	};
 
+	if (!sidebar) return null;
+
 	return (
 		<aside
 			className={cn(

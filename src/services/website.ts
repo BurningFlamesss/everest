@@ -63,7 +63,7 @@ export const BLOCK_LIBRARY: {
     defaults: {
       items: [
         { label: "Students", value: "1,180" },
-        { label: "Faculty", value: "96" },
+        { label: "Faculty", value: "23" },
         { label: "Ratio", value: "12:1" },
         { label: "Placement", value: "98%" },
       ],
@@ -207,7 +207,7 @@ export const BLOCK_LIBRARY: {
     group: "Layout",
     defaults: {
       image: "/schools/everest/landing-footage/frame_0001.jpeg",
-      eyebrow: "ScMS entrance",
+      eyebrow: "Everest entrance",
       headline: "The digital entrance to the school.",
       subheadline: "One community / connected responsibly",
     },
@@ -425,12 +425,14 @@ export async function deleteBlock(key: WebsitePageKey, blockId: string, actor: A
 
 export async function updatePageSeo(
   key: WebsitePageKey,
-  seo: WebsitePage["seo"],
+  seo: { title: string; description: string; keywords: string },
   actor: Actor,
 ): Promise<WebsitePage> {
   await latency(260);
   const page = findPage(key);
-  page.seo = seo;
+  page.seoTitle = seo.title;
+  page.seoDescription = seo.description;
+  page.seoKeywords = seo.keywords;
   touch(page, actor);
   return page;
 }

@@ -15,7 +15,7 @@ export const school = {
   session: "Academic Session 2083 BS  ·  2026–27 AD",
   streams: ["Science", "Management"],
   levels: "Nursery to Grade 12 (+2)",
-  principal: "Dr. Bishnu Prasad Sharma",
+  principal: "Krishna Neupane",
 } as const;
 
 export const departments = [

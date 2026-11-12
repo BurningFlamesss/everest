@@ -93,7 +93,7 @@ const chapters: Chapter[] = [
     description: "Education is a shared commitment between dedicated teachers, motivated students, and enthusiastic parents. We strive to create a dynamic environment where every child is empowered to discover their potential and achieve their dreams.",
     image: photo("teacherPortrait"),
     stats: [
-      { label: "Leadership", value: "Dr. Thapa" },
+      { label: "Leadership", value: "Krishna Neupane" },
       { label: "Experience", value: "25+ Years" },
       { label: "Focus", value: "Excellence" }
     ],
@@ -111,7 +111,7 @@ const chapters: Chapter[] = [
     id: "history",
     name: "Legacy & Heritage",
     category: "History",
-    description: "What started as a small cohort of dedicated educators has blossomed into a vibrant, multi-building campus. Everest EBSS has consistently ranked among the top educational institutions in the Gandaki Province, shaping regional standards.",
+    description: "What started as a small cohort of dedicated educators has blossomed into a vibrant, multi-building campus. Everest EBSS has consistently ranked among the top educational institutions in the Lumbini Province, shaping regional standards.",
     image: photo("schoolBuilding"),
     stats: [
       { label: "Alumni Network", value: "4,500+" },
@@ -278,9 +278,9 @@ function RouteComponent() {
       <CmsSectionBox preview={preview} sectionType="chapters" onSelect={onSelectSection} testId="cms-section-hit-chapters">
       <PageHeader
         testId="about-page-header"
-        eyebrow={str(chaptersSection, "eyebrow", "ABOUT EVEREST")}
-        title={str(chaptersSection, "title", "A place where curiosity becomes capability.")}
-        subtitle={str(chaptersSection, "body", "An institutional story told through the people, spaces, and principles that shape each school day.")}
+        eyebrow={str(chaptersSection, "eyebrow", "") || "ABOUT EVEREST"}
+        title={str(chaptersSection, "title", "") || "A place where curiosity becomes capability."}
+        subtitle={str(chaptersSection, "body", "") || "An institutional story told through the people, spaces, and principles that shape each school day."}
       />
 
       <div className="mt-14">

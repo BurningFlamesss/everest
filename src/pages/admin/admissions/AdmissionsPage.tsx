@@ -188,7 +188,7 @@ export default function AdmissionsPage() {
 				submitted: row.submittedAt.slice(0, 10),
 			})),
 		);
-		downloadTextFile(`northfield-admissions-${Date.now()}.csv`, csv);
+		downloadTextFile(`everest-admissions-${Date.now()}.csv`, csv);
 		toast.success(`Exported ${tableRows.length} applications`);
 	};
 

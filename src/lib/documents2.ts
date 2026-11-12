@@ -262,8 +262,8 @@ export function termCalendarDoc(dates: CalEvent[]): OfficialDocument {
       },
       {
         type: "signature",
-        name: "Sarita Gurung",
-        role: "Vice Principal (Academics)",
+        name: "Umesh Regmi",
+        role: "Vice Principal",
       },
     ],
     footNote: `${school.name} · ${school.address} · ${school.motto}`,

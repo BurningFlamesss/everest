@@ -40,7 +40,8 @@ export default function AttendancePage() {
 
 	const setParam = (key: string, value: string) => {
 		navigate({
-			search: { ...searchParams, [key]: value },
+			to: "/admin/attendance",
+			search: (prev) => ({ ...prev, [key]: value }),
 			replace: true,
 		});
 	};
@@ -104,7 +105,7 @@ export default function AttendancePage() {
 				rate: row.rate,
 			})),
 		);
-		downloadTextFile(`northfield-attendance-${overview.date}.csv`, csv);
+		downloadTextFile(`everest-attendance-${overview.date}.csv`, csv);
 		toast.success("Attendance summary exported");
 	};
 

@@ -37,7 +37,7 @@ function PostsRoute() {
   const search = (useSearch({ strict: false }) as Record<string, unknown>) || {};
   const cms = search.cms;
   const { previewPage } = Route.useLoaderData();
-  const publishedContent = useWebsitePageContent("posts" as any);
+  const publishedContent = useWebsitePageContent("posts");
   const preview = String(cms ?? "") === "1";
   const cmsData = (preview ? previewPage : publishedContent) as any;
 

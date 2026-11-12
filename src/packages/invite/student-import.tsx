@@ -68,7 +68,7 @@ export const studentImportConfig: ImportConfig<StudentImportRow> = {
 
 export const STUDENT_IMPORT_SAMPLE = `name,email,admissionNo,rollNo,grade,section,joinedAt
 Aarav Sharma,aarav.sharma@example.com,ADM-1001,12,Grade 10,A,2026-04-14
-Maya Gurung,maya.gurung@example.com,ADM-1002,13,Grade 10,B,2026-04-14
+Sara Tamang,sara.tamang@example.com,ADM-1002,13,Grade 10,B,2026-04-14
 Niran Rai,niran.rai@example.com,ADM-1003,14,Grade 11,A,2026-04-15`;
 
 export interface StudentImportProps {

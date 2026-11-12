@@ -38,7 +38,6 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
     { key: "primaryCtaHref", label: "Primary button link", kind: "url", placeholder: "/admissions" },
     { key: "secondaryCtaLabel", label: "Secondary button label", kind: "text" },
     { key: "secondaryCtaHref", label: "Secondary button link", kind: "url", placeholder: "/contact" },
-    { key: "image", label: "Hero image", kind: "image" },
   ],
   headline: [
     { key: "eyebrow", label: "Eyebrow", kind: "text" },
@@ -141,6 +140,18 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
     { key: "title", label: "Section title", kind: "text" },
     { key: "body", label: "Body", kind: "textarea" },
     { key: "deadline", label: "Deadline", kind: "date" },
+    {
+      key: "steps",
+      label: "Application steps",
+      kind: "list",
+      addLabel: "Add step",
+      itemLabel: "Step",
+      help: "Shown as numbered cards, in order.",
+      itemFields: [
+        { key: "title", label: "Step title", kind: "text" },
+        { key: "description", label: "Description", kind: "textarea" },
+      ],
+    },
   ],
   // The sign-in page is composed from these four section types; each one maps
   // to a region of the auth layout (visual column, panel intro, form, footer).
@@ -188,7 +199,6 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
   ],
   // Landing page (/) — the scroll-driven hero and the editorial sections under it.
   landing_hero: [
-    { key: "frameCount", label: "Hero frame count", kind: "number", help: "Number of scroll frames in the hero canvas sequence" },
     { key: "text1Title", label: "Overlay 1 headline", kind: "text" },
     { key: "text1Body", label: "Overlay 1 supporting text", kind: "textarea" },
     { key: "text2Title", label: "Overlay 2 headline", kind: "text" },
@@ -224,6 +234,7 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
         { key: "body", label: "Body", kind: "textarea" },
         { key: "href", label: "Link", kind: "text" },
         { key: "image", label: "Image", kind: "image" },
+        { key: "ctaLabel", label: "Button label", kind: "text" },
       ],
     },
   ],
@@ -231,6 +242,9 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
     { key: "resultsEyebrow", label: "Results eyebrow", kind: "text" },
     { key: "resultsTitle", label: "Results title", kind: "text" },
     { key: "resultsDesc", label: "Results description", kind: "textarea" },
+    { key: "discoverEyebrow", label: "Discover eyebrow", kind: "text" },
+    { key: "discoverTitle", label: "Discover title", kind: "text" },
+    { key: "discoverDesc", label: "Discover description", kind: "textarea" },
     { key: "galleryEyebrow", label: "Gallery eyebrow", kind: "text" },
     { key: "galleryTitle", label: "Gallery title", kind: "text" },
     { key: "galleryDesc", label: "Gallery description", kind: "textarea" },

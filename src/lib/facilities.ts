@@ -19,7 +19,7 @@ export const facilities: Facility[] = [
       { label: "Past papers archive", value: "14 years" },
     ],
     hours: "Sunday – Friday, 06:15 – 17:30",
-    inCharge: "Manju Limbu, Librarian",
+    inCharge: "Library",
     studentsLove:
       "The silent hall stays open until half past five, so hostel and day students both get a quiet hour before going home.",
     since: "Renovated 2081 BS",
@@ -41,7 +41,7 @@ export const facilities: Facility[] = [
       { label: "Prescribed practicals", value: "100% covered" },
     ],
     hours: "Sunday – Friday, 06:30 – 15:45",
-    inCharge: "Nabin Chaudhary & Sunita Adhikari",
+    inCharge: "Science Department",
     studentsLove:
       "Nothing is demonstrated from the front. Every student handles the apparatus, every week, with their own record book.",
     since: "Expanded 2080 BS",
@@ -63,7 +63,7 @@ export const facilities: Facility[] = [
       { label: "Students per scope", value: "1" },
     ],
     hours: "Sunday – Friday, 06:30 – 15:00",
-    inCharge: "Prakash Bhandari, Head of Biology",
+    inCharge: "Biology Department",
     studentsLove:
       "You get your own microscope for the whole period — which matters when you are learning to focus and stain at the same time.",
     since: "Established 2079 BS",
@@ -85,7 +85,7 @@ export const facilities: Facility[] = [
       { label: "3D printers", value: "2" },
     ],
     hours: "Sunday – Friday, 06:30 – 16:30",
-    inCharge: "Sabin Rana Magar, Head of Computer Science",
+    inCharge: "Amrit Ranabhat, Computer Science",
     studentsLove:
       "The robotics bench is open after class, and the exhibition builds genuinely get finished there rather than at home.",
     since: "Upgraded 2082 BS",
@@ -107,7 +107,7 @@ export const facilities: Facility[] = [
       { label: "Ventilation", value: "Cross, two-wall" },
     ],
     hours: "Sunday – Friday, 06:15 – 16:00",
-    inCharge: "Kabita Shrestha, Secondary Level Coordinator",
+    inCharge: "Academic Office",
     studentsLove:
       "Thirty-two to a room means the teacher actually reaches your desk during a problem set.",
     since: "Fitted 2081 BS",
@@ -129,7 +129,7 @@ export const facilities: Facility[] = [
       { label: "Events per year", value: "40+" },
     ],
     hours: "By schedule · Assembly daily at 09:45",
-    inCharge: "Ramesh Kumar Thapa, Vice Principal (Administration)",
+    inCharge: "Bhimsen Gautam, Vice Principal",
     studentsLove:
       "Debate finals in a full hall are the loudest thing that happens on campus all year.",
     since: "Built 2074 BS",
@@ -151,7 +151,7 @@ export const facilities: Facility[] = [
       { label: "Houses competing", value: "4" },
     ],
     hours: "Sunday – Friday, 06:00 – 18:00",
-    inCharge: "Tek Bahadur Rai, Head of Physical Education",
+    inCharge: "Physical Education Department",
     studentsLove:
       "It drains fast. You can be back on the pitch the same afternoon it stops raining.",
     since: "Levelled 2078 BS",
@@ -173,7 +173,7 @@ export const facilities: Facility[] = [
       { label: "Monsoon usable", value: "Yes" },
     ],
     hours: "Sunday – Friday, 06:00 – 18:30",
-    inCharge: "Tek Bahadur Rai, Head of Physical Education",
+    inCharge: "Physical Education Department",
     studentsLove:
       "Table tennis during the lunch break, every single day, rain or not.",
     since: "Roofed 2080 BS",
@@ -195,7 +195,7 @@ export const facilities: Facility[] = [
       { label: "Resident staff", value: "8" },
     ],
     hours: "Residential · Visiting hours Saturday 10:00 – 16:00",
-    inCharge: "Sarita Gurung, Vice Principal (Academics)",
+    inCharge: "Umesh Regmi, Vice Principal",
     studentsLove:
       "A subject teacher is on duty during evening study, so a stuck question does not have to wait until morning.",
     since: "Rebuilt 2077 BS",
@@ -217,7 +217,7 @@ export const facilities: Facility[] = [
       { label: "Vegetarian line", value: "Separate" },
     ],
     hours: "Breakfast 06:00 · Lunch 12:15 · Snack 16:30 · Dinner 19:45",
-    inCharge: "Dinesh Gharti, Accounts & Services Officer",
+    inCharge: "Accounts Office",
     studentsLove:
       "The menu goes up on Friday, so you know exactly which day is worth being early for.",
     since: "Refitted 2081 BS",
@@ -239,7 +239,7 @@ export const facilities: Facility[] = [
       { label: "Drop-in hour", value: "No appointment" },
     ],
     hours: "Sunday – Friday, 06:15 – 16:30 · Drop-in 13:00 – 14:00",
-    inCharge: "Aarati KC, Wellbeing Lead",
+    inCharge: "Wellbeing Office",
     studentsLove:
       "You can walk into the drop-in hour without asking a teacher first. That is the whole point of it.",
     since: "Established 2080 BS",
@@ -305,7 +305,7 @@ export const facilities: Facility[] = [
       { label: "Conductor on board", value: "Every bus" },
     ],
     hours: "Pick-up from 05:40 · Drop by 17:15",
-    inCharge: "Ramesh Kumar Thapa, Vice Principal (Administration)",
+    inCharge: "Bhimsen Gautam, Vice Principal",
     studentsLove:
       "Route timing changes are posted before the change, so nobody is left standing at the stop.",
     since: "Fleet renewed 2082 BS",
@@ -327,7 +327,7 @@ export const facilities: Facility[] = [
       { label: "Maintained by", value: "Eco Club" },
     ],
     hours: "Open through the school day",
-    inCharge: "Eco Club · Aarati KC, Faculty Advisor",
+    inCharge: "Eco Club",
     studentsLove:
       "It is the one place on campus with nothing timetabled in it. That is the best thing about it.",
     since: "Planted 2075 BS",

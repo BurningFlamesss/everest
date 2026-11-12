@@ -14,13 +14,60 @@ vi.mock("@tanstack/react-router", () => ({
 		route.component = options.component;
 		return { useLoaderData: route.useLoaderData };
 	},
+	useSearch: () => ({}),
 }));
 
 vi.mock("#/packages/content/server.ts", () => ({
 	getClubsFn: vi.fn(),
 }));
 
-import "../../routes/clubs.tsx";
+vi.mock("#/packages/content/server/content.ts", () => ({
+	getWebsitePagePreviewServer: vi.fn(),
+}));
+
+vi.mock("#/packages/school/hook.tsx", () => ({
+	useWebsitePageContent: () => null,
+}));
+
+// The page chrome pulls in framer-motion and the shared motion language; stub
+// it with inert wrappers (keeping the header h1) so the test renders only the
+// route markup.
+vi.mock("#/templates/modern/components/chrome/PageFrame", async () => {
+	const react = await import("react");
+	type ReactNode = import("react").ReactNode;
+
+	const PageFrame = ({ children }: { children: ReactNode }) =>
+		react.createElement("div", null, children);
+
+	const PageHeader = ({
+		eyebrow,
+		title,
+		lead,
+	}: {
+		eyebrow: string;
+		title: ReactNode;
+		lead?: string;
+	}) =>
+		react.createElement(
+			"header",
+			null,
+			react.createElement("p", null, eyebrow),
+			react.createElement("h1", null, title),
+			lead ? react.createElement("p", null, lead) : null,
+		);
+
+	const Section = ({
+		children,
+		className,
+	}: {
+		children: ReactNode;
+		className?: string;
+	}) => react.createElement("section", { className }, children);
+
+	return { PageFrame, PageHeader, Section };
+});
+
+import "../../routes/_public/clubs.tsx";
 
 const club = {
 	id: "science-club",
@@ -52,7 +99,7 @@ const club = {
 
 beforeEach(() => {
 	route.useLoaderData.mockReset();
-	route.useLoaderData.mockReturnValue([club]);
+	route.useLoaderData.mockReturnValue({ clubs: [club], previewPage: null });
 });
 
 afterEach(() => {
@@ -87,14 +134,17 @@ describe("ClubsPage", () => {
 		128, 512, 1024,
 	])("displays at least 1 KB for a %i-byte attachment", (size) => {
 		const attachment = club.attachments[0];
-		route.useLoaderData.mockReturnValue([
-			{
-				...club,
-				attachments: [
-					{ ...attachment, fileAsset: { ...attachment.fileAsset, size } },
-				],
-			},
-		]);
+		route.useLoaderData.mockReturnValue({
+			clubs: [
+				{
+					...club,
+					attachments: [
+						{ ...attachment, fileAsset: { ...attachment.fileAsset, size } },
+					],
+				},
+			],
+			previewPage: null,
+		});
 
 		render(React.createElement(route.component));
 
@@ -104,7 +154,10 @@ describe("ClubsPage", () => {
 	});
 
 	it("renders a club without an attachment section when it has no attachments", () => {
-		route.useLoaderData.mockReturnValue([{ ...club, attachments: [] }]);
+		route.useLoaderData.mockReturnValue({
+			clubs: [{ ...club, attachments: [] }],
+			previewPage: null,
+		});
 
 		render(React.createElement(route.component));
 
@@ -118,7 +171,7 @@ describe("ClubsPage", () => {
 	});
 
 	it("renders the empty state when there are no clubs", () => {
-		route.useLoaderData.mockReturnValue([]);
+		route.useLoaderData.mockReturnValue({ clubs: [], previewPage: null });
 
 		render(React.createElement(route.component));
 

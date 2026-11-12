@@ -11,7 +11,7 @@ export const notices: Notice[] = [
     dateAd: "2026-09-04",
     dateBs: "Bhadra 19, 2083",
     audience: "All students · Grade 6 to Grade 12",
-    issuedBy: "Sarita Gurung, Vice Principal (Academics)",
+    issuedBy: "Umesh Regmi, Vice Principal",
     summary: `The First Terminal Examination for the 2083 session begins on Ashwin 2 and runs to Ashwin 12. The full routine, seating arrangement and examination rules are published below and attached as a printable document.`,
     body: [
       `The First Terminal Examination for the academic session 2083 BS will be conducted from Ashwin 2 to Ashwin 12, 2083 (18 September to 28 September 2026) for all students of Grade 6 to Grade 12. Examinations for the +2 levels will be held in the morning shift and Grade 6 to 10 in the day shift, following the regular class timings.`,
@@ -58,11 +58,11 @@ export const notices: Notice[] = [
     dateAd: "2026-09-02",
     dateBs: "Bhadra 17, 2083",
     audience: "All students, parents and staff",
-    issuedBy: "Ramesh Kumar Thapa, Vice Principal (Administration)",
+    issuedBy: "Bhimsen Gautam, Vice Principal",
     summary: `The school will remain closed for the Dashain and Tihar festivals from Ashwin 24 to Kartik 12, 2083. Hostel closure, transport suspension and reopening arrangements are detailed below.`,
     body: [
       `The school will observe the annual Dashain and Tihar vacation from Ashwin 24 to Kartik 12, 2083 BS (10 October to 28 October 2026). Regular classes will resume on Kartik 13, 2083 (29 October 2026) for all levels, in the usual shifts.`,
-      `The residential hostel will close at 12:00 noon on Ashwin 23 and reopen from 14:00 on Kartik 12. Parents and guardians are requested to complete departure formalities with the resident warden. Students unable to travel home must submit a written request to the Vice Principal (Academics) before Ashwin 18 so that skeleton catering and supervision can be arranged.`,
+      `The residential hostel will close at 12:00 noon on Ashwin 23 and reopen from 14:00 on Kartik 12. Parents and guardians are requested to complete departure formalities with the resident warden. Students unable to travel home must submit a written request to the Vice Principal before Ashwin 18 so that skeleton catering and supervision can be arranged.`,
       `The school transport fleet will not operate during the vacation. Route timings for the reopening week will be published on this notice board on Kartik 10.`,
       `Holiday assignments will be shared by subject teachers before Ashwin 22 and are due on the first working day after reopening. Grade 12 students are reminded that the second mock series begins in Kartik and the holiday period is not free time.`,
     ],
@@ -83,7 +83,7 @@ export const notices: Notice[] = [
     dateAd: "2026-08-31",
     dateBs: "Bhadra 15, 2083",
     audience: "SEE 2083 appeared and passed candidates",
-    issuedBy: "Nisha Baral, Admissions Officer",
+    issuedBy: "Admissions Office",
     summary: `Limited seats remain in the +2 Science Biology group and both Management groups. Second-phase applications close on Ashwin 8, 2083, and the entrance interview is scheduled for Ashwin 11.`,
     body: [
       `Following the completion of first-phase admissions, the following seats remain available for the academic session 2083: Science (Biology group) — 14 seats; Management (Accountancy & Finance group) — 21 seats; Management (Computer & Business Studies group) — 18 seats. The Science Physical group is now full and a waiting list is being maintained.`,
@@ -109,7 +109,7 @@ export const notices: Notice[] = [
     dateAd: "2026-08-28",
     dateBs: "Bhadra 12, 2083",
     audience: "All students and new applicants",
-    issuedBy: "Dr. Bishnu Prasad Sharma, Principal",
+    issuedBy: "Krishna Neupane, Principal",
     summary: `Nine scholarship schemes are open for the 2083 session, covering between 40 and 100 percent of tuition. Deadlines run from Ashwin through Poush; each scheme has its own criteria and document list.`,
     body: [
       `The scholarship selection committee invites applications for all nine schemes operating in the 2083 academic session. Together these cover 127 places across merit, need-based, government quota, sports, arts and community categories, with tuition relief ranging from forty to one hundred percent.`,
@@ -135,7 +135,7 @@ export const notices: Notice[] = [
     dateAd: "2026-08-25",
     dateBs: "Bhadra 9, 2083",
     audience: "Grade 11 students · Science and Management",
-    issuedBy: "Anita Pandey, Coordinator (+2 Science)",
+    issuedBy: "Narayan Dhakal, Coordinator (+2 Science)",
     summary: `Grade 11 students must submit their NEB registration documents and photographs by Bhadra 22. Names and dates of birth must match the SEE grade sheet exactly — corrections after submission are not possible.`,
     body: [
       `Registration with the National Examinations Board for the Grade 11 cohort of session 2083 is now open. All students must submit the completed registration form, two copies of the SEE grade sheet, a copy of the character certificate and six passport-size photographs with a white background to their class teacher by Bhadra 22, 2083.`,
@@ -160,7 +160,7 @@ export const notices: Notice[] = [
     dateAd: "2026-08-21",
     dateBs: "Bhadra 5, 2083",
     audience: "Grade 6 to Grade 12",
-    issuedBy: "Nabin Chaudhary, Head of Physics",
+    issuedBy: "Kamal Bahadur Rayamajhi, Physics Department",
     summary: `Project proposals for the fourteenth Everest Science Exhibition are invited until Ashwin 5. Working models, research posters and software projects are all eligible, in teams of up to three.`,
     body: [
       `The fourteenth Everest Science Exhibition will be held on Mangsir 8 and 9, 2083 in the auditorium and central courtyard. Entries are invited in four categories: working model, research poster, software or robotics project, and environmental study. Teams may have up to three members and must include a named faculty guide.`,
@@ -186,7 +186,7 @@ export const notices: Notice[] = [
     dateAd: "2026-08-17",
     dateBs: "Bhadra 1, 2083",
     audience: "Grade 9 and Grade 10 students and parents",
-    issuedBy: "Kabita Shrestha, Coordinator (Secondary Level)",
+    issuedBy: "Academic Office",
     summary: `Second unit test results for Grades 9 and 10 are now available with class teachers. Parents of students below the 40 percent threshold in any subject will be contacted individually for a support conversation.`,
     body: [
       `The results of the second unit test for Grade 9 and Grade 10 have been finalised and are available with the respective class teachers from today. Individual mark sheets will be sent home with students on Bhadra 3 and must be returned signed by a parent or guardian within three working days.`,
@@ -211,7 +211,7 @@ export const notices: Notice[] = [
     dateAd: "2026-08-12",
     dateBs: "Shrawan 27, 2083",
     audience: "All students · Grade 6 to Grade 12",
-    issuedBy: "Tek Bahadur Rai, Head of Physical Education",
+    issuedBy: "Physical Education Department",
     summary: `Selection trials for the annual inter-house athletics meet will be held on the south ground from Shrawan 30 to Bhadra 2, before school in the morning session.`,
     body: [
       `Trials for the twenty-first inter-house athletics meet will be held on the south ground from Shrawan 30 to Bhadra 2, 2083, between 06:15 and 07:15 each morning. Events include 100 m, 200 m, 400 m, relay, long jump, high jump and shot put, in junior and senior categories for both boys and girls.`,
@@ -236,7 +236,7 @@ export const notices: Notice[] = [
     dateAd: "2026-08-07",
     dateBs: "Shrawan 22, 2083",
     audience: "Parents and guardians · Grade 11 and 12",
-    issuedBy: "Sarita Gurung, Vice Principal (Academics)",
+    issuedBy: "Umesh Regmi, Vice Principal",
     summary: `The first parent-teacher meeting of the session for the +2 levels will be held on Shrawan 31 in the auditorium, with subject-wise desks from 09:00 to 12:30.`,
     body: [
       `The first parent-teacher meeting for the +2 levels of session 2083 will be held on Shrawan 31, 2083 (16 August 2026) in the auditorium and adjacent classrooms. Subject teachers will be available at named desks between 09:00 and 12:30; no appointment is required.`,
@@ -259,7 +259,7 @@ export const notices: Notice[] = [
     dateAd: "2026-08-02",
     dateBs: "Shrawan 17, 2083",
     audience: "All students and staff",
-    issuedBy: "Manju Limbu, Librarian",
+    issuedBy: "Library",
     summary: `Library cards for session 2083 must be renewed at the reference desk by Bhadra 5. Four hundred and twelve new titles have been catalogued, including a refreshed NEB past-paper set.`,
     body: [
       `Library membership for the academic session 2083 is now open for renewal at the reference desk. Students must bring their previous card and one photograph; renewal takes under five minutes and can be done during any free period. Borrowing privileges for un-renewed cards will be suspended after Bhadra 5.`,
@@ -284,7 +284,7 @@ export const notices: Notice[] = [
     dateAd: "2026-07-28",
     dateBs: "Shrawan 12, 2083",
     audience: "Grade 11 and Grade 12 students and staff",
-    issuedBy: "Anita Pandey & Deepak Raj Bhattarai, Stream Coordinators",
+    issuedBy: "Narayan Dhakal, +2 Coordinator",
     summary: `The revised morning shift routine takes effect from Shrawan 12. Science classes now begin at 06:30 and Management at 06:45, with practical periods consolidated to the last slot of the day.`,
     body: [
       `The revised class routine for both +2 streams takes effect from today, Shrawan 12, 2083. Science classes will now begin at 06:30 and conclude at 11:20; Management classes begin at 06:45 and conclude at 11:35. The change consolidates all practical and studio periods into the final slot of the day so that laboratory sessions are not interrupted by a bell.`,
@@ -309,7 +309,7 @@ export const notices: Notice[] = [
     dateAd: "2026-07-22",
     dateBs: "Shrawan 6, 2083",
     audience: "All students, parents and staff",
-    issuedBy: "Ramesh Kumar Thapa, Vice Principal (Administration)",
+    issuedBy: "Bhimsen Gautam, Vice Principal",
     summary: `Bus routes crossing the Tinau corridor will run fifteen minutes earlier through Shrawan and Bhadra. Any weather closure will be announced by 06:00 on this notice board.`,
     body: [
       `With the monsoon now established, routes 2, 4 and 6 which cross the Tinau corridor will depart fifteen minutes earlier than the published timing for the duration of Shrawan and Bhadra. Parents on these routes are requested to have students ready at the stop accordingly.`,
@@ -332,7 +332,7 @@ export const notices: Notice[] = [
     dateAd: "2026-07-16",
     dateBs: "Ashadh 32, 2083",
     audience: "SEE 2083 batch, parents and all students",
-    issuedBy: "Dr. Bishnu Prasad Sharma, Principal",
+    issuedBy: "Krishna Neupane, Principal",
     summary: `The school recorded a 100 percent pass rate in SEE 2083 with nineteen students securing GPA above 3.60. A felicitation programme will be held on Shrawan 8 in the auditorium.`,
     body: [
       `The Secondary Education Examination results for 2083 have been published by the National Examinations Board. Everest English Boarding Secondary School recorded a hundred percent pass rate across the batch of 138 candidates, with nineteen students securing a grade point average above 3.60 and a further forty-seven above 3.20.`,
@@ -357,7 +357,7 @@ export const notices: Notice[] = [
     dateAd: "2026-07-08",
     dateBs: "Ashadh 24, 2083",
     audience: "All students · new and continuing",
-    issuedBy: "Dinesh Gharti, Accounts & Services Officer",
+    issuedBy: "Accounts Office",
     summary: `Uniform sets and identity cards for session 2083 will be distributed level by level from Ashadh 28 to Shrawan 4 at the services counter beside the accounts office.`,
     body: [
       `Uniform sets and identity cards for the academic session 2083 will be distributed at the services counter beside the accounts office according to the schedule below. Students should collect in person; a parent may collect on presentation of the fee receipt.`,
@@ -383,7 +383,7 @@ export const notices: Notice[] = [
     dateAd: "2026-06-30",
     dateBs: "Ashadh 16, 2083",
     audience: "Prospective and continuing students",
-    issuedBy: "Dr. Bishnu Prasad Sharma, Principal",
+    issuedBy: "Krishna Neupane, Principal",
     summary: `Thirty-three free studentship places are reserved under the government quota for session 2083, allocated in accordance with Ministry of Education directives across the prescribed categories.`,
     body: [
       `In accordance with the directives of the Ministry of Education, Science and Technology, thirty-three free studentship places are reserved at this institution for the academic session 2083. These places carry a full waiver of tuition and examination fees and are allocated across the categories prescribed by the directive, including students from Dalit and marginalised communities, students with disability, children of martyrs and conflict victims, and students from families below the recognised income threshold.`,
@@ -409,7 +409,7 @@ export const notices: Notice[] = [
     dateAd: "2026-06-20",
     dateBs: "Ashadh 6, 2083",
     audience: "All students, parents and staff",
-    issuedBy: "Sarita Gurung, Vice Principal (Academics)",
+    issuedBy: "Umesh Regmi, Vice Principal",
     summary: `The 2083 academic session opens on Ashadh 10 with a level-wise orientation. New students and their parents should attend the session for their level in the auditorium.`,
     body: [
       `The academic session 2083 BS will formally begin on Ashadh 10, 2083 (24 June 2026). Regular classes for all levels start on Ashadh 12 following the routine that will be posted on the notice board and on the Courses page of this site.`,

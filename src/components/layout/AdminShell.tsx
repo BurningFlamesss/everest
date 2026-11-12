@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "@tanstack/react-router";
+import { Outlet, useLocation } from "@tanstack/react-router";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { CommandPalette } from "./CommandPalette";

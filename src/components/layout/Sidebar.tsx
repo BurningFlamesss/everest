@@ -144,16 +144,19 @@ export function Sidebar({ collapsed, mobile = false, onToggle, onNavigate }: Sid
                               <Link
                                 to={child.to}
                                 onClick={onNavigate}
-                                className={({ isActive: childActive }) =>
-                                  cn(
-                                    "block rounded px-2 py-1.5 text-[13px] transition-colors duration-150 focus-ring",
-                                    childActive && location.search === child.to.split("?")[1]
-                                      ? "text-foreground"
-                                      : "text-muted-foreground hover:text-foreground",
-                                  )
-                                }
+                                className="block rounded px-2 py-1.5 text-[13px] transition-colors duration-150 focus-ring"
                               >
-                                {child.label}
+                                {({ isActive: childActive }) => (
+                                  <span
+                                    className={cn(
+                                      childActive && location.search === child.to.split("?")[1]
+                                        ? "text-foreground"
+                                        : "text-muted-foreground hover:text-foreground",
+                                    )}
+                                  >
+                                    {child.label}
+                                  </span>
+                                )}
                               </Link>
                             </li>
                           ))}

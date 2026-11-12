@@ -70,8 +70,12 @@ export async function generateInvoices(feeStructureId: string) {
 
 	if (students.length === 0) return 0;
 
+	const year = new Date().getFullYear();
+	const issued = await prisma.invoice.count();
+
 	const result = await prisma.invoice.createMany({
-		data: students.map((student) => ({
+		data: students.map((student, index) => ({
+			invoiceNo: `INV-${year}-${String(2000 + issued + index)}`,
 			studentId: student.id,
 			termId: structure.termId,
 			feeStructureId: structure.id,

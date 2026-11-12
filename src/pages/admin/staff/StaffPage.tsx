@@ -177,7 +177,7 @@ export default function StaffPage() {
 
 	const exportStaff = (rows: StaffMember[]) => {
 		downloadTextFile(
-			`northfield-staff-${Date.now()}.csv`,
+			`everest-staff-${Date.now()}.csv`,
 			toCsv(
 				rows.map((s) => ({
 					employeeId: s.employeeId,
@@ -528,11 +528,16 @@ export default function StaffPage() {
 
 			<Dialog
 				open={formOpen}
-				onOpenChange={(open) => {
+				onOpenChange={(open: boolean) => {
 					setFormOpen(open);
 					if (!open) {
 						navigate({
-							search: Object.fromEntries(Object.entries(searchParams).filter(([k]) => k !== "new")),
+							to: "/admin/staff",
+							search: (prev) => {
+								const next: Record<string, string | undefined> = { ...prev };
+								delete next.new;
+								return next;
+							},
 							replace: true,
 						});
 					}
@@ -674,7 +679,7 @@ export default function StaffPage() {
 
 			<Dialog
 				open={Boolean(roleTarget)}
-				onOpenChange={(open) => !open && setRoleTarget(null)}
+				onOpenChange={(open: boolean) => !open && setRoleTarget(null)}
 			>
 				<DialogContent
 					className="bg-popover sm:max-w-md"

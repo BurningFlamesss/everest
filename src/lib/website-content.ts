@@ -249,7 +249,7 @@ const BLOCK_LIBRARY_DEFAULTS: Record<BlockType, Record<string, unknown>> = {
   stats: {
     items: [
       { label: "Students", value: "1,180" },
-      { label: "Faculty", value: "96" },
+      { label: "Faculty", value: "23" },
       { label: "Ratio", value: "12:1" },
       { label: "Placement", value: "98%" },
     ],
@@ -279,7 +279,7 @@ const BLOCK_LIBRARY_DEFAULTS: Record<BlockType, Record<string, unknown>> = {
   history: { title: "Our history", body: "", image: "", milestones: [{ year: "2000", title: "Milestone" }] },
   auth_visual: {
     image: "/schools/everest/landing-footage/frame_0001.jpeg",
-    eyebrow: "ScMS entrance",
+    eyebrow: "Everest entrance",
     headline: "The digital entrance to the school.",
     subheadline: "One community / connected responsibly",
   },
@@ -342,7 +342,7 @@ const BLOCK_LIBRARY_DEFAULTS: Record<BlockType, Record<string, unknown>> = {
     facultyDesc: "The educators leading our academic departments and steering the school's vision.",
   },
   ...SECTION_DEFAULTS,
-};
+} as Record<BlockType, Record<string, unknown>>;
 
 export async function addBlock(key: WebsitePageKey, type: BlockType, actor?: Actor): Promise<WebsitePage> {
   const page = await findPage(key);
@@ -488,6 +488,10 @@ export async function ensureDefaultPages(): Promise<void> {
     { key: "transportation", title: "Transportation", path: "/transportation" },
     { key: "notices", title: "Notices", path: "/notices" },
     { key: "scholarship", title: "Scholarships", path: "/scholarship" },
+    { key: "posts", title: "Latest Posts", path: "/posts" },
+    { key: "admissions", title: "Admissions", path: "/admissions" },
+    { key: "clubs", title: "Clubs", path: "/clubs" },
+    { key: "events", title: "Events", path: "/events" },
   ];
 
   for (const page of defaultPages) {

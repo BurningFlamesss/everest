@@ -92,7 +92,7 @@ function buildStudent(input: StudentInput): Student {
   const rollNo = db().students.filter((s) => s.classId === cls.id).length + 1;
   return {
     id: uid("stu"),
-    admissionNo: `NFA-${year}-${String(1000 + db().students.length + 1).slice(-4)}`,
+    admissionNo: `EEBSS-${year}-${String(1000 + db().students.length + 1).slice(-4)}`,
     firstName: input.firstName.trim(),
     lastName: input.lastName.trim(),
     avatarUrl: avatarFor(name),
@@ -106,10 +106,10 @@ function buildStudent(input: StudentInput): Student {
     admissionYear: year,
     admissionDate: new Date().toISOString().slice(0, 10),
     status: "active",
-    email: input.email?.trim() || `${input.firstName}.${input.lastName}@student.northfield.edu`.toLowerCase(),
+    email: input.email?.trim() || `${input.firstName}.${input.lastName}@student.everest.edu`.toLowerCase(),
     phone: input.phone?.trim() || input.guardianPhone,
     address: input.address?.trim() || "—",
-    city: input.city?.trim() || "Northfield",
+    city: input.city?.trim() || "Everest",
     bloodGroup: input.bloodGroup || "O+",
     nationality: "American",
     guardian: {

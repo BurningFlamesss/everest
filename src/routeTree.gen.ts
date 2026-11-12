@@ -12,17 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as OnboardRouteImport } from './routes/_onboard'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AdmissionsRouteImport } from './routes/admissions'
-import { Route as ClubsRouteImport } from './routes/clubs'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as EventsRouteImport } from './routes/events'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MyClassesRouteImport } from './routes/my-classes'
 import { Route as MyFeesRouteImport } from './routes/my-fees'
 import { Route as MyHomeworkRouteImport } from './routes/my-homework'
 import { Route as MyRecordsRouteImport } from './routes/my-records'
 import { Route as MyResultsRouteImport } from './routes/my-results'
-import { Route as NoticesRouteImport } from './routes/notices'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -32,10 +28,13 @@ import { Route as OnboardResetPasswordRouteImport } from './routes/_onboard/rese
 import { Route as OnboardSignupRouteImport } from './routes/_onboard/signup'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as PublicAboutRouteImport } from './routes/_public/about'
+import { Route as PublicAdmissionsRouteImport } from './routes/_public/admissions'
 import { Route as PublicCalendarRouteImport } from './routes/_public/calendar'
+import { Route as PublicClubsRouteImport } from './routes/_public/clubs'
 import { Route as PublicContactRouteImport } from './routes/_public/contact'
 import { Route as PublicCourseFinderRouteImport } from './routes/_public/course-finder'
 import { Route as PublicCoursesRouteImport } from './routes/_public/courses'
+import { Route as PublicEventsRouteImport } from './routes/_public/events'
 import { Route as PublicFacilitiesRouteImport } from './routes/_public/facilities'
 import { Route as PublicFacultyRouteImport } from './routes/_public/faculty'
 import { Route as PublicGalleryRouteImport } from './routes/_public/gallery'
@@ -46,14 +45,14 @@ import { Route as PublicResultRouteImport } from './routes/_public/result'
 import { Route as PublicScholarshipRouteImport } from './routes/_public/scholarship'
 import { Route as PublicTransportationRouteImport } from './routes/_public/transportation'
 import { Route as ApiUploadsRouteImport } from './routes/api/uploads'
-import { Route as EventsIndexRouteImport } from './routes/events.index'
-import { Route as EventsSlugRouteImport } from './routes/events.$slug'
-import { Route as NoticesIndexRouteImport } from './routes/notices.index'
-import { Route as NoticesSlugRouteImport } from './routes/notices.$slug'
 import { Route as UploadsSplatRouteImport } from './routes/uploads/$'
 import { Route as UserIndexRouteImport } from './routes/user/index'
 import { Route as OnboardActivateIndexRouteImport } from './routes/_onboard/activate.index'
 import { Route as OnboardActivateTokenRouteImport } from './routes/_onboard/activate.$token'
+import { Route as PublicEventsIndexRouteImport } from './routes/_public/events.index'
+import { Route as PublicEventsSlugRouteImport } from './routes/_public/events.$slug'
+import { Route as PublicNoticesIndexRouteImport } from './routes/_public/notices.index'
+import { Route as PublicNoticesSlugRouteImport } from './routes/_public/notices.$slug'
 import { Route as AdminAdminIndexRouteImport } from './routes/admin/_admin/index'
 import { Route as AdminAdminSplatRouteImport } from './routes/admin/_admin/$'
 import { Route as AdminAdminAcademicsRouteImport } from './routes/admin/_admin/academics'
@@ -126,24 +125,9 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdmissionsRoute = AdmissionsRouteImport.update({
-  id: '/admissions',
-  path: '/admissions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ClubsRoute = ClubsRouteImport.update({
-  id: '/clubs',
-  path: '/clubs',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EventsRoute = EventsRouteImport.update({
-  id: '/events',
-  path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -174,11 +158,6 @@ const MyRecordsRoute = MyRecordsRouteImport.update({
 const MyResultsRoute = MyResultsRouteImport.update({
   id: '/my-results',
   path: '/my-results',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NoticesRoute = NoticesRouteImport.update({
-  id: '/notices',
-  path: '/notices',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -226,9 +205,19 @@ const PublicAboutRoute = PublicAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => PublicRoute,
 } as any)
+const PublicAdmissionsRoute = PublicAdmissionsRouteImport.update({
+  id: '/admissions',
+  path: '/admissions',
+  getParentRoute: () => PublicRoute,
+} as any)
 const PublicCalendarRoute = PublicCalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicClubsRoute = PublicClubsRouteImport.update({
+  id: '/clubs',
+  path: '/clubs',
   getParentRoute: () => PublicRoute,
 } as any)
 const PublicContactRoute = PublicContactRouteImport.update({
@@ -244,6 +233,11 @@ const PublicCourseFinderRoute = PublicCourseFinderRouteImport.update({
 const PublicCoursesRoute = PublicCoursesRouteImport.update({
   id: '/courses',
   path: '/courses',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicEventsRoute = PublicEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
   getParentRoute: () => PublicRoute,
 } as any)
 const PublicFacilitiesRoute = PublicFacilitiesRouteImport.update({
@@ -296,26 +290,6 @@ const ApiUploadsRoute = ApiUploadsRouteImport.update({
   path: '/api/uploads',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EventsIndexRoute = EventsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => EventsRoute,
-} as any)
-const EventsSlugRoute = EventsSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => EventsRoute,
-} as any)
-const NoticesIndexRoute = NoticesIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => NoticesRoute,
-} as any)
-const NoticesSlugRoute = NoticesSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => NoticesRoute,
-} as any)
 const UploadsSplatRoute = UploadsSplatRouteImport.update({
   id: '/uploads/$',
   path: '/uploads/$',
@@ -335,6 +309,26 @@ const OnboardActivateTokenRoute = OnboardActivateTokenRouteImport.update({
   id: '/activate/$token',
   path: '/activate/$token',
   getParentRoute: () => OnboardRoute,
+} as any)
+const PublicEventsIndexRoute = PublicEventsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PublicEventsRoute,
+} as any)
+const PublicEventsSlugRoute = PublicEventsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => PublicEventsRoute,
+} as any)
+const PublicNoticesIndexRoute = PublicNoticesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PublicNoticesRoute,
+} as any)
+const PublicNoticesSlugRoute = PublicNoticesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => PublicNoticesRoute,
 } as any)
 const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
   id: '/_admin/',
@@ -637,17 +631,13 @@ const ApiWebsitePagesKeySectionsSectionTypeRoute =
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/admissions': typeof AdmissionsRoute
-  '/clubs': typeof ClubsRoute
   '/dashboard': typeof DashboardRoute
-  '/events': typeof EventsRouteWithChildren
   '/login': typeof LoginRoute
   '/my-classes': typeof MyClassesRoute
   '/my-fees': typeof MyFeesRoute
   '/my-homework': typeof MyHomeworkRoute
   '/my-records': typeof MyRecordsRoute
   '/my-results': typeof MyResultsRoute
-  '/notices': typeof PublicNoticesRoute
   '/notifications': typeof NotificationsRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -656,26 +646,28 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof OnboardResetPasswordRoute
   '/signup': typeof OnboardSignupRoute
   '/about': typeof PublicAboutRoute
+  '/admissions': typeof PublicAdmissionsRoute
   '/calendar': typeof PublicCalendarRoute
+  '/clubs': typeof PublicClubsRoute
   '/contact': typeof PublicContactRoute
   '/course-finder': typeof PublicCourseFinderRoute
   '/courses': typeof PublicCoursesRoute
+  '/events': typeof PublicEventsRouteWithChildren
   '/facilities': typeof PublicFacilitiesRoute
   '/faculty': typeof PublicFacultyRoute
   '/gallery': typeof PublicGalleryRoute
+  '/notices': typeof PublicNoticesRouteWithChildren
   '/posts': typeof PublicPostsRoute
   '/resources': typeof PublicResourcesRoute
   '/result': typeof PublicResultRoute
   '/scholarship': typeof PublicScholarshipRoute
   '/transportation': typeof PublicTransportationRoute
   '/api/uploads': typeof ApiUploadsRoute
-  '/events/$slug': typeof EventsSlugRoute
-  '/notices/$slug': typeof NoticesSlugRoute
   '/uploads/$': typeof UploadsSplatRoute
-  '/events/': typeof EventsIndexRoute
-  '/notices/': typeof NoticesIndexRoute
   '/user/': typeof UserIndexRoute
   '/activate/$token': typeof OnboardActivateTokenRoute
+  '/events/$slug': typeof PublicEventsSlugRoute
+  '/notices/$slug': typeof PublicNoticesSlugRoute
   '/admin/$': typeof AdminAdminSplatRoute
   '/admin/academics': typeof AdminAdminAcademicsRoute
   '/admin/activity': typeof AdminAdminActivityRoute
@@ -715,6 +707,8 @@ export interface FileRoutesByFullPath {
   '/api/cron/cleanup': typeof ApiCronCleanupRoute
   '/api/website/pages': typeof ApiWebsitePagesRouteWithChildren
   '/activate/': typeof OnboardActivateIndexRoute
+  '/events/': typeof PublicEventsIndexRoute
+  '/notices/': typeof PublicNoticesIndexRoute
   '/admin/': typeof AdminAdminIndexRoute
   '/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
   '/admin/admissions/$id': typeof AdminAdminAdmissionsIdRoute
@@ -738,8 +732,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
-  '/admissions': typeof AdmissionsRoute
-  '/clubs': typeof ClubsRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/my-classes': typeof MyClassesRoute
@@ -754,26 +746,26 @@ export interface FileRoutesByTo {
   '/reset-password': typeof OnboardResetPasswordRoute
   '/signup': typeof OnboardSignupRoute
   '/about': typeof PublicAboutRoute
+  '/admissions': typeof PublicAdmissionsRoute
   '/calendar': typeof PublicCalendarRoute
+  '/clubs': typeof PublicClubsRoute
   '/contact': typeof PublicContactRoute
   '/course-finder': typeof PublicCourseFinderRoute
   '/courses': typeof PublicCoursesRoute
   '/facilities': typeof PublicFacilitiesRoute
   '/faculty': typeof PublicFacultyRoute
   '/gallery': typeof PublicGalleryRoute
-  '/notices': typeof NoticesIndexRoute
   '/posts': typeof PublicPostsRoute
   '/resources': typeof PublicResourcesRoute
   '/result': typeof PublicResultRoute
   '/scholarship': typeof PublicScholarshipRoute
   '/transportation': typeof PublicTransportationRoute
   '/api/uploads': typeof ApiUploadsRoute
-  '/events/$slug': typeof EventsSlugRoute
-  '/notices/$slug': typeof NoticesSlugRoute
   '/uploads/$': typeof UploadsSplatRoute
-  '/events': typeof EventsIndexRoute
   '/user': typeof UserIndexRoute
   '/activate/$token': typeof OnboardActivateTokenRoute
+  '/events/$slug': typeof PublicEventsSlugRoute
+  '/notices/$slug': typeof PublicNoticesSlugRoute
   '/admin/$': typeof AdminAdminSplatRoute
   '/admin/academics': typeof AdminAdminAcademicsRoute
   '/admin/activity': typeof AdminAdminActivityRoute
@@ -813,6 +805,8 @@ export interface FileRoutesByTo {
   '/api/cron/cleanup': typeof ApiCronCleanupRoute
   '/api/website/pages': typeof ApiWebsitePagesRouteWithChildren
   '/activate': typeof OnboardActivateIndexRoute
+  '/events': typeof PublicEventsIndexRoute
+  '/notices': typeof PublicNoticesIndexRoute
   '/admin': typeof AdminAdminIndexRoute
   '/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
   '/admin/admissions/$id': typeof AdminAdminAdmissionsIdRoute
@@ -839,17 +833,13 @@ export interface FileRoutesById {
   '/_onboard': typeof OnboardRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
-  '/admissions': typeof AdmissionsRoute
-  '/clubs': typeof ClubsRoute
   '/dashboard': typeof DashboardRoute
-  '/events': typeof EventsRouteWithChildren
   '/login': typeof LoginRoute
   '/my-classes': typeof MyClassesRoute
   '/my-fees': typeof MyFeesRoute
   '/my-homework': typeof MyHomeworkRoute
   '/my-records': typeof MyRecordsRoute
   '/my-results': typeof MyResultsRoute
-  '/notices': typeof NoticesRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -858,28 +848,29 @@ export interface FileRoutesById {
   '/_onboard/reset-password': typeof OnboardResetPasswordRoute
   '/_onboard/signup': typeof OnboardSignupRoute
   '/_public/about': typeof PublicAboutRoute
+  '/_public/admissions': typeof PublicAdmissionsRoute
   '/_public/calendar': typeof PublicCalendarRoute
+  '/_public/clubs': typeof PublicClubsRoute
   '/_public/contact': typeof PublicContactRoute
   '/_public/course-finder': typeof PublicCourseFinderRoute
   '/_public/courses': typeof PublicCoursesRoute
+  '/_public/events': typeof PublicEventsRouteWithChildren
   '/_public/facilities': typeof PublicFacilitiesRoute
   '/_public/faculty': typeof PublicFacultyRoute
   '/_public/gallery': typeof PublicGalleryRoute
-  '/_public/notices': typeof PublicNoticesRoute
+  '/_public/notices': typeof PublicNoticesRouteWithChildren
   '/_public/posts': typeof PublicPostsRoute
   '/_public/resources': typeof PublicResourcesRoute
   '/_public/result': typeof PublicResultRoute
   '/_public/scholarship': typeof PublicScholarshipRoute
   '/_public/transportation': typeof PublicTransportationRoute
   '/api/uploads': typeof ApiUploadsRoute
-  '/events/$slug': typeof EventsSlugRoute
-  '/notices/$slug': typeof NoticesSlugRoute
   '/uploads/$': typeof UploadsSplatRoute
   '/_public/': typeof PublicIndexRoute
-  '/events/': typeof EventsIndexRoute
-  '/notices/': typeof NoticesIndexRoute
   '/user/': typeof UserIndexRoute
   '/_onboard/activate/$token': typeof OnboardActivateTokenRoute
+  '/_public/events/$slug': typeof PublicEventsSlugRoute
+  '/_public/notices/$slug': typeof PublicNoticesSlugRoute
   '/admin/_admin/$': typeof AdminAdminSplatRoute
   '/admin/_admin/academics': typeof AdminAdminAcademicsRoute
   '/admin/_admin/activity': typeof AdminAdminActivityRoute
@@ -919,6 +910,8 @@ export interface FileRoutesById {
   '/api/cron/cleanup': typeof ApiCronCleanupRoute
   '/api/website/pages': typeof ApiWebsitePagesRouteWithChildren
   '/_onboard/activate/': typeof OnboardActivateIndexRoute
+  '/_public/events/': typeof PublicEventsIndexRoute
+  '/_public/notices/': typeof PublicNoticesIndexRoute
   '/admin/_admin/': typeof AdminAdminIndexRoute
   '/_onboard/activate/guardian/$token': typeof OnboardActivateGuardianTokenRoute
   '/admin/_admin/admissions/$id': typeof AdminAdminAdmissionsIdRoute
@@ -945,17 +938,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/admissions'
-    | '/clubs'
     | '/dashboard'
-    | '/events'
     | '/login'
     | '/my-classes'
     | '/my-fees'
     | '/my-homework'
     | '/my-records'
     | '/my-results'
-    | '/notices'
     | '/notifications'
     | '/robots.txt'
     | '/sitemap.xml'
@@ -964,26 +953,28 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/about'
+    | '/admissions'
     | '/calendar'
+    | '/clubs'
     | '/contact'
     | '/course-finder'
     | '/courses'
+    | '/events'
     | '/facilities'
     | '/faculty'
     | '/gallery'
+    | '/notices'
     | '/posts'
     | '/resources'
     | '/result'
     | '/scholarship'
     | '/transportation'
     | '/api/uploads'
-    | '/events/$slug'
-    | '/notices/$slug'
     | '/uploads/$'
-    | '/events/'
-    | '/notices/'
     | '/user/'
     | '/activate/$token'
+    | '/events/$slug'
+    | '/notices/$slug'
     | '/admin/$'
     | '/admin/academics'
     | '/admin/activity'
@@ -1023,6 +1014,8 @@ export interface FileRouteTypes {
     | '/api/cron/cleanup'
     | '/api/website/pages'
     | '/activate/'
+    | '/events/'
+    | '/notices/'
     | '/admin/'
     | '/activate/guardian/$token'
     | '/admin/admissions/$id'
@@ -1046,8 +1039,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admissions'
-    | '/clubs'
     | '/dashboard'
     | '/login'
     | '/my-classes'
@@ -1062,26 +1053,26 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/about'
+    | '/admissions'
     | '/calendar'
+    | '/clubs'
     | '/contact'
     | '/course-finder'
     | '/courses'
     | '/facilities'
     | '/faculty'
     | '/gallery'
-    | '/notices'
     | '/posts'
     | '/resources'
     | '/result'
     | '/scholarship'
     | '/transportation'
     | '/api/uploads'
-    | '/events/$slug'
-    | '/notices/$slug'
     | '/uploads/$'
-    | '/events'
     | '/user'
     | '/activate/$token'
+    | '/events/$slug'
+    | '/notices/$slug'
     | '/admin/$'
     | '/admin/academics'
     | '/admin/activity'
@@ -1121,6 +1112,8 @@ export interface FileRouteTypes {
     | '/api/cron/cleanup'
     | '/api/website/pages'
     | '/activate'
+    | '/events'
+    | '/notices'
     | '/admin'
     | '/activate/guardian/$token'
     | '/admin/admissions/$id'
@@ -1146,17 +1139,13 @@ export interface FileRouteTypes {
     | '/_onboard'
     | '/_public'
     | '/admin'
-    | '/admissions'
-    | '/clubs'
     | '/dashboard'
-    | '/events'
     | '/login'
     | '/my-classes'
     | '/my-fees'
     | '/my-homework'
     | '/my-records'
     | '/my-results'
-    | '/notices'
     | '/notifications'
     | '/robots.txt'
     | '/sitemap.xml'
@@ -1165,10 +1154,13 @@ export interface FileRouteTypes {
     | '/_onboard/reset-password'
     | '/_onboard/signup'
     | '/_public/about'
+    | '/_public/admissions'
     | '/_public/calendar'
+    | '/_public/clubs'
     | '/_public/contact'
     | '/_public/course-finder'
     | '/_public/courses'
+    | '/_public/events'
     | '/_public/facilities'
     | '/_public/faculty'
     | '/_public/gallery'
@@ -1179,14 +1171,12 @@ export interface FileRouteTypes {
     | '/_public/scholarship'
     | '/_public/transportation'
     | '/api/uploads'
-    | '/events/$slug'
-    | '/notices/$slug'
     | '/uploads/$'
     | '/_public/'
-    | '/events/'
-    | '/notices/'
     | '/user/'
     | '/_onboard/activate/$token'
+    | '/_public/events/$slug'
+    | '/_public/notices/$slug'
     | '/admin/_admin/$'
     | '/admin/_admin/academics'
     | '/admin/_admin/activity'
@@ -1226,6 +1216,8 @@ export interface FileRouteTypes {
     | '/api/cron/cleanup'
     | '/api/website/pages'
     | '/_onboard/activate/'
+    | '/_public/events/'
+    | '/_public/notices/'
     | '/admin/_admin/'
     | '/_onboard/activate/guardian/$token'
     | '/admin/_admin/admissions/$id'
@@ -1252,17 +1244,13 @@ export interface RootRouteChildren {
   OnboardRoute: typeof OnboardRouteWithChildren
   PublicRoute: typeof PublicRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
-  AdmissionsRoute: typeof AdmissionsRoute
-  ClubsRoute: typeof ClubsRoute
   DashboardRoute: typeof DashboardRoute
-  EventsRoute: typeof EventsRouteWithChildren
   LoginRoute: typeof LoginRoute
   MyClassesRoute: typeof MyClassesRoute
   MyFeesRoute: typeof MyFeesRoute
   MyHomeworkRoute: typeof MyHomeworkRoute
   MyRecordsRoute: typeof MyRecordsRoute
   MyResultsRoute: typeof MyResultsRoute
-  NoticesRoute: typeof NoticesRouteWithChildren
   NotificationsRoute: typeof NotificationsRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -1298,32 +1286,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admissions': {
-      id: '/admissions'
-      path: '/admissions'
-      fullPath: '/admissions'
-      preLoaderRoute: typeof AdmissionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/clubs': {
-      id: '/clubs'
-      path: '/clubs'
-      fullPath: '/clubs'
-      preLoaderRoute: typeof ClubsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/events': {
-      id: '/events'
-      path: '/events'
-      fullPath: '/events'
-      preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -1366,13 +1333,6 @@ declare module '@tanstack/react-router' {
       path: '/my-results'
       fullPath: '/my-results'
       preLoaderRoute: typeof MyResultsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/notices': {
-      id: '/notices'
-      path: '/notices'
-      fullPath: '/notices'
-      preLoaderRoute: typeof NoticesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notifications': {
@@ -1438,11 +1398,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicAboutRouteImport
       parentRoute: typeof PublicRoute
     }
+    '/_public/admissions': {
+      id: '/_public/admissions'
+      path: '/admissions'
+      fullPath: '/admissions'
+      preLoaderRoute: typeof PublicAdmissionsRouteImport
+      parentRoute: typeof PublicRoute
+    }
     '/_public/calendar': {
       id: '/_public/calendar'
       path: '/calendar'
       fullPath: '/calendar'
       preLoaderRoute: typeof PublicCalendarRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/clubs': {
+      id: '/_public/clubs'
+      path: '/clubs'
+      fullPath: '/clubs'
+      preLoaderRoute: typeof PublicClubsRouteImport
       parentRoute: typeof PublicRoute
     }
     '/_public/contact': {
@@ -1464,6 +1438,13 @@ declare module '@tanstack/react-router' {
       path: '/courses'
       fullPath: '/courses'
       preLoaderRoute: typeof PublicCoursesRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/events': {
+      id: '/_public/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof PublicEventsRouteImport
       parentRoute: typeof PublicRoute
     }
     '/_public/facilities': {
@@ -1536,34 +1517,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiUploadsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/events/': {
-      id: '/events/'
-      path: '/'
-      fullPath: '/events/'
-      preLoaderRoute: typeof EventsIndexRouteImport
-      parentRoute: typeof EventsRoute
-    }
-    '/events/$slug': {
-      id: '/events/$slug'
-      path: '/$slug'
-      fullPath: '/events/$slug'
-      preLoaderRoute: typeof EventsSlugRouteImport
-      parentRoute: typeof EventsRoute
-    }
-    '/notices/': {
-      id: '/notices/'
-      path: '/'
-      fullPath: '/notices/'
-      preLoaderRoute: typeof NoticesIndexRouteImport
-      parentRoute: typeof NoticesRoute
-    }
-    '/notices/$slug': {
-      id: '/notices/$slug'
-      path: '/$slug'
-      fullPath: '/notices/$slug'
-      preLoaderRoute: typeof NoticesSlugRouteImport
-      parentRoute: typeof NoticesRoute
-    }
     '/uploads/$': {
       id: '/uploads/$'
       path: '/uploads/$'
@@ -1591,6 +1544,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/activate/$token'
       preLoaderRoute: typeof OnboardActivateTokenRouteImport
       parentRoute: typeof OnboardRoute
+    }
+    '/_public/events/': {
+      id: '/_public/events/'
+      path: '/'
+      fullPath: '/events/'
+      preLoaderRoute: typeof PublicEventsIndexRouteImport
+      parentRoute: typeof PublicEventsRoute
+    }
+    '/_public/events/$slug': {
+      id: '/_public/events/$slug'
+      path: '/$slug'
+      fullPath: '/events/$slug'
+      preLoaderRoute: typeof PublicEventsSlugRouteImport
+      parentRoute: typeof PublicEventsRoute
+    }
+    '/_public/notices/': {
+      id: '/_public/notices/'
+      path: '/'
+      fullPath: '/notices/'
+      preLoaderRoute: typeof PublicNoticesIndexRouteImport
+      parentRoute: typeof PublicNoticesRoute
+    }
+    '/_public/notices/$slug': {
+      id: '/_public/notices/$slug'
+      path: '/$slug'
+      fullPath: '/notices/$slug'
+      preLoaderRoute: typeof PublicNoticesSlugRouteImport
+      parentRoute: typeof PublicNoticesRoute
     }
     '/admin/_admin/': {
       id: '/admin/_admin/'
@@ -2022,16 +2003,47 @@ const OnboardRouteChildren: OnboardRouteChildren = {
 const OnboardRouteWithChildren =
   OnboardRoute._addFileChildren(OnboardRouteChildren)
 
+interface PublicEventsRouteChildren {
+  PublicEventsSlugRoute: typeof PublicEventsSlugRoute
+  PublicEventsIndexRoute: typeof PublicEventsIndexRoute
+}
+
+const PublicEventsRouteChildren: PublicEventsRouteChildren = {
+  PublicEventsSlugRoute: PublicEventsSlugRoute,
+  PublicEventsIndexRoute: PublicEventsIndexRoute,
+}
+
+const PublicEventsRouteWithChildren = PublicEventsRoute._addFileChildren(
+  PublicEventsRouteChildren,
+)
+
+interface PublicNoticesRouteChildren {
+  PublicNoticesSlugRoute: typeof PublicNoticesSlugRoute
+  PublicNoticesIndexRoute: typeof PublicNoticesIndexRoute
+}
+
+const PublicNoticesRouteChildren: PublicNoticesRouteChildren = {
+  PublicNoticesSlugRoute: PublicNoticesSlugRoute,
+  PublicNoticesIndexRoute: PublicNoticesIndexRoute,
+}
+
+const PublicNoticesRouteWithChildren = PublicNoticesRoute._addFileChildren(
+  PublicNoticesRouteChildren,
+)
+
 interface PublicRouteChildren {
   PublicAboutRoute: typeof PublicAboutRoute
+  PublicAdmissionsRoute: typeof PublicAdmissionsRoute
   PublicCalendarRoute: typeof PublicCalendarRoute
+  PublicClubsRoute: typeof PublicClubsRoute
   PublicContactRoute: typeof PublicContactRoute
   PublicCourseFinderRoute: typeof PublicCourseFinderRoute
   PublicCoursesRoute: typeof PublicCoursesRoute
+  PublicEventsRoute: typeof PublicEventsRouteWithChildren
   PublicFacilitiesRoute: typeof PublicFacilitiesRoute
   PublicFacultyRoute: typeof PublicFacultyRoute
   PublicGalleryRoute: typeof PublicGalleryRoute
-  PublicNoticesRoute: typeof PublicNoticesRoute
+  PublicNoticesRoute: typeof PublicNoticesRouteWithChildren
   PublicPostsRoute: typeof PublicPostsRoute
   PublicResourcesRoute: typeof PublicResourcesRoute
   PublicResultRoute: typeof PublicResultRoute
@@ -2042,14 +2054,17 @@ interface PublicRouteChildren {
 
 const PublicRouteChildren: PublicRouteChildren = {
   PublicAboutRoute: PublicAboutRoute,
+  PublicAdmissionsRoute: PublicAdmissionsRoute,
   PublicCalendarRoute: PublicCalendarRoute,
+  PublicClubsRoute: PublicClubsRoute,
   PublicContactRoute: PublicContactRoute,
   PublicCourseFinderRoute: PublicCourseFinderRoute,
   PublicCoursesRoute: PublicCoursesRoute,
+  PublicEventsRoute: PublicEventsRouteWithChildren,
   PublicFacilitiesRoute: PublicFacilitiesRoute,
   PublicFacultyRoute: PublicFacultyRoute,
   PublicGalleryRoute: PublicGalleryRoute,
-  PublicNoticesRoute: PublicNoticesRoute,
+  PublicNoticesRoute: PublicNoticesRouteWithChildren,
   PublicPostsRoute: PublicPostsRoute,
   PublicResourcesRoute: PublicResourcesRoute,
   PublicResultRoute: PublicResultRoute,
@@ -2254,32 +2269,6 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface EventsRouteChildren {
-  EventsSlugRoute: typeof EventsSlugRoute
-  EventsIndexRoute: typeof EventsIndexRoute
-}
-
-const EventsRouteChildren: EventsRouteChildren = {
-  EventsSlugRoute: EventsSlugRoute,
-  EventsIndexRoute: EventsIndexRoute,
-}
-
-const EventsRouteWithChildren =
-  EventsRoute._addFileChildren(EventsRouteChildren)
-
-interface NoticesRouteChildren {
-  NoticesSlugRoute: typeof NoticesSlugRoute
-  NoticesIndexRoute: typeof NoticesIndexRoute
-}
-
-const NoticesRouteChildren: NoticesRouteChildren = {
-  NoticesSlugRoute: NoticesSlugRoute,
-  NoticesIndexRoute: NoticesIndexRoute,
-}
-
-const NoticesRouteWithChildren =
-  NoticesRoute._addFileChildren(NoticesRouteChildren)
-
 interface UserRouteChildren {
   UserIndexRoute: typeof UserIndexRoute
 }
@@ -2338,17 +2327,13 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardRoute: OnboardRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
-  AdmissionsRoute: AdmissionsRoute,
-  ClubsRoute: ClubsRoute,
   DashboardRoute: DashboardRoute,
-  EventsRoute: EventsRouteWithChildren,
   LoginRoute: LoginRoute,
   MyClassesRoute: MyClassesRoute,
   MyFeesRoute: MyFeesRoute,
   MyHomeworkRoute: MyHomeworkRoute,
   MyRecordsRoute: MyRecordsRoute,
   MyResultsRoute: MyResultsRoute,
-  NoticesRoute: NoticesRouteWithChildren,
   NotificationsRoute: NotificationsRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

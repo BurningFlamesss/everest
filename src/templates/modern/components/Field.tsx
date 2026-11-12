@@ -21,7 +21,7 @@ type Base = {
 const shell = 'flex flex-col gap-2';
 const labelCls = 'u-label text-n-600';
 const inputCls =
-  'w-full min-h-[52px] bg-transparent border-0 border-b-hair border-n-300 text-ink text-body-m py-3 outline-none transition-colors duration-micro ease-state placeholder:text-n-500 focus:border-b-rule focus:border-accent';
+  'w-full min-h-[52px] bg-transparent border-0 border-b-hair border-b-n-300 text-ink text-body-m py-3 outline-none transition-colors duration-micro ease-state placeholder:text-n-500 focus:border-b-accent focus-visible:border-b-accent field-underline';
 
 export function Field({
   label,
@@ -63,7 +63,7 @@ export function Field({
         aria-describedby={cn(error ? errId : '', hint ? hintId : '').trim() || undefined}
         aria-required={required}
         data-testid={testId}
-        className={cn(inputCls, error && 'border-b-rule border-accent')}
+        className={cn(inputCls, error && 'border-b-accent')}
       />
       {hint ? (
         <p id={hintId} className='text-body-s text-n-600'>
@@ -126,7 +126,7 @@ export function TextArea({
         aria-describedby={cn(error ? errId : '', hint ? hintId : '', maxLength ? countId : '').trim() || undefined}
         aria-required={required}
         data-testid={testId}
-        className={cn(inputCls, 'resize-y py-3', error && 'border-b-rule border-accent')}
+        className={cn(inputCls, 'resize-y py-3', error && 'border-b-accent')}
       />
       {hint ? (
         <p id={hintId} className='text-body-s text-n-600'>
@@ -186,7 +186,7 @@ export function SelectField({
         aria-describedby={cn(error ? errId : '', hint ? hintId : '').trim() || undefined}
         aria-required={required}
         data-testid={testId}
-        className={cn(inputCls, 'cursor-pointer appearance-none pr-6', error && 'border-b-rule border-accent')}
+        className={cn(inputCls, 'cursor-pointer appearance-none pr-6', error && 'border-b-accent')}
         style={{
           backgroundImage:
             'linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%)',

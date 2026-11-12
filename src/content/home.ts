@@ -6,7 +6,7 @@ export const heroFrames: Frame[] = [
   {
     src: photos.campusMorning.src,
     alt: 'The main academic block across the front lawn in early morning light',
-    caption: 'Sriman Marga, 06:40',
+    caption: 'Sukkhanagar, 06:40',
     width: 1600,
     height: 1067,
   },
@@ -41,10 +41,10 @@ export const heroFrames: Frame[] = [
 ];
 
 export const landing = {
-  eyebrow: 'EST. 2052 BS · 1995 AD — POKHARA, NEPAL',
+  eyebrow: 'EST. 2052 BS · 1995 AD — BUTWAL, NEPAL',
   statement: ['A SCHOOL THAT', 'KEEPS ITS', 'PROMISES TO', 'PARENTS.'],
   support:
-    'Thirty-one years on one campus in Pokhara ward eight, teaching in English from grade one through the +2 sciences. Everything a family needs in order to decide is published here — the routine, the calendar, the fees, and the bus that stops nearest their house.',
+    'Thirty-one years on one campus in Butwal ward eight, teaching in English from grade one through the +2 sciences. Everything a family needs in order to decide is published here — the routine, the calendar, the fees, and the bus that stops nearest their house.',
   /** Anchors to the footer contact block — there is no separate contact page. */
   primaryCta: { label: 'Admissions 2026', href: '#contact' },
   secondaryCta: { label: 'Take a tour', to: '/facilities' },
@@ -102,7 +102,7 @@ export const voices: Person[] = [
   {
     id: 'v-2',
     name: 'Ramesh K.C.',
-    role: 'Parent of two · Bagar',
+    role: 'Parent of two · Tilottama',
     quote:
       'I can see the bus timing, the exam routine and the fee for the year without telephoning the office once. That is rare.',
     photo: photos.portraitParent,
@@ -118,7 +118,7 @@ export const voices: Person[] = [
   {
     id: 'v-4',
     name: 'Bimala Thapa Magar',
-    role: 'Parent · Hemja route',
+    role: 'Parent · Devdaha route',
     quote:
       'We live forty minutes out. The morning bus has never once been late enough for my daughter to miss assembly.',
     photo: photos.portraitPrimary,

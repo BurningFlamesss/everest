@@ -115,7 +115,7 @@ export const photos = {
   ),
   road: img(
     'photo-1602081957921-9137a5d6eaee',
-    'The valley road at first light on the Hemja pickup route',
+    'The highway at first light on the Devdaha pickup route',
   ),
   sportsTrack: img(
     'photo-1461896836934-ffe607ba8211',
@@ -234,7 +234,7 @@ export const photos = {
   ),
   portraitScience: img(
     'photo-1584697964358-3e14ca57658b',
-    'Portrait of the head of the science department in the library',
+    'Portrait of the +2 Science coordinator in the library',
     900,
     1200,
   ),

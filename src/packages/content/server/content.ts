@@ -6,7 +6,14 @@ import type {
 	ContentBlockFields,
 	WebsitePageContent,
 } from "#/lib/website-content-loader";
-import type { Person, Scholarship } from "#/types";
+import type {
+	BlockType,
+	Facility,
+	Person,
+	Program,
+	Scholarship,
+} from "#/types";
+import type { Album, Img } from "#/content/types";
 import type { Notice } from "#/types/website";
 import type {
 	SchoolConfig,
@@ -32,7 +39,7 @@ function toWebsitePageContent(
 	page: {
 		blocks: Array<{
 			id: string;
-			type: string;
+			type: BlockType;
 			label: string;
 			visible: boolean;
 			order: number;
@@ -394,33 +401,71 @@ export const getScholarshipsServer = createServerFn({ method: "GET" }).handler(
 	},
 );
 
+/** Gallery albums are stored with JSON photos; the page renders `Album`. */
+function toAlbum(row: {
+	id: string;
+	event: string;
+	year: string;
+	category: string;
+	date: string | null;
+	photos: unknown;
+}): Album {
+	return {
+		id: row.id,
+		event: row.event,
+		year: row.year,
+		category: row.category,
+		date: row.date ?? "",
+		photos: Array.isArray(row.photos) ? (row.photos as Img[]) : [],
+	};
+}
+
 export const getAlbumsServer = createServerFn({ method: "GET" }).handler(
-	async () => {
+	async (): Promise<Album[]> => {
 		setResponseHeaders(PUBLIC_CACHE_HEADERS);
 		const rows = await prisma.album.findMany({ orderBy: { order: "asc" } });
-		return rows.map((r) => ({ ...r, photos: r.photos as any }));
+		return rows.map(toAlbum);
 	},
 );
 
+/** Campus facilities carry JSON `gallery`/`stats` columns. */
+function toFacility(row: {
+	id: string;
+	name: string;
+	category: string;
+	block: string;
+	blurb: string;
+	description: string;
+	image: string;
+	gallery: unknown;
+	stats: unknown;
+	hours: string;
+	inCharge: string;
+	studentsLove: string;
+	since: string;
+}): Facility {
+	return {
+		id: row.id,
+		name: row.name,
+		category: row.category as Facility["category"],
+		block: row.block,
+		blurb: row.blurb,
+		description: row.description,
+		image: row.image,
+		gallery: Array.isArray(row.gallery) ? (row.gallery as string[]) : [],
+		stats: Array.isArray(row.stats) ? (row.stats as Facility["stats"]) : [],
+		hours: row.hours,
+		inCharge: row.inCharge,
+		studentsLove: row.studentsLove,
+		since: row.since,
+	};
+}
+
 export const getFacilitiesServer = createServerFn({ method: "GET" }).handler(
-	async () => {
+	async (): Promise<Facility[]> => {
 		setResponseHeaders(PUBLIC_CACHE_HEADERS);
 		const rows = await prisma.facility.findMany({ orderBy: { order: "asc" } });
-		return rows.map((r) => ({
-			id: r.id,
-			name: r.name,
-			category: r.category as any,
-			block: r.block,
-			blurb: r.blurb,
-			description: r.description,
-			image: r.image,
-			gallery: Array.isArray(r.gallery) ? r.gallery : [],
-			stats: Array.isArray(r.stats) ? r.stats : [],
-			hours: r.hours,
-			inCharge: r.inCharge,
-			studentsLove: r.studentsLove,
-			since: r.since,
-		}));
+		return rows.map(toFacility);
 	},
 );
 
@@ -438,20 +483,60 @@ export const getBoardResultsServer = createServerFn({ method: "GET" }).handler(
 	},
 );
 
+/** Academic programmes carry JSON subject/fee/highlight columns. */
+function toProgram(row: {
+	id: string;
+	level: string;
+	code: string;
+	title: string;
+	stream: string | null;
+	duration: string;
+	seats: number;
+	medium: string;
+	eligibility: string;
+	summary: string;
+	description: string;
+	highlights: unknown;
+	outcomes: unknown;
+	careers: unknown;
+	subjects: unknown;
+	fees: unknown;
+	image: string;
+	routineKey: string;
+	spotlight: boolean;
+}): Program {
+	return {
+		id: row.id,
+		level: row.level as Program["level"],
+		code: row.code,
+		title: row.title,
+		stream: row.stream ?? undefined,
+		duration: row.duration,
+		seats: row.seats,
+		medium: row.medium,
+		eligibility: row.eligibility,
+		summary: row.summary,
+		description: row.description,
+		highlights: Array.isArray(row.highlights)
+			? (row.highlights as string[])
+			: [],
+		outcomes: Array.isArray(row.outcomes) ? (row.outcomes as string[]) : [],
+		careers: Array.isArray(row.careers) ? (row.careers as string[]) : [],
+		subjects: Array.isArray(row.subjects)
+			? (row.subjects as Program["subjects"])
+			: [],
+		fees: Array.isArray(row.fees) ? (row.fees as Program["fees"]) : [],
+		image: row.image,
+		routineKey: row.routineKey as Program["routineKey"],
+		spotlight: row.spotlight || undefined,
+	};
+}
+
 export const getProgramsServer = createServerFn({ method: "GET" }).handler(
-	async () => {
+	async (): Promise<Program[]> => {
 		setResponseHeaders(PUBLIC_CACHE_HEADERS);
 		const rows = await prisma.program.findMany({ orderBy: { order: "asc" } });
-		return rows.map((r) => ({
-			...r,
-			level: r.level as any,
-			routineKey: r.routineKey as any,
-			highlights: Array.isArray(r.highlights) ? r.highlights : [],
-			outcomes: Array.isArray(r.outcomes) ? r.outcomes : [],
-			careers: Array.isArray(r.careers) ? r.careers : [],
-			subjects: Array.isArray(r.subjects) ? r.subjects : [],
-			fees: Array.isArray(r.fees) ? r.fees : [],
-		}));
+		return rows.map(toProgram);
 	},
 );
 

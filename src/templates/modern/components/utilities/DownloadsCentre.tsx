@@ -44,12 +44,12 @@ export function DownloadsCentre({ dbResources }: { dbResources?: any[] }) {
     const blob = new Blob(
       [
         'EVEREST ENGLISH BOARDING SECONDARY SCHOOL\r\n',
-        'Pokhara, Kaski, Nepal\r\n\r\n',
+        'Butwal, Rupandehi, Nepal\r\n\r\n',
         title + '\r\n',
         meta + '\r\n\r\n',
         'This record card stands in for the document, which is published from the\r\n',
         'school office content system. Collect the signed copy from the front office\r\n',
-        'or telephone +977-61-460218.\r\n',
+        'or telephone +977-71-535962.\r\n',
       ],
       { type: 'text/plain;charset=utf-8' },
     );

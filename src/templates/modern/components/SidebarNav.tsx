@@ -13,7 +13,7 @@ export default function SidebarNav(){
     <nav aria-label="Main" className="topnav content" data-testid="main-navigation">
       <Link to="/" className="topnav-brand" data-testid="nav-home-brand">
         <span className="crest" aria-hidden="true">E</span>
-        <span className="topnav-wordmark"><strong>{siteSchool.short}</strong><small>POKHARA · NEPAL</small></span>
+        <span className="topnav-wordmark"><strong>{siteSchool.short}</strong><small>BUTWAL · NEPAL</small></span>
       </Link>
       <button className="topnav-menu-button" aria-expanded={open} aria-controls="topnav-links" onClick={()=>setOpen(!open)} data-testid="mobile-navigation-trigger">
         {open?<X/>:<Menu/>}<span>Menu</span>

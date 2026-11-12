@@ -4,7 +4,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function useReveal(options = {}) {
+export interface RevealOptions {
+  y?: number;
+  delay?: number;
+}
+
+export function useReveal(options: RevealOptions = {}) {
   const ref = useRef(null);
   const { y = 28, delay = 0 } = options;
 

@@ -14,9 +14,9 @@ export interface DemoAccount {
  * with a local mock identity provider, not a production auth system.
  */
 export const DEMO_ACCOUNTS: DemoAccount[] = [
-  { email: "super@northfield.edu", password: "admin123", role: "super_admin", hint: "Full access incl. roles & settings" },
-  { email: "admin@northfield.edu", password: "admin123", role: "admin", hint: "School operations & website" },
-  { email: "staff@northfield.edu", password: "staff123", role: "staff", hint: "Teaching view · attendance & notices" },
+  { email: "super@everest.edu", password: "admin123", role: "super_admin", hint: "Full access incl. roles & settings" },
+  { email: "admin@everest.edu", password: "admin123", role: "admin", hint: "School operations & website" },
+  { email: "staff@everest.edu", password: "staff123", role: "staff", hint: "Teaching view · attendance & notices" },
 ];
 
 const SESSION_KEY = "scms.session.v3";

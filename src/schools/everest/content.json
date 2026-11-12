@@ -84,98 +84,9 @@
       "status": "published",
       "hasUnpublishedChanges": false,
       "seoTitle": "Everest English Boarding Secondary School",
-      "seoDescription": "A complete school journey in Pokhara, built on close teaching, clear standards and care for every learner.",
-      "seoKeywords": "school, everest, pokhara, education, admissions",
-      "blocks": [
-        {
-          "type": "hero",
-          "label": "Hero",
-          "visible": true,
-          "order": 0,
-          "fields": {
-            "eyebrow": "Admissions open for 2083 B.S. / 2026 A.D.",
-            "headline": "LEARNING WITH\nPURPOSE. GROWING\nWITH CONFIDENCE.",
-            "subheadline": "A complete school journey in Pokhara, built on close teaching, clear standards and care for every learner.",
-            "primaryCtaLabel": "Apply now",
-            "primaryCtaHref": "/admissions",
-            "secondaryCtaLabel": "Book a tour",
-            "secondaryCtaHref": "/contact",
-            "image": "/images/placeholder-campus.svg"
-          }
-        },
-        {
-          "type": "stats",
-          "label": "Key statistics",
-          "visible": true,
-          "order": 1,
-          "fields": {
-            "items": [
-              {
-                "label": "Years of operation",
-                "value": 35
-              },
-              {
-                "label": "Students enrolled",
-                "value": 1260,
-                "suffix": "+"
-              },
-              {
-                "label": "Teaching staff",
-                "value": 78
-              },
-              {
-                "label": "Board pass rate",
-                "value": 98,
-                "suffix": "%"
-              }
-            ]
-          }
-        },
-        {
-          "type": "intro",
-          "label": "Introduction",
-          "visible": true,
-          "order": 2,
-          "fields": {
-            "title": "Where curiosity becomes capability",
-            "body": "Our programme balances academic rigour with creative and physical development. Small classes, specialist faculty and a culture of mentorship help every student find their strengths.",
-            "image": "/images/placeholder-campus.svg"
-          }
-        },
-        {
-          "type": "featured_notices",
-          "label": "Featured notices",
-          "visible": true,
-          "order": 3,
-          "fields": {
-            "title": "Latest from the school office",
-            "count": 3,
-            "source": "published"
-          }
-        },
-        {
-          "type": "featured_events",
-          "label": "Featured events",
-          "visible": true,
-          "order": 4,
-          "fields": {
-            "title": "What's coming up",
-            "count": 4
-          }
-        },
-        {
-          "type": "cta",
-          "label": "Call to action",
-          "visible": true,
-          "order": 5,
-          "fields": {
-            "title": "Applications for 2083 B.S. / 2026 A.D. are open",
-            "body": "Submit an enquiry and our admissions team will guide you through assessments, visits and enrolment.",
-            "buttonLabel": "Enquire now",
-            "buttonHref": "/admissions"
-          }
-        }
-      ]
+      "seoDescription": "A complete school journey in Butwal, built on close teaching, clear standards and care for every learner.",
+      "seoKeywords": "school, everest, butwal, education, admissions",
+      "blocks": []
     },
     "about": {
       "key": "about",
@@ -186,86 +97,7 @@
       "seoTitle": "About Everest English Boarding Secondary School",
       "seoDescription": "Our history, mission and the people who shape Everest English Boarding Secondary School.",
       "seoKeywords": "about, history, mission, vision, principal, everest",
-      "blocks": [
-        {
-          "type": "hero",
-          "label": "Hero",
-          "visible": true,
-          "order": 0,
-          "fields": {
-            "eyebrow": "ABOUT EVEREST",
-            "headline": "PURPOSE HELD\nOVER TIME.",
-            "subheadline": "An institution is not only what it has built. It is what it continues to protect, improve and pass forward.",
-            "primaryCtaLabel": "View courses",
-            "primaryCtaHref": "/courses",
-            "secondaryCtaLabel": "Contact us",
-            "secondaryCtaHref": "/contact",
-            "image": "/images/placeholder-campus.svg"
-          }
-        },
-        {
-          "type": "history",
-          "label": "School history",
-          "visible": true,
-          "order": 1,
-          "fields": {
-            "title": "Three decades of excellence",
-            "body": "Founded in 2048 B.S. with a commitment to accessible, rigorous English-medium education. Its founding purpose still guides daily decisions: know the learner, respect the family, strengthen the community.",
-            "image": "/images/placeholder-campus.svg",
-            "milestones": [
-              {
-                "year": "2048 B.S.",
-                "title": "Foundation",
-                "description": "School established in Pokhara"
-              },
-              {
-                "year": "2058 B.S.",
-                "title": "Secondary Level",
-                "description": "Added Grades 9-10 (SEE)"
-              },
-              {
-                "year": "2070 B.S.",
-                "title": "+2 Programs",
-                "description": "Launched Science and Management streams"
-              },
-              {
-                "year": "2080 B.S.",
-                "title": "Modern Campus",
-                "description": "New facilities and digital infrastructure"
-              }
-            ]
-          }
-        },
-        {
-          "type": "mission_vision",
-          "label": "Mission & Vision",
-          "visible": true,
-          "order": 2,
-          "fields": {
-            "mission": "To provide quality education that nurtures intellectual curiosity, moral character, and social responsibility in every student.",
-            "vision": "To be a leading educational institution in Nepal, recognized for academic excellence, holistic development, and community impact.",
-            "values": [
-              "Curiosity",
-              "Integrity",
-              "Excellence",
-              "Compassion",
-              "Collaboration"
-            ]
-          }
-        },
-        {
-          "type": "principal_message",
-          "label": "Principal's message",
-          "visible": true,
-          "order": 3,
-          "fields": {
-            "name": "Dr. Maya Gurung",
-            "role": "Principal",
-            "message": "Welcome to Everest English Boarding Secondary School. For over three decades, we have been committed to providing an education that goes beyond textbooks. Our goal is to nurture well-rounded individuals who are prepared not just for examinations, but for life. We believe in the power of curiosity, the importance of character, and the value of community. Every student who walks through our gates becomes part of the Everest family — a family that supports, challenges, and celebrates each other. I invite you to explore our school and discover the Everest difference.",
-            "photo": "/images/placeholder-campus.svg"
-          }
-        }
-      ]
+      "blocks": []
     },
     "contact": {
       "key": "contact",
@@ -275,30 +107,18 @@
       "hasUnpublishedChanges": false,
       "seoTitle": "Contact Everest English Boarding Secondary School",
       "seoDescription": "Get in touch with Everest English Boarding Secondary School. Choose a department and your enquiry reaches the team best placed to help.",
-      "seoKeywords": "contact, everest, pokhara, phone, email, address",
+      "seoKeywords": "contact, everest, butwal, phone, email, address",
       "blocks": [
-        {
-          "type": "hero",
-          "label": "Hero",
-          "visible": true,
-          "order": 0,
-          "fields": {
-            "eyebrow": "CONTACT EVEREST",
-            "headline": "THE RIGHT PERSON.\nA CLEAR ANSWER.",
-            "subheadline": "Choose a department and your enquiry reaches the team best placed to help.",
-            "primaryCtaLabel": "Send message",
-            "primaryCtaHref": "#contact-form",
-            "image": "/images/placeholder-campus.svg"
-          }
-        },
         {
           "type": "contact_details",
           "label": "Contact details",
           "visible": true,
           "order": 1,
           "fields": {
-            "phone": "071-535962",
+            "phone": "+977 71 535962",
+            "secondaryPhone": "+977 71 531342",
             "email": "everestbutwal@gmail.com",
+            "admissionsEmail": "admissions@everestbutwal.edu.np",
             "address": "Butwal-8, Sukkhanagar, Rupandehi, Lumbini Province, Nepal"
           }
         },
@@ -308,10 +128,10 @@
           "visible": true,
           "order": 2,
           "fields": {
-            "weekdays": "Sunday–Friday, 9:00 AM – 4:00 PM",
-            "saturday": "Closed",
-            "sunday": "Closed",
-            "note": "Admissions office open until 2:00 PM on Fridays"
+            "weekdays": "09:00–16:00",
+            "saturday": "CLOSED",
+            "sunday": "09:00–16:00",
+            "note": "Office hours follow the academic calendar."
           }
         },
         {
@@ -332,10 +152,10 @@
           "visible": true,
           "order": 4,
           "fields": {
-            "facebook": "https://facebook.com/everestpokhara",
-            "instagram": "https://instagram.com/everestpokhara",
+            "facebook": "https://facebook.com/everestbutwal",
+            "instagram": "https://instagram.com/everestbutwal",
             "x": "",
-            "youtube": "https://youtube.com/@everestpokhara",
+            "youtube": "https://youtube.com/@everestbutwal",
             "linkedin": ""
           }
         }
@@ -493,6 +313,50 @@
       "seoTitle": "Latest Posts",
       "seoDescription": "Updates & News from our Facebook Page",
       "seoKeywords": "posts, facebook, news",
+      "blocks": []
+    },
+    "admissions": {
+      "key": "admissions",
+      "title": "Admissions",
+      "path": "/admissions",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Admissions",
+      "seoDescription": "How to apply: enquire, visit the campus, submit documents and complete enrolment.",
+      "seoKeywords": "admissions, apply, enrolment, everest",
+      "blocks": []
+    },
+    "clubs": {
+      "key": "clubs",
+      "title": "Clubs",
+      "path": "/clubs",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Clubs",
+      "seoDescription": "Clubs give students a place to build skills, make friends and take on responsibility beyond the classroom.",
+      "seoKeywords": "clubs, student life, extracurricular, everest",
+      "blocks": []
+    },
+    "course_finder": {
+      "key": "course_finder",
+      "title": "Course Finder",
+      "path": "/course-finder",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Course Finder",
+      "seoDescription": "Six questions. Find out which stream of study fits you best at Everest English Boarding Secondary School.",
+      "seoKeywords": "course finder, stream finder, science, management, humanities, everest",
+      "blocks": []
+    },
+    "events": {
+      "key": "events",
+      "title": "Events",
+      "path": "/events",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Events",
+      "seoDescription": "Programmes, examinations, sports and celebrations on the school calendar.",
+      "seoKeywords": "events, calendar, school events, everest",
       "blocks": []
     }
   },

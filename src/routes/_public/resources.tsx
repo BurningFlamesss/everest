@@ -44,6 +44,10 @@ function RouteComponent() {
 		...getSectionFields(cmsData?.blocks, "headline"),
 	};
 
+	const noteFields = getSectionFields(cmsData?.blocks, "rich_text");
+	const noteTitle = str(noteFields ?? {}, "title");
+	const noteHtml = str(noteFields ?? {}, "html");
+
 	const onSelectSection = (sectionType: BlockType) => {
 		window.parent?.postMessage(
 			{
@@ -73,6 +77,40 @@ function RouteComponent() {
 					}
 				/>
 			</CmsSectionBox>
+			{noteHtml ? (
+				<CmsSectionBox
+					preview={preview}
+					sectionType="rich_text"
+					onSelect={onSelectSection}
+					testId="cms-section-hit-resources-rich_text"
+					className="mt-10"
+				>
+					<div className="rounded-2xl border border-border bg-card p-6">
+						{noteTitle ? (
+							<h2 className="text-lg font-semibold text-foreground">
+								{noteTitle}
+							</h2>
+						) : null}
+						<div
+							className={`prose prose-sm max-w-3xl prose-neutral dark:prose-invert text-muted-foreground${noteTitle ? " mt-3" : ""}`}
+							// biome-ignore lint/security/noDangerouslySetInnerHtml: admin-authored rich text
+							dangerouslySetInnerHTML={{ __html: noteHtml }}
+						/>
+					</div>
+				</CmsSectionBox>
+			) : preview ? (
+				<CmsSectionBox
+					preview={preview}
+					sectionType="rich_text"
+					onSelect={onSelectSection}
+					testId="cms-section-hit-resources-rich_text"
+					className="mt-10"
+				>
+					<div className="rounded-2xl border border-dashed border-border bg-card p-6 text-sm text-muted-foreground">
+						Rich text section — click to edit
+					</div>
+				</CmsSectionBox>
+			) : null}
 			<div className="mt-10 mb-16" data-testid="resources-downloads">
 				<DownloadsCentre dbResources={resources} />
 			</div>

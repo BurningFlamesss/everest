@@ -68,9 +68,9 @@ function RouteComponent() {
 
   const facilities = dbFacilities && dbFacilities.length > 0 ? dbFacilities : staticFacilities;
 
-  const headerSection = {
-    ...sectionDefaults("headline"),
-    ...getSectionFields(cmsData?.blocks, "headline"),
+  const facilitiesSection = {
+    ...sectionDefaults("facilities"),
+    ...getSectionFields(cmsData?.blocks, "facilities"),
   };
 
   const onSelectSection = (sectionType: BlockType) => {
@@ -128,15 +128,15 @@ function RouteComponent() {
     <PageFrame testId="facilities-page">
       <CmsSectionBox
         preview={preview}
-        sectionType="headline"
+        sectionType="facilities"
         onSelect={onSelectSection}
-        testId="cms-section-hit-facilities-headline"
+        testId="cms-section-hit-facilities-facilities"
       >
         <PageHeader
           testId="facilities-page-header"
-          eyebrow={str(headerSection, "eyebrow") || "Campus"}
-          title={str(headerSection, "title") || "Facilities & Infrastructure"}
-          subtitle={str(headerSection, "body") || "Capacity, opening hours and the member of staff who holds the key, for every space on the Butwal-8 campus."}
+          eyebrow={str(facilitiesSection, "eyebrow") || "Campus"}
+          title={str(facilitiesSection, "title") || "Facilities & Infrastructure"}
+          subtitle={str(facilitiesSection, "body") || "Capacity, opening hours and the member of staff who holds the key, for every space on the Butwal-8 campus."}
           meta={[
           { label: "Facilities", value: String(facilities.length) },
           { label: "Laboratories", value: "3" },

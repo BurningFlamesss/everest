@@ -193,7 +193,7 @@ export function routineDoc(routine: Routine): OfficialDocument {
           "Any change to this routine is notified on the Notices board before it takes effect.",
         ],
       },
-      { type: "signature", name: "Sarita Gurung", role: "Vice Principal (Academics)" },
+      { type: "signature", name: "Umesh Regmi", role: "Vice Principal" },
     ],
     footNote: `${school.name} · ${school.address}`,
   };
@@ -416,15 +416,21 @@ export function facultyDirectoryDoc(list: Person[]): OfficialDocument {
       {
         type: "table",
         columns: ["Name", "Role", "Department", "Extension", "Email"],
-        rows: list.map((p) => [p.name, p.role, p.department, p.extension, p.email]),
+        rows: list.map((p) => [
+          p.name,
+          p.role,
+          p.department,
+          p.extension || "—",
+          p.email || "—",
+        ]),
       },
       { type: "heading", text: "Office hours" },
       {
         type: "table",
         columns: ["Name", "Office hours"],
-        rows: list.map((p) => [p.name, p.officeHours]),
+        rows: list.map((p) => [p.name, p.officeHours || "—"]),
       },
-      { type: "signature", name: "Ramesh Kumar Thapa", role: "Vice Principal (Administration)" },
+      { type: "signature", name: "Bhimsen Gautam", role: "Vice Principal" },
     ],
     footNote: `${school.name} · ${school.address} · ${school.phone}`,
   };
@@ -435,13 +441,13 @@ export function personProfileDoc(person: Person): OfficialDocument {
     fileName: `Profile-${slug(person.name)}`,
     eyebrow: `${person.department} department`,
     title: person.name,
-    refNo: `EXT-${person.extension}`,
+    refNo: person.extension ? `EXT-${person.extension}` : "STAFF",
     dateLine: issuedLine(),
     stamp: "Staff profile",
     blocks: [
       {
         type: "keyvalues",
-        items: [
+        items: ([
           ["Role", person.role],
           ["Department", person.department],
           ["Qualification", person.qualification],
@@ -451,10 +457,14 @@ export function personProfileDoc(person: Person): OfficialDocument {
           ["Email", person.email],
           ["Extension", person.extension],
           ["Joined", person.joined],
-        ],
+        ] as Array<[string, string]>).filter(([, value]) => value),
       },
-      { type: "heading", text: "Profile" },
-      { type: "paragraph", text: person.bio },
+      ...(person.bio
+        ? ([
+            { type: "heading", text: "Profile" },
+            { type: "paragraph", text: person.bio },
+          ] as DocBlock[])
+        : []),
       { type: "rule" },
       {
         type: "paragraph",
@@ -495,7 +505,7 @@ export function facilityBriefDoc(facility: Facility): OfficialDocument {
       },
       { type: "heading", text: "What students say" },
       { type: "paragraph", text: facility.studentsLove },
-      { type: "signature", name: "Ramesh Kumar Thapa", role: "Vice Principal (Administration)" },
+      { type: "signature", name: "Bhimsen Gautam", role: "Vice Principal" },
     ],
     footNote: `${school.name} · ${school.address}`,
   };

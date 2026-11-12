@@ -32,7 +32,20 @@ export default function TransportationPage() {
 
 	const { data: routes = [], isLoading } = useQuery({
 		queryKey: ["bus-routes"],
-		queryFn: () => getBusRoutesServer(),
+		queryFn: async () => {
+			const rows = await getBusRoutesServer();
+			return rows.map(
+				(r): BusRoute => ({
+					id: r.id,
+					busNumber: r.busNumber,
+					driverName: r.driverName,
+					driverPhone: r.driverPhone,
+					stops: Array.isArray(r.stops) ? (r.stops as string[]) : [],
+					feeMonthly: r.feeMonthly ?? undefined,
+					order: r.order,
+				}),
+			);
+		},
 	});
 
 	const saveMutation = useMutation({
@@ -115,7 +128,6 @@ export default function TransportationPage() {
 		<main className="flex-1 overflow-y-auto bg-surface-base px-6 py-8">
 			<div className="mx-auto max-w-5xl space-y-6">
 				<PageHeader
-					icon={Bus}
 					eyebrow="Operations"
 					title="Transportation"
 					description="Manage school bus routes and stops."
@@ -226,7 +238,7 @@ export default function TransportationPage() {
 									onChange={(e: any) =>
 										setEditing((prev) => ({
 											...prev,
-											stops: e.target.value.split(",").map((s) => s.trim()),
+											stops: e.target.value.split(",").map((s: string) => s.trim()),
 										}))
 									}
 									placeholder="E.g. Bus Park, Hospital, Base Camp"

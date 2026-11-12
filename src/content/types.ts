@@ -160,6 +160,9 @@ export type BusRoute = {
   band: Exclude<TransportBand, 'none'>;
   stops: Stop[];
   path: string;
+  /** Driver assigned to this route, shown by the bus finder. */
+  driverName: string;
+  driverPhone: string;
 };
 
 export type AreaAlias = { areaId: string; ward?: number; aliases: string[] };

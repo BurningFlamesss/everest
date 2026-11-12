@@ -26,7 +26,7 @@ export const createInvite = createServerFn({ method: "POST" })
 				payload: {},
 			});
 			return {
-				invite: { id: out.inviteId, token: out.inviteUrl.split("/").pop() },
+				invite: { id: out.inviteUrl.split("/").pop(), token: out.inviteUrl.split("/").pop() },
 				inviteUrl: out.inviteUrl,
 				emailed: out.emailed,
 				success: true,

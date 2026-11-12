@@ -208,7 +208,9 @@ function MyRecords() {
 																{record.courseCode} · {record.courseName}
 															</p>
 															<p className="text-xs text-gray-500">
-																{new Date(record.date).toLocaleDateString()}
+																{record.date
+																	? new Date(record.date).toLocaleDateString()
+																	: "—"}
 																{record.note ? ` · ${record.note}` : ""}
 															</p>
 														</div>

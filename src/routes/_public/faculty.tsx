@@ -57,7 +57,8 @@ const QuickAction = ({
 
 export const Route = createFileRoute("/_public/faculty")({
   loader: async ({ location }) => {
-    if (String(location.search.cms ?? "") === "1") {
+    const search = location.search as { cms?: string };
+    if (String(search.cms ?? "") === "1") {
       const previewPage = await getWebsitePagePreviewServer({
         data: { key: "faculty" },
       });
@@ -239,15 +240,19 @@ function RouteComponent() {
                   >
                     {person.name}
                   </h3>
-                  <p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
-                    {person.qualification}
-                  </p>
+                  {person.qualification ? (
+                    <p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
+                      {person.qualification}
+                    </p>
+                  ) : null}
 
                   <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-rule-soft pt-4">
                     <span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[11.5px] leading-normal text-muted-foreground">
                       {person.department}
                     </span>
-                    <span className="t-meta">Ext. {person.extension}</span>
+                    {person.extension ? (
+                      <span className="t-meta">Ext. {person.extension}</span>
+                    ) : null}
                   </div>
 
                   <span className="mt-4 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
@@ -340,7 +345,9 @@ function RouteComponent() {
 
                   <span className="hidden min-w-0 flex-1 lg:block">
                     <span className="t-caption line-clamp-1">
-                      {person.subjects.join(" · ")}
+                      {person.subjects.length > 0
+                        ? person.subjects.join(" · ")
+                        : "—"}
                     </span>
                   </span>
 
@@ -351,7 +358,7 @@ function RouteComponent() {
                   </span>
 
                   <span className="t-meta w-[74px] shrink-0 text-right">
-                    Ext. {person.extension}
+                    {person.extension ? `Ext. ${person.extension}` : "—"}
                   </span>
                 </button>
               </li>
@@ -391,75 +398,95 @@ function RouteComponent() {
                     size="lg"
                     testId="faculty-detail-avatar"
                   />
-                  <p className="t-meta leading-relaxed">
-                    {selected.qualification}
-                  </p>
+                  {selected.qualification ? (
+                    <p className="t-meta leading-relaxed">
+                      {selected.qualification}
+                    </p>
+                  ) : null}
                 </div>
               </div>
 
               <div className="space-y-7 pt-6">
-                <div>
-                  <p className="t-eyebrow">Profile</p>
-                  <p className="t-body mt-3 text-muted-foreground">
-                    {selected.bio}
-                  </p>
-                </div>
+                {selected.bio ? (
+                  <div>
+                    <p className="t-eyebrow">Profile</p>
+                    <p className="t-body mt-3 text-muted-foreground">
+                      {selected.bio}
+                    </p>
+                  </div>
+                ) : null}
 
-                <div>
-                  <p className="t-eyebrow">Teaches</p>
-                  <ul className="mt-3 flex flex-wrap gap-2">
-                    {selected.subjects.map((subject) => (
-                      <li
-                        key={subject}
-                        className="rounded-full border border-border bg-background px-2.5 py-1 text-[12px] text-foreground"
-                      >
-                        {subject}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {selected.subjects.length > 0 ? (
+                  <div>
+                    <p className="t-eyebrow">Teaches</p>
+                    <ul className="mt-3 flex flex-wrap gap-2">
+                      {selected.subjects.map((subject) => (
+                        <li
+                          key={subject}
+                          className="rounded-full border border-border bg-background px-2.5 py-1 text-[12px] text-foreground"
+                        >
+                          {subject}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
 
-                <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
-                  {[
+                {(() => {
+                  const facts = [
                     { label: "Office hours", value: selected.officeHours },
                     { label: "Experience", value: selected.experience },
                     { label: "At Everest since", value: selected.joined },
                     { label: "Extension", value: selected.extension },
-                  ].map((item) => (
-                    <div key={item.label}>
-                      <dt className="t-eyebrow">{item.label}</dt>
-                      <dd className="mt-1.5 text-[13px] leading-relaxed text-foreground">
-                        {item.value}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
+                  ].filter((item) => item.value);
+                  if (facts.length === 0) return null;
+                  return (
+                    <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+                      {facts.map((item) => (
+                        <div key={item.label}>
+                          <dt className="t-eyebrow">{item.label}</dt>
+                          <dd className="mt-1.5 text-[13px] leading-relaxed text-foreground">
+                            {item.value}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                  );
+                })()}
 
-                <div>
-                  <p className="t-eyebrow">Quick actions</p>
-                  <div className="mt-3 flex flex-wrap gap-2.5">
-                    <QuickAction
-                      icon={Mail}
-                      label="Copy email"
-                      testId="faculty-detail-copy-email"
-                      onClick={() =>
-                        handleCopy(selected.email, selected.email)
-                      }
-                    />
-                    <QuickAction
-                      icon={Phone}
-                      label="Copy extension"
-                      testId="faculty-detail-copy-extension"
-                      onClick={() =>
-                        handleCopy(
-                          `${school.phones[0].value} ext ${selected.extension}`,
-                          `${school.phones[0].value} ext ${selected.extension}`,
-                        )
-                      }
-                    />
+                {selected.email || selected.extension ? (
+                  <div>
+                    <p className="t-eyebrow">Quick actions</p>
+                    <div className="mt-3 flex flex-wrap gap-2.5">
+                      {selected.email ? (
+                        <QuickAction
+                          icon={Mail}
+                          label="Copy email"
+                          testId="faculty-detail-copy-email"
+                          onClick={() =>
+                            handleCopy(selected.email, selected.email)
+                          }
+                        />
+                      ) : null}
+                      {selected.extension ? (
+                        <QuickAction
+                          icon={Phone}
+                          label="Copy extension"
+                          testId="faculty-detail-copy-extension"
+                          onClick={() =>
+                            handleCopy(
+                              `${school.phones[0].value} ext ${selected.extension}`,
+                              `${school.phones[0].value} ext ${selected.extension}`,
+                            )
+                          }
+                        />
+                      ) : null}
+                    </div>
+                    {selected.email ? (
+                      <p className="t-meta mt-3">{selected.email}</p>
+                    ) : null}
                   </div>
-                  <p className="t-meta mt-3">{selected.email}</p>
-                </div>
+                ) : null}
 
                 <div className="border-t border-rule-soft pt-6">
                   <DownloadButton

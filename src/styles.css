@@ -106,12 +106,14 @@
 }
 
 /* Aliases for backward compatibility with app.css */
---bg: var(--c-red-light);
---paper: var(--c-red-light);
---ink: var(--c-black);
---ink-2: var(--c-gray-900);
---hairline: var(--c-gray-200);
---hairline-strong: var(--c-gray-300);
+:root {
+  --bg: var(--c-red-light);
+  --paper: var(--c-red-light);
+  --ink: var(--c-black);
+  --ink-2: var(--c-gray-900);
+  --hairline: var(--c-gray-200);
+  --hairline-strong: var(--c-gray-300);
+}
 
 /*
  * Dark mode is tokenized so it cannot break silently, but is explicitly out of
@@ -197,14 +199,25 @@
   }
 }
 
+/* One scrollbar everywhere — page, sidebar, cards, rails, dialogs. Thumb only
+   shows once content overflows; transparent track keeps surfaces flat. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(220, 38, 38, 0.5) transparent;
+}
+
 *::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: rgba(255,0,0,0.5);
+  background-color: rgba(220, 38, 38, 0.5);
   border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(220, 38, 38, 0.75);
 }
 
 *::-webkit-scrollbar-track {

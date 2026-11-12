@@ -70,7 +70,7 @@ export function PaymentsAnalytics() {
               />
               <ChartTooltip
                 contentStyle={TOOLTIP_STYLE}
-                formatter={(value: number) => formatCurrency(Number(value))}
+                formatter={(value) => formatCurrency(Number(value))}
               />
               <Bar dataKey="billed" name="Billed" fill="hsl(var(--chart-3))" radius={[3, 3, 0, 0]} barSize={18} />
               <Line
@@ -151,7 +151,7 @@ export function PaymentsAnalytics() {
                 axisLine={false}
                 tickLine={false}
               />
-              <ChartTooltip contentStyle={TOOLTIP_STYLE} formatter={(value: number) => `${value}%`} />
+              <ChartTooltip contentStyle={TOOLTIP_STYLE} formatter={(value) => `${value}%`} />
               <Bar dataKey="rate" name="Collected %" fill="hsl(var(--primary))" radius={[3, 3, 0, 0]} barSize={20} />
             </BarChart>
           </ResponsiveContainer>
