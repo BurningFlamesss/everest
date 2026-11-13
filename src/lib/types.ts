@@ -1,34 +1,135 @@
-export type Img={src:string;alt:string;width:number;height:number};
-export type Notice={
-  id: string;
-  title: string;
-  slug?: string;
-  category?: string;
-  audience?: string;
-  dateBs?: string;
-  dateAd?: string;
-  issuedBy?: string;
-  body?: string[];
-  bullets?: string[];
-  table?: { columns: string[]; rows: string[]; caption?: string };
-  pinned?: boolean;
-  publishedAt?: string;
-  href?: string;
-  coverImage?: string;
+export type Img = { src: string; alt: string; width: number; height: number };
+export type Notice = {
+	id: string;
+	title: string;
+	slug?: string;
+	category?: string;
+	audience?: string;
+	dateBs?: string;
+	dateAd?: string;
+	issuedBy?: string;
+	body?: string[];
+	bullets?: string[];
+	table?: { columns: string[]; rows: string[]; caption?: string };
+	pinned?: boolean;
+	publishedAt?: string;
+	href?: string;
+	coverImage?: string;
 };
-export type Stat={id:string;label:string;value:number;suffix?:string};
-export type Pillar={id:string;label:string;title:string;blurb:string;href:string;image:Img};
-export type Frame={src:string;alt:string;caption?:string};
-export type Milestone={index:number;marker:string;title:string;blurb:string;body:string[];image?:Img};
-export type Person={id:string;name:string;role:string;quote?:string;photo:Img};
-export type Subject={id:string;name:string;creditHours:number;theory:number;practical:number;outline:string[]};
-export type Stream={id:string;name:string;subjects:Subject[];careers:string[]};
-export type Level={id:string;marker:string;name:string;grades:string;streams:Stream[]};
-export type PlanBlock={id:string;d:string;cx:number;cy:number};
-export type Facility={id:string;name:string;room:string;specs:string[];images:Img[];block:PlanBlock; order?:number};
-export type Album={id:string;event:string;year:string;category:string;photos:Img[]; date?:string; order?:number};
-export type Dept={id:string;name:string;contact:string;phones:string[];email:string;hours:string};
-export type Resource={id:string;title:string;category:string;fileUrl:string;fileSize:string;kind:string;audience:string;order?:number};
-export type BoardResult={id:string;board:string;year:string;appeared:number;passed:number;distinction:number;firstDivision:number;secondDivision:number;order?:number};
-export type BusRoute={id:string;busNumber:string;driverName:string;driverPhone:string;stops:string[];feeMonthly?:number;order?:number};
-export type CalendarEvent={id:string;title:string;description?:string;startDate:string;endDate:string;category:string;term?:string};
+export type Stat = {
+	id: string;
+	label: string;
+	value: number;
+	suffix?: string;
+};
+export type Pillar = {
+	id: string;
+	label: string;
+	title: string;
+	blurb: string;
+	href: string;
+	image: Img;
+};
+export type Frame = { src: string; alt: string; caption?: string };
+export type Milestone = {
+	index: number;
+	marker: string;
+	title: string;
+	blurb: string;
+	body: string[];
+	image?: Img;
+};
+export type Person = {
+	id: string;
+	name: string;
+	role: string;
+	quote?: string;
+	photo: Img;
+};
+export type Subject = {
+	id: string;
+	name: string;
+	creditHours: number;
+	theory: number;
+	practical: number;
+	outline: string[];
+};
+export type Stream = {
+	id: string;
+	name: string;
+	subjects: Subject[];
+	careers: string[];
+};
+export type Level = {
+	id: string;
+	marker: string;
+	name: string;
+	grades: string;
+	streams: Stream[];
+};
+export type PlanBlock = { id: string; d: string; cx: number; cy: number };
+export type Facility = {
+	id: string;
+	name: string;
+	room: string;
+	specs: string[];
+	images: Img[];
+	block: PlanBlock;
+	order?: number;
+};
+export type Album = {
+	id: string;
+	event: string;
+	year: string;
+	category: string;
+	photos: Img[];
+	date?: string;
+	order?: number;
+};
+export type Dept = {
+	id: string;
+	name: string;
+	contact: string;
+	phones: string[];
+	email: string;
+	hours: string;
+};
+export type Resource = {
+	id: string;
+	title: string;
+	category: string;
+	fileUrl: string;
+	fileSize: string;
+	kind: string;
+	audience: string;
+	order?: number;
+};
+export type BoardResult = {
+	id: string;
+	board: string;
+	year: string;
+	appeared: number;
+	passed: number;
+	distinction: number;
+	firstDivision: number;
+	secondDivision: number;
+	order?: number;
+};
+export type BusRoute = {
+	id: string;
+	busNumber: string;
+	driverName: string;
+	driverPhone: string;
+	stops: string[];
+	feeMonthly?: number;
+	order?: number;
+};
+export type CalendarEvent = {
+	id: string;
+	title: string;
+	description?: string;
+	startDate: string;
+	endDate: string;
+	category: string;
+	term?: string;
+};

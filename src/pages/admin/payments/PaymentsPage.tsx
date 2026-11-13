@@ -43,8 +43,13 @@ export default function PaymentsPage() {
 	const setParam = (key: string, value: string) => {
 		navigate({
 			search: (value === "all" || !value
-				? Object.fromEntries(Object.entries(searchParams).filter(([k]) => k !== key))
-				: { ...searchParams, [key]: value }) as Record<string, string | undefined>,
+				? Object.fromEntries(
+						Object.entries(searchParams).filter(([k]) => k !== key),
+					)
+				: { ...searchParams, [key]: value }) as Record<
+				string,
+				string | undefined
+			>,
 			replace: true,
 		} as any);
 	};

@@ -227,7 +227,7 @@ export default function StudentsPage() {
 					subtitle={student.admissionNo}
 					avatarUrl={student.avatarUrl}
 					to="/admin/students/$id"
-						params={{ id: student.id }}
+					params={{ id: student.id }}
 					mono
 					testId={`student-link-${student.id}`}
 				/>
@@ -351,7 +351,12 @@ export default function StudentsPage() {
 							</DropdownMenuLabel>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
-								onClick={() => navigate({ to: "/admin/students/$id", params: { id: student.id } })}
+								onClick={() =>
+									navigate({
+										to: "/admin/students/$id",
+										params: { id: student.id },
+									})
+								}
 								data-testid={`student-view-${student.id}`}
 							>
 								View profile
@@ -596,7 +601,9 @@ export default function StudentsPage() {
 				loading={isLoading}
 				error={isError ? true : undefined}
 				onRetry={() => refetch()}
-				onRowClick={(student) => navigate({ to: "/admin/students/$id", params: { id: student.id } })}
+				onRowClick={(student) =>
+					navigate({ to: "/admin/students/$id", params: { id: student.id } })
+				}
 				selectable={can("students.manage")}
 				selected={selected}
 				onSelectedChange={setSelected}

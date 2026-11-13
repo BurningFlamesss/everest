@@ -77,7 +77,7 @@ export default function CoursesPage() {
 				<div className="min-w-0">
 					<Link
 						to="/admin/courses/$id"
-								params={{ id: course.id }}
+						params={{ id: course.id }}
 						className="block truncate text-sm font-medium text-foreground hover:text-primary"
 						data-testid={`course-link-${course.id}`}
 					>

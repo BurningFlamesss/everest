@@ -544,7 +544,7 @@ export default function StudentProfilePage() {
 												<div className="min-w-0 flex-1">
 													<Link
 														to="/admin/courses/$id"
-															params={{ id: course.id }}
+														params={{ id: course.id }}
 														className="block truncate text-sm text-foreground hover:text-primary"
 													>
 														{course.name}
@@ -700,7 +700,7 @@ export default function StudentProfilePage() {
 								value={
 									<Link
 										to="/admin/classes/$id"
-											params={{ id: student.classId }}
+										params={{ id: student.classId }}
 										className="text-primary hover:underline"
 									>
 										{student.grade} · {student.section}

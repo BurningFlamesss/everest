@@ -230,6 +230,26 @@ export type AttendanceSession = Prisma.AttendanceSessionModel
  */
 export type Club = Prisma.ClubModel
 /**
+ * Model ClubRole
+ * * A named role inside one club, e.g. "President" or "Member".
+ */
+export type ClubRole = Prisma.ClubRoleModel
+/**
+ * Model ClubMember
+ * * A student's membership of a club, with an optional role.
+ */
+export type ClubMember = Prisma.ClubMemberModel
+/**
+ * Model Post
+ * * A post published inside a club feed.
+ */
+export type Post = Prisma.PostModel
+/**
+ * Model PostComment
+ * * A comment on a club post.
+ */
+export type PostComment = Prisma.PostCommentModel
+/**
  * Model Event
  * 
  */

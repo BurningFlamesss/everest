@@ -1,351 +1,355 @@
-
-import { getWebsitePagePreviewServer, getAlbumsServer } from "#/packages/content/server/content.ts";
-import { useWebsitePageContent } from "#/packages/school/hook.tsx";
 import { createFileRoute, useSearch } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowLeft } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useMemo, useRef, useState } from "react";
+import { str } from "#/components/cms/block-fields";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import {
-  PageFrame,
-  PageHeader,
-  Section,
-  SectionHeading,
-} from "#/templates/modern/components/chrome/PageFrame";
-import { LedgerCount, RevealUp } from "#/templates/modern/components/motion";
-import { PhotoFan } from "#/templates/modern/components/interactions/PhotoFan";
-import { Lightbox } from "#/templates/modern/components/Lightbox";
-import { Picture } from "#/templates/modern/components/Picture";
-import { Chip } from "#/templates/modern/components/Chip";
-import { Button } from "#/templates/modern/components/Button.tsx";
-import { Eyebrow } from "#/templates/modern/components/Text";
-import { duration, easing } from "#/templates/modern/components/tokens";
-import {
-  albums,
-  galleryCategories,
-  galleryIntro,
-  galleryYears,
-  totalPhotos,
+	albums,
+	galleryCategories,
+	galleryIntro,
+	galleryYears,
+	totalPhotos,
 } from "#/content/gallery";
 import type { Album, Img } from "#/content/types";
-import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
-import { str } from "#/components/cms/block-fields";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import {
+	getAlbumsServer,
+	getWebsitePagePreviewServer,
+} from "#/packages/content/server/content.ts";
+import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { Button } from "#/templates/modern/components/Button.tsx";
+import { Chip } from "#/templates/modern/components/Chip";
+import {
+	PageFrame,
+	PageHeader,
+	Section,
+	SectionHeading,
+} from "#/templates/modern/components/chrome/PageFrame";
+import { PhotoFan } from "#/templates/modern/components/interactions/PhotoFan";
+import { Lightbox } from "#/templates/modern/components/Lightbox";
+import { LedgerCount, RevealUp } from "#/templates/modern/components/motion";
+import { Picture } from "#/templates/modern/components/Picture";
+import { Eyebrow } from "#/templates/modern/components/Text";
+import { duration, easing } from "#/templates/modern/components/tokens";
 import type { BlockType } from "#/types";
 
 /** Deliberately varied tile sizes on a strict 12-column base. */
 const SPANS = [
-  "lg:col-span-6 lg:row-span-2",
-  "lg:col-span-3",
-  "lg:col-span-3",
-  "lg:col-span-3",
-  "lg:col-span-3",
-  "lg:col-span-4",
-  "lg:col-span-4",
-  "lg:col-span-4",
+	"lg:col-span-6 lg:row-span-2",
+	"lg:col-span-3",
+	"lg:col-span-3",
+	"lg:col-span-3",
+	"lg:col-span-3",
+	"lg:col-span-4",
+	"lg:col-span-4",
+	"lg:col-span-4",
 ];
 
 export const Route = createFileRoute("/_public/gallery")({
-  loader: async ({ location }) => {
-    const search = location.search as { cms?: string };
-    if (String(search.cms) === "1") {
-      const previewPage = await getWebsitePagePreviewServer({
-        data: { key: "gallery" },
-      });
-      const dbAlbums = await getAlbumsServer();
-      return { previewPage, dbAlbums };
-    }
-    const dbAlbums = await getAlbumsServer();
-    return { previewPage: null, dbAlbums };
-  },
-  component: RouteComponent,
+	loader: async ({ location }) => {
+		const search = location.search as { cms?: string };
+		if (String(search.cms) === "1") {
+			const previewPage = await getWebsitePagePreviewServer({
+				data: { key: "gallery" },
+			});
+			const dbAlbums = await getAlbumsServer();
+			return { previewPage, dbAlbums };
+		}
+		const dbAlbums = await getAlbumsServer();
+		return { previewPage: null, dbAlbums };
+	},
+	component: RouteComponent,
 });
 
 export default function RouteComponent() {
-  const search = (useSearch({ strict: false }) as Record<string, unknown>) || {};
-  const cms = search.cms;
-  const { previewPage, dbAlbums } = Route.useLoaderData();
-  const activeAlbums = dbAlbums?.length > 0 ? dbAlbums : albums;
+	const search =
+		(useSearch({ strict: false }) as Record<string, unknown>) || {};
+	const cms = search.cms;
+	const { previewPage, dbAlbums } = Route.useLoaderData();
+	const activeAlbums = dbAlbums?.length > 0 ? dbAlbums : albums;
 
-  const publishedContent = useWebsitePageContent("gallery");
-  const preview = String(cms ?? "") === "1";
-  const cmsData = (preview ? previewPage : publishedContent) as any;
+	const publishedContent = useWebsitePageContent("gallery");
+	const preview = String(cms ?? "") === "1";
+	const cmsData = (preview ? previewPage : publishedContent) as any;
 
-  const headerSection = {
-    ...sectionDefaults("headline"),
-    ...getSectionFields(cmsData?.blocks, "headline"),
-  };
+	const headerSection = {
+		...sectionDefaults("headline"),
+		...getSectionFields(cmsData?.blocks, "headline"),
+	};
 
-  const gridSection = {
-    ...sectionDefaults("gallery_grid"),
-    ...getSectionFields(cmsData?.blocks, "gallery_grid"),
-  };
+	const gridSection = {
+		...sectionDefaults("gallery_grid"),
+		...getSectionFields(cmsData?.blocks, "gallery_grid"),
+	};
 
-  const onSelectSection = (sectionType: BlockType) => {
-    window.parent?.postMessage(
-      {
-        source: "scms-cms",
-        type: "select-section",
-        pageKey: "gallery",
-        sectionType,
-      },
-      "*",
-    );
-  };
+	const onSelectSection = (sectionType: BlockType) => {
+		window.parent?.postMessage(
+			{
+				source: "scms-cms",
+				type: "select-section",
+				pageKey: "gallery",
+				sectionType,
+			},
+			"*",
+		);
+	};
 
-  const reduced = Boolean(useReducedMotion());
-  const [category, setCategory] = useState<string | null>(null);
-  const [year, setYear] = useState<string | null>(null);
-  const [entered, setEntered] = useState<Album | null>(null);
-  const [lightbox, setLightbox] = useState<{
-    photos: Img[];
-    index: number;
-    title: string;
-  } | null>(null);
-  const tileRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-  const lastTile = useRef<string | null>(null);
+	const reduced = Boolean(useReducedMotion());
+	const [category, setCategory] = useState<string | null>(null);
+	const [year, setYear] = useState<string | null>(null);
+	const [entered, setEntered] = useState<Album | null>(null);
+	const [lightbox, setLightbox] = useState<{
+		photos: Img[];
+		index: number;
+		title: string;
+	} | null>(null);
+	const tileRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+	const lastTile = useRef<string | null>(null);
 
-  const filtered = useMemo(
-    () =>
-      activeAlbums.filter(
-        (a) =>
-          (!category || a.category === category) && (!year || a.year === year),
-      ),
-    [category, year],
-  );
+	const filtered = useMemo(
+		() =>
+			activeAlbums.filter(
+				(a) =>
+					(!category || a.category === category) && (!year || a.year === year),
+			),
+		[category, year],
+	);
 
-  const openLightbox = (
-    photos: Img[],
-    index: number,
-    title: string,
-    key: string,
-  ) => {
-    lastTile.current = key;
-    setLightbox({ photos, index, title });
-  };
+	const openLightbox = (
+		photos: Img[],
+		index: number,
+		title: string,
+		key: string,
+	) => {
+		lastTile.current = key;
+		setLightbox({ photos, index, title });
+	};
 
-  const closeLightbox = () => {
-    const key = lastTile.current;
-    setLightbox(null);
-    if (key) window.setTimeout(() => tileRefs.current[key]?.focus(), 0);
-  };
+	const closeLightbox = () => {
+		const key = lastTile.current;
+		setLightbox(null);
+		if (key) window.setTimeout(() => tileRefs.current[key]?.focus(), 0);
+	};
 
-  return (
-    <PageFrame>
-      <CmsSectionBox
-        preview={preview}
-        sectionType="headline"
-        onSelect={onSelectSection}
-        testId="cms-section-hit-gallery-headline"
-      >
-        <PageHeader
-          eyebrow={str(headerSection, "eyebrow") || galleryIntro.eyebrow}
-          title={
-            str(headerSection, "title") ? (
-              str(headerSection, "title")
-            ) : (
-              <>
-                <LedgerCount value={totalPhotos} testId="gallery-count" />{" "}
-                PHOTOGRAPHS
-              </>
-            )
-          }
-          lead={str(headerSection, "body") || galleryIntro.support}
-        />
-      </CmsSectionBox>
+	return (
+		<PageFrame>
+			<CmsSectionBox
+				preview={preview}
+				sectionType="headline"
+				onSelect={onSelectSection}
+				testId="cms-section-hit-gallery-headline"
+			>
+				<PageHeader
+					eyebrow={str(headerSection, "eyebrow") || galleryIntro.eyebrow}
+					title={
+						str(headerSection, "title") ? (
+							str(headerSection, "title")
+						) : (
+							<>
+								<LedgerCount value={totalPhotos} testId="gallery-count" />{" "}
+								PHOTOGRAPHS
+							</>
+						)
+					}
+					lead={str(headerSection, "body") || galleryIntro.support}
+				/>
+			</CmsSectionBox>
 
-      <Section className="!mt-10">
-        <div className="flex flex-col gap-4">
-          <div
-            className="flex flex-wrap items-center gap-2"
-            data-testid="gallery-filter-category"
-          >
-            <span className="u-label mr-2 text-n-600">Category</span>
-            {galleryCategories.map((c) => (
-              <Chip
-                key={c}
-                selected={category === c}
-                onClick={() => setCategory(category === c ? null : c)}
-                testId={"chip-cat-" + c.toLowerCase()}
-              >
-                {c}
-              </Chip>
-            ))}
-          </div>
-          <div
-            className="flex flex-wrap items-center gap-2"
-            data-testid="gallery-filter-year"
-          >
-            <span className="u-label mr-2 text-n-600">Academic year</span>
-            {galleryYears.map((y) => (
-              <Chip
-                key={y}
-                selected={year === y}
-                onClick={() => setYear(year === y ? null : y)}
-                testId={"chip-year-" + y.replace(/\s+/g, "-")}
-              >
-                {y}
-              </Chip>
-            ))}
-            {category || year ? (
-              <Chip
-                selected={false}
-                onClick={() => {
-                  setCategory(null);
-                  setYear(null);
-                }}
-                testId="chip-gallery-clear"
-              >
-                Clear filters
-              </Chip>
-            ) : null}
-          </div>
-        </div>
-      </Section>
+			<Section className="!mt-10">
+				<div className="flex flex-col gap-4">
+					<div
+						className="flex flex-wrap items-center gap-2"
+						data-testid="gallery-filter-category"
+					>
+						<span className="u-label mr-2 text-n-600">Category</span>
+						{galleryCategories.map((c) => (
+							<Chip
+								key={c}
+								selected={category === c}
+								onClick={() => setCategory(category === c ? null : c)}
+								testId={"chip-cat-" + c.toLowerCase()}
+							>
+								{c}
+							</Chip>
+						))}
+					</div>
+					<div
+						className="flex flex-wrap items-center gap-2"
+						data-testid="gallery-filter-year"
+					>
+						<span className="u-label mr-2 text-n-600">Academic year</span>
+						{galleryYears.map((y) => (
+							<Chip
+								key={y}
+								selected={year === y}
+								onClick={() => setYear(year === y ? null : y)}
+								testId={"chip-year-" + y.replace(/\s+/g, "-")}
+							>
+								{y}
+							</Chip>
+						))}
+						{category || year ? (
+							<Chip
+								selected={false}
+								onClick={() => {
+									setCategory(null);
+									setYear(null);
+								}}
+								testId="chip-gallery-clear"
+							>
+								Clear filters
+							</Chip>
+						) : null}
+					</div>
+				</div>
+			</Section>
 
-      <CmsSectionBox
-        preview={preview}
-        sectionType="gallery_grid"
-        onSelect={onSelectSection}
-        testId="cms-section-hit-gallery-gallery_grid"
-      >
-      {str(gridSection, "title") ? (
-        <SectionHeading
-          title={str(gridSection, "title")}
-          className="mt-10"
-          testId="gallery-grid-title"
-        />
-      ) : null}
-      <div className="mt-10 mb-16" data-testid="gallery-body">
-        <AnimatePresence mode="wait">
-          {entered ? (
-            <motion.div
-              key={"album-" + entered.id}
-              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduced ? { opacity: 0 } : { opacity: 0, y: -12 }}
-              transition={{
-                duration: duration.standard / 1000,
-                ease: easing.entrance,
-              }}
-            >
-              <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
-                <div className="flex flex-col gap-2">
-                  <Eyebrow>
-                    {entered.category} · {entered.year} · {entered.date}
-                  </Eyebrow>
-                  <h2 className="u-display text-display-l text-ink">
-                    {entered.event}
-                  </h2>
-                </div>
-                <Button
-                  variant="secondary"
-                  onClick={() => setEntered(null)}
-                  testId="gallery-back"
-                >
-                  <ArrowLeft aria-hidden="true" size={14} />
-                  All events
-                </Button>
-              </div>
+			<CmsSectionBox
+				preview={preview}
+				sectionType="gallery_grid"
+				onSelect={onSelectSection}
+				testId="cms-section-hit-gallery-gallery_grid"
+			>
+				{str(gridSection, "title") ? (
+					<SectionHeading
+						title={str(gridSection, "title")}
+						className="mt-10"
+						testId="gallery-grid-title"
+					/>
+				) : null}
+				<div className="mt-10 mb-16" data-testid="gallery-body">
+					<AnimatePresence mode="wait">
+						{entered ? (
+							<motion.div
+								key={"album-" + entered.id}
+								initial={reduced ? { opacity: 0 } : { opacity: 0, y: 12 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={reduced ? { opacity: 0 } : { opacity: 0, y: -12 }}
+								transition={{
+									duration: duration.standard / 1000,
+									ease: easing.entrance,
+								}}
+							>
+								<div className="mb-12 flex flex-wrap items-end justify-between gap-6">
+									<div className="flex flex-col gap-2">
+										<Eyebrow>
+											{entered.category} · {entered.year} · {entered.date}
+										</Eyebrow>
+										<h2 className="u-display text-display-l text-ink">
+											{entered.event}
+										</h2>
+									</div>
+									<Button
+										variant="secondary"
+										onClick={() => setEntered(null)}
+										testId="gallery-back"
+									>
+										<ArrowLeft aria-hidden="true" size={14} />
+										All events
+									</Button>
+								</div>
 
-              <ul className="grid auto-rows-[220px] grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-12">
-                {entered.photos.map((p, i) => (
-                  <li key={p.src + i} className={SPANS[i % SPANS.length]}>
-                    <button
-                      type="button"
-                      ref={(el) => {
-                        tileRefs.current[entered.id + "-" + i] = el;
-                      }}
-                      onClick={() =>
-                        openLightbox(
-                          entered.photos,
-                          i,
-                          entered.event,
-                          entered.id + "-" + i,
-                        )
-                      }
-                      data-testid={"gallery-tile-" + i}
-                      className="group relative block h-full w-full overflow-hidden rounded-card !border-0 !bg-transparent"
-                    >
-                      {i === 0 && !reduced ? (
-                        <motion.span
-                          layoutId={"album-cover-" + entered.id}
-                          className="block h-full w-full"
-                        >
-                          <Picture
-                            image={p}
-                            sizes="(min-width: 1024px) 45vw, 92vw"
-                          />
-                        </motion.span>
-                      ) : (
-                        <Picture
-                          image={p}
-                          sizes="(min-width: 1024px) 30vw, 45vw"
-                        />
-                      )}
-                      <span className="u-label pointer-events-none absolute inset-x-0 bottom-0 bg-[#FEF2F2]/95 px-3 py-2 text-left text-ink opacity-0 transition-opacity duration-micro ease-state group-hover:opacity-100 group-focus-visible:opacity-100">
-                        {p.alt}
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="stacks"
-              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduced ? { opacity: 0 } : { opacity: 0, y: -12 }}
-              transition={{
-                duration: duration.standard / 1000,
-                ease: easing.entrance,
-              }}
-            >
-              {filtered.length === 0 ? (
-                <div
-                  className="flex flex-col gap-4 border-y-hair border-n-300 py-12"
-                  data-testid="gallery-empty"
-                >
-                  <p className="max-w-measure text-body-l text-ink">
-                    No album matches those filters. There are {activeAlbums.length}{" "}
-                    events in total across {galleryYears.length} academic years.
-                  </p>
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      setCategory(null);
-                      setYear(null);
-                    }}
-                    testId="gallery-empty-clear"
-                    className="w-fit"
-                  >
-                    Clear the filters
-                  </Button>
-                </div>
-              ) : (
-                <ul className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
-                  {filtered.map((a, i) => (
-                    <RevealUp as="li" key={a.id} index={i}>
-                      <PhotoFan album={a} index={i} onOpen={setEntered} />
-                    </RevealUp>
-                  ))}
-                </ul>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-      </CmsSectionBox>
+								<ul className="grid auto-rows-[220px] grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-12">
+									{entered.photos.map((p, i) => (
+										<li key={p.src + i} className={SPANS[i % SPANS.length]}>
+											<button
+												type="button"
+												ref={(el) => {
+													tileRefs.current[entered.id + "-" + i] = el;
+												}}
+												onClick={() =>
+													openLightbox(
+														entered.photos,
+														i,
+														entered.event,
+														entered.id + "-" + i,
+													)
+												}
+												data-testid={"gallery-tile-" + i}
+												className="group relative block h-full w-full overflow-hidden rounded-card !border-0 !bg-transparent"
+											>
+												{i === 0 && !reduced ? (
+													<motion.span
+														layoutId={"album-cover-" + entered.id}
+														className="block h-full w-full"
+													>
+														<Picture
+															image={p}
+															sizes="(min-width: 1024px) 45vw, 92vw"
+														/>
+													</motion.span>
+												) : (
+													<Picture
+														image={p}
+														sizes="(min-width: 1024px) 30vw, 45vw"
+													/>
+												)}
+												<span className="u-label pointer-events-none absolute inset-x-0 bottom-0 bg-[#FEF2F2]/95 px-3 py-2 text-left text-ink opacity-0 transition-opacity duration-micro ease-state group-hover:opacity-100 group-focus-visible:opacity-100">
+													{p.alt}
+												</span>
+											</button>
+										</li>
+									))}
+								</ul>
+							</motion.div>
+						) : (
+							<motion.div
+								key="stacks"
+								initial={reduced ? { opacity: 0 } : { opacity: 0, y: 12 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={reduced ? { opacity: 0 } : { opacity: 0, y: -12 }}
+								transition={{
+									duration: duration.standard / 1000,
+									ease: easing.entrance,
+								}}
+							>
+								{filtered.length === 0 ? (
+									<div
+										className="flex flex-col gap-4 border-y-hair border-n-300 py-12"
+										data-testid="gallery-empty"
+									>
+										<p className="max-w-measure text-body-l text-ink">
+											No album matches those filters. There are{" "}
+											{activeAlbums.length} events in total across{" "}
+											{galleryYears.length} academic years.
+										</p>
+										<Button
+											variant="secondary"
+											onClick={() => {
+												setCategory(null);
+												setYear(null);
+											}}
+											testId="gallery-empty-clear"
+											className="w-fit"
+										>
+											Clear the filters
+										</Button>
+									</div>
+								) : (
+									<ul className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+										{filtered.map((a, i) => (
+											<RevealUp as="li" key={a.id} index={i}>
+												<PhotoFan album={a} index={i} onOpen={setEntered} />
+											</RevealUp>
+										))}
+									</ul>
+								)}
+							</motion.div>
+						)}
+					</AnimatePresence>
+				</div>
+			</CmsSectionBox>
 
-      {lightbox ? (
-        <Lightbox
-          photos={lightbox.photos}
-          index={lightbox.index}
-          title={lightbox.title}
-          onClose={closeLightbox}
-          onIndex={(i) => setLightbox({ ...lightbox, index: i })}
-        />
-      ) : null}
-    </PageFrame>
-  );
+			{lightbox ? (
+				<Lightbox
+					photos={lightbox.photos}
+					index={lightbox.index}
+					title={lightbox.title}
+					onClose={closeLightbox}
+					onIndex={(i) => setLightbox({ ...lightbox, index: i })}
+				/>
+			) : null}
+		</PageFrame>
+	);
 }

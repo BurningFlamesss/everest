@@ -1,16 +1,15 @@
-
-import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
-import { useWebsitePageContent } from "#/packages/school/hook.tsx";
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { str } from "#/components/cms/block-fields";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
+import { useWebsitePageContent } from "#/packages/school/hook.tsx";
 import {
 	PageFrame,
 	PageHeader,
 } from "#/templates/modern/components/chrome/PageFrame";
 import { BusFinder } from "#/templates/modern/components/interactions/BusFinder";
-import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
-import { str } from "#/components/cms/block-fields";
-import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import type { BlockType } from "#/types";
 
 export const Route = createFileRoute("/_public/transportation")({
@@ -52,8 +51,7 @@ function RouteComponent() {
 		str(contactSection, "secondaryPhone") || "+977 71 531342";
 	const email = str(contactSection, "email") || "everestbutwal@gmail.com";
 	const admissionsEmail =
-		str(contactSection, "admissionsEmail") ||
-		"admissions@everestbutwal.edu.np";
+		str(contactSection, "admissionsEmail") || "admissions@everestbutwal.edu.np";
 	const address =
 		str(contactSection, "address") ||
 		"Butwal-8, Sukkhanagar, Rupandehi, Lumbini Province, Nepal";
@@ -151,4 +149,3 @@ function RouteComponent() {
 		</PageFrame>
 	);
 }
-

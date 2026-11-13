@@ -191,7 +191,7 @@ export default function ApplicationDetailPage() {
 						{application.convertedStudentId && (
 							<Link
 								to="/admin/students/$id"
-											params={{ id: application.convertedStudentId }}
+								params={{ id: application.convertedStudentId }}
 								className="text-primary hover:underline"
 								data-testid="application-student-link"
 							>

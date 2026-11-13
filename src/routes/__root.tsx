@@ -6,14 +6,6 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { getSessionFn } from "#/packages/auth/middleware/auth.middleware.ts";
-import { AuthProvider } from "#/providers/AuthProvider";
-import { Sidebar } from "#/templates/modern/components/layout/Sidebar";
-import themeCss from "#/templates/modern/components/tokens/theme.css?url";
-import type { MyRouterContext } from "#/types/router-context.ts";
-import appCss from "../app.css?url";
-import indexCss from "../index.css?url";
-import globalCss from "../styles.css?url";
-
 import {
 	getAlbumsServer,
 	getAllPublishedPagesServer,
@@ -31,6 +23,13 @@ import {
 } from "#/packages/content/server/content.ts";
 import { getSchoolConfig, getSchoolContent } from "#/packages/school/loader.ts";
 import { schoolThemeStyle } from "#/packages/school/theme.ts";
+import { AuthProvider } from "#/providers/AuthProvider";
+import { Sidebar } from "#/templates/modern/components/layout/Sidebar";
+import themeCss from "#/templates/modern/components/tokens/theme.css?url";
+import type { MyRouterContext } from "#/types/router-context.ts";
+import appCss from "../app.css?url";
+import indexCss from "../index.css?url";
+import globalCss from "../styles.css?url";
 
 function ErrorComponent() {
 	return (
@@ -90,7 +89,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			Promise.race([
 				promise,
 				new Promise<T>((_, reject) =>
-					setTimeout(() => reject(new Error("Loader query timeout")), ms)
+					setTimeout(() => reject(new Error("Loader query timeout")), ms),
 				),
 			]);
 

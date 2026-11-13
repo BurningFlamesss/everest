@@ -195,7 +195,7 @@ export default function InvoiceDetailPage() {
 							<Button asChild variant="outline" size="sm" className="gap-1.5">
 								<Link
 									to="/admin/payments/$id"
-											params={{ id: invoice.id }}
+									params={{ id: invoice.id }}
 									data-testid="invoice-pay-online"
 								>
 									<CreditCard className="h-3.5 w-3.5" /> Pay online
@@ -427,7 +427,7 @@ export default function InvoiceDetailPage() {
 									subtitle={student.admissionNo}
 									avatarUrl={student.avatarUrl}
 									to="/admin/students/$id"
-											params={{ id: student.id }}
+									params={{ id: student.id }}
 									size="lg"
 									mono
 									testId="invoice-student-link"

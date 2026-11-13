@@ -7,8 +7,8 @@ import {
 	useSchoolContent as useSchoolContentStore,
 } from "#/stores/contentStore.ts";
 import type { Person, Scholarship } from "#/types";
-import type { Notice } from "#/types/website";
 import type { SchoolContent } from "#/types/school";
+import type { Notice } from "#/types/website";
 
 /**
  * Shape of the root loader `content` payload: the managed CMS pages keyed by
@@ -37,7 +37,8 @@ export function useSyncContentStore() {
 			setSchoolConfig(loaderData.config);
 		}
 		if (loaderData?.content) {
-			const { sidebar, ...pageContent } = loaderData.content as unknown as LoaderContent;
+			const { sidebar, ...pageContent } =
+				loaderData.content as unknown as LoaderContent;
 			for (const [key, page] of Object.entries(pageContent)) {
 				// Only managed WebsitePage payloads belong in the websitePages map;
 				// collection arrays (facultyMembers/notices/scholarships) are read
@@ -85,7 +86,9 @@ export function useWebsitePageContent(
 ): WebsitePageContent | null {
 	const loaderContent = RootRoute.useLoaderData({
 		select: (data) =>
-			(data.content as unknown as LoaderContent)[key] as WebsitePageContent | undefined,
+			(data.content as unknown as LoaderContent)[key] as
+				| WebsitePageContent
+				| undefined,
 	});
 
 	if (
@@ -108,7 +111,9 @@ export function useFacultyDirectory(): Person[] | null {
 	return (
 		RootRoute.useLoaderData({
 			select: (data) =>
-				(data.content as unknown as LoaderContent).facultyMembers as Person[] | undefined,
+				(data.content as unknown as LoaderContent).facultyMembers as
+					| Person[]
+					| undefined,
 		}) ?? null
 	);
 }
@@ -118,7 +123,9 @@ export function useNotices(): Notice[] | null {
 	return (
 		RootRoute.useLoaderData({
 			select: (data) =>
-				(data.content as unknown as LoaderContent).notices as Notice[] | undefined,
+				(data.content as unknown as LoaderContent).notices as
+					| Notice[]
+					| undefined,
 		}) ?? null
 	);
 }
@@ -128,7 +135,9 @@ export function useScholarships(): Scholarship[] | null {
 	return (
 		RootRoute.useLoaderData({
 			select: (data) =>
-				(data.content as unknown as LoaderContent).scholarships as Scholarship[] | undefined,
+				(data.content as unknown as LoaderContent).scholarships as
+					| Scholarship[]
+					| undefined,
 		}) ?? null
 	);
 }
@@ -138,7 +147,7 @@ function useCollection<T>(key: string): T[] | null {
 	return (
 		RootRoute.useLoaderData({
 			select: (data) =>
-			(data.content as unknown as LoaderContent)[key] as T[] | undefined,
+				(data.content as unknown as LoaderContent)[key] as T[] | undefined,
 		}) ?? null
 	);
 }

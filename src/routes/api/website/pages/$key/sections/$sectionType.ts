@@ -31,7 +31,11 @@ export const Route = createFileRoute(
 				} catch (error) {
 					const message = error instanceof Error ? error.message : "Failed";
 					const status =
-						message === "Unauthorized" ? 401 : message === "Forbidden" ? 403 : 500;
+						message === "Unauthorized"
+							? 401
+							: message === "Forbidden"
+								? 403
+								: 500;
 					if (status === 500) console.error("Failed to update section:", error);
 					return Response.json({ error: message }, { status });
 				}

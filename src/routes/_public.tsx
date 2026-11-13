@@ -1,5 +1,9 @@
-import { createFileRoute, Outlet, useRouterState } from '@tanstack/react-router';
-import { PageShell } from '#/templates/modern/components/layout/PageShell';
+import {
+	createFileRoute,
+	Outlet,
+	useRouterState,
+} from "@tanstack/react-router";
+import { PageShell } from "#/templates/modern/components/layout/PageShell";
 
 /**
  * The shared public layout. Every top-level public route (/, /about, /courses,
@@ -11,15 +15,15 @@ import { PageShell } from '#/templates/modern/components/layout/PageShell';
  * and the sidebar floats on top — every other public page uses the default
  * frame, which offsets the content column by the sidebar's width.
  */
-export const Route = createFileRoute('/_public')({
-  component: PublicLayoutRoute,
+export const Route = createFileRoute("/_public")({
+	component: PublicLayoutRoute,
 });
 
 function PublicLayoutRoute() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  return (
-    <PageShell variant={pathname === '/' ? 'overlay' : 'default'}>
-      <Outlet />
-    </PageShell>
-  );
+	const pathname = useRouterState({ select: (s) => s.location.pathname });
+	return (
+		<PageShell variant={pathname === "/" ? "overlay" : "default"}>
+			<Outlet />
+		</PageShell>
+	);
 }

@@ -123,7 +123,9 @@ describe("collectOrphanedFileAssets", () => {
 	it("matches legacy cover values stored as a storage key", async () => {
 		const cover = asset("cover-key");
 		prismaMock.fileAsset.findMany.mockResolvedValue([cover]);
-		prismaMock.scmsNotice.findMany.mockResolvedValue([{ coverImage: cover.key }]);
+		prismaMock.scmsNotice.findMany.mockResolvedValue([
+			{ coverImage: cover.key },
+		]);
 
 		await collectOrphanedFileAssets();
 

@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { setResponseHeaders } from "@tanstack/react-start/server";
 import { z } from "zod";
+import type { Album, Img } from "#/content/types";
 import { prisma } from "#/lib/prisma";
 import type {
 	ContentBlockFields,
@@ -13,13 +14,12 @@ import type {
 	Program,
 	Scholarship,
 } from "#/types";
-import type { Album, Img } from "#/content/types";
-import type { Notice } from "#/types/website";
 import type {
 	SchoolConfig,
 	SchoolContent,
 	SidebarContent,
 } from "#/types/school";
+import type { Notice } from "#/types/website";
 
 const PageKeySchema = z.object({
 	key: z.string().transform((v) => v as any),
@@ -104,7 +104,9 @@ export const getWebsitePageServer = createServerFn({ method: "GET" })
 				blocks: { where: { visible: true }, orderBy: { order: "asc" } },
 			},
 		});
-		return (page ? toWebsitePageContent(page) : null) as unknown as WebsitePageContent;
+		return (page
+			? toWebsitePageContent(page)
+			: null) as unknown as WebsitePageContent;
 	});
 
 /**
@@ -120,7 +122,9 @@ export const getWebsitePagePreviewServer = createServerFn({ method: "GET" })
 				blocks: { where: { visible: true }, orderBy: { order: "asc" } },
 			},
 		});
-		return (page ? toWebsitePageContent(page) : null) as unknown as WebsitePageContent;
+		return (page
+			? toWebsitePageContent(page)
+			: null) as unknown as WebsitePageContent;
 	});
 
 export const getSchoolConfigServer = createServerFn({ method: "GET" })
@@ -314,7 +318,6 @@ function toNotice(row: {
 
 	return notice;
 }
-
 
 interface ScholarshipRow {
 	ref: string;

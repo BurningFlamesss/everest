@@ -446,7 +446,9 @@ export function CsvImportWizard({
 											</thead>
 											<tbody className="divide-y divide-hairline">
 												{rawRows.slice(0, 5).map((row) => (
-													<tr key={`inspect-${headers.map((h) => row[h]).join("|")}`}>
+													<tr
+														key={`inspect-${headers.map((h) => row[h]).join("|")}`}
+													>
 														{headers.map((header) => (
 															<td
 																key={header}

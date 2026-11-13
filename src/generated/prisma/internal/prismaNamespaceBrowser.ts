@@ -88,6 +88,10 @@ export const ModelName = {
   Assignment: 'Assignment',
   AttendanceSession: 'AttendanceSession',
   Club: 'Club',
+  ClubRole: 'ClubRole',
+  ClubMember: 'ClubMember',
+  Post: 'Post',
+  PostComment: 'PostComment',
   Event: 'Event',
   UserPermission: 'UserPermission',
   RolePermission: 'RolePermission',
@@ -779,6 +783,58 @@ export const ClubScalarFieldEnum = {
 } as const
 
 export type ClubScalarFieldEnum = (typeof ClubScalarFieldEnum)[keyof typeof ClubScalarFieldEnum]
+
+
+export const ClubRoleScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  name: 'name',
+  description: 'description',
+  permissions: 'permissions',
+  isBoard: 'isBoard',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClubRoleScalarFieldEnum = (typeof ClubRoleScalarFieldEnum)[keyof typeof ClubRoleScalarFieldEnum]
+
+
+export const ClubMemberScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  studentId: 'studentId',
+  roleId: 'roleId',
+  createdAt: 'createdAt'
+} as const
+
+export type ClubMemberScalarFieldEnum = (typeof ClubMemberScalarFieldEnum)[keyof typeof ClubMemberScalarFieldEnum]
+
+
+export const PostScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  authorId: 'authorId',
+  authorStudentId: 'authorStudentId',
+  title: 'title',
+  body: 'body',
+  isPinned: 'isPinned',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
+
+
+export const PostCommentScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  authorId: 'authorId',
+  body: 'body',
+  createdAt: 'createdAt'
+} as const
+
+export type PostCommentScalarFieldEnum = (typeof PostCommentScalarFieldEnum)[keyof typeof PostCommentScalarFieldEnum]
 
 
 export const EventScalarFieldEnum = {

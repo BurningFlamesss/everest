@@ -1,5 +1,5 @@
-import { adToBs } from "#/lib/nepaliDate";
 import type { CalEvent, EventKind } from "#/content/types";
+import { adToBs } from "#/lib/nepaliDate";
 
 /**
  * Shape of a calendar event row as returned by getCalendarEventsServer
@@ -52,9 +52,7 @@ export function toCalEvent(row: CalendarEventRow): CalEvent {
 	const hasRange =
 		(row.endBs != null && row.endBs !== row.startBs) ||
 		(row.endBs == null && endAd !== startAd);
-	const endBs = hasRange
-		? (row.endBs ?? adToBs(endAd) ?? "")
-		: undefined;
+	const endBs = hasRange ? (row.endBs ?? adToBs(endAd) ?? "") : undefined;
 
 	return {
 		id: row.slug ?? row.id,
@@ -68,6 +66,8 @@ export function toCalEvent(row: CalendarEventRow): CalEvent {
 	};
 }
 
-export function toCalEvents(rows: CalendarEventRow[] | null | undefined): CalEvent[] {
+export function toCalEvents(
+	rows: CalendarEventRow[] | null | undefined,
+): CalEvent[] {
 	return (rows ?? []).map(toCalEvent);
 }

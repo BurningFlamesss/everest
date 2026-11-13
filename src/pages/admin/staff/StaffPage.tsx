@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { CsvImportWizard } from "#/components/csv/CsvImportWizard";
 import { ConfirmDialog } from "#/components/common/ConfirmDialog";
 import {
 	type Column,
@@ -22,6 +21,7 @@ import { FilterBar, toOptions } from "#/components/common/FilterBar";
 import { PageHeader } from "#/components/common/PageHeader";
 import { PersonCell } from "#/components/common/PersonCell";
 import { StatusBadge } from "#/components/common/StatusBadge";
+import { CsvImportWizard } from "#/components/csv/CsvImportWizard";
 import { Button } from "#/components/ui/button";
 import {
 	Dialog,
@@ -206,7 +206,7 @@ export default function StaffPage() {
 					subtitle={member.employeeId}
 					avatarUrl={member.avatarUrl}
 					to="/admin/staff/$id"
-						params={{ id: member.id }}
+					params={{ id: member.id }}
 					mono
 					testId={`staff-link-${member.id}`}
 				/>
@@ -291,7 +291,11 @@ export default function StaffPage() {
 							{member.firstName} {member.lastName}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={() => navigate({ to: "/admin/staff/$id", params: { id: member.id } })}>
+						<DropdownMenuItem
+							onClick={() =>
+								navigate({ to: "/admin/staff/$id", params: { id: member.id } })
+							}
+						>
 							View profile
 						</DropdownMenuItem>
 						{can("staff.manage") && (
@@ -508,7 +512,9 @@ export default function StaffPage() {
 				loading={isLoading}
 				error={isError ? true : undefined}
 				onRetry={() => refetch()}
-				onRowClick={(m) => navigate({ to: "/admin/staff/$id", params: { id: m.id } })}
+				onRowClick={(m) =>
+					navigate({ to: "/admin/staff/$id", params: { id: m.id } })
+				}
 				sort={sort}
 				onSortChange={setSort}
 				page={data?.page ?? 1}

@@ -238,7 +238,9 @@ export default function TransportationPage() {
 									onChange={(e: any) =>
 										setEditing((prev) => ({
 											...prev,
-											stops: e.target.value.split(",").map((s: string) => s.trim()),
+											stops: e.target.value
+												.split(",")
+												.map((s: string) => s.trim()),
 										}))
 									}
 									placeholder="E.g. Bus Park, Hospital, Base Camp"

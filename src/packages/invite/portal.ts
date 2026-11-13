@@ -14,7 +14,13 @@ export const getMyPortalServer = createServerFn({ method: "GET" })
 
 		const user = await prisma.user.findUnique({
 			where: { id: userId },
-			select: { id: true, name: true, email: true, image: true, activatedAt: true },
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				image: true,
+				activatedAt: true,
+			},
 		});
 		if (!user) throw new Error("User not found");
 
@@ -22,7 +28,11 @@ export const getMyPortalServer = createServerFn({ method: "GET" })
 			where: { userId },
 			include: {
 				guardianStudents: {
-					include: { guardian: { include: { user: { select: { name: true, email: true } } } } },
+					include: {
+						guardian: {
+							include: { user: { select: { name: true, email: true } } },
+						},
+					},
 				},
 				guardianInvites: {
 					where: { usedAt: null },

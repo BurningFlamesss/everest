@@ -1,13 +1,12 @@
-
+import { createFileRoute, useSearch } from "@tanstack/react-router";
+import type { WebsitePageContent } from "#/lib/website-content-loader";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
-import { useSearch } from "@tanstack/react-router";
-import { createFileRoute } from "@tanstack/react-router";
 import LandingPage from "#/templates/modern/LandingPage.tsx";
-import type { WebsitePageContent } from "#/lib/website-content-loader";
 
 const PUBLIC_CACHE_HEADERS = () => ({
-	"Cache-Control": "public, max-age=60, s-maxage=3600, stale-while-revalidate=86400",
+	"Cache-Control":
+		"public, max-age=60, s-maxage=3600, stale-while-revalidate=86400",
 	"CDN-Cache-Control": "max-age=3600, stale-while-revalidate=86400",
 });
 
@@ -27,12 +26,15 @@ export const Route = createFileRoute("/_public/")({
 });
 
 function Home() {
-	const search = (useSearch({ strict: false }) as Record<string, unknown>) || {};
+	const search =
+		(useSearch({ strict: false }) as Record<string, unknown>) || {};
 	const cms = search.cms;
 	const { previewPage } = Route.useLoaderData();
 	const publishedContent = useWebsitePageContent("home");
 	const preview = String(cms ?? "") === "1";
-	const page = (preview ? previewPage : publishedContent) as WebsitePageContent | null;
+	const page = (
+		preview ? previewPage : publishedContent
+	) as WebsitePageContent | null;
 
 	return <LandingPage page={page} preview={preview} />;
 }

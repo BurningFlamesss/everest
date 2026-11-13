@@ -1,17 +1,20 @@
-import { createFileRoute, useSearch, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useSearch } from "@tanstack/react-router";
 import { AuthPage } from "#/components/public/AuthBlocks";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import {
 	useSchoolConfig,
 	useWebsitePageContent,
 } from "#/packages/school/hook.tsx";
-import type { BlockType } from "#/types";
 import { PageShell } from "#/templates/modern/components/layout/PageShell";
+import type { BlockType } from "#/types";
 
 export const Route = createFileRoute("/login")({
 	beforeLoad: ({ context, location }) => {
 		const search = location.search as any;
-		if (String(search.cms) === "1" || String(search["allow-when-logged-in"]) === "true") {
+		if (
+			String(search.cms) === "1" ||
+			String(search["allow-when-logged-in"]) === "true"
+		) {
 			return; // allow CMS preview
 		}
 		if (context.session) {

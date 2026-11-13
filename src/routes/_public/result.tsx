@@ -1,16 +1,15 @@
-
+import { createFileRoute, useSearch } from "@tanstack/react-router";
+import { str } from "#/components/cms/block-fields";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import { getBoardResultsServer } from "#/packages/content/server/content";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
-import { createFileRoute, useSearch } from "@tanstack/react-router";
 import {
 	PageFrame,
 	PageHeader,
 } from "#/templates/modern/components/chrome/PageFrame";
 import { ResultsChart } from "#/templates/modern/components/utilities/ResultsChart";
-import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
-import { str } from "#/components/cms/block-fields";
-import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import type { BlockType } from "#/types";
 
 export const Route = createFileRoute("/_public/result")({
@@ -22,7 +21,7 @@ export const Route = createFileRoute("/_public/result")({
 				data: { key: "result" },
 			});
 		}
-		return { 
+		return {
 			previewPage,
 			results: await getBoardResultsServer(),
 		};
@@ -105,4 +104,3 @@ function RouteComponent() {
 		</PageFrame>
 	);
 }
-

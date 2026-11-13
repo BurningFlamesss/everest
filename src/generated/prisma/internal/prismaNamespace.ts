@@ -434,6 +434,10 @@ export const ModelName = {
   Assignment: 'Assignment',
   AttendanceSession: 'AttendanceSession',
   Club: 'Club',
+  ClubRole: 'ClubRole',
+  ClubMember: 'ClubMember',
+  Post: 'Post',
+  PostComment: 'PostComment',
   Event: 'Event',
   UserPermission: 'UserPermission',
   RolePermission: 'RolePermission',
@@ -469,7 +473,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "organization" | "branch" | "userRole" | "student" | "staff" | "guardian" | "guardianStudent" | "invite" | "guardianInvite" | "schoolClass" | "attendanceRecord" | "application" | "invoice" | "websitePage" | "contentBlock" | "facultyMember" | "notice" | "scholarship" | "album" | "facility" | "resource" | "boardResult" | "busRoute" | "program" | "calendarEvent" | "academicYear" | "term" | "exam" | "examSchedule" | "mark" | "assignment" | "attendanceSession" | "club" | "event" | "userPermission" | "rolePermission" | "inviteRequest" | "enrollment" | "classroom" | "course" | "fileAsset" | "attachment" | "contactMessage" | "transportRoute" | "transportStop" | "transportAssignment" | "feeStructure" | "payment" | "notification" | "mailLog" | "galleryImage" | "timetableSlot" | "scmsNotice"
+    modelProps: "user" | "session" | "account" | "verification" | "organization" | "branch" | "userRole" | "student" | "staff" | "guardian" | "guardianStudent" | "invite" | "guardianInvite" | "schoolClass" | "attendanceRecord" | "application" | "invoice" | "websitePage" | "contentBlock" | "facultyMember" | "notice" | "scholarship" | "album" | "facility" | "resource" | "boardResult" | "busRoute" | "program" | "calendarEvent" | "academicYear" | "term" | "exam" | "examSchedule" | "mark" | "assignment" | "attendanceSession" | "club" | "clubRole" | "clubMember" | "post" | "postComment" | "event" | "userPermission" | "rolePermission" | "inviteRequest" | "enrollment" | "classroom" | "course" | "fileAsset" | "attachment" | "contactMessage" | "transportRoute" | "transportStop" | "transportAssignment" | "feeStructure" | "payment" | "notification" | "mailLog" | "galleryImage" | "timetableSlot" | "scmsNotice"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3211,6 +3215,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ClubRole: {
+      payload: Prisma.$ClubRolePayload<ExtArgs>
+      fields: Prisma.ClubRoleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ClubRoleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubRolePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ClubRoleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubRolePayload>
+        }
+        findFirst: {
+          args: Prisma.ClubRoleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubRolePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ClubRoleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubRolePayload>
+        }
+        findMany: {
+          args: Prisma.ClubRoleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubRolePayload>[]
+        }
+        create: {
+          args: Prisma.ClubRoleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubRolePayload>
+        }
+        createMany: {
+          args: Prisma.ClubRoleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ClubRoleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubRolePayload>[]
+        }
+        delete: {
+          args: Prisma.ClubRoleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubRolePayload>
+        }
+        update: {
+          args: Prisma.ClubRoleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubRolePayload>
+        }
+        deleteMany: {
+          args: Prisma.ClubRoleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ClubRoleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ClubRoleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubRolePayload>[]
+        }
+        upsert: {
+          args: Prisma.ClubRoleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubRolePayload>
+        }
+        aggregate: {
+          args: Prisma.ClubRoleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClubRole>
+        }
+        groupBy: {
+          args: Prisma.ClubRoleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClubRoleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ClubRoleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClubRoleCountAggregateOutputType> | number
+        }
+      }
+    }
+    ClubMember: {
+      payload: Prisma.$ClubMemberPayload<ExtArgs>
+      fields: Prisma.ClubMemberFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ClubMemberFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ClubMemberFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>
+        }
+        findFirst: {
+          args: Prisma.ClubMemberFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ClubMemberFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>
+        }
+        findMany: {
+          args: Prisma.ClubMemberFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>[]
+        }
+        create: {
+          args: Prisma.ClubMemberCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>
+        }
+        createMany: {
+          args: Prisma.ClubMemberCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ClubMemberCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>[]
+        }
+        delete: {
+          args: Prisma.ClubMemberDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>
+        }
+        update: {
+          args: Prisma.ClubMemberUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>
+        }
+        deleteMany: {
+          args: Prisma.ClubMemberDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ClubMemberUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ClubMemberUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>[]
+        }
+        upsert: {
+          args: Prisma.ClubMemberUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>
+        }
+        aggregate: {
+          args: Prisma.ClubMemberAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClubMember>
+        }
+        groupBy: {
+          args: Prisma.ClubMemberGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClubMemberGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ClubMemberCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClubMemberCountAggregateOutputType> | number
+        }
+      }
+    }
+    Post: {
+      payload: Prisma.$PostPayload<ExtArgs>
+      fields: Prisma.PostFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PostFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PostFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>
+        }
+        findFirst: {
+          args: Prisma.PostFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PostFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>
+        }
+        findMany: {
+          args: Prisma.PostFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>[]
+        }
+        create: {
+          args: Prisma.PostCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>
+        }
+        createMany: {
+          args: Prisma.PostCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PostCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>[]
+        }
+        delete: {
+          args: Prisma.PostDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>
+        }
+        update: {
+          args: Prisma.PostUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>
+        }
+        deleteMany: {
+          args: Prisma.PostDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PostUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PostUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>[]
+        }
+        upsert: {
+          args: Prisma.PostUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>
+        }
+        aggregate: {
+          args: Prisma.PostAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePost>
+        }
+        groupBy: {
+          args: Prisma.PostGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PostCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostCountAggregateOutputType> | number
+        }
+      }
+    }
+    PostComment: {
+      payload: Prisma.$PostCommentPayload<ExtArgs>
+      fields: Prisma.PostCommentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PostCommentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PostCommentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>
+        }
+        findFirst: {
+          args: Prisma.PostCommentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PostCommentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>
+        }
+        findMany: {
+          args: Prisma.PostCommentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>[]
+        }
+        create: {
+          args: Prisma.PostCommentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>
+        }
+        createMany: {
+          args: Prisma.PostCommentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PostCommentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>[]
+        }
+        delete: {
+          args: Prisma.PostCommentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>
+        }
+        update: {
+          args: Prisma.PostCommentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>
+        }
+        deleteMany: {
+          args: Prisma.PostCommentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PostCommentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PostCommentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>[]
+        }
+        upsert: {
+          args: Prisma.PostCommentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>
+        }
+        aggregate: {
+          args: Prisma.PostCommentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostComment>
+        }
+        groupBy: {
+          args: Prisma.PostCommentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostCommentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PostCommentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostCommentCountAggregateOutputType> | number
+        }
+      }
+    }
     Event: {
       payload: Prisma.$EventPayload<ExtArgs>
       fields: Prisma.EventFieldRefs
@@ -5385,6 +5685,58 @@ export const ClubScalarFieldEnum = {
 export type ClubScalarFieldEnum = (typeof ClubScalarFieldEnum)[keyof typeof ClubScalarFieldEnum]
 
 
+export const ClubRoleScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  name: 'name',
+  description: 'description',
+  permissions: 'permissions',
+  isBoard: 'isBoard',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClubRoleScalarFieldEnum = (typeof ClubRoleScalarFieldEnum)[keyof typeof ClubRoleScalarFieldEnum]
+
+
+export const ClubMemberScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  studentId: 'studentId',
+  roleId: 'roleId',
+  createdAt: 'createdAt'
+} as const
+
+export type ClubMemberScalarFieldEnum = (typeof ClubMemberScalarFieldEnum)[keyof typeof ClubMemberScalarFieldEnum]
+
+
+export const PostScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  authorId: 'authorId',
+  authorStudentId: 'authorStudentId',
+  title: 'title',
+  body: 'body',
+  isPinned: 'isPinned',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
+
+
+export const PostCommentScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  authorId: 'authorId',
+  body: 'body',
+  createdAt: 'createdAt'
+} as const
+
+export type PostCommentScalarFieldEnum = (typeof PostCommentScalarFieldEnum)[keyof typeof PostCommentScalarFieldEnum]
+
+
 export const EventScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -6262,6 +6614,10 @@ export type GlobalOmitConfig = {
   assignment?: Prisma.AssignmentOmit
   attendanceSession?: Prisma.AttendanceSessionOmit
   club?: Prisma.ClubOmit
+  clubRole?: Prisma.ClubRoleOmit
+  clubMember?: Prisma.ClubMemberOmit
+  post?: Prisma.PostOmit
+  postComment?: Prisma.PostCommentOmit
   event?: Prisma.EventOmit
   userPermission?: Prisma.UserPermissionOmit
   rolePermission?: Prisma.RolePermissionOmit

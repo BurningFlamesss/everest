@@ -256,7 +256,7 @@ export default function OverviewPage() {
 													<Link
 														key={cls.id}
 														to="/admin/attendance"
-															search={{ class: cls.id }}
+														search={{ class: cls.id }}
 														className="rounded-full border border-hairline bg-surface-1 px-2 py-0.5 text-[11px] text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
 													>
 														{cls.name}
@@ -481,7 +481,9 @@ export default function OverviewPage() {
 									primaryLabel={
 										can("events.manage") ? "Schedule an event" : undefined
 									}
-									onPrimary={() => navigate({ to: "/admin/events", search: { new: 1 } })}
+									onPrimary={() =>
+										navigate({ to: "/admin/events", search: { new: 1 } })
+									}
 									testId="overview-events-empty"
 								/>
 							) : (
@@ -490,7 +492,7 @@ export default function OverviewPage() {
 										<li key={event.id}>
 											<Link
 												to="/admin/events/$id"
-															params={{ id: event.id }}
+												params={{ id: event.id }}
 												className="flex items-center gap-3 rounded-md px-2 py-2.5 transition-colors hover:bg-surface-2 focus-ring"
 												data-testid={`overview-event-${event.id}`}
 											>
@@ -560,7 +562,7 @@ export default function OverviewPage() {
 										<li key={notice.id}>
 											<Link
 												to="/admin/notices/$id"
-															params={{ id: notice.id }}
+												params={{ id: notice.id }}
 												className="group flex items-start gap-3 rounded-md px-2 py-2.5 transition-colors hover:bg-surface-2 focus-ring"
 												data-testid={`overview-notice-${notice.id}`}
 											>
@@ -664,7 +666,7 @@ export default function OverviewPage() {
 											subtitle={student.admissionNo}
 											avatarUrl={student.avatarUrl}
 											to="/admin/students/$id"
-															params={{ id: student.id }}
+											params={{ id: student.id }}
 											mono
 											testId={`overview-student-${student.id}`}
 										/>

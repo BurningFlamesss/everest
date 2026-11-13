@@ -1,19 +1,17 @@
-
-import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
-import { useCalendarEvents, useWebsitePageContent } from "#/packages/school/hook.tsx";
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { CalendarPlus, ChevronLeft, ChevronRight } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useMemo, useState } from "react";
+import { num, str } from "#/components/cms/block-fields";
+import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import {
 	ACADEMIC_YEAR_BS,
-	calendarEvents as staticCalendarEvents,
 	calendarIntro,
 	eventKindMeta,
+	calendarEvents as staticCalendarEvents,
 	terms,
 } from "#/content/calendar";
 import type { CalEvent, EventKind } from "#/content/types";
-import { toCalEvents, type CalendarEventRow } from "#/lib/calendarEvents";
 import {
 	countdownLabel,
 	downloadIcs,
@@ -22,6 +20,8 @@ import {
 	nextOfKind,
 	today,
 } from "#/lib/calendar";
+import { type CalendarEventRow, toCalEvents } from "#/lib/calendarEvents";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import {
 	addDaysAd,
 	adToBs,
@@ -36,20 +36,22 @@ import {
 	WEEKDAYS_SHORT,
 } from "#/lib/nepaliDate";
 import { cn } from "#/lib/utils";
+import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
+import {
+	useCalendarEvents,
+	useWebsitePageContent,
+} from "#/packages/school/hook.tsx";
 import { Button } from "#/templates/modern/components/Button";
 import {
 	Section as ChromeSection,
 	PageFrame,
 	PageHeader,
 } from "#/templates/modern/components/chrome/PageFrame";
-import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
-import { num, str } from "#/components/cms/block-fields";
-import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
-import type { BlockType } from "#/types";
 import { Segmented } from "#/templates/modern/components/Segmented";
 import { WidgetCaption } from "#/templates/modern/components/Text";
 import { duration, easing } from "#/templates/modern/components/tokens";
 import { RoutineViewer } from "#/templates/modern/components/utilities/RoutineViewer";
+import type { BlockType } from "#/types";
 
 const KINDS: EventKind[] = [
 	"exam",
@@ -97,56 +99,57 @@ const KIND_TEXT: Record<EventKind, string> = {
 };
 
 export const Route = createFileRoute("/_public/calendar")({
-  loader: async ({ location }) => {
-    const search = location.search as { cms?: string };
-    if (String(search.cms) === "1") {
-      const previewPage = await getWebsitePagePreviewServer({
-        data: { key: "calendar" },
-      });
-      return { previewPage };
-    }
-    return { previewPage: null };
-  },
+	loader: async ({ location }) => {
+		const search = location.search as { cms?: string };
+		if (String(search.cms) === "1") {
+			const previewPage = await getWebsitePagePreviewServer({
+				data: { key: "calendar" },
+			});
+			return { previewPage };
+		}
+		return { previewPage: null };
+	},
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-  const search = (useSearch({ strict: false }) as Record<string, unknown>) || {};
-  const cms = search.cms;
-  const { previewPage } = Route.useLoaderData();
-  const publishedContent = useWebsitePageContent("calendar");
-  const preview = String(cms ?? "") === "1";
-  const cmsData = (preview ? previewPage : publishedContent) as any;
+	const search =
+		(useSearch({ strict: false }) as Record<string, unknown>) || {};
+	const cms = search.cms;
+	const { previewPage } = Route.useLoaderData();
+	const publishedContent = useWebsitePageContent("calendar");
+	const preview = String(cms ?? "") === "1";
+	const cmsData = (preview ? previewPage : publishedContent) as any;
 
-  const headerSection = {
-    ...sectionDefaults("headline"),
-    ...getSectionFields(cmsData?.blocks, "headline"),
-  };
+	const headerSection = {
+		...sectionDefaults("headline"),
+		...getSectionFields(cmsData?.blocks, "headline"),
+	};
 
-  const featuredSection = {
-    ...sectionDefaults("featured_events"),
-    ...getSectionFields(cmsData?.blocks, "featured_events"),
-  };
+	const featuredSection = {
+		...sectionDefaults("featured_events"),
+		...getSectionFields(cmsData?.blocks, "featured_events"),
+	};
 
-  // Calendar events: DB-driven via the root loader, with the static calendar
-  // as fallback when the collection has not been seeded yet.
-  const dbCalendarEvents = useCalendarEvents<CalendarEventRow>();
-  const events: CalEvent[] = useMemo(() => {
-    const db = toCalEvents(dbCalendarEvents);
-    return db.length > 0 ? db : staticCalendarEvents;
-  }, [dbCalendarEvents]);
+	// Calendar events: DB-driven via the root loader, with the static calendar
+	// as fallback when the collection has not been seeded yet.
+	const dbCalendarEvents = useCalendarEvents<CalendarEventRow>();
+	const events: CalEvent[] = useMemo(() => {
+		const db = toCalEvents(dbCalendarEvents);
+		return db.length > 0 ? db : staticCalendarEvents;
+	}, [dbCalendarEvents]);
 
-  const onSelectSection = (sectionType: BlockType) => {
-    window.parent?.postMessage(
-      {
-        source: "scms-cms",
-        type: "select-section",
-        pageKey: "calendar",
-        sectionType,
-      },
-      "*",
-    );
-  };
+	const onSelectSection = (sectionType: BlockType) => {
+		window.parent?.postMessage(
+			{
+				source: "scms-cms",
+				type: "select-section",
+				pageKey: "calendar",
+				sectionType,
+			},
+			"*",
+		);
+	};
 
 	const reduced = Boolean(useReducedMotion());
 	const [primary, setPrimary] = useState<"bs" | "ad">("bs");
@@ -241,18 +244,20 @@ function RouteComponent() {
 
 	return (
 		<PageFrame>
-      <CmsSectionBox
-        preview={preview}
-        sectionType="headline"
-        onSelect={onSelectSection}
-        testId="cms-section-hit-calendar-headline"
-      >
-			<PageHeader
-				eyebrow={str(headerSection, "eyebrow") || calendarIntro.eyebrow}
-				title={str(headerSection, "title") || calendarIntro.statement.join(" ")}
-				lead={str(headerSection, "body") || calendarIntro.support}
-			/>
-      </CmsSectionBox>
+			<CmsSectionBox
+				preview={preview}
+				sectionType="headline"
+				onSelect={onSelectSection}
+				testId="cms-section-hit-calendar-headline"
+			>
+				<PageHeader
+					eyebrow={str(headerSection, "eyebrow") || calendarIntro.eyebrow}
+					title={
+						str(headerSection, "title") || calendarIntro.statement.join(" ")
+					}
+					lead={str(headerSection, "body") || calendarIntro.support}
+				/>
+			</CmsSectionBox>
 			<ChromeSection testId="calendar-intro" className="!mt-10">
 				<div
 					className="grid gap-px border-hair border-n-200 bg-n-200 sm:grid-cols-2"
@@ -349,7 +354,9 @@ function RouteComponent() {
 						className="flex flex-wrap items-center gap-2"
 						data-testid="calendar-year-strip"
 					>
-						<span className="t-eyebrow mr-2 text-muted-foreground">Jump to month</span>
+						<span className="t-eyebrow mr-2 text-muted-foreground">
+							Jump to month
+						</span>
 						{BS_MONTHS_EN.map((m, i) => (
 							<button
 								key={m}

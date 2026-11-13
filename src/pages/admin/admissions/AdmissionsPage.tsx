@@ -87,9 +87,11 @@ export default function AdmissionsPage() {
 
 	const setParam = (key: string, value: string) => {
 		navigate({
-			search: ((value === "all" || !value
-				? Object.fromEntries(Object.entries(searchParams).filter(([k]) => k !== key))
-				: { ...searchParams, [key]: value }) as any),
+			search: (value === "all" || !value
+				? Object.fromEntries(
+						Object.entries(searchParams).filter(([k]) => k !== key),
+					)
+				: { ...searchParams, [key]: value }) as any,
 			replace: true,
 		});
 	};
@@ -202,7 +204,7 @@ export default function AdmissionsPage() {
 					subtitle={row.applicationNo}
 					avatarUrl={row.avatarUrl}
 					to="/admin/admissions/$id"
-						params={{ id: row.id }}
+					params={{ id: row.id }}
 					mono
 					testId={`admissions-row-link-${row.id}`}
 				/>
@@ -305,7 +307,12 @@ export default function AdmissionsPage() {
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
-							onClick={() => navigate({ to: "/admin/admissions/$id", params: { id: row.id } })}
+							onClick={() =>
+								navigate({
+									to: "/admin/admissions/$id",
+									params: { id: row.id },
+								})
+							}
 							data-testid={`admissions-view-${row.id}`}
 						>
 							Open application
@@ -587,7 +594,9 @@ export default function AdmissionsPage() {
 					rows={pagedRows}
 					rowId={(row) => row.id}
 					rowTestId={(row) => `admissions-table-row-${row.id}`}
-					onRowClick={(row) => navigate({ to: "/admin/admissions/$id", params: { id: row.id } })}
+					onRowClick={(row) =>
+						navigate({ to: "/admin/admissions/$id", params: { id: row.id } })
+					}
 					page={page}
 					pageSize={pageSize}
 					total={tableRows.length}

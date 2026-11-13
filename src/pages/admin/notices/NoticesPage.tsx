@@ -152,7 +152,7 @@ export default function NoticesPage() {
 					<div className="min-w-0">
 						<Link
 							to="/admin/notices/$id"
-								params={{ id: notice.id }}
+							params={{ id: notice.id }}
 							className="block truncate text-sm font-medium text-foreground transition-colors hover:text-primary focus-ring"
 							data-testid={`notice-link-${notice.id}`}
 							onClick={(event) => event.stopPropagation()}
@@ -249,7 +249,9 @@ export default function NoticesPage() {
 						className="row-actions h-7 w-7"
 						aria-label="Open notice"
 						data-testid={`notice-view-${notice.id}`}
-						onClick={() => navigate({ to: "/admin/notices/$id", params: { id: notice.id } })}
+						onClick={() =>
+							navigate({ to: "/admin/notices/$id", params: { id: notice.id } })
+						}
 					>
 						<Eye className="h-3.5 w-3.5" />
 					</Button>
@@ -269,7 +271,12 @@ export default function NoticesPage() {
 							<DropdownMenuItem
 								className="gap-2 text-xs"
 								data-testid={`notice-action-open-${notice.id}`}
-								onClick={() => navigate({ to: "/admin/notices/$id", params: { id: notice.id } })}
+								onClick={() =>
+									navigate({
+										to: "/admin/notices/$id",
+										params: { id: notice.id },
+									})
+								}
 							>
 								<Eye className="h-3.5 w-3.5" /> Open
 							</DropdownMenuItem>
@@ -277,7 +284,12 @@ export default function NoticesPage() {
 								<DropdownMenuItem
 									className="gap-2 text-xs"
 									data-testid={`notice-action-edit-${notice.id}`}
-									onClick={() => navigate({ to: "/admin/notices/$id/edit", params: { id: notice.id } })}
+									onClick={() =>
+										navigate({
+											to: "/admin/notices/$id/edit",
+											params: { id: notice.id },
+										})
+									}
 								>
 									<Pencil className="h-3.5 w-3.5" /> Edit
 								</DropdownMenuItem>
@@ -440,7 +452,9 @@ export default function NoticesPage() {
 				loading={isLoading}
 				error={isError ? true : undefined}
 				onRetry={() => void refetch()}
-				onRowClick={(notice) => navigate({ to: "/admin/notices/$id", params: { id: notice.id } })}
+				onRowClick={(notice) =>
+					navigate({ to: "/admin/notices/$id", params: { id: notice.id } })
+				}
 				page={page}
 				pageSize={8}
 				total={data?.total ?? 0}

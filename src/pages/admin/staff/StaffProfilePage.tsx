@@ -231,7 +231,7 @@ export default function StaffProfilePage() {
 												>
 													<Link
 														to="/admin/classes/$id"
-															params={{ id: cls.id }}
+														params={{ id: cls.id }}
 														className="text-sm text-foreground hover:text-primary"
 													>
 														{cls.name}
@@ -273,7 +273,7 @@ export default function StaffProfilePage() {
 												>
 													<Link
 														to="/admin/courses/$id"
-															params={{ id: course.id }}
+														params={{ id: course.id }}
 														className="text-sm text-foreground hover:text-primary"
 													>
 														{course.name}

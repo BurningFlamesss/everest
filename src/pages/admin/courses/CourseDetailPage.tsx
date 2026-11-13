@@ -133,7 +133,7 @@ export default function CourseDetailPage() {
 									<li key={cls.id}>
 										<Link
 											to="/admin/classes/$id"
-												params={{ id: cls.id }}
+											params={{ id: cls.id }}
 											className="block rounded-md border border-hairline bg-surface-2 px-2.5 py-2 text-xs text-foreground transition-colors hover:border-primary/40"
 										>
 											{cls.name}
@@ -165,7 +165,7 @@ export default function CourseDetailPage() {
 											subtitle={`${teacher.designation} · ${teacher.department}`}
 											avatarUrl={teacher.avatarUrl}
 											to="/admin/staff/$id"
-												params={{ id: teacher.id }}
+											params={{ id: teacher.id }}
 										/>
 									</li>
 								))}

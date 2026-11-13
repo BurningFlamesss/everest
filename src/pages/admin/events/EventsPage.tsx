@@ -245,7 +245,7 @@ export default function EventsPage() {
 				<div className="min-w-0">
 					<Link
 						to="/admin/events/$id"
-								params={{ id: event.id }}
+						params={{ id: event.id }}
 						className="block truncate text-sm font-medium text-foreground transition-colors hover:text-primary focus-ring"
 						data-testid={`event-link-${event.id}`}
 						onClick={(e) => e.stopPropagation()}
@@ -416,7 +416,9 @@ export default function EventsPage() {
 					loading={isLoading}
 					error={isError ? true : undefined}
 					onRetry={() => void refetch()}
-					onRowClick={(event) => navigate({ to: "/admin/events/$id", params: { id: event.id } })}
+					onRowClick={(event) =>
+						navigate({ to: "/admin/events/$id", params: { id: event.id } })
+					}
 					total={events.length}
 					pageSize={events.length || 1}
 					footNote={`${events.length} events on the calendar`}
@@ -478,7 +480,7 @@ export default function EventsPage() {
 									<li key={event.id} className="group">
 										<Link
 											to="/admin/events/$id"
-								params={{ id: event.id }}
+											params={{ id: event.id }}
 											data-testid={`events-agenda-item-${event.id}`}
 											className="block rounded-lg border border-hairline bg-surface-1 px-3 py-2.5 transition-colors duration-150 hover:border-primary/35 hover:bg-surface-2 focus-ring"
 										>

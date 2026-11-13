@@ -223,7 +223,12 @@ export default function GalleryPage() {
 							>
 								<button
 									type="button"
-									onClick={() => navigate({ to: "/admin/gallery/$id", params: { id: album.id } })}
+									onClick={() =>
+										navigate({
+											to: "/admin/gallery/$id",
+											params: { id: album.id },
+										})
+									}
 									aria-label={`Open ${album.title}`}
 									data-testid={`gallery-album-open-${album.id}`}
 									className="relative block aspect-[4/3] w-full overflow-hidden bg-surface-2 focus-ring"
@@ -276,7 +281,10 @@ export default function GalleryPage() {
 													<DropdownMenuSeparator />
 													<DropdownMenuItem
 														onClick={() =>
-															navigate({ to: "/admin/gallery/$id", params: { id: album.id } })
+															navigate({
+																to: "/admin/gallery/$id",
+																params: { id: album.id },
+															})
 														}
 													>
 														Open album
@@ -352,7 +360,8 @@ export default function GalleryPage() {
 					if (!open) setEditing(null);
 				}}
 				onSaved={(album) => {
-					if (!editing) navigate({ to: "/admin/gallery/$id", params: { id: album.id } });
+					if (!editing)
+						navigate({ to: "/admin/gallery/$id", params: { id: album.id } });
 				}}
 			/>
 

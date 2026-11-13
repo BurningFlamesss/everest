@@ -84,8 +84,7 @@ export default function ClassDetailPage() {
 							asChild
 							data-testid="class-mark-attendance"
 						>
-							<Link to="/admin/attendance"
-												search={{ class: cls.id }}>
+							<Link to="/admin/attendance" search={{ class: cls.id }}>
 								<ClipboardCheck className="h-3.5 w-3.5" /> Mark attendance
 							</Link>
 						</Button>
@@ -145,7 +144,7 @@ export default function ClassDetailPage() {
 														subtitle={student.admissionNo}
 														avatarUrl={student.avatarUrl}
 														to="/admin/students/$id"
-															params={{ id: student.id }}
+														params={{ id: student.id }}
 														mono
 													/>
 													<span className="num ml-auto shrink-0 text-xs text-muted-foreground">
@@ -183,7 +182,7 @@ export default function ClassDetailPage() {
 											<div className="min-w-0 flex-1">
 												<Link
 													to="/admin/courses/$id"
-															params={{ id: course.id }}
+													params={{ id: course.id }}
 													className="block truncate text-sm text-foreground hover:text-primary"
 												>
 													{course.name}
@@ -251,7 +250,7 @@ export default function ClassDetailPage() {
 								<div className="min-w-0">
 									<Link
 										to="/admin/staff/$id"
-													params={{ id: teacher.id }}
+										params={{ id: teacher.id }}
 										className="block truncate text-sm font-medium text-foreground hover:text-primary"
 									>
 										{teacher.firstName} {teacher.lastName}

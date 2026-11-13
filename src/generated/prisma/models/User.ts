@@ -214,6 +214,9 @@ export type UserWhereInput = {
   guardian?: Prisma.XOR<Prisma.GuardianNullableScalarRelationFilter, Prisma.GuardianWhereInput> | null
   invites?: Prisma.InviteListRelationFilter
   guardianInvites?: Prisma.GuardianInviteListRelationFilter
+  clubRoles?: Prisma.ClubRoleListRelationFilter
+  authoredPosts?: Prisma.PostListRelationFilter
+  authoredPostComments?: Prisma.PostCommentListRelationFilter
   permissions?: Prisma.UserPermissionListRelationFilter
   uploadedFiles?: Prisma.FileAssetListRelationFilter
   reviewedInviteRequests?: Prisma.InviteRequestListRelationFilter
@@ -238,6 +241,9 @@ export type UserOrderByWithRelationInput = {
   guardian?: Prisma.GuardianOrderByWithRelationInput
   invites?: Prisma.InviteOrderByRelationAggregateInput
   guardianInvites?: Prisma.GuardianInviteOrderByRelationAggregateInput
+  clubRoles?: Prisma.ClubRoleOrderByRelationAggregateInput
+  authoredPosts?: Prisma.PostOrderByRelationAggregateInput
+  authoredPostComments?: Prisma.PostCommentOrderByRelationAggregateInput
   permissions?: Prisma.UserPermissionOrderByRelationAggregateInput
   uploadedFiles?: Prisma.FileAssetOrderByRelationAggregateInput
   reviewedInviteRequests?: Prisma.InviteRequestOrderByRelationAggregateInput
@@ -265,6 +271,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   guardian?: Prisma.XOR<Prisma.GuardianNullableScalarRelationFilter, Prisma.GuardianWhereInput> | null
   invites?: Prisma.InviteListRelationFilter
   guardianInvites?: Prisma.GuardianInviteListRelationFilter
+  clubRoles?: Prisma.ClubRoleListRelationFilter
+  authoredPosts?: Prisma.PostListRelationFilter
+  authoredPostComments?: Prisma.PostCommentListRelationFilter
   permissions?: Prisma.UserPermissionListRelationFilter
   uploadedFiles?: Prisma.FileAssetListRelationFilter
   reviewedInviteRequests?: Prisma.InviteRequestListRelationFilter
@@ -317,6 +326,9 @@ export type UserCreateInput = {
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
@@ -341,6 +353,9 @@ export type UserUncheckedCreateInput = {
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
@@ -365,6 +380,9 @@ export type UserUpdateInput = {
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
@@ -389,6 +407,9 @@ export type UserUncheckedUpdateInput = {
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -470,6 +491,16 @@ export type UserScalarRelationFilter = {
 export type UserNullableScalarRelationFilter = {
   is?: Prisma.UserWhereInput | null
   isNot?: Prisma.UserWhereInput | null
+}
+
+export type UserListRelationFilter = {
+  every?: Prisma.UserWhereInput
+  some?: Prisma.UserWhereInput
+  none?: Prisma.UserWhereInput
+}
+
+export type UserOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -606,6 +637,76 @@ export type UserUpdateOneWithoutGuardianInvitesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGuardianInvitesInput, Prisma.UserUpdateWithoutGuardianInvitesInput>, Prisma.UserUncheckedUpdateWithoutGuardianInvitesInput>
 }
 
+export type UserCreateNestedManyWithoutClubRolesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutClubRolesInput, Prisma.UserUncheckedCreateWithoutClubRolesInput> | Prisma.UserCreateWithoutClubRolesInput[] | Prisma.UserUncheckedCreateWithoutClubRolesInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutClubRolesInput | Prisma.UserCreateOrConnectWithoutClubRolesInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUncheckedCreateNestedManyWithoutClubRolesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutClubRolesInput, Prisma.UserUncheckedCreateWithoutClubRolesInput> | Prisma.UserCreateWithoutClubRolesInput[] | Prisma.UserUncheckedCreateWithoutClubRolesInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutClubRolesInput | Prisma.UserCreateOrConnectWithoutClubRolesInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUpdateManyWithoutClubRolesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutClubRolesInput, Prisma.UserUncheckedCreateWithoutClubRolesInput> | Prisma.UserCreateWithoutClubRolesInput[] | Prisma.UserUncheckedCreateWithoutClubRolesInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutClubRolesInput | Prisma.UserCreateOrConnectWithoutClubRolesInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutClubRolesInput | Prisma.UserUpsertWithWhereUniqueWithoutClubRolesInput[]
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutClubRolesInput | Prisma.UserUpdateWithWhereUniqueWithoutClubRolesInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutClubRolesInput | Prisma.UserUpdateManyWithWhereWithoutClubRolesInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUncheckedUpdateManyWithoutClubRolesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutClubRolesInput, Prisma.UserUncheckedCreateWithoutClubRolesInput> | Prisma.UserCreateWithoutClubRolesInput[] | Prisma.UserUncheckedCreateWithoutClubRolesInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutClubRolesInput | Prisma.UserCreateOrConnectWithoutClubRolesInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutClubRolesInput | Prisma.UserUpsertWithWhereUniqueWithoutClubRolesInput[]
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutClubRolesInput | Prisma.UserUpdateWithWhereUniqueWithoutClubRolesInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutClubRolesInput | Prisma.UserUpdateManyWithWhereWithoutClubRolesInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserCreateNestedOneWithoutAuthoredPostsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAuthoredPostsInput, Prisma.UserUncheckedCreateWithoutAuthoredPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuthoredPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutAuthoredPostsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAuthoredPostsInput, Prisma.UserUncheckedCreateWithoutAuthoredPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuthoredPostsInput
+  upsert?: Prisma.UserUpsertWithoutAuthoredPostsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAuthoredPostsInput, Prisma.UserUpdateWithoutAuthoredPostsInput>, Prisma.UserUncheckedUpdateWithoutAuthoredPostsInput>
+}
+
+export type UserCreateNestedOneWithoutAuthoredPostCommentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAuthoredPostCommentsInput, Prisma.UserUncheckedCreateWithoutAuthoredPostCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuthoredPostCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutAuthoredPostCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAuthoredPostCommentsInput, Prisma.UserUncheckedCreateWithoutAuthoredPostCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuthoredPostCommentsInput
+  upsert?: Prisma.UserUpsertWithoutAuthoredPostCommentsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAuthoredPostCommentsInput, Prisma.UserUpdateWithoutAuthoredPostCommentsInput>, Prisma.UserUncheckedUpdateWithoutAuthoredPostCommentsInput>
+}
+
 export type UserCreateNestedOneWithoutPermissionsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutPermissionsInput, Prisma.UserUncheckedCreateWithoutPermissionsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutPermissionsInput
@@ -698,6 +799,9 @@ export type UserCreateWithoutSessionsInput = {
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
@@ -721,6 +825,9 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
@@ -760,6 +867,9 @@ export type UserUpdateWithoutSessionsInput = {
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
@@ -783,6 +893,9 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -806,6 +919,9 @@ export type UserCreateWithoutAccountsInput = {
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
@@ -829,6 +945,9 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
@@ -868,6 +987,9 @@ export type UserUpdateWithoutAccountsInput = {
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
@@ -891,6 +1013,9 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -914,6 +1039,9 @@ export type UserCreateWithoutUserRolesInput = {
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
@@ -937,6 +1065,9 @@ export type UserUncheckedCreateWithoutUserRolesInput = {
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
@@ -976,6 +1107,9 @@ export type UserUpdateWithoutUserRolesInput = {
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
@@ -999,6 +1133,9 @@ export type UserUncheckedUpdateWithoutUserRolesInput = {
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -1022,6 +1159,9 @@ export type UserCreateWithoutStudentInput = {
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
@@ -1045,6 +1185,9 @@ export type UserUncheckedCreateWithoutStudentInput = {
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
@@ -1084,6 +1227,9 @@ export type UserUpdateWithoutStudentInput = {
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
@@ -1107,6 +1253,9 @@ export type UserUncheckedUpdateWithoutStudentInput = {
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -1130,6 +1279,9 @@ export type UserCreateWithoutStaffInput = {
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
@@ -1153,6 +1305,9 @@ export type UserUncheckedCreateWithoutStaffInput = {
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
@@ -1192,6 +1347,9 @@ export type UserUpdateWithoutStaffInput = {
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
@@ -1215,6 +1373,9 @@ export type UserUncheckedUpdateWithoutStaffInput = {
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -1238,6 +1399,9 @@ export type UserCreateWithoutGuardianInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
@@ -1261,6 +1425,9 @@ export type UserUncheckedCreateWithoutGuardianInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
@@ -1300,6 +1467,9 @@ export type UserUpdateWithoutGuardianInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
@@ -1323,6 +1493,9 @@ export type UserUncheckedUpdateWithoutGuardianInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -1346,6 +1519,9 @@ export type UserCreateWithoutInvitesInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
@@ -1369,6 +1545,9 @@ export type UserUncheckedCreateWithoutInvitesInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
@@ -1408,6 +1587,9 @@ export type UserUpdateWithoutInvitesInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
@@ -1431,6 +1613,9 @@ export type UserUncheckedUpdateWithoutInvitesInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -1454,6 +1639,9 @@ export type UserCreateWithoutGuardianInvitesInput = {
   staff?: Prisma.StaffCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
@@ -1477,6 +1665,9 @@ export type UserUncheckedCreateWithoutGuardianInvitesInput = {
   staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
@@ -1516,6 +1707,9 @@ export type UserUpdateWithoutGuardianInvitesInput = {
   staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
@@ -1539,6 +1733,336 @@ export type UserUncheckedUpdateWithoutGuardianInvitesInput = {
   staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutClubRolesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutClubRolesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutClubRolesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutClubRolesInput, Prisma.UserUncheckedCreateWithoutClubRolesInput>
+}
+
+export type UserUpsertWithWhereUniqueWithoutClubRolesInput = {
+  where: Prisma.UserWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserUpdateWithoutClubRolesInput, Prisma.UserUncheckedUpdateWithoutClubRolesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutClubRolesInput, Prisma.UserUncheckedCreateWithoutClubRolesInput>
+}
+
+export type UserUpdateWithWhereUniqueWithoutClubRolesInput = {
+  where: Prisma.UserWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutClubRolesInput, Prisma.UserUncheckedUpdateWithoutClubRolesInput>
+}
+
+export type UserUpdateManyWithWhereWithoutClubRolesInput = {
+  where: Prisma.UserScalarWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutClubRolesInput>
+}
+
+export type UserScalarWhereInput = {
+  AND?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  OR?: Prisma.UserScalarWhereInput[]
+  NOT?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  id?: Prisma.StringFilter<"User"> | string
+  name?: Prisma.StringFilter<"User"> | string
+  email?: Prisma.StringFilter<"User"> | string
+  emailVerified?: Prisma.BoolFilter<"User"> | boolean
+  image?: Prisma.StringNullableFilter<"User"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  activatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+}
+
+export type UserCreateWithoutAuthoredPostsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAuthoredPostsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAuthoredPostsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAuthoredPostsInput, Prisma.UserUncheckedCreateWithoutAuthoredPostsInput>
+}
+
+export type UserUpsertWithoutAuthoredPostsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAuthoredPostsInput, Prisma.UserUncheckedUpdateWithoutAuthoredPostsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAuthoredPostsInput, Prisma.UserUncheckedCreateWithoutAuthoredPostsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAuthoredPostsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAuthoredPostsInput, Prisma.UserUncheckedUpdateWithoutAuthoredPostsInput>
+}
+
+export type UserUpdateWithoutAuthoredPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAuthoredPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAuthoredPostCommentsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAuthoredPostCommentsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activatedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
+  staff?: Prisma.StaffUncheckedCreateNestedOneWithoutUserInput
+  guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
+  uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAuthoredPostCommentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAuthoredPostCommentsInput, Prisma.UserUncheckedCreateWithoutAuthoredPostCommentsInput>
+}
+
+export type UserUpsertWithoutAuthoredPostCommentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAuthoredPostCommentsInput, Prisma.UserUncheckedUpdateWithoutAuthoredPostCommentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAuthoredPostCommentsInput, Prisma.UserUncheckedCreateWithoutAuthoredPostCommentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAuthoredPostCommentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAuthoredPostCommentsInput, Prisma.UserUncheckedUpdateWithoutAuthoredPostCommentsInput>
+}
+
+export type UserUpdateWithoutAuthoredPostCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAuthoredPostCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -1563,6 +2087,9 @@ export type UserCreateWithoutPermissionsInput = {
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
   handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
@@ -1586,6 +2113,9 @@ export type UserUncheckedCreateWithoutPermissionsInput = {
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
   handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
@@ -1625,6 +2155,9 @@ export type UserUpdateWithoutPermissionsInput = {
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
   handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
@@ -1648,6 +2181,9 @@ export type UserUncheckedUpdateWithoutPermissionsInput = {
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
@@ -1671,6 +2207,9 @@ export type UserCreateWithoutReviewedInviteRequestsInput = {
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
@@ -1694,6 +2233,9 @@ export type UserUncheckedCreateWithoutReviewedInviteRequestsInput = {
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
@@ -1733,6 +2275,9 @@ export type UserUpdateWithoutReviewedInviteRequestsInput = {
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
@@ -1756,6 +2301,9 @@ export type UserUncheckedUpdateWithoutReviewedInviteRequestsInput = {
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
@@ -1779,6 +2327,9 @@ export type UserCreateWithoutUploadedFilesInput = {
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
   handledContactMessages?: Prisma.ContactMessageCreateNestedManyWithoutHandledByInput
@@ -1802,6 +2353,9 @@ export type UserUncheckedCreateWithoutUploadedFilesInput = {
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
   handledContactMessages?: Prisma.ContactMessageUncheckedCreateNestedManyWithoutHandledByInput
@@ -1841,6 +2395,9 @@ export type UserUpdateWithoutUploadedFilesInput = {
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
   handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
@@ -1864,6 +2421,9 @@ export type UserUncheckedUpdateWithoutUploadedFilesInput = {
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
@@ -1887,6 +2447,9 @@ export type UserCreateWithoutHandledContactMessagesInput = {
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
@@ -1910,6 +2473,9 @@ export type UserUncheckedCreateWithoutHandledContactMessagesInput = {
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
@@ -1949,6 +2515,9 @@ export type UserUpdateWithoutHandledContactMessagesInput = {
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
@@ -1972,6 +2541,9 @@ export type UserUncheckedUpdateWithoutHandledContactMessagesInput = {
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -1995,6 +2567,9 @@ export type UserCreateWithoutNotificationsInput = {
   guardian?: Prisma.GuardianCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestCreateNestedManyWithoutReviewedByInput
@@ -2018,6 +2593,9 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   guardian?: Prisma.GuardianUncheckedCreateNestedOneWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutUserInput
   guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutUserInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedUsersInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  authoredPostComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
   permissions?: Prisma.UserPermissionUncheckedCreateNestedManyWithoutUserInput
   uploadedFiles?: Prisma.FileAssetUncheckedCreateNestedManyWithoutUploadedByInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedCreateNestedManyWithoutReviewedByInput
@@ -2057,6 +2635,9 @@ export type UserUpdateWithoutNotificationsInput = {
   guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
@@ -2080,10 +2661,76 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
   guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedUsersNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
   permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
   uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+}
+
+export type UserUpdateWithoutClubRolesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutUserNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+  permissions?: Prisma.UserPermissionUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutClubRolesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
+  staff?: Prisma.StaffUncheckedUpdateOneWithoutUserNestedInput
+  guardian?: Prisma.GuardianUncheckedUpdateOneWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutUserNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutUserNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredPostComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  permissions?: Prisma.UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedFiles?: Prisma.FileAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedInviteRequests?: Prisma.InviteRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  handledContactMessages?: Prisma.ContactMessageUncheckedUpdateManyWithoutHandledByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateManyWithoutClubRolesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -2097,6 +2744,9 @@ export type UserCountOutputType = {
   userRoles: number
   invites: number
   guardianInvites: number
+  clubRoles: number
+  authoredPosts: number
+  authoredPostComments: number
   permissions: number
   uploadedFiles: number
   reviewedInviteRequests: number
@@ -2110,6 +2760,9 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   userRoles?: boolean | UserCountOutputTypeCountUserRolesArgs
   invites?: boolean | UserCountOutputTypeCountInvitesArgs
   guardianInvites?: boolean | UserCountOutputTypeCountGuardianInvitesArgs
+  clubRoles?: boolean | UserCountOutputTypeCountClubRolesArgs
+  authoredPosts?: boolean | UserCountOutputTypeCountAuthoredPostsArgs
+  authoredPostComments?: boolean | UserCountOutputTypeCountAuthoredPostCommentsArgs
   permissions?: boolean | UserCountOutputTypeCountPermissionsArgs
   uploadedFiles?: boolean | UserCountOutputTypeCountUploadedFilesArgs
   reviewedInviteRequests?: boolean | UserCountOutputTypeCountReviewedInviteRequestsArgs
@@ -2165,6 +2818,27 @@ export type UserCountOutputTypeCountGuardianInvitesArgs<ExtArgs extends runtime.
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountClubRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClubRoleWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAuthoredPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAuthoredPostCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostCommentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountPermissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.UserPermissionWhereInput
 }
@@ -2215,6 +2889,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   guardian?: boolean | Prisma.User$guardianArgs<ExtArgs>
   invites?: boolean | Prisma.User$invitesArgs<ExtArgs>
   guardianInvites?: boolean | Prisma.User$guardianInvitesArgs<ExtArgs>
+  clubRoles?: boolean | Prisma.User$clubRolesArgs<ExtArgs>
+  authoredPosts?: boolean | Prisma.User$authoredPostsArgs<ExtArgs>
+  authoredPostComments?: boolean | Prisma.User$authoredPostCommentsArgs<ExtArgs>
   permissions?: boolean | Prisma.User$permissionsArgs<ExtArgs>
   uploadedFiles?: boolean | Prisma.User$uploadedFilesArgs<ExtArgs>
   reviewedInviteRequests?: boolean | Prisma.User$reviewedInviteRequestsArgs<ExtArgs>
@@ -2266,6 +2943,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   guardian?: boolean | Prisma.User$guardianArgs<ExtArgs>
   invites?: boolean | Prisma.User$invitesArgs<ExtArgs>
   guardianInvites?: boolean | Prisma.User$guardianInvitesArgs<ExtArgs>
+  clubRoles?: boolean | Prisma.User$clubRolesArgs<ExtArgs>
+  authoredPosts?: boolean | Prisma.User$authoredPostsArgs<ExtArgs>
+  authoredPostComments?: boolean | Prisma.User$authoredPostCommentsArgs<ExtArgs>
   permissions?: boolean | Prisma.User$permissionsArgs<ExtArgs>
   uploadedFiles?: boolean | Prisma.User$uploadedFilesArgs<ExtArgs>
   reviewedInviteRequests?: boolean | Prisma.User$reviewedInviteRequestsArgs<ExtArgs>
@@ -2287,6 +2967,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     guardian: Prisma.$GuardianPayload<ExtArgs> | null
     invites: Prisma.$InvitePayload<ExtArgs>[]
     guardianInvites: Prisma.$GuardianInvitePayload<ExtArgs>[]
+    clubRoles: Prisma.$ClubRolePayload<ExtArgs>[]
+    authoredPosts: Prisma.$PostPayload<ExtArgs>[]
+    authoredPostComments: Prisma.$PostCommentPayload<ExtArgs>[]
     permissions: Prisma.$UserPermissionPayload<ExtArgs>[]
     uploadedFiles: Prisma.$FileAssetPayload<ExtArgs>[]
     reviewedInviteRequests: Prisma.$InviteRequestPayload<ExtArgs>[]
@@ -2704,6 +3387,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   guardian<T extends Prisma.User$guardianArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$guardianArgs<ExtArgs>>): Prisma.Prisma__GuardianClient<runtime.Types.Result.GetResult<Prisma.$GuardianPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   invites<T extends Prisma.User$invitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$invitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   guardianInvites<T extends Prisma.User$guardianInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$guardianInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GuardianInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  clubRoles<T extends Prisma.User$clubRolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$clubRolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClubRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  authoredPosts<T extends Prisma.User$authoredPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$authoredPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  authoredPostComments<T extends Prisma.User$authoredPostCommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$authoredPostCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   permissions<T extends Prisma.User$permissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$permissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadedFiles<T extends Prisma.User$uploadedFilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedFilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FileAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviewedInviteRequests<T extends Prisma.User$reviewedInviteRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedInviteRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InviteRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3313,6 +3999,78 @@ export type User$guardianInvitesArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.GuardianInviteScalarFieldEnum | Prisma.GuardianInviteScalarFieldEnum[]
+}
+
+/**
+ * User.clubRoles
+ */
+export type User$clubRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClubRole
+   */
+  select?: Prisma.ClubRoleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ClubRole
+   */
+  omit?: Prisma.ClubRoleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClubRoleInclude<ExtArgs> | null
+  where?: Prisma.ClubRoleWhereInput
+  orderBy?: Prisma.ClubRoleOrderByWithRelationInput | Prisma.ClubRoleOrderByWithRelationInput[]
+  cursor?: Prisma.ClubRoleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClubRoleScalarFieldEnum | Prisma.ClubRoleScalarFieldEnum[]
+}
+
+/**
+ * User.authoredPosts
+ */
+export type User$authoredPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Post
+   */
+  select?: Prisma.PostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Post
+   */
+  omit?: Prisma.PostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostInclude<ExtArgs> | null
+  where?: Prisma.PostWhereInput
+  orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
+  cursor?: Prisma.PostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
+}
+
+/**
+ * User.authoredPostComments
+ */
+export type User$authoredPostCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PostComment
+   */
+  select?: Prisma.PostCommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PostComment
+   */
+  omit?: Prisma.PostCommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostCommentInclude<ExtArgs> | null
+  where?: Prisma.PostCommentWhereInput
+  orderBy?: Prisma.PostCommentOrderByWithRelationInput | Prisma.PostCommentOrderByWithRelationInput[]
+  cursor?: Prisma.PostCommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostCommentScalarFieldEnum | Prisma.PostCommentScalarFieldEnum[]
 }
 
 /**

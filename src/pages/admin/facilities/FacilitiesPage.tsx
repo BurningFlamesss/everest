@@ -52,7 +52,8 @@ export default function FacilitiesPage() {
 			setOpen(false);
 			setEditing(null);
 		},
-		onError: (error: Error) => toast.error(error.message || "Failed to save facility"),
+		onError: (error: Error) =>
+			toast.error(error.message || "Failed to save facility"),
 	});
 
 	const deleteMutation = useMutation({
@@ -62,7 +63,8 @@ export default function FacilitiesPage() {
 			invalidate();
 			setPendingDelete(null);
 		},
-		onError: (error: Error) => toast.error(error.message || "Failed to delete facility"),
+		onError: (error: Error) =>
+			toast.error(error.message || "Failed to delete facility"),
 	});
 
 	const columns: Column<Facility>[] = [
@@ -79,7 +81,11 @@ export default function FacilitiesPage() {
 		{ key: "category", header: "Category", render: (row) => row.category },
 		{ key: "block", header: "Block", render: (row) => row.block || "—" },
 		{ key: "hours", header: "Hours", render: (row) => row.hours || "—" },
-		{ key: "inCharge", header: "In charge", render: (row) => row.inCharge || "—" },
+		{
+			key: "inCharge",
+			header: "In charge",
+			render: (row) => row.inCharge || "—",
+		},
 		{
 			key: "actions",
 			header: "",

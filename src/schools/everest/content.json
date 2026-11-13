@@ -1,364 +1,364 @@
 {
-  "sidebar": {
-    "logo": "/schools/everest/logo.png",
-    "tagline": "LEARNING WITH PURPOSE. GROWING WITH CONFIDENCE.",
-    "collapsible": {
-      "about": {
-        "id": "about",
-        "label": "About Everest",
-        "href": "/about"
-      },
-      "courses": {
-        "id": "courses",
-        "label": "Courses",
-        "href": "/courses"
-      },
-      "facilities": {
-        "id": "facilities",
-        "label": "Facilities",
-        "href": "/facilities"
-      },
-      "gallery": {
-        "id": "gallery",
-        "label": "Gallery",
-        "href": "/gallery"
-      },
-      "faculty": {
-        "id": "faculty",
-        "label": "Faculty & Staff",
-        "href": "/faculty"
-      },
-      "notices": {
-        "id": "notices",
-        "label": "Notice Board",
-        "href": "/notices"
-      },
-      "more_info": {
-        "id": "more_info",
-        "label": "More Info",
-        "children": [
-          {
-            "id": "calendar",
-            "label": "Calendar",
-            "href": "/calendar"
-          },
-          {
-            "id": "scholarship",
-            "label": "Scholarships",
-            "href": "/scholarship"
-          },
-          {
-            "id": "transportation",
-            "label": "Transportation",
-            "href": "/transportation"
-          },
-          {
-            "id": "resources",
-            "label": "Downloads Centre",
-            "href": "/resources"
-          },
-          {
-            "id": "result",
-            "label": "Board Results",
-            "href": "/result"
-          },
-          {
-            "id": "posts",
-            "label": "Latest Posts",
-            "href": "/posts"
-          }
-        ]
-      },
-      "contact": {
-        "id": "contact",
-        "label": "Contact",
-        "href": "/contact"
-      }
-    }
-  },
-  "pages": {
-    "homepage": {
-      "key": "home",
-      "title": "Homepage",
-      "path": "/",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Everest English Boarding Secondary School",
-      "seoDescription": "A complete school journey in Butwal, built on close teaching, clear standards and care for every learner.",
-      "seoKeywords": "school, everest, butwal, education, admissions",
-      "blocks": []
-    },
-    "about": {
-      "key": "about",
-      "title": "About",
-      "path": "/about",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "About Everest English Boarding Secondary School",
-      "seoDescription": "Our history, mission and the people who shape Everest English Boarding Secondary School.",
-      "seoKeywords": "about, history, mission, vision, principal, everest",
-      "blocks": []
-    },
-    "contact": {
-      "key": "contact",
-      "title": "Contact",
-      "path": "/contact",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Contact Everest English Boarding Secondary School",
-      "seoDescription": "Get in touch with Everest English Boarding Secondary School. Choose a department and your enquiry reaches the team best placed to help.",
-      "seoKeywords": "contact, everest, butwal, phone, email, address",
-      "blocks": [
-        {
-          "type": "contact_details",
-          "label": "Contact details",
-          "visible": true,
-          "order": 1,
-          "fields": {
-            "phone": "+977 71 535962",
-            "secondaryPhone": "+977 71 531342",
-            "email": "everestbutwal@gmail.com",
-            "admissionsEmail": "admissions@everestbutwal.edu.np",
-            "address": "Butwal-8, Sukkhanagar, Rupandehi, Lumbini Province, Nepal"
-          }
-        },
-        {
-          "type": "office_hours",
-          "label": "Office hours",
-          "visible": true,
-          "order": 2,
-          "fields": {
-            "weekdays": "09:00–16:00",
-            "saturday": "CLOSED",
-            "sunday": "09:00–16:00",
-            "note": "Office hours follow the academic calendar."
-          }
-        },
-        {
-          "type": "map",
-          "label": "Map & directions",
-          "visible": true,
-          "order": 3,
-          "fields": {
-            "label": "Main Campus",
-            "latitude": "27.7006",
-            "longitude": "83.4323",
-            "directions": "Located in Butwal-8, Sukkhanagar. Accessible by public transport from Milan Chowk (15 min) and Butwal Bus Park (25 min)."
-          }
-        },
-        {
-          "type": "social_links",
-          "label": "Social links",
-          "visible": true,
-          "order": 4,
-          "fields": {
-            "facebook": "https://facebook.com/everestbutwal",
-            "instagram": "https://instagram.com/everestbutwal",
-            "x": "",
-            "youtube": "https://youtube.com/@everestbutwal",
-            "linkedin": ""
-          }
-        }
-      ]
-    },
-    "other": {
-      "key": "other",
-      "title": "Other",
-      "path": "/other",
-      "status": "draft",
-      "hasUnpublishedChanges": true,
-      "seoTitle": "",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "courses": {
-      "key": "courses",
-      "title": "Courses & Academic Programmes",
-      "path": "/courses",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Courses & Academic Programmes",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "facilities": {
-      "key": "facilities",
-      "title": "Facilities & Infrastructure",
-      "path": "/facilities",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Facilities & Infrastructure",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "gallery": {
-      "key": "gallery",
-      "title": "Gallery",
-      "path": "/gallery",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Gallery",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "calendar": {
-      "key": "calendar",
-      "title": "Academic Calendar",
-      "path": "/calendar",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Academic Calendar",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "resources": {
-      "key": "resources",
-      "title": "Resources & Downloads",
-      "path": "/resources",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Resources & Downloads",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "result": {
-      "key": "result",
-      "title": "Board Results",
-      "path": "/result",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Board Results",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "transportation": {
-      "key": "transportation",
-      "title": "Transportation",
-      "path": "/transportation",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Transportation",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "notices": {
-      "key": "notices",
-      "title": "Notice Board",
-      "path": "/notices",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Notice Board",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "scholarship": {
-      "key": "scholarship",
-      "title": "Scholarships",
-      "path": "/scholarship",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Scholarships",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "faculty": {
-      "key": "faculty",
-      "title": "Faculty & Administration",
-      "path": "/faculty",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Faculty & Administration",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "login": {
-      "key": "login",
-      "title": "Sign In",
-      "path": "/login",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Sign In",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "activate": {
-      "key": "activate",
-      "title": "Activate Account",
-      "path": "/activate",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Activate Account",
-      "seoDescription": "",
-      "seoKeywords": "",
-      "blocks": []
-    },
-    "posts": {
-      "key": "posts",
-      "title": "Latest Posts",
-      "path": "/posts",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Latest Posts",
-      "seoDescription": "Updates & News from our Facebook Page",
-      "seoKeywords": "posts, facebook, news",
-      "blocks": []
-    },
-    "admissions": {
-      "key": "admissions",
-      "title": "Admissions",
-      "path": "/admissions",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Admissions",
-      "seoDescription": "How to apply: enquire, visit the campus, submit documents and complete enrolment.",
-      "seoKeywords": "admissions, apply, enrolment, everest",
-      "blocks": []
-    },
-    "clubs": {
-      "key": "clubs",
-      "title": "Clubs",
-      "path": "/clubs",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Clubs",
-      "seoDescription": "Clubs give students a place to build skills, make friends and take on responsibility beyond the classroom.",
-      "seoKeywords": "clubs, student life, extracurricular, everest",
-      "blocks": []
-    },
-    "course_finder": {
-      "key": "course_finder",
-      "title": "Course Finder",
-      "path": "/course-finder",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Course Finder",
-      "seoDescription": "Six questions. Find out which stream of study fits you best at Everest English Boarding Secondary School.",
-      "seoKeywords": "course finder, stream finder, science, management, humanities, everest",
-      "blocks": []
-    },
-    "events": {
-      "key": "events",
-      "title": "Events",
-      "path": "/events",
-      "status": "published",
-      "hasUnpublishedChanges": false,
-      "seoTitle": "Events",
-      "seoDescription": "Programmes, examinations, sports and celebrations on the school calendar.",
-      "seoKeywords": "events, calendar, school events, everest",
-      "blocks": []
-    }
-  },
-  "login": {}
+	"sidebar": {
+		"logo": "/schools/everest/logo.png",
+		"tagline": "LEARNING WITH PURPOSE. GROWING WITH CONFIDENCE.",
+		"collapsible": {
+			"about": {
+				"id": "about",
+				"label": "About Everest",
+				"href": "/about"
+			},
+			"courses": {
+				"id": "courses",
+				"label": "Courses",
+				"href": "/courses"
+			},
+			"facilities": {
+				"id": "facilities",
+				"label": "Facilities",
+				"href": "/facilities"
+			},
+			"gallery": {
+				"id": "gallery",
+				"label": "Gallery",
+				"href": "/gallery"
+			},
+			"faculty": {
+				"id": "faculty",
+				"label": "Faculty & Staff",
+				"href": "/faculty"
+			},
+			"notices": {
+				"id": "notices",
+				"label": "Notice Board",
+				"href": "/notices"
+			},
+			"more_info": {
+				"id": "more_info",
+				"label": "More Info",
+				"children": [
+					{
+						"id": "calendar",
+						"label": "Calendar",
+						"href": "/calendar"
+					},
+					{
+						"id": "scholarship",
+						"label": "Scholarships",
+						"href": "/scholarship"
+					},
+					{
+						"id": "transportation",
+						"label": "Transportation",
+						"href": "/transportation"
+					},
+					{
+						"id": "resources",
+						"label": "Downloads Centre",
+						"href": "/resources"
+					},
+					{
+						"id": "result",
+						"label": "Board Results",
+						"href": "/result"
+					},
+					{
+						"id": "posts",
+						"label": "Latest Posts",
+						"href": "/posts"
+					}
+				]
+			},
+			"contact": {
+				"id": "contact",
+				"label": "Contact",
+				"href": "/contact"
+			}
+		}
+	},
+	"pages": {
+		"homepage": {
+			"key": "home",
+			"title": "Homepage",
+			"path": "/",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Everest English Boarding Secondary School",
+			"seoDescription": "A complete school journey in Butwal, built on close teaching, clear standards and care for every learner.",
+			"seoKeywords": "school, everest, butwal, education, admissions",
+			"blocks": []
+		},
+		"about": {
+			"key": "about",
+			"title": "About",
+			"path": "/about",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "About Everest English Boarding Secondary School",
+			"seoDescription": "Our history, mission and the people who shape Everest English Boarding Secondary School.",
+			"seoKeywords": "about, history, mission, vision, principal, everest",
+			"blocks": []
+		},
+		"contact": {
+			"key": "contact",
+			"title": "Contact",
+			"path": "/contact",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Contact Everest English Boarding Secondary School",
+			"seoDescription": "Get in touch with Everest English Boarding Secondary School. Choose a department and your enquiry reaches the team best placed to help.",
+			"seoKeywords": "contact, everest, butwal, phone, email, address",
+			"blocks": [
+				{
+					"type": "contact_details",
+					"label": "Contact details",
+					"visible": true,
+					"order": 1,
+					"fields": {
+						"phone": "+977 71 535962",
+						"secondaryPhone": "+977 71 531342",
+						"email": "everestbutwal@gmail.com",
+						"admissionsEmail": "admissions@everestbutwal.edu.np",
+						"address": "Butwal-8, Sukkhanagar, Rupandehi, Lumbini Province, Nepal"
+					}
+				},
+				{
+					"type": "office_hours",
+					"label": "Office hours",
+					"visible": true,
+					"order": 2,
+					"fields": {
+						"weekdays": "09:00–16:00",
+						"saturday": "CLOSED",
+						"sunday": "09:00–16:00",
+						"note": "Office hours follow the academic calendar."
+					}
+				},
+				{
+					"type": "map",
+					"label": "Map & directions",
+					"visible": true,
+					"order": 3,
+					"fields": {
+						"label": "Main Campus",
+						"latitude": "27.7006",
+						"longitude": "83.4323",
+						"directions": "Located in Butwal-8, Sukkhanagar. Accessible by public transport from Milan Chowk (15 min) and Butwal Bus Park (25 min)."
+					}
+				},
+				{
+					"type": "social_links",
+					"label": "Social links",
+					"visible": true,
+					"order": 4,
+					"fields": {
+						"facebook": "https://facebook.com/everestbutwal",
+						"instagram": "https://instagram.com/everestbutwal",
+						"x": "",
+						"youtube": "https://youtube.com/@everestbutwal",
+						"linkedin": ""
+					}
+				}
+			]
+		},
+		"other": {
+			"key": "other",
+			"title": "Other",
+			"path": "/other",
+			"status": "draft",
+			"hasUnpublishedChanges": true,
+			"seoTitle": "",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"courses": {
+			"key": "courses",
+			"title": "Courses & Academic Programmes",
+			"path": "/courses",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Courses & Academic Programmes",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"facilities": {
+			"key": "facilities",
+			"title": "Facilities & Infrastructure",
+			"path": "/facilities",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Facilities & Infrastructure",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"gallery": {
+			"key": "gallery",
+			"title": "Gallery",
+			"path": "/gallery",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Gallery",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"calendar": {
+			"key": "calendar",
+			"title": "Academic Calendar",
+			"path": "/calendar",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Academic Calendar",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"resources": {
+			"key": "resources",
+			"title": "Resources & Downloads",
+			"path": "/resources",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Resources & Downloads",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"result": {
+			"key": "result",
+			"title": "Board Results",
+			"path": "/result",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Board Results",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"transportation": {
+			"key": "transportation",
+			"title": "Transportation",
+			"path": "/transportation",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Transportation",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"notices": {
+			"key": "notices",
+			"title": "Notice Board",
+			"path": "/notices",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Notice Board",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"scholarship": {
+			"key": "scholarship",
+			"title": "Scholarships",
+			"path": "/scholarship",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Scholarships",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"faculty": {
+			"key": "faculty",
+			"title": "Faculty & Administration",
+			"path": "/faculty",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Faculty & Administration",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"login": {
+			"key": "login",
+			"title": "Sign In",
+			"path": "/login",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Sign In",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"activate": {
+			"key": "activate",
+			"title": "Activate Account",
+			"path": "/activate",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Activate Account",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"posts": {
+			"key": "posts",
+			"title": "Latest Posts",
+			"path": "/posts",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Latest Posts",
+			"seoDescription": "Updates & News from our Facebook Page",
+			"seoKeywords": "posts, facebook, news",
+			"blocks": []
+		},
+		"admissions": {
+			"key": "admissions",
+			"title": "Admissions",
+			"path": "/admissions",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Admissions",
+			"seoDescription": "How to apply: enquire, visit the campus, submit documents and complete enrolment.",
+			"seoKeywords": "admissions, apply, enrolment, everest",
+			"blocks": []
+		},
+		"clubs": {
+			"key": "clubs",
+			"title": "Clubs",
+			"path": "/clubs",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Clubs",
+			"seoDescription": "Clubs give students a place to build skills, make friends and take on responsibility beyond the classroom.",
+			"seoKeywords": "clubs, student life, extracurricular, everest",
+			"blocks": []
+		},
+		"course_finder": {
+			"key": "course_finder",
+			"title": "Course Finder",
+			"path": "/course-finder",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Course Finder",
+			"seoDescription": "Six questions. Find out which stream of study fits you best at Everest English Boarding Secondary School.",
+			"seoKeywords": "course finder, stream finder, science, management, humanities, everest",
+			"blocks": []
+		},
+		"events": {
+			"key": "events",
+			"title": "Events",
+			"path": "/events",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Events",
+			"seoDescription": "Programmes, examinations, sports and celebrations on the school calendar.",
+			"seoKeywords": "events, calendar, school events, everest",
+			"blocks": []
+		}
+	},
+	"login": {}
 }

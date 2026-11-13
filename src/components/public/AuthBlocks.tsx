@@ -7,11 +7,11 @@ import {
 	LoaderCircle,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { str } from "#/components/cms/block-fields";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
-import { Button } from "#/templates/modern/components/Button.tsx";
-import { toast } from "sonner";
 import { authClient } from "#/packages/auth/auth-client.ts";
+import { Button } from "#/templates/modern/components/Button.tsx";
 import {
 	ImageReveal,
 	SectionLabel,
@@ -56,7 +56,9 @@ function AuthIntro({
 			<span className="auth-kicker">
 				{str(fields, "kicker", "SCHOOL MANAGEMENT SYSTEM")}
 			</span>
-			<h1 id="login-title" className="t-page-title text-foreground">{str(fields, "title", "Welcome back.")}</h1>
+			<h1 id="login-title" className="t-page-title text-foreground">
+				{str(fields, "title", "Welcome back.")}
+			</h1>
 			<p className="auth-intro" style={{ color: "var(--c-black)" }}>
 				{str(
 					fields,
@@ -115,15 +117,17 @@ function LoginForm({ fields }: { fields: Record<string, unknown> }) {
 
 		if (result.error) {
 			setStatus("error");
-			setErrors({ email: result.error.message || "Invalid email or password." });
+			setErrors({
+				email: result.error.message || "Invalid email or password.",
+			});
 			return;
-        }
+		}
 
-        if (result.data?.user) {
+		if (result.data?.user) {
 			userName = result.data.user.name ?? values.email.split("@")[0];
 			const userRole = (result.data.user as { role?: string }).role;
 			isSuperOrAdmin = userRole === "super_admin" || userRole === "admin";
-        }
+		}
 
 		toast.success(`Welcome back, ${userName}`);
 		setStatus("success");
@@ -311,7 +315,10 @@ export function AuthPage({
 	const select = onSelectSection ?? (() => {});
 
 	return (
-		<section className="auth-page overflow-x-hidden min-w-0" aria-labelledby="login-title">
+		<section
+			className="auth-page overflow-x-hidden min-w-0"
+			aria-labelledby="login-title"
+		>
 			<CmsSectionBox
 				preview={preview}
 				sectionType="auth_visual"

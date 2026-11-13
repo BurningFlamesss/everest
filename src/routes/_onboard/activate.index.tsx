@@ -144,10 +144,10 @@ function RouteComponent() {
 				>
 					<ImageReveal
 						src={str(
-								visual?.fields ?? {},
-								"image",
-								"/schools/everest/landing-footage/frame_0001.jpeg",
-							)}
+							visual?.fields ?? {},
+							"image",
+							"/schools/everest/landing-footage/frame_0001.jpeg",
+						)}
 						alt="School architecture marking the entrance to Everest"
 						eager
 						testId="activate-visual-image"
@@ -157,10 +157,18 @@ function RouteComponent() {
 							{str(visual?.fields ?? {}, "eyebrow", "Everest entrance")}
 						</SectionLabel>
 						<p>
-							{str(visual?.fields ?? {}, "headline", "The digital entrance to the school.")}
+							{str(
+								visual?.fields ?? {},
+								"headline",
+								"The digital entrance to the school.",
+							)}
 						</p>
 						<span>
-							{str(visual?.fields ?? {}, "subheadline", "One community / connected responsibly")}
+							{str(
+								visual?.fields ?? {},
+								"subheadline",
+								"One community / connected responsibly",
+							)}
 						</span>
 					</div>
 				</div>
@@ -192,11 +200,7 @@ function RouteComponent() {
 									))}
 							</h1>
 							<p className="auth-lead" data-testid="activate-support-copy">
-								{str(
-									intro?.fields ?? {},
-									"intro",
-									pageCopy.activate.support,
-								)}
+								{str(intro?.fields ?? {}, "intro", pageCopy.activate.support)}
 							</p>
 						</header>
 					</CmsSectionBox>
@@ -204,7 +208,11 @@ function RouteComponent() {
 					<CmsSectionBox type="auth_form" onSelect={onSelectSection}>
 						<form onSubmit={submit} className="auth-form" noValidate>
 							<h2 className="t-label mt-8 mb-4 border-b pb-2 text-foreground">
-								{str(formBlock?.fields ?? {}, "emailLabel", "Security verification")}
+								{str(
+									formBlock?.fields ?? {},
+									"emailLabel",
+									"Security verification",
+								)}
 							</h2>
 
 							{error && (
@@ -244,7 +252,9 @@ function RouteComponent() {
 									className="w-full justify-between"
 									testId="activate-submit-btn"
 								>
-									<span>{str(formBlock?.fields ?? {}, "submitLabel", "Verify code")}</span>
+									<span>
+										{str(formBlock?.fields ?? {}, "submitLabel", "Verify code")}
+									</span>
 									<span aria-hidden="true">→</span>
 								</Button>
 							</div>

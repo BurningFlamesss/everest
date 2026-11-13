@@ -169,24 +169,25 @@ export function Sidebar() {
 
 	const navFooter = data?.session?.id ? (
 		<>
-		{/* <div className="bg-[#EAB308] flex w-full items-center justify-center py-2 cursor-pointer text-black">
+			{/* <div className="bg-[#EAB308] flex w-full items-center justify-center py-2 cursor-pointer text-black">
 			Dashboard Coming Soon!
 		</div> */}
 		</>
 	) : (
 		<Link
-				to="/login"
-				className="bg-[#EAB308] flex w-full items-center justify-center py-2 cursor-pointer text-black hover:bg-[#EAB308]/90"
-			>
-				Login
-			</Link>
+			to="/login"
+			className="bg-[#EAB308] flex w-full items-center justify-center py-2 cursor-pointer text-black hover:bg-[#EAB308]/90"
+		>
+			Login
+		</Link>
 	);
 
 	const navLinks = (
 		<ul className="space-y-1 mt-4">
-			{sidebar?.collapsible && Object.values(sidebar.collapsible).map((item) => (
-				<SidebarItem key={item.id} item={item} pathname={pathname} />
-			))}
+			{sidebar?.collapsible &&
+				Object.values(sidebar.collapsible).map((item) => (
+					<SidebarItem key={item.id} item={item} pathname={pathname} />
+				))}
 		</ul>
 	);
 
