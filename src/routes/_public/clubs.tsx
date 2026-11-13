@@ -1,12 +1,29 @@
-import { createFileRoute, useSearch } from "@tanstack/react-router";
-import { Clock, Paperclip, Users } from "lucide-react";
+import { createFileRoute, useSearch, useRouter } from "@tanstack/react-router";
+import {
+	Clock,
+	MessageSquare,
+	Paperclip,
+	Pencil,
+	Pin,
+	Trash2,
+	Users,
+} from "lucide-react";
+import { useState, type FormEvent } from "react";
 import { str } from "#/components/cms/block-fields";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import { clubPermissionsLabel } from "#/packages/clubs/permissions.ts";
-import { getAllMyClubAccessFn } from "#/packages/clubs/server.ts";
+import {
+	createClubPostAction,
+	createPostCommentAction,
+	deleteClubPostAction,
+	getAllMyClubAccessFn,
+	getClubBoardFn,
+	updateClubPostAction,
+} from "#/packages/clubs/server.ts";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { getClubsFn } from "#/packages/content/server.ts";
+import { relativeTime } from "#/lib/format";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
 import { pageMeta } from "#/packages/school/meta.ts";
 import {
@@ -20,6 +37,13 @@ type ClubRow = Awaited<ReturnType<typeof getClubsFn>>[number];
 type ClubAttachment = ClubRow["attachments"][number];
 type ClubRoleRow = ClubRow["roles"][number];
 type ClubMemberRow = ClubRow["members"][number];
+
+/** Posts as returned by getClubBoardFn for one club. */
+type ClubBoardResult = Awaited<ReturnType<typeof getClubBoardFn>>;
+type ClubPost = Extract<
+	ClubBoardResult,
+	{ success: true }
+>["posts"][number];
 
 export const Route = createFileRoute("/_public/clubs")({
 	head: () =>
@@ -37,9 +61,25 @@ export const Route = createFileRoute("/_public/clubs")({
 				? getWebsitePagePreviewServer({ data: { key: "clubs" } })
 				: Promise.resolve(null),
 		]);
+
+		// Pull each club's feed in parallel so ClubCard can render posts
+		// server-side without a waterfall of client fetches.
+		const boards = await Promise.all(
+			clubs.map(async (club: ClubRow) => {
+				const board = await getClubBoardFn({ data: { slug: club.slug } });
+				return board.success ? { slug: club.slug, posts: board.posts } : null;
+			}),
+		);
+		const postsBySlug: Record<string, ClubPost[]> = {};
+		for (const board of boards) {
+			if (board) postsBySlug[board.slug] = board.posts;
+		}
+
 		return {
 			clubs,
-			accessBySlug: accessResult.accessBySlug,
+			userId: accessResult.userId,
+			accessBySlug: accessResult.accessBySlug as ClubAccessMap,
+			postsBySlug,
 			previewPage,
 		};
 	},
@@ -50,7 +90,8 @@ function ClubsPage() {
 	const search =
 		(useSearch({ strict: false }) as Record<string, unknown>) || {};
 	const cms = search.cms;
-	const { clubs, accessBySlug, previewPage } = Route.useLoaderData();
+	const { clubs, userId, accessBySlug, postsBySlug, previewPage } =
+		Route.useLoaderData();
 	const publishedContent = useWebsitePageContent("clubs");
 	const preview = String(cms ?? "") === "1";
 	const cmsData = preview ? previewPage : publishedContent;
@@ -105,6 +146,8 @@ function ClubsPage() {
 								key={club.id}
 								club={club}
 								access={accessBySlug[club.slug]}
+								posts={postsBySlug[club.slug] ?? []}
+								userId={userId}
 							/>
 						))}
 					</div>
@@ -114,11 +157,41 @@ function ClubsPage() {
 	);
 }
 
-type ClubAccess = Awaited<
-	ReturnType<typeof getAllMyClubAccessFn>
->["accessBySlug"][string];
+/** Per-club viewer access, as computed by getAllMyClubAccessFn.
+ *
+ * The server fn's return type narrows its accessBySlug to `Record<...> | {}`
+ * (the anonymous branch returns `{}`), so indexing by slug needs a cast to a
+ * uniform record — the runtime value is always a plain object keyed by slug.
+ */
+type ClubAccessEntry = {
+	canCreatePosts: boolean;
+	canEditAnyPost: boolean;
+	canPinPosts: boolean;
+	canManageMembers: boolean;
+	roleName: string | null;
+	isMember: boolean;
+};
+type ClubAccessMap = Record<string, ClubAccessEntry>;
+type ClubAccess = ClubAccessEntry;
 
-function ClubCard({ club, access }: { club: ClubRow; access?: ClubAccess }) {
+/** Post author label — staff author, student author, or system fallback. */
+function postAuthorName(post: ClubPost): string {
+	return (
+		post.author?.name ?? post.authorStudent?.user.name ?? "Club officer"
+	);
+}
+
+function ClubCard({
+	club,
+	access,
+	posts,
+	userId,
+}: {
+	club: ClubRow;
+	access?: ClubAccess;
+	posts: ClubPost[];
+	userId?: string | null;
+}) {
 	const boardRoles = (club.roles || []).filter(
 		(role: ClubRoleRow) => role.isBoard,
 	);
@@ -141,7 +214,7 @@ function ClubCard({ club, access }: { club: ClubRow; access?: ClubAccess }) {
 				{club.name}
 			</h2>
 			{club.description ? (
-				<p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+				<p className="mt-2 text-sm leading-relaxed text-muted-foreground">
 					{club.description}
 				</p>
 			) : null}
@@ -182,15 +255,16 @@ function ClubCard({ club, access }: { club: ClubRow; access?: ClubAccess }) {
 							{memberCount} member{memberCount === 1 ? "" : "s"}
 						</p>
 					) : null}
-					{viewerRole ? (
-						<p className="mt-2 text-xs font-medium text-primary">
-							Your role: {viewerRole}
-							{access?.canCreatePosts
-								? " · you can publish to this feed"
-								: " · publishing is limited to club officers"}
-						</p>
-					) : null}
 				</div>
+			) : null}
+
+			{viewerRole ? (
+				<p className="mt-2 text-xs font-medium text-primary">
+					Your role: {viewerRole}
+					{access?.canCreatePosts
+						? " · you can publish to this feed"
+						: " · publishing is limited to club officers"}
+				</p>
 			) : null}
 
 			{club.attachments.length > 0 ? (
@@ -220,6 +294,518 @@ function ClubCard({ club, access }: { club: ClubRow; access?: ClubAccess }) {
 					</ul>
 				</div>
 			) : null}
+
+			<ClubFeed
+				clubSlug={club.slug}
+				posts={posts}
+				access={access}
+				userId={userId}
+			/>
 		</article>
+	);
+}
+
+/**
+ * The club feed: published posts (pinned first) plus a composer for viewers
+ * whose role carries `posts.create`. Plain members see the feed read-only,
+ * which is exactly the constraint the roles editor enforces. Authors can edit
+ * or delete their own posts; `posts.editAny` allows editing anyone's; the
+ * pin toggle follows `posts.pin`. Signed-in members can comment.
+ */
+function ClubFeed({
+	clubSlug,
+	posts,
+	access,
+	userId,
+}: {
+	clubSlug: string;
+	posts: ClubPost[];
+	access?: ClubAccess;
+	userId?: string | null;
+}) {
+	const router = useRouter();
+	const canPost = Boolean(access?.canCreatePosts);
+	const canPin = Boolean(access?.canPinPosts);
+	const canEditAny = Boolean(access?.canEditAnyPost);
+
+	const [title, setTitle] = useState("");
+	const [body, setBody] = useState("");
+	const [isPinned, setIsPinned] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [error, setError] = useState("");
+	const [notice, setNotice] = useState("");
+
+	const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (isSubmitting) return;
+
+		setError("");
+		setNotice("");
+		setIsSubmitting(true);
+
+		try {
+			const result = await createClubPostAction({
+				data: {
+					slug: clubSlug,
+					title: title.trim(),
+					body: body.trim(),
+					isPinned: canPin ? isPinned : false,
+				},
+			});
+
+			if (!result.success) {
+				setError(result.error);
+				return;
+			}
+
+			setTitle("");
+			setBody("");
+			setIsPinned(false);
+			setNotice("Published.");
+			await router.invalidate();
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
+	return (
+		<div className="mt-5 border-t border-rule pt-4">
+			<h3 className="text-sm font-semibold text-foreground">Club feed</h3>
+
+			{canPost ? (
+				<form
+					onSubmit={(event) => void onSubmit(event)}
+					className="mt-3 space-y-2"
+					data-testid={`club-composer-${clubSlug}`}
+				>
+					<input
+						value={title}
+						onChange={(event) => setTitle(event.target.value)}
+						placeholder="Post title"
+						aria-label="Post title"
+						required
+						maxLength={160}
+						className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
+					/>
+					<textarea
+						value={body}
+						onChange={(event) => setBody(event.target.value)}
+						placeholder="Share an update with the club…"
+						aria-label="Post body"
+						required
+						rows={3}
+						maxLength={4000}
+						className="w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
+					/>
+					<div className="flex flex-wrap items-center justify-between gap-2">
+						{canPin ? (
+							<label className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+								<input
+									type="checkbox"
+									checked={isPinned}
+									onChange={(event) => setIsPinned(event.target.checked)}
+									className="size-4 accent-primary"
+								/>
+								Pin to top
+							</label>
+						) : (
+							<span />
+						)}
+						<button
+							type="submit"
+							disabled={isSubmitting || !title.trim() || !body.trim()}
+							className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+						>
+							{isSubmitting ? "Publishing…" : "Publish"}
+						</button>
+					</div>
+					{error ? (
+						<p
+							role="alert"
+							className="text-xs text-red-600"
+							data-testid={`club-composer-error-${clubSlug}`}
+						>
+							{error}
+						</p>
+					) : null}
+					{notice ? (
+						<p className="text-xs font-medium text-primary">{notice}</p>
+					) : null}
+				</form>
+			) : null}
+
+			{posts.length === 0 ? (
+				<p className="mt-3 text-xs text-muted-foreground">No posts yet.</p>
+			) : (
+				<ul className="mt-3 space-y-3">
+					{posts.map((post: ClubPost) => (
+						<ClubFeedPost
+							key={post.id}
+							post={post}
+							userId={userId}
+							canEditAny={canEditAny}
+							canPin={canPin}
+						/>
+					))}
+				</ul>
+			)}
+		</div>
+	);
+}
+
+/** One feed post with its per-viewer edit / pin / comment controls. */
+function ClubFeedPost({
+	post,
+	userId,
+	canEditAny,
+	canPin,
+}: {
+	post: ClubPost;
+	userId?: string | null;
+	canEditAny: boolean;
+	canPin: boolean;
+}) {
+	const router = useRouter();
+	const isOwnPost = Boolean(userId) && post.authorId === userId;
+	const canEdit = Boolean(isOwnPost || canEditAny);
+
+	/** null = render mode; non-null = inline edit form with those drafts. */
+	const [editDraft, setEditDraft] = useState<{
+		title: string;
+		body: string;
+	} | null>(null);
+	const [isSaving, setIsSaving] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
+	const [isPinning, setIsPinning] = useState(false);
+	const [error, setError] = useState("");
+	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+	const [commentDraft, setCommentDraft] = useState("");
+	const [commentBusy, setCommentBusy] = useState(false);
+	const [commentError, setCommentError] = useState("");
+
+	const startEdit = () => {
+		setError("");
+		setEditDraft({ title: post.title, body: post.body });
+	};
+
+	const submitComment = async () => {
+		const trimmed = commentDraft.trim();
+		if (!trimmed || commentBusy) return;
+
+		setCommentError("");
+		setCommentBusy(true);
+
+		try {
+			const result = await createPostCommentAction({
+				data: { postId: post.id, body: trimmed },
+			});
+
+			if (!result.success) {
+				setCommentError(result.error);
+				return;
+			}
+
+			setCommentDraft("");
+			await router.invalidate();
+		} finally {
+			setCommentBusy(false);
+		}
+	};
+
+	const saveEdit = async () => {
+		if (!editDraft || isSaving) return;
+		const title = editDraft.title.trim();
+		const body = editDraft.body.trim();
+		if (!title || !body) return;
+
+		setError("");
+		setIsSaving(true);
+
+		try {
+			const result = await updateClubPostAction({
+				data: { postId: post.id, title, body },
+			});
+
+			if (!result.success) {
+				setError(result.error);
+				return;
+			}
+
+			setEditDraft(null);
+			await router.invalidate();
+		} finally {
+			setIsSaving(false);
+		}
+	};
+
+	const togglePin = async () => {
+		if (isPinning) return;
+
+		setError("");
+		setIsPinning(true);
+
+		try {
+			const result = await updateClubPostAction({
+				data: { postId: post.id, isPinned: !post.isPinned },
+			});
+
+			if (!result.success) {
+				setError(result.error);
+				return;
+			}
+
+			await router.invalidate();
+		} finally {
+			setIsPinning(false);
+		}
+	};
+
+	const remove = async () => {
+		if (isDeleting) return;
+		if (!window.confirm("Delete this post permanently?")) return;
+
+		setError("");
+		setIsDeleting(true);
+
+		try {
+			const result = await deleteClubPostAction({ data: { postId: post.id } });
+
+			if (!result.success) {
+				setError(result.error);
+				return;
+			}
+
+			await router.invalidate();
+		} finally {
+			setIsDeleting(false);
+		}
+	};
+
+	return (
+		<li
+			className="rounded-xl border border-border bg-secondary/40 p-3"
+			data-testid={`club-post-${post.id}`}
+		>
+			{editDraft ? (
+				<form
+					onSubmit={(event) => {
+						event.preventDefault();
+						void saveEdit();
+					}}
+					className="space-y-2"
+					data-testid={`club-post-edit-${post.id}`}
+				>
+					<input
+						value={editDraft.title}
+						onChange={(event) =>
+							setEditDraft({ ...editDraft, title: event.target.value })
+						}
+						placeholder="Post title"
+						aria-label="Edit post title"
+						required
+						maxLength={160}
+						className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
+					/>
+					<textarea
+						value={editDraft.body}
+						onChange={(event) =>
+							setEditDraft({ ...editDraft, body: event.target.value })
+						}
+						placeholder="Post body"
+						aria-label="Edit post body"
+						required
+						rows={3}
+						maxLength={4000}
+						className="w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
+					/>
+					<div className="flex items-center justify-between gap-2">
+						{error ? (
+							<p role="alert" className="text-xs text-red-600">
+								{error}
+							</p>
+						) : (
+							<span />
+						)}
+						<div className="flex items-center gap-2">
+							<button
+								type="button"
+								onClick={() => setEditDraft(null)}
+								className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary"
+							>
+								Cancel
+							</button>
+							<button
+								type="submit"
+								disabled={
+									isSaving ||
+									!editDraft.title.trim() ||
+									!editDraft.body.trim()
+								}
+								className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+							>
+								{isSaving ? "Saving…" : "Save changes"}
+							</button>
+						</div>
+					</div>
+				</form>
+			) : (
+				<>
+					<div className="flex items-start justify-between gap-2">
+						<p className="min-w-0 break-words text-sm font-semibold text-foreground">
+							{post.title}
+						</p>
+						{post.isPinned ? (
+							<span
+								className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary"
+								title="Pinned post"
+							>
+								<Pin className="h-3 w-3" /> Pinned
+							</span>
+						) : null}
+					</div>
+					<p className="mt-1.5 whitespace-pre-line break-words text-sm leading-relaxed text-muted-foreground">
+						{post.body}
+					</p>
+					<div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+						<p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
+							<span className="font-medium text-foreground">
+								{postAuthorName(post)}
+							</span>
+							<span aria-hidden="true">·</span>
+							<span>{relativeTime(post.createdAt)}</span>
+						</p>
+						<div className="inline-flex items-center gap-1">
+							{canEdit ? (
+								<>
+									<button
+										type="button"
+										onClick={startEdit}
+										className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-[11px] font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+										aria-label="Edit post"
+									>
+										<Pencil className="h-3 w-3" /> Edit
+									</button>
+									<button
+										type="button"
+										onClick={() => void remove()}
+										disabled={isDeleting}
+										className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-[11px] font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+										aria-label="Delete post"
+									>
+										<Trash2 className="h-3 w-3" />
+										{isDeleting ? "Deleting…" : "Delete"}
+									</button>
+								</>
+							) : null}
+							{canPin ? (
+								<button
+									type="button"
+									onClick={() => void togglePin()}
+									disabled={isPinning}
+									className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-[11px] font-medium text-muted-foreground hover:bg-secondary hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+									title={post.isPinned ? "Unpin post" : "Pin post"}
+								>
+									<Pin className="h-3 w-3" />
+									{isPinning
+										? "Pinning…"
+										: post.isPinned
+											? "Unpin"
+											: "Pin"}
+								</button>
+							) : null}
+							<button
+								type="button"
+								onClick={() => setIsCommentsOpen((open) => !open)}
+								aria-expanded={isCommentsOpen}
+								className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-[11px] font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+								data-testid={`club-post-comments-toggle-${post.id}`}
+							>
+								<MessageSquare className="h-3 w-3" />
+								<span>{post.comments.length}</span>
+								{isCommentsOpen ? " Hide comments" : " Comments"}
+							</button>
+						</div>
+					</div>
+					{error ? (
+						<p
+							role="alert"
+							className="mt-1 text-xs text-red-600"
+							data-testid={`club-post-error-${post.id}`}
+						>
+							{error}
+						</p>
+					) : null}
+					{isCommentsOpen ? (
+						<div
+							className="mt-3 space-y-2 border-t border-rule pt-3"
+							data-testid={`club-comments-${post.id}`}
+						>
+							<ul className="space-y-2">
+								{post.comments.map((comment) => (
+									<li
+										key={comment.id}
+										className="text-xs leading-relaxed text-muted-foreground"
+									>
+										<span className="font-medium text-foreground">
+											{comment.author?.name ?? "Member"}
+										</span>
+										<span aria-hidden="true"> · </span>
+										<span>{relativeTime(comment.createdAt)}</span>
+										<p className="mt-0.5 whitespace-pre-line break-words">
+											{comment.body}
+										</p>
+									</li>
+								))}
+								{post.comments.length === 0 ? (
+									<li className="text-xs text-muted-foreground">
+										No comments yet.
+									</li>
+								) : null}
+							</ul>
+							{userId ? (
+								<form
+									onSubmit={(event) => {
+										event.preventDefault();
+										void submitComment();
+									}}
+									className="space-y-2 border-t border-rule pt-3"
+								>
+									<textarea
+										value={commentDraft}
+										onChange={(event) => setCommentDraft(event.target.value)}
+										placeholder="Write a comment…"
+										aria-label="Comment"
+										required
+										maxLength={2000}
+										rows={2}
+										className="w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
+									/>
+									<div className="flex items-center justify-between gap-2">
+										{commentError ? (
+											<p role="alert" className="text-xs text-red-600">
+												{commentError}
+											</p>
+										) : (
+											<span />
+										)}
+										<button
+											type="submit"
+											disabled={commentBusy || !commentDraft.trim()}
+											className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+										>
+											{commentBusy ? "Commenting…" : "Comment"}
+										</button>
+									</div>
+								</form>
+							) : (
+								<p className="border-t border-rule pt-3 text-xs text-muted-foreground">
+									Sign in to join the conversation.
+								</p>
+							)}
+						</div>
+					) : null}
+				</>
+			)}
+		</li>
 	);
 }

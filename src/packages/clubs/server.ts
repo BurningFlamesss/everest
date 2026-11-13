@@ -85,7 +85,9 @@ export const getClubBoardFn = createServerFn()
 
 export const getAllMyClubAccessFn = createServerFn().handler(async () => {
 	const user = await getSessionUser();
-	if (!user?.id) return { success: true as const, accessBySlug: {} };
+	if (!user?.id) {
+		return { success: true as const, userId: null, accessBySlug: {} };
+	}
 
 	const [memberships, directRoles, isManagement] = await Promise.all([
 		prisma.clubMember.findMany({
@@ -181,7 +183,7 @@ export const getAllMyClubAccessFn = createServerFn().handler(async () => {
 		}
 	}
 
-	return { success: true as const, accessBySlug };
+	return { success: true as const, userId: user.id, accessBySlug };
 });
 
 export const getMyClubAccessFn = createServerFn()
@@ -214,7 +216,15 @@ export const getMyClubAccessFn = createServerFn()
 /* Admin: roles & members                                              */
 /* ------------------------------------------------------------------ */
 
-async function requireContentManager() {
+/**
+ * Allow ADMIN/SUPERADMIN or a club officer holding `members.manage`.
+ *
+ * A president (or any role granted "Manage members" in the roles editor) can
+ * therefore run the roles/members editor without school-wide admin rights.
+ * `resolveClubAccess` already folds implicit ADMIN/SUPERADMIN permissions in,
+ * so a single check on `canManageMembers` covers both paths.
+ */
+async function requireClubManager(slug: string) {
 	const { getRequestHeaders } = await import("@tanstack/react-start/server");
 	const session = await auth.api.getSession({ headers: getRequestHeaders() });
 
@@ -222,16 +232,24 @@ async function requireContentManager() {
 		return { ok: false as const, error: "Please sign in to continue" };
 	}
 
-	const roles = await prisma.userRole.findMany({
-		where: { userId: session.user.id },
-		select: { role: true },
+	const club = await prisma.club.findUnique({
+		where: { slug },
+		select: { id: true },
 	});
-
-	if (!roles.some((row) => row.role === "SUPERADMIN" || row.role === "ADMIN")) {
-		return { ok: false as const, error: "You cannot manage club roles" };
+	if (!club) {
+		return { ok: false as const, error: "Club not found" };
 	}
 
-	return { ok: true as const, userId: session.user.id };
+	const access = await resolveClubAccess(club.id, session.user.id);
+
+	if (!access.canManageMembers) {
+		return {
+			ok: false as const,
+			error: "You need the Manage members permission for this club.",
+		};
+	}
+
+	return { ok: true as const, userId: session.user.id, clubId: club.id };
 }
 
 const roleInputSchema = z.object({
@@ -248,16 +266,10 @@ export const saveClubRolesAction = createServerFn()
 		z.object({ slug: z.string().min(1), roles: z.array(roleInputSchema) }),
 	)
 	.handler(async ({ data }) => {
-		const guard = await requireContentManager();
+		const guard = await requireClubManager(data.slug);
 		if (!guard.ok) return { success: false as const, error: guard.error };
 
-		const club = await prisma.club.findUnique({
-			where: { slug: data.slug },
-			select: { id: true },
-		});
-		if (!club) {
-			return { success: false as const, error: "Club not found" };
-		}
+		const club = { id: guard.clubId };
 
 		const sanitized = data.roles.map((role) => ({
 			id: role.id,
@@ -270,8 +282,12 @@ export const saveClubRolesAction = createServerFn()
 			),
 		}));
 
-		const roles = await setClubRoles(club.id, sanitized);
-		return { success: true as const, roles };
+		try {
+			const roles = await setClubRoles(club.id, sanitized);
+			return { success: true as const, roles };
+		} catch (error) {
+			return toActionError(error);
+		}
 	});
 
 const memberSchema = z.object({
@@ -284,32 +300,38 @@ export const saveClubMembersAction = createServerFn()
 		z.object({ slug: z.string().min(1), members: z.array(memberSchema) }),
 	)
 	.handler(async ({ data }) => {
-		const guard = await requireContentManager();
+		const guard = await requireClubManager(data.slug);
 		if (!guard.ok) return { success: false as const, error: guard.error };
 
-		const club = await prisma.club.findUnique({
-			where: { slug: data.slug },
+		const clubId = guard.clubId;
+
+		// A roleId pointing at another club (or a deleted role) would corrupt
+		// the membership rows; resolve each id against this club first.
+		const clubRoles = await prisma.clubRole.findMany({
+			where: { clubId },
 			select: { id: true },
 		});
-		if (!club) {
-			return { success: false as const, error: "Club not found" };
-		}
+		const validRoleIds = new Set(clubRoles.map((role) => role.id));
 
 		const keep = new Set(data.members.map((member) => member.studentId));
 
 		// Members dropped from the list are removed.
 		await prisma.clubMember.deleteMany({
 			where: {
-				clubId: club.id,
+				clubId,
 				studentId: { notIn: [...keep] },
 			},
 		});
 
 		for (const member of data.members) {
-			await upsertClubMember(club.id, member.studentId, member.roleId ?? null);
+			const roleId =
+				member.roleId && validRoleIds.has(member.roleId)
+					? member.roleId
+					: null;
+			await upsertClubMember(clubId, member.studentId, roleId);
 		}
 
-		const roles = await listClubRoles(club.id);
+		const roles = await listClubRoles(clubId);
 		return { success: true as const, roles };
 	});
 

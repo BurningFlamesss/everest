@@ -65,9 +65,9 @@ export function formatTime(value?: string): string {
 	});
 }
 
-export function relativeTime(value?: string): string {
+export function relativeTime(value?: string | Date): string {
 	if (!value) return "—";
-	const then = new Date(value).getTime();
+	const then = value instanceof Date ? value.getTime() : new Date(value).getTime();
 	if (Number.isNaN(then)) return "—";
 	const diff = Date.now() - then;
 	const mins = Math.round(diff / 60000);
@@ -80,7 +80,7 @@ export function relativeTime(value?: string): string {
 	const days = Math.round(hours / 24);
 	if (Math.abs(days) < 30)
 		return `${days < 0 ? "in " : ""}${Math.abs(days)}d${days < 0 ? "" : " ago"}`;
-	return formatDate(value);
+	return value instanceof Date ? formatDate(value.toISOString()) : formatDate(value);
 }
 
 export function dayLabel(key: string): string {

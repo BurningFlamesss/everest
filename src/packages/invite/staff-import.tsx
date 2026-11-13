@@ -64,15 +64,20 @@ Bikash Shrestha,bikash.shrestha@example.com,Lab Assistant,Science,EMP-203,STAFF`
 
 export interface StaffImportProps {
 	onImported?: (count: number) => void;
+	mailConfigured?: boolean;
 }
 
-export function StaffImport({ onImported }: StaffImportProps = {}) {
+export function StaffImport({
+	onImported,
+	mailConfigured,
+}: StaffImportProps = {}) {
 	return (
 		<ImportWizard
 			config={staffImportConfig}
 			sampleCsv={STAFF_IMPORT_SAMPLE}
 			title="Import staff"
 			description="Bulk-create staff accounts from a CSV. Use the role column to grant admin access; everyone else is created as staff."
+			mailConfigured={mailConfigured}
 			onImport={async (rows, sendEmail) => {
 				const result = await importStaffAction({
 					data: { rows, sendEmail },

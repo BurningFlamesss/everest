@@ -266,6 +266,33 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
 		{ key: "text2Body", label: "Overlay 2 supporting text", kind: "textarea" },
 		{ key: "text3Title", label: "Overlay 3 headline", kind: "text" },
 		{ key: "text3Body", label: "Overlay 3 supporting text", kind: "textarea" },
+		{
+			key: "footageBase",
+			label: "Footage folder",
+			kind: "text",
+			placeholder: "/schools/everest/landing-footage/",
+			help: "Public URL folder holding the hero scroll frames. Keep the trailing slash.",
+		},
+		{
+			key: "footagePrefix",
+			label: "Frame filename prefix",
+			kind: "text",
+			placeholder: "frame_",
+			help: 'Frames are named <prefix>0001.jpeg, <prefix>0002.jpeg… (4-digit zero-padded).',
+		},
+		{
+			key: "footageExtension",
+			label: "Frame file extension",
+			kind: "text",
+			placeholder: ".jpeg",
+			help: "Include the leading dot, e.g. .jpeg or .webp.",
+		},
+		{
+			key: "footageFrameCount",
+			label: "Number of frames",
+			kind: "number",
+			help: "Frames must be numbered 0001 up to this count. The scroll maps onto them.",
+		},
 	],
 	landing_facts: [
 		{ key: "title", label: "Section title", kind: "text" },

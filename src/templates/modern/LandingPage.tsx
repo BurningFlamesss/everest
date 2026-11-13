@@ -11,7 +11,7 @@ import {
 	Info,
 } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { rows, str } from "#/components/cms/block-fields";
+import { rows, num, str } from "#/components/cms/block-fields";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import { NoticeDialog } from "#/components/common/NoticeDialog";
 import {
@@ -111,7 +111,7 @@ export default function LandingPage({
 			<div className="relative min-h-screen bg-background">
 				<div ref={containerRef} className="relative h-[600vh]">
 					<div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
-						<HeroCanvas scrollTrackRef={containerRef} />
+						<HeroCanvas scrollTrackRef={containerRef} footage={hero} />
 
 						{/* Dark Vignette Overlay for Text Legibility */}
 						<div className="pointer-events-none absolute inset-0 z-[5] bg-gradient-to-b from-black/40 via-transparent to-black/60" />
@@ -421,15 +421,20 @@ export default function LandingPage({
 
 export function HeroCanvas({
 	scrollTrackRef,
+	footage,
 }: {
 	scrollTrackRef: React.RefObject<HTMLDivElement | null>;
+	footage: Record<string, unknown>;
 }) {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-	const { drawFrame, frameCount, isLoading, progress, ready } = useCanvasVideo(
-		canvasRef,
-		216,
-	);
+	const { drawFrame, frameCount, isLoading, progress, ready } =
+		useCanvasVideo(canvasRef, {
+			folder: str(footage, "footageBase", "/schools/everest/landing-footage/"),
+			prefix: str(footage, "footagePrefix", "frame_"),
+			extension: str(footage, "footageExtension", ".jpeg"),
+			frameCount: num(footage, "footageFrameCount", 216),
+		});
 
 	// Ensure active frame is drawn whenever ready or when loading completes
 	useEffect(() => {

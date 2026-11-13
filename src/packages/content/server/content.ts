@@ -193,6 +193,7 @@ export const getSchoolContentServer = createServerFn({ method: "GET" })
 					href: "/facilities",
 				},
 				gallery: { id: "gallery", label: "GALLERY", href: "/gallery" },
+				clubs: { id: "clubs", label: "CLUBS", href: "/clubs" },
 				moreInfo: {
 					id: "moreInfo",
 					label: "More Info",

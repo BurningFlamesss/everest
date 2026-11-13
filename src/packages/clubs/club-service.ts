@@ -77,6 +77,47 @@ export async function setClubRoles(
 		roles.map((role) => role.id).filter((id): id is string => Boolean(id)),
 	);
 
+	// Reject duplicate role names up front — the schema enforces uniqueness per
+	// club, so a duplicate would throw a raw Prisma error mid-save.
+	const names = roles.map((role) => role.name.trim().toLowerCase());
+	if (new Set(names).size !== names.length) {
+		throw new ClubAccessError("Two roles cannot share the same name.");
+	}
+
+	const existing = await prisma.clubRole.findMany({
+		where: { clubId },
+		select: { id: true, members: { select: { id: true } } },
+	});
+	const assignedRoleIds = new Set(
+		existing.flatMap((role) =>
+			role.members.length > 0 ? [role.id] : [],
+		),
+	);
+
+	// Deleting a role that still holds members would silently strip those
+	// members of their standing; require the editor to move them first.
+	for (const role of existing) {
+		if (keepIds.has(role.id)) continue;
+		if (assignedRoleIds.has(role.id)) {
+			const doomed = roles.find((candidate) => candidate.id === role.id);
+			const label = doomed?.name ?? "This role";
+			throw new ClubAccessError(
+				`${label} still has members assigned. Move them to another role before deleting it.`,
+			);
+		}
+	}
+
+	// At least one remaining role must keep `members.manage`, otherwise the
+	// club can no longer be managed without school-wide admin rights.
+	const anyManager = roles.some((role) =>
+		(role.permissions ?? []).includes("members.manage"),
+	);
+	if (!anyManager) {
+		throw new ClubAccessError(
+			"At least one role must keep the Manage members permission.",
+		);
+	}
+
 	await prisma.$transaction([
 		// Roles removed from the payload are deleted; members drop to no role.
 		prisma.clubRole.deleteMany({

@@ -73,15 +73,20 @@ Niran Rai,niran.rai@example.com,ADM-1003,14,Grade 11,A,2026-04-15`;
 
 export interface StudentImportProps {
 	onImported?: (count: number) => void;
+	mailConfigured?: boolean;
 }
 
-export function StudentImport({ onImported }: StudentImportProps = {}) {
+export function StudentImport({
+	onImported,
+	mailConfigured,
+}: StudentImportProps = {}) {
 	return (
 		<ImportWizard
 			config={studentImportConfig}
 			sampleCsv={STUDENT_IMPORT_SAMPLE}
 			title="Import students"
 			description="Upload a CSV to create student records and email activation links in one pass. Rows with errors are skipped."
+			mailConfigured={mailConfigured}
 			onImport={async (rows, sendEmail) => {
 				const result = await importStudentsAction({
 					data: { rows, sendEmail },

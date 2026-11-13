@@ -56,6 +56,8 @@ export interface CreatedInvite {
 		email: string;
 	};
 	emailSent: boolean;
+	/** Why delivery failed, when `sendEmail` was requested but nothing went out. */
+	emailError?: string;
 }
 
 export class InviteError extends Error {
@@ -164,7 +166,7 @@ async function sendInviteEmail({
 	email: string;
 	url: string;
 	kind: InviteKind;
-}): Promise<boolean> {
+}): Promise<{ sent: boolean; reason?: string }> {
 	const roleLabel =
 		kind === "STUDENT" ? "student" : kind === "GUARDIAN" ? "guardian" : "staff";
 
@@ -183,7 +185,12 @@ async function sendInviteEmail({
 		}),
 	});
 
-	return result.success;
+	return {
+		sent: result.success,
+		reason: result.success
+			? undefined
+			: (result.details?.error ?? result.message),
+	};
 }
 
 async function findActivatedUser(userId: string) {
@@ -310,14 +317,14 @@ export async function createStaffInvite(
 	});
 
 	const url = buildInviteUrl(token, "STAFF");
-	const emailSent = input.sendEmail
+	const delivery = input.sendEmail
 		? await sendInviteEmail({
 				name: user.name,
 				email: user.email,
 				url,
 				kind: "STAFF",
 			})
-		: false;
+		: { sent: false };
 
 	return {
 		id: invite.id,
@@ -326,7 +333,8 @@ export async function createStaffInvite(
 		expiresAt,
 		url,
 		user: { id: user.id, name: user.name, email: user.email },
-		emailSent,
+		emailSent: delivery.sent,
+		emailError: delivery.reason,
 	};
 }
 
@@ -416,14 +424,14 @@ export async function createStudentInvite(
 	});
 
 	const url = buildInviteUrl(token, "STUDENT");
-	const emailSent = input.sendEmail
+	const delivery = input.sendEmail
 		? await sendInviteEmail({
 				name: user.name,
 				email: user.email,
 				url,
 				kind: "STUDENT",
 			})
-		: false;
+		: { sent: false };
 
 	return {
 		id: invite.id,
@@ -432,7 +440,8 @@ export async function createStudentInvite(
 		expiresAt,
 		url,
 		user: { id: user.id, name: user.name, email: user.email },
-		emailSent,
+		emailSent: delivery.sent,
+		emailError: delivery.reason,
 	};
 }
 
@@ -529,14 +538,14 @@ export async function createGuardianInvite(
 	});
 
 	const url = buildInviteUrl(token, "GUARDIAN");
-	const emailSent = input.sendEmail
+	const delivery = input.sendEmail
 		? await sendInviteEmail({
 				name: user.name,
 				email: user.email,
 				url,
 				kind: "GUARDIAN",
 			})
-		: false;
+		: { sent: false };
 
 	return {
 		id: invite.id,
@@ -545,7 +554,8 @@ export async function createGuardianInvite(
 		expiresAt,
 		url,
 		user: { id: user.id, name: user.name, email: user.email },
-		emailSent,
+		emailSent: delivery.sent,
+		emailError: delivery.reason,
 	};
 }
 
@@ -696,11 +706,116 @@ export async function revokeInvite(input: {
 	if (result.count === 0) {
 		throw new InviteError(
 			"Invitation was not found or is already inactive",
-			"INVITE_NOT_ACTIVE",
+			ERROR_CODES.INVITE_NOT_ACTIVE,
 		);
 	}
 
 	return { success: true };
+}
+
+export interface ResendInviteResult {
+	/** Whether the activation email was accepted by the mail service. */
+	emailSent: boolean;
+	/** Reason delivery failed, when `emailSent` is false. */
+	reason?: string;
+	/** The activation link, so the admin can copy it if mail is unavailable. */
+	url: string;
+}
+
+/**
+ * Re-send the activation email for an existing, still-open invitation.
+ *
+ * Unlike `revokeInvite`, this deliberately keeps the same token/URL so links
+ * already shared over SMS keep working. Used by the admin invitations table
+ * when the first send failed (e.g. mail was not configured yet).
+ */
+export async function resendInviteEmail(input: {
+	id: string;
+	type: InviteKind;
+}): Promise<ResendInviteResult> {
+	const now = new Date();
+
+	if (input.type === "GUARDIAN") {
+		const invite = await prisma.guardianInvite.findUnique({
+			where: { id: input.id },
+			include: {
+				user: { select: { name: true, email: true } },
+				student: { select: { user: { select: { name: true } } } },
+			},
+		});
+
+		if (!invite) {
+			throw new InviteError("Invitation not found", ERROR_CODES.INVITE_NOT_FOUND);
+		}
+		if (invite.usedAt) {
+			throw new InviteError(
+				"This invitation has already been used",
+				ERROR_CODES.INVITE_ALREADY_USED,
+			);
+		}
+		if (invite.expiresAt <= now) {
+			throw new InviteError(
+				"This invitation has expired — create a new one",
+				ERROR_CODES.INVITE_EXPIRED,
+			);
+		}
+
+		const email = invite.user?.email ?? invite.guardianEmail;
+		if (!email) {
+			throw new InviteError(
+				"This invitation has no email address to send to",
+				ERROR_CODES.INVITE_USER_MISSING,
+			);
+		}
+
+		const url = buildInviteUrl(invite.token, "GUARDIAN");
+		const delivery = await sendInviteEmail({
+			name: invite.user?.name ?? invite.student.user.name,
+			email,
+			url,
+			kind: "GUARDIAN",
+		});
+
+		return { emailSent: delivery.sent, reason: delivery.reason, url };
+	}
+
+	const invite = await prisma.invite.findUnique({
+		where: { id: input.id },
+		include: { user: { select: { name: true, email: true } } },
+	});
+
+	if (!invite) {
+		throw new InviteError("Invitation not found", ERROR_CODES.INVITE_NOT_FOUND);
+	}
+	if (invite.usedAt) {
+		throw new InviteError(
+			"This invitation has already been used",
+			ERROR_CODES.INVITE_ALREADY_USED,
+		);
+	}
+	if (invite.expiresAt <= now) {
+		throw new InviteError(
+			"This invitation has expired — create a new one",
+			ERROR_CODES.INVITE_EXPIRED,
+		);
+	}
+	if (!invite.user?.email) {
+		throw new InviteError(
+			"This invitation has no email address to send to",
+			ERROR_CODES.INVITE_USER_MISSING,
+		);
+	}
+
+	const kind: InviteKind = invite.type === "STUDENT" ? "STUDENT" : "STAFF";
+	const url = buildInviteUrl(invite.token, kind);
+	const delivery = await sendInviteEmail({
+		name: invite.user.name,
+		email: invite.user.email,
+		url,
+		kind,
+	});
+
+	return { emailSent: delivery.sent, reason: delivery.reason, url };
 }
 
 export type InviteListEntry = Awaited<ReturnType<typeof listInvites>>[number];

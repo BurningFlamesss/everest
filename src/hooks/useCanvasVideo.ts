@@ -1,17 +1,68 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PUBLIC_ADDRESS } from "#/lib/data.ts";
 
+/** Where the scroll footage lives and how its frames are named. */
+export interface CanvasVideoSource {
+	/** Public URL folder; must keep its trailing slash. */
+	folder: string;
+	/** Frame filename prefix, e.g. "frame_". */
+	prefix: string;
+	/** Frame file extension with the leading dot, e.g. ".jpeg". */
+	extension: string;
+	/** Total number of frames, numbered 1..frameCount (4-digit zero-padded). */
+	frameCount: number;
+}
+
+export const DEFAULT_SOURCE: CanvasVideoSource = {
+	folder: `${PUBLIC_ADDRESS}/landing-footage/`,
+	prefix: "frame_",
+	extension: ".jpeg",
+	frameCount: 72,
+};
+
+/**
+ * Normalize any accepted source input (historical bare frameCount number, a
+ * partial CMS config, or a full config) into a safe, complete source.
+ *
+ * Malformed admin input never breaks the hero: empty folder / missing trailing
+ * slash / blank extension / non-positive frame count all fall back to the
+ * defaults. Pure function so it is unit-testable.
+ */
+export function resolveCanvasVideoSource(
+	source: number | Partial<CanvasVideoSource> | undefined,
+): CanvasVideoSource {
+	const requested: CanvasVideoSource =
+		typeof source === "number"
+			? { ...DEFAULT_SOURCE, frameCount: source }
+			: { ...DEFAULT_SOURCE, ...(source ?? {}) };
+
+	const folder = requested.folder.trim() || DEFAULT_SOURCE.folder;
+	const extension =
+		requested.extension.trim() || DEFAULT_SOURCE.extension;
+	const prefix = requested.prefix.trim() || DEFAULT_SOURCE.prefix;
+	return {
+		folder: folder.endsWith("/") ? folder : `${folder}/`,
+		prefix,
+		extension: extension.startsWith(".") ? extension : `.${extension}`,
+		frameCount:
+			Number.isFinite(requested.frameCount) && requested.frameCount > 0
+				? Math.floor(requested.frameCount)
+				: DEFAULT_SOURCE.frameCount,
+	};
+}
+
 export function useCanvasVideo(
 	canvasRef: React.RefObject<HTMLCanvasElement | null>,
-	frameCount: number = 72,
+	source: number | Partial<CanvasVideoSource> | undefined = 72,
 ) {
+	// Accept the historical bare frameCount number as well as a full/partial
+	// CMS config; malformed values fall back to the defaults per-key above.
+	const { folder: imageFolder, prefix: imagePrefix, extension: imageExtension, frameCount } =
+		resolveCanvasVideoSource(source);
+
 	const [loadedCount, setLoadedCount] = useState(0);
 	const [isInitialized, setIsInitialized] = useState(false);
 	const [firstFrameLoaded, setFirstFrameLoaded] = useState(false);
-
-	const imageFolder = `${PUBLIC_ADDRESS}/landing-footage/`;
-	const imagePrefix = "frame_";
-	const imageExtension = ".jpeg";
 
 	const savedImages = useRef<Array<HTMLImageElement>>([]);
 	const loadingPromises = useRef<Map<number, Promise<HTMLImageElement>>>(
@@ -19,6 +70,22 @@ export function useCanvasVideo(
 	);
 	const lastDrawnIndex = useRef<number>(-1);
 	const currentRequestedIndex = useRef<number>(0);
+
+	// When the source changes (e.g. an admin repoints the hero footage in the
+	// CMS and the page re-renders with new fields), the cached images and
+	// in-flight promises point at stale URLs — reset them so initFrames
+	// reloads from the new folder.
+	const sourceKey = `${imageFolder}|${imagePrefix}|${imageExtension}|${frameCount}`;
+	const lastSourceKey = useRef<string>(sourceKey);
+	if (lastSourceKey.current !== sourceKey) {
+		lastSourceKey.current = sourceKey;
+		savedImages.current = [];
+		loadingPromises.current = new Map();
+		lastDrawnIndex.current = -1;
+		setLoadedCount(0);
+		setIsInitialized(false);
+		setFirstFrameLoaded(false);
+	}
 
 	const padNumber = useCallback(
 		(num: number) => num.toString().padStart(4, "0"),

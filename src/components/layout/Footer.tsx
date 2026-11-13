@@ -104,7 +104,7 @@ export function Footer() {
 					</div>
 
 					<div className="flex flex-col items-start justify-between gap-2 text-[10px] text-background/50">
-						<span>SCMS / {config.organization.shortName ?? "Everest"}</span>
+						<span>{config.organization.shortName ?? "Everest"}</span>
 						<span>{year}</span>
 					</div>
 				</div>

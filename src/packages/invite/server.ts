@@ -11,8 +11,10 @@ import {
 	createStudentInvite,
 	InviteError,
 	listInvites,
+	resendInviteEmail,
 	revokeInvite,
 } from "#/packages/invite/invite-service.ts";
+import { isMailConfigured } from "#/packages/notifications/mail.ts";
 import {
 	listDirectoryPage,
 	MAX_DIRECTORY_PAGE_SIZE,
@@ -163,6 +165,40 @@ export const revokeInviteAction = createServerFn()
 		}
 	});
 
+/**
+ * Re-send the activation email for an open invitation, keeping its token so
+ * links already shared by SMS/WhatsApp keep working.
+ */
+export const resendInviteAction = createServerFn()
+	.validator(revokeInviteSchema)
+	.handler(async ({ data }) => {
+		try {
+			await getCurrentUser();
+			const result = await resendInviteEmail(data);
+
+			return { success: true as const, ...result };
+		} catch (error) {
+			return toActionError(error);
+		}
+	});
+
+/**
+ * Whether transactional email is configured. The invitation screens use this
+ * to gate the "send email" toggles and point admins at the CSV/SMS fallback.
+ */
+export const getMailStatusFn = createServerFn().handler(async () => {
+	try {
+		await getCurrentUser();
+
+		return {
+			success: true as const,
+			mailConfigured: isMailConfigured(),
+		};
+	} catch (error) {
+		return { success: false as const, mailConfigured: false };
+	}
+});
+
 const importRowSchema = z.record(z.string(), z.union([z.string(), z.null()]));
 
 const importStudentsSchema = z.object({
@@ -181,6 +217,8 @@ export const importStudentsAction = createServerFn()
 				email: string;
 				token: string;
 				url: string;
+				emailSent: boolean;
+				emailError?: string;
 			}> = [];
 			const errors: Array<{ row: number; email: string; message: string }> = [];
 			const seen = new Set<string>();
@@ -226,6 +264,8 @@ export const importStudentsAction = createServerFn()
 						email: invite.user.email,
 						token: invite.token,
 						url: invite.url,
+						emailSent: invite.emailSent,
+						emailError: invite.emailError,
 					});
 				} catch (error) {
 					errors.push({
@@ -265,6 +305,8 @@ export const importStaffAction = createServerFn()
 				email: string;
 				token: string;
 				url: string;
+				emailSent: boolean;
+				emailError?: string;
 			}> = [];
 			const errors: Array<{ row: number; email: string; message: string }> = [];
 			const seen = new Set<string>();
@@ -309,6 +351,8 @@ export const importStaffAction = createServerFn()
 						email: invite.user.email,
 						token: invite.token,
 						url: invite.url,
+						emailSent: invite.emailSent,
+						emailError: invite.emailError,
 					});
 				} catch (error) {
 					errors.push({

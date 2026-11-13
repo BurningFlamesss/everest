@@ -72,7 +72,7 @@ export function Footer() {
 					</div>
 
 					<div className="flex flex-col items-start justify-between gap-2 text-[9px] text-muted-foreground md:items-end">
-						<span>SCMS / Everest</span>
+						<span>Everest School</span>
 						<span data-testid="footer-year">{new Date().getFullYear()}</span>
 					</div>
 				</div>

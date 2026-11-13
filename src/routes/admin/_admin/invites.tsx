@@ -21,7 +21,9 @@ import {
 	createGuardianInviteAction,
 	createStaffInviteAction,
 	createStudentInviteAction,
+	getMailStatusFn,
 	listInvitesAction,
+	resendInviteAction,
 	revokeInviteAction,
 } from "#/packages/invite/server.ts";
 import { StaffImport } from "#/packages/invite/staff-import.tsx";
@@ -81,6 +83,25 @@ function AdminInvites() {
 	const [notice, setNotice] = useState("");
 	const [createdLink, setCreatedLink] = useState("");
 	const [copied, setCopied] = useState("");
+	// `null` while we have not heard back, so we never disable email by accident.
+	const [mailConfigured, setMailConfigured] = useState<boolean | null>(null);
+	const [resendingId, setResendingId] = useState("");
+
+	useEffect(() => {
+		let cancelled = false;
+
+		void (async () => {
+			const response = await getMailStatusFn();
+
+			if (!cancelled && response.success) {
+				setMailConfigured(response.mailConfigured);
+			}
+		})();
+
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 
 	const loadInvites = useCallback(async () => {
 		setIsLoading(true);
@@ -168,9 +189,13 @@ function AdminInvites() {
 
 			setCreatedLink(response.invite.url);
 			setNotice(
-				`Invitation created for ${response.invite.user.name}. Email ${
-					response.invite.emailSent ? "sent" : "not sent"
-				}.`,
+				response.invite.emailSent
+					? `Invitation created for ${response.invite.user.name}. Activation email sent.`
+					: `Invitation created for ${response.invite.user.name}. Email not sent${
+							response.invite.emailError
+								? ` — ${response.invite.emailError}`
+								: ""
+						} — copy the link below to share it.`,
 			);
 			// Remount the form so the searchable picker and every input reset.
 			setFormVersion((version) => version + 1);
@@ -200,6 +225,42 @@ function AdminInvites() {
 
 		setNotice("Invitation revoked.");
 		await loadInvites();
+	};
+
+	const handleResend = async (invite: InviteEntry) => {
+		setError("");
+		setNotice("");
+		setResendingId(invite.id);
+
+		try {
+			const response = await resendInviteAction({
+				data: { id: invite.id, type: invite.type },
+			});
+
+			if (!response.success) {
+				setError(response.error);
+				return;
+			}
+
+			if (response.emailSent) {
+				setNotice(`Activation email re-sent to ${invite.user.email}.`);
+			} else {
+				setCreatedLink(response.url);
+				setNotice(
+					`Could not email ${invite.user.email}${
+						response.reason ? ` — ${response.reason}` : ""
+					}. Copy the link below and send it manually.`,
+				);
+			}
+		} catch (resendError) {
+			setError(
+				resendError instanceof Error
+					? resendError.message
+					: "Could not resend the invitation.",
+			);
+		} finally {
+			setResendingId("");
+		}
 	};
 
 	const approveRequest = async (request: InviteRequestRow) => {
@@ -354,8 +415,8 @@ function AdminInvites() {
 			{tab === "import" ? (
 				<div className="space-y-6">
 					<div className="grid gap-6 xl:grid-cols-2">
-						<StudentImport />
-						<StaffImport />
+						<StudentImport mailConfigured={mailConfigured ?? true} />
+						<StaffImport mailConfigured={mailConfigured ?? true} />
 					</div>
 				</div>
 			) : tab === "requests" ? (
@@ -621,9 +682,27 @@ function AdminInvites() {
 								</>
 							) : null}
 
-							<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
-								<input type="checkbox" name="sendEmail" /> Email the activation
-								link (requires mail settings)
+							<label className="flex items-start gap-2 text-sm text-gray-700 md:col-span-2">
+								<input
+									type="checkbox"
+									name="sendEmail"
+									disabled={mailConfigured === false}
+									className="mt-0.5"
+								/>
+								<span>
+									Email the activation link
+									{mailConfigured === false ? (
+										<span className="block text-xs text-amber-700">
+											Email is not configured yet — the link will be shown so
+											you can send it yourself.
+										</span>
+									) : (
+										<span className="block text-xs text-gray-500">
+											Uses your mail settings. Leave off to copy the link
+											instead.
+										</span>
+									)}
+								</span>
 							</label>
 
 							<div className="md:col-span-2">
@@ -722,13 +801,34 @@ function AdminInvites() {
 													</button>
 												</td>
 												<td className="px-5 py-3 text-right">
-													<button
-														type="button"
-														onClick={() => void handleRevoke(invite)}
-														className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50"
-													>
-														<Trash2 className="h-3.5 w-3.5" /> Revoke
-													</button>
+													<div className="inline-flex items-center gap-1">
+														<button
+															type="button"
+															onClick={() => void handleResend(invite)}
+															disabled={resendingId === invite.id}
+															title={
+																mailConfigured === false
+																	? "Mail is not configured — the link will be shown to send manually"
+																	: "Re-send the activation email"
+															}
+															className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+														>
+															<RefreshCw
+																className={cn(
+																	"h-3.5 w-3.5",
+																	resendingId === invite.id && "animate-spin",
+																)}
+															/>
+															Resend
+														</button>
+														<button
+															type="button"
+															onClick={() => void handleRevoke(invite)}
+															className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50"
+														>
+															<Trash2 className="h-3.5 w-3.5" /> Revoke
+														</button>
+													</div>
 												</td>
 											</tr>
 										))}

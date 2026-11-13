@@ -26,9 +26,20 @@ import type {
 	NormalizedRow,
 } from "#/packages/csv/types.ts";
 
+export interface CreatedInviteRow {
+	name: string;
+	email: string;
+	url?: string;
+	token?: string;
+	/** Whether the activation email actually went out. */
+	emailSent?: boolean;
+	/** Why delivery failed, when the admin asked to send email. */
+	emailError?: string;
+}
+
 export interface ImportWizardResult {
 	success: boolean;
-	created: Array<{ name: string; email: string; url?: string; token?: string }>;
+	created: Array<CreatedInviteRow>;
 	errors: Array<{ row: number; email: string; message: string }>;
 	error?: string;
 }
@@ -40,6 +51,11 @@ export interface ImportWizardProps {
 	sampleCsv: string;
 	title: string;
 	description: string;
+	/**
+	 * Whether transactional email is configured. When false the "email each
+	 * person" option is disabled and the CSV/SMS fallback is recommended.
+	 */
+	mailConfigured?: boolean;
 	onImport: (
 		rows: Array<Record<string, string | null>>,
 		sendEmail: boolean,
@@ -83,13 +99,16 @@ function errorsToCsv(
  * hand the details to an SMS gateway or keep them on file when email delivery
  * is unavailable.
  */
-function createdToCsv(
-	created: Array<{ name: string; email: string; url?: string; token?: string }>,
-): string {
+function createdToCsv(created: Array<CreatedInviteRow>): string {
 	return [
-		"name,email,activation_link",
+		"name,email,activation_link,email_status",
 		...created.map((entry) =>
-			[entry.name, entry.email, entry.url ?? entry.token ?? ""]
+			[
+				entry.name,
+				entry.email,
+				entry.url ?? entry.token ?? "",
+				entry.emailSent ? "sent" : "not_sent",
+			]
 				.map((value) => escapeCsv(String(value ?? "")))
 				.join(","),
 		),
@@ -97,9 +116,7 @@ function createdToCsv(
 }
 
 /** One line per student, formatted for pasting into an SMS sender. */
-function createdToSmsText(
-	created: Array<{ name: string; email: string; url?: string; token?: string }>,
-): string {
+function createdToSmsText(created: Array<CreatedInviteRow>): string {
 	return created
 		.map(
 			(entry) =>
@@ -115,6 +132,7 @@ export function ImportWizard({
 	sampleCsv,
 	title,
 	description,
+	mailConfigured = true,
 	onImport,
 }: ImportWizardProps) {
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -237,6 +255,7 @@ export function ImportWizard({
 		setPreview(null);
 		setResult(null);
 		setError("");
+		setSendEmail(false);
 		setCopyState("idle");
 		if (inputRef.current) inputRef.current.value = "";
 	};
@@ -511,14 +530,26 @@ export function ImportWizard({
 						</table>
 					</div>
 
-					<label className="flex items-center gap-2 text-sm text-gray-700">
+					<label className="flex items-start gap-2 text-sm text-gray-700">
 						<input
 							type="checkbox"
 							checked={sendEmail}
+							disabled={!mailConfigured}
 							onChange={(event) => setSendEmail(event.target.checked)}
-							className="h-4 w-4 rounded border-gray-300 text-red-500"
+							className="mt-0.5 h-4 w-4 rounded border-gray-300 text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
 						/>
-						Email each person their activation link (requires mail settings)
+						<span>
+							Email each person their activation link
+							{mailConfigured ? (
+								<span className="text-gray-500"> (uses your mail settings)</span>
+							) : (
+								<span className="block text-xs text-amber-700">
+									Email is not configured yet. Invitations will still be
+									created — use the copy / CSV buttons on the next step to send
+									the activation links yourself.
+								</span>
+							)}
+						</span>
 					</label>
 
 					<div className="flex justify-between gap-3">
@@ -597,6 +628,7 @@ export function ImportWizard({
 										<th className="px-3 py-2">Name</th>
 										<th className="px-3 py-2">Email</th>
 										<th className="px-3 py-2">Activation link</th>
+										<th className="px-3 py-2">Email status</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -606,6 +638,20 @@ export function ImportWizard({
 											<td className="px-3 py-2">{entry.email}</td>
 											<td className="max-w-[260px] truncate px-3 py-2 text-xs text-gray-500">
 												{entry.url ?? entry.token ?? "—"}
+											</td>
+											<td className="px-3 py-2">
+												{entry.emailSent ? (
+													<span className="rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700">
+														Sent
+													</span>
+												) : (
+													<span
+														title={entry.emailError ?? undefined}
+														className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700"
+													>
+														Not sent
+													</span>
+												)}
 											</td>
 										</tr>
 									))}

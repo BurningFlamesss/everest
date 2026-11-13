@@ -118,7 +118,7 @@ export const SECTION_LABELS: Partial<Record<BlockType, string>> = {
 	faculty_header: "Header",
 	faculty_leadership: "Leadership heading",
 	faculty_directory: "Directory heading",
-	landing_hero: "Hero overlays",
+	landing_hero: "Hero overlays & footage",
 	landing_facts: "Institution facts",
 	discover_cards: "Discover cards",
 	chapters: "Chapters",
@@ -204,6 +204,11 @@ export const SECTION_DEFAULTS: Partial<
 			"Our state-of-the-art facilities and modern curriculums empower students to thrive in an evolving world.",
 		text3Title: "Everest.",
 		text3Body: "The summit of education.",
+		// Scroll footage: frames live at <footageBase><footagePrefix>NNNN<footageExtension>.
+		footageBase: "/schools/everest/landing-footage/",
+		footagePrefix: "frame_",
+		footageExtension: ".jpeg",
+		footageFrameCount: 216,
 	},
 	landing_facts: {
 		title: "Established in purpose.\nContemporary in outlook.",
