@@ -278,7 +278,7 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
 			label: "Frame filename prefix",
 			kind: "text",
 			placeholder: "frame_",
-			help: 'Frames are named <prefix>0001.jpeg, <prefix>0002.jpeg… (4-digit zero-padded).',
+			help: "Frames are named <prefix>0001.jpeg, <prefix>0002.jpeg… (4-digit zero-padded).",
 		},
 		{
 			key: "footageExtension",
@@ -292,6 +292,12 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
 			label: "Number of frames",
 			kind: "number",
 			help: "Frames must be numbered 0001 up to this count. The scroll maps onto them.",
+		},
+		{
+			key: "autoplaySeconds",
+			label: "Auto-play duration (seconds)",
+			kind: "number",
+			help: "How long the hero takes to play by itself when the visitor is idle. 0 disables auto-play; scroll always works.",
 		},
 	],
 	landing_facts: [

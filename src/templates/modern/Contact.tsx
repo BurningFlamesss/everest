@@ -105,7 +105,7 @@ function Contact() {
 					</div>
 					<a
 						href={`mailto:${contact.email}?subject=Campus%20visit`}
-						className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+						className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
 					>
 						Arrange a visit
 					</a>

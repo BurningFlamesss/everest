@@ -45,7 +45,7 @@ export function CmsSectionBox({
 				title={`Edit ${sectionLabel(sectionType)}`}
 				aria-label={`Edit ${sectionLabel(sectionType)}`}
 				data-testid={testId ?? `cms-section-hit-${sectionType}`}
-				className="pointer-events-auto absolute right-2 top-2 z-20 inline-flex items-center gap-1.5 rounded-md border border-accent/60 bg-background px-2.5 py-1 font-mono text-[11px] uppercase leading-none tracking-wide text-accent shadow-sm transition-colors duration-150 hover:border-accent hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+				className="pointer-events-auto absolute right-2 top-2 z-20 inline-flex items-center gap-1.5 rounded-md border border-accent/60 bg-background px-2.5 py-1 font-mono text-[11px] uppercase leading-none tracking-wide text-accent shadow-sm transition-colors duration-150 hover:border-accent hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
 			>
 				<Pencil className="h-3 w-3" aria-hidden="true" />
 				{sectionLabel(sectionType)}

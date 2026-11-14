@@ -33,7 +33,11 @@ export const Route = createFileRoute("/_onboard/activate/guardian/$token")({
 			throw new Error(ERROR_CODES.INVITE_EXPIRED);
 		}
 
-		return invite;
+		// Same as the staff activation route: the token is already in the
+		// URL, so the dehydrated payload must not repeat the raw credential.
+		// The submit handler reads it back from the route params.
+		const { token: _token, ...safeInvite } = invite;
+		return safeInvite;
 	},
 	notFoundComponent: () => (
 		<AuthShell title="Invitation not found">
@@ -61,6 +65,9 @@ export const Route = createFileRoute("/_onboard/activate/guardian/$token")({
 
 function RouteComponent() {
 	const invite = Route.useLoaderData();
+	// The loader strips the token from its dehydrated payload; the submit
+	// handler needs it, and the URL params hold the same value.
+	const token = Route.useParams().token;
 	const navigate = useNavigate();
 	const [error, setError] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -89,7 +96,7 @@ function RouteComponent() {
 
 		try {
 			const response = await activateGuardianInvite({
-				data: { token: invite.token, password },
+				data: { token, password },
 			});
 
 			if (!response.success) {

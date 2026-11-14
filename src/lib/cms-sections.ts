@@ -209,6 +209,9 @@ export const SECTION_DEFAULTS: Partial<
 		footagePrefix: "frame_",
 		footageExtension: ".jpeg",
 		footageFrameCount: 216,
+		// Auto-play: the hero plays like a video when the visitor is idle, and
+		// scrolling seeks. 0 disables auto-play.
+		autoplaySeconds: 36,
 	},
 	landing_facts: {
 		title: "Established in purpose.\nContemporary in outlook.",
@@ -426,7 +429,7 @@ export const SECTION_DEFAULTS: Partial<
 	},
 	// Contact page (/contact): mirrors the route copy.
 	social_links: {
-		facebook: "https://facebook.com/everestbutwal",
+		facebook: "https://www.facebook.com/eebssbutwal",
 		instagram: "https://instagram.com/everestbutwal",
 		linkedin: "https://linkedin.com/school/everestbutwal",
 		x: "",

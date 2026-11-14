@@ -101,7 +101,7 @@ function DetailPanel({
 			>
 				<div className="flex items-start justify-between gap-4 border-b border-border p-8">
 					<div className="flex flex-col gap-2">
-						<Eyebrow>{facility.room}</Eyebrow>
+						<Eyebrow className="text-red-dark">{facility.room}</Eyebrow>
 						<h3 className="u-display text-display-m text-foreground">
 							{facility.name}
 						</h3>
@@ -202,7 +202,7 @@ export function CampusPlan() {
 							active === f.id ? "text-foreground" : "text-muted-foreground",
 						)}
 					>
-						<span className="u-label tnum w-6 shrink-0 text-accent">
+						<span className="u-label tnum w-6 shrink-0 text-red-dark">
 							{String(i + 1).padStart(2, "0")}
 						</span>
 						<span className="flex min-w-0 flex-1 flex-col gap-1">
@@ -221,7 +221,7 @@ export function CampusPlan() {
 	return (
 		<div className="flex flex-col gap-8" data-testid="campus-plan">
 			<div className="flex flex-col gap-2">
-				<Eyebrow>The plan</Eyebrow>
+				<Eyebrow className="text-red-dark">The plan</Eyebrow>
 				<WidgetCaption>
 					Select a block, or use the list, to open its detail.
 				</WidgetCaption>
@@ -359,7 +359,7 @@ export function CampusPlan() {
 										<Picture image={activeFacility.images[0]} sizes="240px" />
 									</div>
 									<div className="flex flex-col gap-1 p-4">
-										<p className="u-label text-accent">{activeFacility.room}</p>
+										<p className="u-label text-red-dark">{activeFacility.room}</p>
 										<p className="text-body-m text-foreground">
 											{activeFacility.name}
 										</p>

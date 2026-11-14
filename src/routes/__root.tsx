@@ -68,7 +68,7 @@ function NotFoundComponent() {
 				</p>
 				<a
 					href="/"
-					className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+					className="mt-6 inline-flex min-h-11 items-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
 				>
 					Back to the home page
 				</a>
@@ -81,7 +81,25 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 	async beforeLoad() {
 		const session = await getSessionFn();
 
-		return { session };
+		// Dehydrate only the user, never the raw session record: the router
+		// streams this context into every HTML document, and public pages
+		// carry `Cache-Control: public, s-maxage=…` — a full session here
+		// (token, ipAddress, userAgent) would be embedded in a page a shared
+		// CDN may serve to other visitors. Consumers only read `session.user`.
+		return {
+			session: session?.user
+				? {
+						user: {
+							id: session.user.id,
+							name: session.user.name,
+							email: session.user.email,
+							emailVerified: session.user.emailVerified,
+							image: session.user.image,
+							role: session.user.role,
+						},
+					}
+				: null,
+		};
 	},
 	async loader() {
 		// Wrap DB requests with a timeout to prevent infinite hanging when DB is asleep/down

@@ -21,11 +21,11 @@ export function Footer() {
 		<footer className="bg-black pb-10 pt-16 text-white" data-testid="footer">
 			<div className="mx-8">
 				<div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-8">
-					<p className="m-0 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+					<p className="m-0 text-[10px] uppercase tracking-[0.14em] text-white/70">
 						Reach the Highest Point
 					</p>
 					<Link
-						className="group inline-flex w-fit items-center gap-3 text-[clamp(42px,7vw,110px)] leading-[0.9] no-underline md:gap-6"
+						className="group inline-flex w-fit items-center gap-3 text-[clamp(42px,7vw,110px)] leading-[0.9] no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow md:gap-6"
 						to="/contact"
 						data-testid="footer-with-everest"
 					>
@@ -47,14 +47,14 @@ export function Footer() {
 					)}
 
 					<nav aria-label="Footer" className="flex flex-col gap-2.5 text-xs">
-						<span className="mb-2 text-[9px] uppercase tracking-[0.12em] text-yellow">
+						<span className="mb-2 text-[11px] uppercase tracking-[0.12em] text-yellow">
 							Explore
 						</span>
 						{exploreLinks.map(([label, to]) => (
 							<Link
 								key={label}
 								to={to}
-								className="w-fit text-white no-underline transition-colors hover:text-yellow"
+								className="inline-flex min-h-[44px] w-fit items-center text-white no-underline transition-colors hover:text-yellow focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow"
 							>
 								{label}
 							</Link>
@@ -62,16 +62,16 @@ export function Footer() {
 					</nav>
 
 					<div className="flex flex-col gap-2.5 text-xs">
-						<span className="mb-2 text-[9px] uppercase tracking-[0.12em] text-yellow">
+						<span className="mb-2 text-[11px] uppercase tracking-[0.12em] text-yellow">
 							Institution
 						</span>
-						<p className="m-0 leading-normal text-muted-foreground">Nepal</p>
-						<p className="m-0 leading-normal text-muted-foreground">
+						<p className="m-0 leading-normal text-white/70">Nepal</p>
+						<p className="m-0 leading-normal text-white/70">
 							School Administrator
 						</p>
 					</div>
 
-					<div className="flex flex-col items-start justify-between gap-2 text-[9px] text-muted-foreground md:items-end">
+					<div className="flex flex-col items-start justify-between gap-2 text-[9px] text-white/70 md:items-end">
 						<span>Everest School</span>
 						<span data-testid="footer-year">{new Date().getFullYear()}</span>
 					</div>

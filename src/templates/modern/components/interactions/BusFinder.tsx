@@ -307,7 +307,7 @@ export function BusFinder() {
 								Shri {best!.route.driverName || "Ram Bahadur"} —{" "}
 								<a
 									href={`tel:${best!.route.driverPhone || "+977 71 540 000"}`}
-									className="text-accent underline underline-offset-4"
+									className="text-red-dark underline underline-offset-4"
 								>
 									{best!.route.driverPhone || "+977 71 540 000"}
 								</a>
@@ -379,7 +379,7 @@ export function BusFinder() {
 										(s.id === best!.stop.id ? "border-accent" : "border-border")
 									}
 								>
-									<span className="u-label tnum w-6 text-accent">
+									<span className="u-label tnum w-6 text-red-dark">
 										{String(s.order).padStart(2, "0")}
 									</span>
 									<span className="min-w-0 flex-1 text-body-m text-foreground">

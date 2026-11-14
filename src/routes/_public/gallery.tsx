@@ -233,7 +233,7 @@ export default function RouteComponent() {
 							>
 								<div className="mb-12 flex flex-wrap items-end justify-between gap-6">
 									<div className="flex flex-col gap-2">
-										<Eyebrow>
+										<Eyebrow className="text-red-dark">
 											{entered.category} · {entered.year} · {entered.date}
 										</Eyebrow>
 										<h2 className="u-display text-display-l text-ink">

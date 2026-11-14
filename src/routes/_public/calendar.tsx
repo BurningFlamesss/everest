@@ -91,8 +91,8 @@ function Glyph({ kind }: { kind: EventKind }) {
 }
 
 const KIND_TEXT: Record<EventKind, string> = {
-	exam: "text-brand",
-	holiday: "text-accent",
+	exam: "text-red-dark",
+	holiday: "text-red-dark",
 	festival: "text-ink",
 	event: "text-n-600",
 	admission: "text-brand-deep",
@@ -274,7 +274,7 @@ function RouteComponent() {
 									<p className="u-display text-display-m text-ink">
 										{c.ev.title}
 									</p>
-									<p className="u-label tnum text-accent">
+									<p className="u-label tnum text-red-dark">
 										{countdownLabel(c.ev.date.ad)} &middot;{" "}
 										{formatBs(c.ev.date.bs)} BS &middot;{" "}
 										{formatAd(c.ev.date.ad)}
@@ -370,8 +370,8 @@ function RouteComponent() {
 								aria-pressed={month === i + 1}
 								data-testid={"calendar-month-" + (i + 1)}
 								className={[
-									"inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-3 py-1.5 text-[13px] transition-colors duration-fast",
-									"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+									"inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 py-1.5 text-[13px] transition-colors duration-fast",
+									"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
 									month === i + 1
 										? "border-accent/40 bg-accent/12 font-medium text-foreground"
 										: "border-border bg-background text-muted-foreground hover:bg-secondary hover:text-foreground",
@@ -461,7 +461,7 @@ function RouteComponent() {
 												</span>
 											</span>
 											{isToday ? (
-												<span className="u-label text-accent">Today</span>
+												<span className="u-label text-red-dark">Today</span>
 											) : null}
 											<span className="flex flex-wrap items-center gap-1">
 												{evs.slice(0, 4).map((e) => (
@@ -493,7 +493,7 @@ function RouteComponent() {
 								data-testid="calendar-detail"
 							>
 								<div className="border-b-rule border-accent bg-n-50 p-6">
-									<p className="u-label text-accent">
+									<p className="u-label text-red-dark">
 										{formatBs(selected)} BS &middot;{" "}
 										{formatBs(selected, { nepali: true })} &middot;{" "}
 										{formatAd(bsToAd(selected) ?? "")}
@@ -576,8 +576,8 @@ function RouteComponent() {
 									}
 									data-testid={"legend-" + k}
 									className={[
-										"inline-flex min-h-[36px] items-center gap-2 rounded-full border px-3 py-1.5 text-[13px] transition-colors duration-fast",
-										"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+										"inline-flex min-h-[44px] items-center gap-2 rounded-full border px-3 py-1.5 text-[13px] transition-colors duration-fast",
+										"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
 										on
 											? "border-accent/40 bg-accent/12 font-medium text-foreground"
 											: "border-border bg-background text-muted-foreground hover:bg-secondary hover:text-foreground line-through opacity-50",

@@ -58,7 +58,9 @@ export const DownloadButton = ({
 					data-testid={testId}
 					className={[
 						"gap-2 rounded-field font-medium transition-colors duration-fast",
-						size === "sm" ? "h-9 px-3 text-[13px]" : "h-11 px-4 text-sm",
+						size === "sm"
+						? "min-h-11 px-3 text-[13px]"
+						: "min-h-11 px-4 text-sm",
 						variant === "outline"
 							? "border-border bg-background hover:bg-secondary"
 							: "",
@@ -69,7 +71,7 @@ export const DownloadButton = ({
 				</Button>
 
 				{stamp ? (
-					<span className="inline-flex items-center rounded-full border border-accent/35 bg-accent/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-accent">
+					<span className="inline-flex items-center rounded-full border border-accent/35 bg-accent/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-red-dark">
 						{stamp}
 					</span>
 				) : null}

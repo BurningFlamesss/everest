@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import {
+	cleanup,
+	fireEvent,
+	render,
+	screen,
+	within,
+} from "@testing-library/react";
 import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -488,13 +494,13 @@ describe("ClubsPage", () => {
 		expect((titleInput as HTMLInputElement).value).toBe(post.title);
 		expect((bodyInput as HTMLTextAreaElement).value).toBe(post.body);
 
-		fireEvent.change(titleInput, { target: { value: "  Science fair sign-up  " } });
+		fireEvent.change(titleInput, {
+			target: { value: "  Science fair sign-up  " },
+		});
 		fireEvent.change(bodyInput, {
 			target: { value: "Sketches are due Thursday." },
 		});
-		fireEvent.click(
-			within(form).getByRole("button", { name: "Save changes" }),
-		);
+		fireEvent.click(within(form).getByRole("button", { name: "Save changes" }));
 
 		await vi.waitFor(() => {
 			expect(clubServer.updateClubPostAction).toHaveBeenCalledWith({
@@ -608,6 +614,7 @@ describe("ClubsPage", () => {
 		route.useLoaderData.mockReturnValue(
 			loaderData({
 				userId: "user-2",
+				accessBySlug: { "science-club": memberAccess },
 				postsBySlug: { "science-club": [post] },
 			}),
 		);
@@ -647,10 +654,64 @@ describe("ClubsPage", () => {
 
 		fireEvent.click(screen.getByTestId("club-post-comments-toggle-post-1"));
 
-		const panel = screen.getByTestId("club-comments-post-1");
+		const commentPanel = screen.getByTestId("club-comments-post-1");
 		expect(
-			within(panel).getByText("Sign in to join the conversation."),
+			within(commentPanel).getByText("Sign in to join the conversation."),
 		).toBeTruthy();
-		expect(within(panel).queryByLabelText("Comment")).toBeNull();
+		expect(within(commentPanel).queryByLabelText("Comment")).toBeNull();
+	});
+
+	it("hides the comment form from a signed-in non-member whose role grants no permission", () => {
+		// A direct club role with an empty permission list and no membership: the
+		// server rejects comments (`!isMember && permissions.size === 0`), so the
+		// client must not offer the form just because a role name exists.
+		route.useLoaderData.mockReturnValue(
+			loaderData({
+				userId: "user-2",
+				accessBySlug: {
+					"science-club": {
+						...memberAccess,
+						roleName: "Guest",
+						isMember: false,
+					},
+				},
+				postsBySlug: { "science-club": [post] },
+			}),
+		);
+
+		render(React.createElement(route.component));
+
+		fireEvent.click(screen.getByTestId("club-post-comments-toggle-post-1"));
+
+		const container = screen.getByTestId("club-comments-post-1");
+		expect(
+			within(container).getByText(
+				"Join the club before commenting on its posts.",
+			),
+		).toBeTruthy();
+		expect(within(container).queryByLabelText("Comment")).toBeNull();
+	});
+
+	it("shows the comment form to a non-member holding a club permission", () => {
+		route.useLoaderData.mockReturnValue(
+			loaderData({
+				userId: "user-2",
+				accessBySlug: {
+					"science-club": {
+						...memberAccess,
+						canCreatePosts: true,
+						isMember: false,
+					},
+				},
+				postsBySlug: { "science-club": [post] },
+			}),
+		);
+
+		render(React.createElement(route.component));
+
+		fireEvent.click(screen.getByTestId("club-post-comments-toggle-post-1"));
+
+		const container = screen.getByTestId("club-comments-post-1");
+		expect(within(container).getByLabelText("Comment")).toBeTruthy();
 	});
 });

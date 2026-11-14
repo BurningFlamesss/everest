@@ -3,7 +3,7 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Playfair Display", Georgia, serif;
+  --font-display: "Fraunces", Georgia, serif;
   --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   --font-label: "Manrope", ui-sans-serif, system-ui, sans-serif;
@@ -40,7 +40,7 @@
   --color-secondary: var(--color-gray-100);
   --color-secondary-foreground: var(--color-black);
   --color-muted: var(--color-gray-100);
-  --color-muted-foreground: var(--color-gray-500);
+  --color-muted-foreground: var(--color-n-600);
   --color-accent: var(--color-yellow);
   --color-accent-foreground: var(--color-black);
   --color-destructive: var(--color-red);
@@ -261,7 +261,7 @@
 	}
 
 	:focus-visible {
-		outline: 2px solid hsl(var(--ring));
+		outline: 2px solid var(--color-ring);
 		outline-offset: 2px;
 	}
 
@@ -280,7 +280,9 @@
 	}
 
 	a {
-		@apply text-primary underline-offset-2 hover:underline;
+		/* Brand red #DC2626 is 4.41:1 on the paper background — under AA for
+		   body links. Link ink is the readable red-dark (5.9:1 on paper). */
+		@apply text-red-dark underline-offset-2 hover:underline;
 	}
 
 	hr {
@@ -637,7 +639,7 @@
 	}
 
 	.focus-ring:focus-visible {
-		outline: 2px solid hsl(var(--ring));
+		outline: 2px solid var(--color-ring);
 		outline-offset: 2px;
 	}
 
@@ -724,7 +726,7 @@
 		letter-spacing: 0.16em;
 		line-height: 1.4;
 		text-transform: uppercase;
-		color: var(--color-brand, #dc2626);
+		color: var(--c-red-dark, #b91c1c);
 	}
 
 	.lead {
@@ -965,7 +967,7 @@
 		margin-bottom: 14px;
 		font-family: var(--font-mono, monospace);
 		font-size: 10px;
-		color: var(--color-brand, #dc2626);
+		color: var(--c-red-dark, #b91c1c);
 	}
 
 	.voice-rail blockquote {
@@ -1187,7 +1189,7 @@
 		margin-bottom: 14px;
 		font-family: var(--font-mono, monospace);
 		font-size: 10px;
-		color: var(--color-brand, #dc2626);
+		color: var(--c-red-dark, #b91c1c);
 	}
 
 	.triptych article h2 {
@@ -1363,7 +1365,7 @@
 		font-family: var(--font-mono, monospace);
 		font-size: 10px;
 		letter-spacing: 0.12em;
-		color: var(--color-brand, #dc2626);
+		color: var(--c-red-dark, #b91c1c);
 	}
 
 	.time-card span {
@@ -1371,7 +1373,7 @@
 		font-size: 9px;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
-		color: var(--color-n-500, #737373);
+		color: var(--color-n-600, #525252);
 	}
 
 	.time-card p {
@@ -1382,7 +1384,23 @@
 		font-size: 9px;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
-		color: var(--color-n-500, #737373);
+		color: var(--color-n-600, #525252);
+	}
+
+	/* Contact rows reuse .time-card but hold tappable links: give them the
+	   44px tap floor and reset the 9px value cascade that leaks into them. */
+	.contact-layout .time-card a {
+		min-height: 44px;
+		align-items: center;
+		padding-block: 10px;
+	}
+
+	.contact-layout .time-card a span {
+		font-size: 10px;
+	}
+
+	.contact-layout .time-card a[data-testid="contact-directions-link"] {
+		min-height: 44px;
 	}
 
 	.contact-layout form {
@@ -1402,19 +1420,26 @@
 		margin: 0;
 		font-size: 12px;
 		line-height: 1.5;
-		color: var(--color-n-500, #737373);
+		color: var(--color-n-600, #525252);
 	}
 
 	.map-panel {
 		position: relative;
 		display: grid;
 		place-items: center;
-		height: clamp(300px, 48vw, 520px);
+		min-height: clamp(320px, 48vw, 520px);
+		height: auto;
 		margin-block: clamp(32px, 5vw, 72px);
+		padding-block: 20px;
 		overflow: hidden;
 		border-radius: var(--radius-card, 20px);
 		background: var(--color-n-200, #e5e5e5);
 		text-align: center;
+	}
+
+	.map-panel iframe {
+		width: 100%;
+		height: min(70vw, 400px);
 	}
 
 	.map-panel::before {
@@ -1478,7 +1503,7 @@
 		font-size: 10px;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--color-brand, #dc2626);
+		color: var(--c-red-dark, #b91c1c);
 	}
 
 	.departments article h3 {
@@ -1488,7 +1513,7 @@
 	}
 
 	.departments article a {
-		color: var(--color-brand, #dc2626);
+		color: var(--c-red-dark, #b91c1c);
 		text-decoration: underline;
 		text-underline-offset: 2px;
 	}
@@ -1538,7 +1563,7 @@
 		font-family: var(--font-mono, monospace);
 		font-size: 10px;
 		letter-spacing: 0.14em;
-		color: var(--color-brand, #dc2626);
+		color: var(--c-red-dark, #b91c1c);
 	}
 
 	.level-band h2 {
@@ -1602,7 +1627,7 @@
 
 	.subject-row button[aria-expanded="true"] b {
 		transform: rotate(45deg);
-		color: var(--color-brand, #dc2626);
+		color: var(--c-red-dark, #b91c1c);
 	}
 
 	.subject-row ul {
@@ -1623,7 +1648,7 @@
 
 	.subject-row li::before {
 		content: "· ";
-		color: var(--color-brand, #dc2626);
+		color: var(--c-red-dark, #b91c1c);
 	}
 
 	.comparison {
@@ -1701,7 +1726,7 @@
 	}
 
 	.diff .shared h3 {
-		color: var(--color-brand, #dc2626);
+		color: var(--c-red-dark, #b91c1c);
 	}
 
 	.fee-table {
@@ -1801,7 +1826,7 @@
 	.plan-canvas svg text {
 		font-family: var(--font-mono, monospace);
 		font-size: 8px;
-		fill: var(--color-brand, #dc2626);
+		fill: var(--c-red-dark, #b91c1c);
 	}
 
 	.plan-hotspots {
@@ -1878,7 +1903,7 @@
 	}
 
 	.plan-list button.active {
-		color: var(--color-brand, #dc2626);
+		color: var(--c-red-dark, #b91c1c);
 		border-bottom-color: var(--color-brand, #dc2626);
 	}
 
@@ -1924,7 +1949,7 @@
 		font-size: 10px;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--color-brand, #dc2626);
+		color: var(--c-red-dark, #b91c1c);
 	}
 
 	.facility-panel > h2 {

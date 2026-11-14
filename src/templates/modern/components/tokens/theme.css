@@ -38,8 +38,8 @@
 	--c-gray-800-rgb: 38 38 38;
 	--c-gray-900-rgb: 23 23 23;
 
-	/* type - Inter, Manrope, Playfair Display at Regular/Medium weights */
-	--f-display: "Playfair Display", Georgia, serif;
+	/* type - Inter, Manrope, Fraunces at Regular/Medium weights */
+	--f-display: "Fraunces", Georgia, serif;
 	--f-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 	--f-label: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
 	--f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;

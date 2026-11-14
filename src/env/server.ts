@@ -45,6 +45,15 @@ export const serverEnv = createEnv({
 		// Required to call the scheduled upload-cleanup endpoint. Leave unset to
 		// disable the endpoint entirely.
 		CRON_SECRET: z.string().trim().min(16).optional(),
+
+		// Facebook feed (landing page + /posts route). Leave all unset to show
+		// the honest empty state — no token means no fabricated posts.
+		FACEBOOK_PAGE_TOKEN: z.string().trim().optional(),
+		FACEBOOK_PAGE_ID: z.string().trim().optional(),
+		FACEBOOK_GRAPH_VERSION: z.string().trim().min(2).optional(),
+		FACEBOOK_RSS_URL: z.string().url().optional(),
+		// Legacy alias kept so an existing VITE_FACEBOOK_RSS_URL keeps working.
+		VITE_FACEBOOK_RSS_URL: z.string().url().optional(),
 	},
 
 	runtimeEnv: process.env,

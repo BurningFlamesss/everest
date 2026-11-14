@@ -176,6 +176,9 @@ Optional variables and defaults:
 | `S3_BUCKET` | `scms`; use the existing bucket when upgrading. |
 | `S3_REGION` | Optional; explicit region is authoritative. See region discovery below. |
 | `CRON_SECRET` | Optional; at least 16 characters. Enables `GET`/`POST /api/cron/cleanup` when set. Leave unset to disable the endpoint. |
+| `FACEBOOK_PAGE_TOKEN`, `FACEBOOK_PAGE_ID` | Optional; together they enable the real Facebook page feed on the landing page and `/posts`. The token is a Page Access Token from an admin of the school's Facebook page; the ID is the page's numeric ID. Leave unset to show the honest empty state instead of posts. |
+| `FACEBOOK_GRAPH_VERSION` | Optional; Graph API version, defaults to `v23.0`. |
+| `FACEBOOK_RSS_URL` | Optional; RSS bridge feed (rss.app, RSSHub, self-hosted) used when the Graph token is unset or fails. `VITE_FACEBOOK_RSS_URL` is accepted as a legacy alias. |
 
 For `STORAGE_DRIVER=s3`, configure the endpoint, port, TLS setting, credentials, and bucket for your service rather than relying on development defaults. The driver checks the bucket and creates it if missing; credentials must permit the required bucket check/object operations and, if needed, bucket creation.
 

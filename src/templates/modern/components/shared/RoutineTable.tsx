@@ -82,8 +82,8 @@ export const RoutineTable = ({ routine }: { routine: Routine }) => {
 					data-testid="routine-now-indicator"
 					className="mt-5 inline-flex flex-wrap items-center gap-2 rounded-full border border-accent/35 bg-accent/10 px-3 py-1.5"
 				>
-					<CircleDot className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
-					<span className="font-mono text-[11px] uppercase tracking-[0.14em] text-accent">
+					<CircleDot className="h-3.5 w-3.5 text-red-dark" aria-hidden="true" />
+					<span className="font-mono text-[11px] uppercase tracking-[0.14em] text-red-dark">
 						Right now
 					</span>
 					<span className="text-[13px] text-foreground">
@@ -179,7 +179,7 @@ export const RoutineTable = ({ routine }: { routine: Routine }) => {
 													{row.day}
 												</span>
 												{isToday ? (
-													<span className="mt-1 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-accent">
+													<span className="mt-1 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-red-dark">
 														Today
 													</span>
 												) : null}

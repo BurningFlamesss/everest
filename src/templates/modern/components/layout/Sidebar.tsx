@@ -49,10 +49,17 @@ function SidebarItem({
 					to={item.href ?? "/"}
 					target={item.external ? "_blank" : undefined}
 					className={cn(
-						"flex items-center w-full gap-2.5 px-4 py-2 text-sm font-medium transition-colors hover:text-[#EAB308]",
-						isActive ? "text-[#EAB308]" : "text-white",
+						"relative flex min-h-11 items-center w-full gap-2.5 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
 					)}
 				>
+					<span className="sr-only">{isActive ? "(current page) " : ""}</span>
+					<span
+						aria-hidden="true"
+						className={cn(
+							"absolute inset-y-0 left-0 w-[3px] bg-[#EAB308]",
+							isActive ? "" : "hidden",
+						)}
+					/>
 					<span>{item.label}</span>
 				</Link>
 			</li>
@@ -66,8 +73,7 @@ function SidebarItem({
 					<Link
 						to={item.href}
 						className={cn(
-							"flex-1 px-4 py-2 text-sm font-medium text-left transition-colors hover:text-[#EAB308]",
-							isActive ? "text-[#EAB308]" : "text-white",
+							"flex min-h-11 flex-1 px-4 py-2 text-sm font-medium text-left text-white transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
 						)}
 					>
 						{item.label}
@@ -77,8 +83,7 @@ function SidebarItem({
 						type="button"
 						onClick={() => setIsOpen((s) => !s)}
 						className={cn(
-							"flex-1 cursor-pointer px-4 py-2 text-sm font-medium text-left transition-colors bg-transparent border-none hover:text-[#EAB308]",
-							isActive ? "text-[#EAB308]" : "text-white",
+							"flex min-h-11 flex-1 cursor-pointer px-4 py-2 text-sm font-medium text-left text-white transition-colors bg-transparent border-none hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
 						)}
 					>
 						{item.label}
@@ -88,7 +93,7 @@ function SidebarItem({
 					type="button"
 					onClick={() => setIsOpen((s) => !s)}
 					aria-expanded={isOpen}
-					className="cursor-pointer px-3 py-2 text-white bg-transparent border-none hover:text-[#EAB308] transition-colors"
+					className="flex min-h-11 min-w-11 cursor-pointer items-center px-3 py-2 text-white bg-transparent border-none hover:text-[#EAB308] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
 				>
 					<ChevronRight
 						size={16}
@@ -176,7 +181,7 @@ export function Sidebar() {
 	) : (
 		<Link
 			to="/login"
-			className="bg-[#EAB308] flex w-full items-center justify-center py-2 cursor-pointer text-black hover:bg-[#EAB308]/90"
+			className="bg-[#EAB308] flex min-h-11 w-full items-center justify-center py-2.5 cursor-pointer text-black hover:bg-[#EAB308]/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
 		>
 			Login
 		</Link>
@@ -197,13 +202,13 @@ export function Sidebar() {
 			<aside
 				className={cn(
 					"fixed top-0 left-0 z-nav hidden h-screen w-60 flex-col justify-between bg-primary shadow-xl transition-transform duration-500 lg:flex",
-					isOpen ? "translate-x-0" : "-translate-x-full",
+					isOpen ? "translate-x-0" : "-translate-x-full invisible",
 				)}
 			>
 				<header className="flex flex-col items-center justify-center text-primary-foreground">
 					<Link
 						to="/"
-						className="flex items-center gap-3 p-4"
+						className="flex min-h-11 items-center gap-3 p-4"
 						data-testid="nav-home"
 					>
 						{logoMark}
@@ -229,7 +234,7 @@ export function Sidebar() {
 					aria-label={isOpen ? "Close navigation" : "Open navigation"}
 					title={isOpen ? "Close navigation" : "Open navigation"}
 					data-testid="nav-collapse-toggle"
-					className="inline-flex size-9 border-none cursor-pointer items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/30"
+					className="inline-flex size-11 border-none cursor-pointer items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
 				>
 					<Menu aria-hidden="true" size={18} />
 				</button>
@@ -242,7 +247,7 @@ export function Sidebar() {
 					title={pinned ? "Auto-collapse: OFF" : "Lock open"}
 					data-testid="nav-pin-toggle"
 					className={cn(
-						"inline-flex size-9 border-none cursor-pointer items-center justify-center rounded-full transition-colors",
+						"inline-flex size-11 border-none cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
 						pinned
 							? "bg-white text-black"
 							: "bg-white/10 text-white hover:bg-white/30",
@@ -260,7 +265,7 @@ export function Sidebar() {
 			<div className="fixed inset-x-0 top-0 z-nav flex h-topbar items-center justify-between bg-primary px-4 lg:hidden">
 				<Link
 					to="/"
-					className="flex min-w-0 items-center gap-3"
+					className="flex min-h-11 min-w-0 items-center gap-3"
 					data-testid="nav-home-mobile"
 				>
 					<img

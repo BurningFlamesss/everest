@@ -185,7 +185,7 @@
 .form-control label { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: .11em; text-transform: uppercase; }
 .editorial-input { min-height: 54px !important; padding: 12px 0 !important; border: 0 !important; border-bottom: 1px solid #a8a9ad !important; border-radius: 0 !important; background: var(--paper) !important; color: var(--ink) !important; box-shadow: none !important; font-size: 16px !important; }
 textarea.editorial-input { min-height: 140px !important; resize: vertical; }
-.editorial-input:focus-visible { border-bottom: 2px solid var(--red) !important; outline: 0 !important; box-shadow: none !important; }
+.editorial-input:focus-visible { border-bottom: 2px solid var(--danger) !important; outline: 0 !important; box-shadow: none !important; }
 .form-control--error .editorial-input { border-bottom-color: var(--danger) !important; }
 .field-error { display: flex; align-items: flex-start; gap: 8px; margin: 0; color: var(--danger); font-size: 12px; line-height: 1.5; }
 .field-error svg { width: 15px; height: 15px; flex: 0 0 15px; margin-top: 1px; }

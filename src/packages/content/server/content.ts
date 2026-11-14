@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { setResponseHeaders } from "@tanstack/react-start/server";
 import { z } from "zod";
 import type { Album, Img } from "#/content/types";
 import { prisma } from "#/lib/prisma";
@@ -7,6 +6,8 @@ import type {
 	ContentBlockFields,
 	WebsitePageContent,
 } from "#/lib/website-content-loader";
+import { requirePermission } from "#/packages/auth/server/guard.ts";
+import { setPublicCacheHeaders } from "#/packages/content/server/cache-headers";
 import type {
 	BlockType,
 	Facility,
@@ -27,12 +28,6 @@ const PageKeySchema = z.object({
 
 const StringSchema = z.object({
 	identifier: z.string(),
-});
-
-const PUBLIC_CACHE_HEADERS = new Headers({
-	"Cache-Control":
-		"public, max-age=60, s-maxage=3600, stale-while-revalidate=86400",
-	"CDN-Cache-Control": "max-age=3600, stale-while-revalidate=86400",
 });
 
 function toWebsitePageContent(
@@ -97,7 +92,7 @@ function toWebsitePageContent(
 export const getWebsitePageServer = createServerFn({ method: "GET" })
 	.validator(PageKeySchema)
 	.handler(async ({ data: { key } }) => {
-		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		setPublicCacheHeaders();
 		const page = await prisma.websitePage.findUnique({
 			where: { key, status: "published" },
 			include: {
@@ -112,9 +107,12 @@ export const getWebsitePageServer = createServerFn({ method: "GET" })
 /**
  * Any-status page for a managed key, used by the admin live preview
  * (`?cms=1`), so drafts render WYSIWYG before being published. Not cached.
+ * Draft content is admin-only: unauthenticated callers get the auth error
+ * boundary instead of any unpublished material.
  */
 export const getWebsitePagePreviewServer = createServerFn({ method: "GET" })
 	.validator(PageKeySchema)
+	.middleware([requirePermission("website.view")])
 	.handler(async ({ data: { key } }) => {
 		const page = await prisma.websitePage.findUnique({
 			where: { key },
@@ -130,7 +128,7 @@ export const getWebsitePagePreviewServer = createServerFn({ method: "GET" })
 export const getSchoolConfigServer = createServerFn({ method: "GET" })
 	.validator(StringSchema)
 	.handler(async ({ data: { identifier } }) => {
-		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		setPublicCacheHeaders();
 		const org = await prisma.organization.findUnique({
 			where: { slug: identifier },
 			include: {
@@ -149,7 +147,7 @@ export const getSchoolConfigServer = createServerFn({ method: "GET" })
 			},
 			theme: {
 				template: "modern",
-				primary: "#1a1a2e",
+				primary: "#DC2626",
 			},
 			features: {
 				clubs: true,
@@ -171,7 +169,7 @@ export const getSchoolConfigServer = createServerFn({ method: "GET" })
 export const getSchoolContentServer = createServerFn({ method: "GET" })
 	.validator(StringSchema)
 	.handler(async ({ data: { identifier } }) => {
-		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		setPublicCacheHeaders();
 		const org = await prisma.organization.findUnique({
 			where: { slug: identifier },
 			include: {
@@ -230,7 +228,7 @@ export const getSchoolContentServer = createServerFn({ method: "GET" })
 export const getAllPublishedPagesServer = createServerFn({
 	method: "GET",
 }).handler(async () => {
-	setResponseHeaders(PUBLIC_CACHE_HEADERS);
+	setPublicCacheHeaders();
 	const pages = await prisma.websitePage.findMany({
 		where: { status: "published" },
 		include: {
@@ -375,20 +373,20 @@ function toScholarship(row: ScholarshipRow): Scholarship {
 export const getFacultyMembersServer = createServerFn({
 	method: "GET",
 }).handler(async () => {
-	setResponseHeaders(PUBLIC_CACHE_HEADERS);
+	setPublicCacheHeaders();
 	const rows = await prisma.facultyMember.findMany({
 		orderBy: [{ leadership: "desc" }, { rank: "asc" }, { order: "asc" }],
 	});
 	return rows.map(toPerson);
 });
 
-/** Public notice board, pinned first then newest date first. */
+/** Public notice board: newest first, stable within the same timestamp. */
 export const getNoticesServer = createServerFn({ method: "GET" }).handler(
 	async (): Promise<Notice[]> => {
-		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		setPublicCacheHeaders();
 		const rows = await prisma.scmsNotice.findMany({
 			where: { isPublished: true },
-			orderBy: [{ pinnedAt: "desc" }, { publishedAt: "desc" }],
+			orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
 		});
 		return rows.map(toNotice);
 	},
@@ -397,7 +395,7 @@ export const getNoticesServer = createServerFn({ method: "GET" }).handler(
 /** Public scholarship schemes in their editorial (seed) order. */
 export const getScholarshipsServer = createServerFn({ method: "GET" }).handler(
 	async () => {
-		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		setPublicCacheHeaders();
 		const rows = await prisma.scholarship.findMany({
 			orderBy: { order: "asc" },
 		});
@@ -426,7 +424,7 @@ function toAlbum(row: {
 
 export const getAlbumsServer = createServerFn({ method: "GET" }).handler(
 	async (): Promise<Album[]> => {
-		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		setPublicCacheHeaders();
 		const rows = await prisma.album.findMany({ orderBy: { order: "asc" } });
 		return rows.map(toAlbum);
 	},
@@ -467,7 +465,7 @@ function toFacility(row: {
 
 export const getFacilitiesServer = createServerFn({ method: "GET" }).handler(
 	async (): Promise<Facility[]> => {
-		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		setPublicCacheHeaders();
 		const rows = await prisma.facility.findMany({ orderBy: { order: "asc" } });
 		return rows.map(toFacility);
 	},
@@ -475,14 +473,14 @@ export const getFacilitiesServer = createServerFn({ method: "GET" }).handler(
 
 export const getResourcesServer = createServerFn({ method: "GET" }).handler(
 	async () => {
-		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		setPublicCacheHeaders();
 		return await prisma.resource.findMany({ orderBy: { order: "asc" } });
 	},
 );
 
 export const getBoardResultsServer = createServerFn({ method: "GET" }).handler(
 	async () => {
-		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		setPublicCacheHeaders();
 		return await prisma.boardResult.findMany({ orderBy: { order: "asc" } });
 	},
 );
@@ -538,7 +536,7 @@ function toProgram(row: {
 
 export const getProgramsServer = createServerFn({ method: "GET" }).handler(
 	async (): Promise<Program[]> => {
-		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		setPublicCacheHeaders();
 		const rows = await prisma.program.findMany({ orderBy: { order: "asc" } });
 		return rows.map(toProgram);
 	},
@@ -546,7 +544,7 @@ export const getProgramsServer = createServerFn({ method: "GET" }).handler(
 
 export const getBusRoutesServer = createServerFn({ method: "GET" }).handler(
 	async () => {
-		setResponseHeaders(PUBLIC_CACHE_HEADERS);
+		setPublicCacheHeaders();
 		const rows = await prisma.busRoute.findMany({ orderBy: { order: "asc" } });
 		return rows.map((r) => ({ ...r, stops: r.stops as any }));
 	},
@@ -555,7 +553,7 @@ export const getBusRoutesServer = createServerFn({ method: "GET" }).handler(
 export const getCalendarEventsServer = createServerFn({
 	method: "GET",
 }).handler(async () => {
-	setResponseHeaders(PUBLIC_CACHE_HEADERS);
+	setPublicCacheHeaders();
 	const rows = await prisma.calendarEvent.findMany({
 		orderBy: { startDate: "asc" },
 	});

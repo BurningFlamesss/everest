@@ -80,7 +80,7 @@ export const EditorialImage = ({
 					type="button"
 					onClick={onClick}
 					aria-label={`Open larger view: ${alt}`}
-					className="group block w-full cursor-zoom-in rounded-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+					className="group block w-full cursor-zoom-in rounded-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 				>
 					{frame}
 				</button>

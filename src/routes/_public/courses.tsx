@@ -428,8 +428,8 @@ function RouteComponent() {
 									data-active={active}
 									data-testid={`program-level-switcher-item-${item.id}`}
 									className={[
-										"shrink-0 rounded-field border px-3.5 py-2.5 text-left transition-colors duration-fast",
-										"focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+										"shrink-0 min-h-11 rounded-field border px-3.5 py-2.5 text-left transition-colors duration-fast",
+										"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
 										"lg:w-full lg:rounded-none lg:border-0 lg:border-l-2 lg:px-0 lg:pl-4",
 										active
 											? "border-accent/40 bg-accent/[0.08] lg:border-accent lg:bg-transparent"
@@ -485,7 +485,7 @@ function RouteComponent() {
 								>
 									{level.label}
 								</h2>
-								<p className="mt-4 font-display text-lg italic leading-snug text-accent">
+								<p className="mt-4 font-display text-lg italic leading-snug text-red-dark">
 									{level.tagline}
 								</p>
 								<p className="t-body mt-5 max-w-measure text-muted-foreground">

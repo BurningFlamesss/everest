@@ -107,7 +107,7 @@ export function StreamCompare({
 							<h3 className="u-display mb-4 text-display-m text-ink">
 								{a.name}
 							</h3>
-							<p className="u-label mb-4 text-accent">Only in {a.name}</p>
+							<p className="u-label mb-4 text-red-dark">Only in {a.name}</p>
 							<ul className="flex flex-col">
 								{onlyA.map((s) => (
 									<li
@@ -161,7 +161,7 @@ export function StreamCompare({
 							<h3 className="u-display mb-4 text-display-m text-ink">
 								{b.name}
 							</h3>
-							<p className="u-label mb-4 text-accent">Only in {b.name}</p>
+							<p className="u-label mb-4 text-red-dark">Only in {b.name}</p>
 							<ul className="flex flex-col">
 								{onlyB.map((s) => (
 									<li

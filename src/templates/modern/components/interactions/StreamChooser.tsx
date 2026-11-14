@@ -72,7 +72,7 @@ export function StreamChooser({
 
 			<div className="flex items-center gap-4 border-y border-border py-4">
 				<span
-					className="u-label tnum shrink-0 text-accent"
+					className="u-label tnum shrink-0 text-red-dark"
 					data-testid="chooser-progress-label"
 				>
 					{done
@@ -154,7 +154,7 @@ export function StreamChooser({
 											}}
 											className="h-4 w-4 shrink-0 accent-[var(--c-yellow)]"
 										/>
-										<span className="u-label tnum w-6 shrink-0 text-accent">
+										<span className="u-label tnum w-6 shrink-0 text-red-dark">
 											{String.fromCharCode(65 + i)}
 										</span>
 										<span className="text-body-l">{o.label}</span>
@@ -207,7 +207,7 @@ export function StreamChooser({
 								className="border-t border-border py-6 last:border-b"
 							>
 								<div className="flex flex-wrap items-baseline gap-4">
-									<span className="u-label tnum text-accent">
+									<span className="u-label tnum text-red-dark">
 										{String(i + 1).padStart(2, "0")}
 									</span>
 									<h4 className="u-display text-display-m text-foreground">

@@ -287,7 +287,7 @@ const ScholarshipDetail = ({ item }: { item: Scholarship }) => {
 					type="button"
 					onClick={handleCalendar}
 					data-testid="scholarship-add-calendar-button"
-					className="inline-flex h-11 items-center justify-center gap-2 rounded-field border border-border bg-background px-4 text-sm text-foreground transition-colors duration-fast hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+					className="inline-flex h-11 items-center justify-center gap-2 rounded-field border border-border bg-background px-4 text-sm text-foreground transition-colors duration-fast hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 				>
 					<CalendarPlus
 						className="h-4 w-4 text-muted-foreground"

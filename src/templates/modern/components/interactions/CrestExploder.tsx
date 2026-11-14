@@ -186,7 +186,7 @@ export function CrestExploder() {
 					)}
 				>
 					<div className="flex gap-4">
-						<span className="u-label tnum shrink-0 text-accent">
+						<span className="u-label tnum shrink-0 text-red-dark">
 							{String(i + 1).padStart(2, "0")}
 						</span>
 						<div className="flex flex-col gap-2">
@@ -224,7 +224,7 @@ export function CrestExploder() {
 						</div>
 					</div>
 					<div className="lg:col-span-5">
-						<p className="u-label mb-6 text-accent">
+						<p className="u-label mb-6 text-red-dark">
 							{phase < 0.2
 								? "Assembled"
 								: phase > 0.85

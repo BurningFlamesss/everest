@@ -335,7 +335,7 @@ function RouteComponent() {
 												data-testid="facility-rail-item"
 												className={[
 													"flex w-full items-start gap-3.5 border-b border-border/70 px-4 py-3.5 text-left transition-colors duration-fast",
-													"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/40",
+													"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring",
 													index === filtered.length - 1 ? "border-b-0" : "",
 													isActive
 														? "bg-accent/[0.08]"

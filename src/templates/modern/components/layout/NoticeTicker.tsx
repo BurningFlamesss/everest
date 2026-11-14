@@ -73,7 +73,7 @@ export function NoticeTicker({
 			onFocusCapture={() => setFocused(true)}
 			onBlurCapture={() => setFocused(false)}
 		>
-			<span className="u-label shrink-0 border-hair border-accent px-2 py-1 text-accent">
+			<span className="u-label shrink-0 border-hair border-accent bg-accent px-2 py-1 text-ink">
 				Notice
 			</span>
 
@@ -126,7 +126,7 @@ export function NoticeTicker({
 
 			<Link
 				to="/notices"
-				className="u-label mr-4 hidden shrink-0 text-n-600 underline underline-offset-4 hover:text-ink lg:inline"
+				className="u-label mr-4 hidden shrink-0 text-n-600 underline underline-offset-4 hover:text-ink lg:inline lg:h-[44px] lg:items-center"
 				data-testid="ticker-view-all"
 			>
 				View all notices

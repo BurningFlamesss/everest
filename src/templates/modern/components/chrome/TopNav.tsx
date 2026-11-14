@@ -34,7 +34,7 @@ const ThemeToggle = () => {
 			aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
 			data-testid="theme-toggle-button"
 			onClick={() => setTheme(isDark ? "light" : "dark")}
-			className="h-9 w-9 shrink-0 rounded-full text-muted-foreground transition-colors duration-fast hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+			className="h-9 w-9 shrink-0 rounded-full text-muted-foreground transition-colors duration-fast hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 		>
 			{isDark ? (
 				<Sun className="h-[15px] w-[15px]" aria-hidden="true" />
@@ -67,7 +67,7 @@ const NavItem = ({
 			data-testid={testId}
 			className={[
 				"relative shrink-0 rounded-chip px-3 py-2 text-sm transition-colors duration-fast",
-				"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+				"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
 				isActive
 					? "font-medium text-foreground"
 					: "text-muted-foreground hover:text-foreground",
@@ -101,7 +101,7 @@ export const TopNav = () => {
 				<Link
 					to="/courses"
 					data-testid="top-nav-brand"
-					className="flex min-w-0 items-baseline gap-2.5 rounded-chip focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+					className="flex min-w-0 items-baseline gap-2.5 rounded-chip focus-visible:outline-none focus-visible:ring-2 focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 				>
 					<span className="font-display text-[15px] font-semibold tracking-tight text-foreground">
 						{school.wordmark}

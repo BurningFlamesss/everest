@@ -50,7 +50,7 @@ export function RoutineViewer() {
 					<select
 						value={selectedClass}
 						onChange={(e) => setSelectedClass(e.target.value)}
-						className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+						className="flex min-h-11 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						{classes.map((c) => (
 							<option
@@ -69,7 +69,7 @@ export function RoutineViewer() {
 					<select
 						value={selectedSection}
 						onChange={(e) => setSelectedSection(e.target.value)}
-						className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+						className="flex min-h-11 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						{sections.map((s) => (
 							<option
@@ -88,7 +88,7 @@ export function RoutineViewer() {
 					<select
 						value={selectedShift}
 						onChange={(e) => setSelectedShift(e.target.value)}
-						className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+						className="flex min-h-11 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						{shifts.map((sh) => (
 							<option

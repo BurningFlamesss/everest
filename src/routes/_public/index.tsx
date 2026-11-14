@@ -4,12 +4,6 @@ import { getWebsitePagePreviewServer } from "#/packages/content/server/content.t
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
 import LandingPage from "#/templates/modern/LandingPage.tsx";
 
-const PUBLIC_CACHE_HEADERS = () => ({
-	"Cache-Control":
-		"public, max-age=60, s-maxage=3600, stale-while-revalidate=86400",
-	"CDN-Cache-Control": "max-age=3600, stale-while-revalidate=86400",
-});
-
 export const Route = createFileRoute("/_public/")({
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
@@ -22,7 +16,6 @@ export const Route = createFileRoute("/_public/")({
 		return { previewPage: null };
 	},
 	component: Home,
-	headers: PUBLIC_CACHE_HEADERS,
 });
 
 function Home() {

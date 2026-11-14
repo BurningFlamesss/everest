@@ -85,13 +85,13 @@ export function PhotoFan({
 						</motion.span>
 					))
 				)}
-				<span className="u-label absolute bottom-3 right-3 z-10 rounded-pill bg-black/60 px-3 py-1 tnum text-white">
+				<span className="u-label absolute bottom-3 right-3 z-10 rounded-pill bg-black/85 px-3 py-1 tnum text-white backdrop-blur-sm">
 					{album.photos.length} photos
 				</span>
 			</span>
 
 			<span className="flex flex-col gap-1">
-				<span className="u-label text-accent">
+				<span className="u-label text-red-dark">
 					{String(index + 1).padStart(2, "0")} / {album.category} · {album.year}
 				</span>
 				<span className="u-display text-display-m text-ink">{album.event}</span>

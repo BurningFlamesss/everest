@@ -84,25 +84,18 @@ export async function setClubRoles(
 		throw new ClubAccessError("Two roles cannot share the same name.");
 	}
 
+	// Deleting a role that still holds members would silently strip those
+	// members of their standing (the relation is `onDelete: SetNull`); require
+	// the editor to move them to another role first.
 	const existing = await prisma.clubRole.findMany({
 		where: { clubId },
-		select: { id: true, members: { select: { id: true } } },
+		select: { id: true, name: true, members: { select: { id: true } } },
 	});
-	const assignedRoleIds = new Set(
-		existing.flatMap((role) =>
-			role.members.length > 0 ? [role.id] : [],
-		),
-	);
-
-	// Deleting a role that still holds members would silently strip those
-	// members of their standing; require the editor to move them first.
 	for (const role of existing) {
 		if (keepIds.has(role.id)) continue;
-		if (assignedRoleIds.has(role.id)) {
-			const doomed = roles.find((candidate) => candidate.id === role.id);
-			const label = doomed?.name ?? "This role";
+		if (role.members.length > 0) {
 			throw new ClubAccessError(
-				`${label} still has members assigned. Move them to another role before deleting it.`,
+				`${role.name} still has members assigned. Move them to another role before deleting it.`,
 			);
 		}
 	}
@@ -118,28 +111,28 @@ export async function setClubRoles(
 		);
 	}
 
-	await prisma.$transaction([
+	await prisma.$transaction(async (tx) => {
 		// Roles removed from the payload are deleted; members drop to no role.
-		prisma.clubRole.deleteMany({
+		await tx.clubRole.deleteMany({
 			where: { clubId, id: { notIn: [...keepIds] } },
-		}),
-	]);
+		});
 
-	for (const [index, role] of roles.entries()) {
-		const data = {
-			name: role.name.trim(),
-			description: role.description?.trim() || null,
-			permissions: (role.permissions ?? []).join(","),
-			isBoard: role.isBoard ?? false,
-			sortOrder: role.sortOrder ?? index,
-		};
+		for (const [index, role] of roles.entries()) {
+			const data = {
+				name: role.name.trim(),
+				description: role.description?.trim() || null,
+				permissions: (role.permissions ?? []).join(","),
+				isBoard: role.isBoard ?? false,
+				sortOrder: role.sortOrder ?? index,
+			};
 
-		if (role.id) {
-			await prisma.clubRole.update({ where: { id: role.id }, data });
-		} else {
-			await prisma.clubRole.create({ data: { ...data, clubId } });
+			if (role.id) {
+				await tx.clubRole.update({ where: { id: role.id }, data });
+			} else {
+				await tx.clubRole.create({ data: { ...data, clubId } });
+			}
 		}
-	}
+	});
 
 	return prisma.clubRole.findMany({
 		where: { clubId },
@@ -365,18 +358,41 @@ export async function updateClubPost(
 
 	const access = await resolveClubAccess(existing.clubId, userId);
 	const isOwn = existing.authorId === userId;
+	const canEdit = access.canEditAnyPost || isOwn;
 
-	if (!access.canEditAnyPost && !isOwn) {
+	// Pinning is a moderation act, not an edit: a role may hold `posts.pin`
+	// without `posts.editAny` (the roles editor offers them independently), so
+	// a pin-only change is allowed on any post for pin holders. Any title/body
+	// change still requires author or `posts.editAny`.
+	const isPinOnlyChange =
+		input.isPinned !== undefined &&
+		input.title === undefined &&
+		input.body === undefined;
+
+	if (!canEdit && !(isPinOnlyChange && access.canPinPosts)) {
 		throw new ClubAccessError(
-			"Only the author or a club officer can edit this post.",
+			isPinOnlyChange
+				? "You do not have permission to pin this post."
+				: "Only the author or a club officer can edit this post.",
 		);
+	}
+
+	// An author may edit their post without holding `posts.pin`. Accepting a
+	// pin change and silently dropping it would report success while nothing
+	// changed, so reject the request instead.
+	if (input.isPinned !== undefined && !access.canPinPosts) {
+		throw new ClubAccessError("You do not have permission to pin this post.");
 	}
 
 	return prisma.post.update({
 		where: { id: postId },
 		data: {
-			...(input.title !== undefined ? { title: input.title.trim() } : {}),
-			...(input.body !== undefined ? { body: input.body.trim() } : {}),
+			...(input.title !== undefined && canEdit
+				? { title: input.title.trim() }
+				: {}),
+			...(input.body !== undefined && canEdit
+				? { body: input.body.trim() }
+				: {}),
 			...(input.isPinned !== undefined && access.canPinPosts
 				? { isPinned: input.isPinned }
 				: {}),

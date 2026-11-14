@@ -111,7 +111,7 @@ function RouteComponent() {
 				href: str(
 					social_linksSection,
 					"facebook",
-					"https://facebook.com/everestbutwal",
+					"https://www.facebook.com/eebssbutwal",
 				),
 			},
 			{
@@ -276,7 +276,7 @@ function RouteComponent() {
 									<a
 										href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(str(contactSection, "address", "") || "Butwal-8, Sukkhanagar, Rupandehi, Nepal")}`}
 										data-testid="contact-directions-link"
-										className="inline-flex mt-2 items-center justify-center font-medium text-base text-accent hover:text-accent/80 transition-colors"
+										className="inline-flex mt-2 items-center justify-center font-medium text-base text-red-dark hover:text-red-dark/80 transition-colors"
 									>
 										GET DIRECTIONS{" "}
 										<span className="ml-1 text-lg leading-none">↗</span>
@@ -375,7 +375,7 @@ function RouteComponent() {
 							<span
 								id="contact-message-count"
 								data-testid="contact-message-count"
-								style={{ color: "var(--c-n-500)", fontSize: "14px" }}
+								style={{ color: "var(--c-n-600)", fontSize: "14px" }}
 							>
 								{count} / 600
 							</span>
@@ -441,7 +441,7 @@ function RouteComponent() {
 								href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`}
 								target="_blank"
 								rel="noreferrer"
-								className="inline-flex items-center gap-1 font-medium text-accent hover:text-accent/80 transition-colors"
+								className="inline-flex min-h-11 items-center gap-1 font-medium text-red-dark hover:text-red-dark/80 transition-colors"
 							>
 								Open in Google Maps{" "}
 								<span className="text-base leading-none">↗</span>
@@ -473,7 +473,14 @@ function RouteComponent() {
 								<h3 className="font-display text-xl text-foreground font-semibold">
 									{d.contact}
 								</h3>
-								{d.email ? <a href={`mailto:${d.email}`}>{d.email}</a> : null}
+								{d.email ? (
+									<a
+										href={`mailto:${d.email}`}
+										className="inline-flex min-h-11 items-center"
+									>
+										{d.email}
+									</a>
+								) : null}
 								{d.hours ? <p>{d.hours}</p> : null}
 							</article>
 						))}
@@ -499,7 +506,7 @@ function RouteComponent() {
 									href={item.href}
 									target="_blank"
 									rel="noreferrer"
-									className="flex items-center gap-2 rounded-lg bg-secondary px-3 py-2 text-sm text-foreground hover:bg-secondary/70"
+									className="flex min-h-11 items-center gap-2 rounded-lg bg-secondary px-3 py-2 text-sm text-foreground hover:bg-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
 								>
 									<item.icon className="h-4 w-4" />
 									<span className="font-medium">{item.label}</span>

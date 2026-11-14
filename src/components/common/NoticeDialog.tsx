@@ -16,7 +16,14 @@ export function NoticeDialog() {
 
 	useEffect(() => {
 		const dismissed = localStorage.getItem(DISMISSED_KEY);
-		const dismissedNotice = dismissed ? JSON.parse(dismissed) : null;
+		let dismissedNotice: { id?: string; version?: number } | null = null;
+		try {
+			dismissedNotice = dismissed
+				? (JSON.parse(dismissed) as { id?: string; version?: number } | null)
+				: null;
+		} catch {
+			/* Corrupted record — treat as not dismissed; closing rewrites it. */
+		}
 
 		if (
 			notice &&
@@ -45,7 +52,7 @@ export function NoticeDialog() {
 			<DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
 				<DialogHeader>
 					<div>
-						<span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+						<span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-red-dark">
 							Important Notice
 						</span>
 						<DialogTitle className="mt-3 text-xl">{notice.title}</DialogTitle>
@@ -72,7 +79,7 @@ export function NoticeDialog() {
 							{notice.attachments.map((att, i) => (
 								<span
 									key={i}
-									className="inline-flex items-center gap-1 rounded-full border border-hairline bg-surface-2 px-2.5 py-1 text-[11px] text-muted-foreground"
+									className="inline-flex items-center gap-1 rounded-full border border-hairline bg-surface-2 px-2.5 py-1 text-[11px] text-n-600"
 								>
 									{att.name} ({att.kind}, {att.size})
 								</span>

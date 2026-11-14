@@ -47,7 +47,7 @@ export function Field({
 		<div className={shell}>
 			<label htmlFor={id} className={labelCls}>
 				{label}
-				{required ? <span className="text-accent"> *</span> : null}
+				{required ? <span className="text-danger"> *</span> : null}
 			</label>
 			<input
 				id={id}
@@ -75,7 +75,7 @@ export function Field({
 			{error ? (
 				<p
 					id={errId}
-					className="flex items-center gap-2 text-body-s text-accent"
+					className="flex items-center gap-2 text-body-s text-danger"
 				>
 					<AlertCircle aria-hidden="true" size={14} />
 					{error}
@@ -110,7 +110,7 @@ export function TextArea({
 			<div className="flex items-baseline justify-between gap-4">
 				<label htmlFor={id} className={labelCls}>
 					{label}
-					{required ? <span className="text-accent"> *</span> : null}
+					{required ? <span className="text-danger"> *</span> : null}
 				</label>
 				{maxLength ? (
 					<span id={countId} className="u-label tnum text-n-600">
@@ -147,7 +147,7 @@ export function TextArea({
 			{error ? (
 				<p
 					id={errId}
-					className="flex items-center gap-2 text-body-s text-accent"
+					className="flex items-center gap-2 text-body-s text-danger"
 				>
 					<AlertCircle aria-hidden="true" size={14} />
 					{error}
@@ -189,7 +189,7 @@ export function SelectField({
 		<div className={shell}>
 			<label htmlFor={id} className={labelCls}>
 				{label}
-				{required ? <span className="text-accent"> *</span> : null}
+				{required ? <span className="text-danger"> *</span> : null}
 			</label>
 			<select
 				id={id}
@@ -229,7 +229,7 @@ export function SelectField({
 			{error ? (
 				<p
 					id={errId}
-					className="flex items-center gap-2 text-body-s text-accent"
+					className="flex items-center gap-2 text-body-s text-danger"
 				>
 					<AlertCircle aria-hidden="true" size={14} />
 					{error}

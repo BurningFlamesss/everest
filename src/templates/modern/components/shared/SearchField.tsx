@@ -41,7 +41,7 @@ export const SearchField = ({
 				onClick={() => onChange("")}
 				aria-label="Clear search"
 				data-testid={`${testId}-clear`}
-				className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-muted-foreground transition-colors duration-fast hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+				className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-muted-foreground transition-colors duration-fast hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
 			>
 				<X className="h-3.5 w-3.5" aria-hidden="true" />
 			</button>

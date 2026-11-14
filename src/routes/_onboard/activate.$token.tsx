@@ -36,7 +36,13 @@ export const Route = createFileRoute("/_onboard/activate/$token")({
 			throw new Error(ERROR.INVITATION_EXPIRED);
 		}
 
-		return invite;
+		// The token is already in the URL the visitor holds — do NOT repeat
+		// it in the dehydrated loader payload. The submit handler re-reads it
+		// from the route params (same value), so nothing functionally changes,
+		// but a page snapshot, proxy log of the streamed body, or shared-cache
+		// entry no longer carries the raw credential.
+		const { token: _token, ...safeInvite } = invite;
+		return safeInvite;
 	},
 	notFoundComponent: () => {
 		return (
@@ -68,6 +74,9 @@ export const Route = createFileRoute("/_onboard/activate/$token")({
 
 function RouteComponent() {
 	const invite = Route.useLoaderData();
+	// The loader strips the token from its dehydrated payload; the submit
+	// handler needs it, and the URL params hold the same value.
+	const token = Route.useParams().token;
 	const navigate = useNavigate();
 	const [error, setError] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -95,7 +104,7 @@ function RouteComponent() {
 		try {
 			const response = await activateInvite({
 				data: {
-					token: invite.token,
+					token,
 					password,
 				},
 			});

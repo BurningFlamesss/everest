@@ -1,11 +1,11 @@
 /**
- * Typography tokens. Three Latin faces: Inter, Manrope, Playfair Display.
+ * Typography tokens. Three Latin faces: Inter, Manrope, Fraunces.
  * Weights: Regular (400) and Medium (500) only.
  * Every clamp() below is computed for a 360px → 1440px range.
  */
 
 export const font = {
-	display: "'Playfair Display', Georgia, serif",
+	display: "'Fraunces', Georgia, serif",
 	body: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
 	label: "'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif",
 	mono: "'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace",

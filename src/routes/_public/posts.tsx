@@ -7,6 +7,7 @@ import { useInView } from "react-intersection-observer";
 import { str } from "#/components/cms/block-fields";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import { FACEBOOK_PAGE_URL, type FacebookPost } from "#/lib/facebook-feed.ts";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { getFacebookPostsServer } from "#/packages/content/server/facebook";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
@@ -76,7 +77,16 @@ function PostsRoute() {
 		}
 	}, [inView, fetchNextPage, hasNextPage]);
 
-	const posts = data?.pages.flatMap((page) => page.data) ?? [];
+	// Later infinite-scroll pages are fetched lazily, so they can be
+	// sliced from a NEWER feed snapshot (the server cache refreshes every
+	// 5 min; a newly published post shifts every index). Dedupe by id so a
+	// shift can't render one post twice — duplicate React keys and all.
+	const posts: FacebookPost[] = (data?.pages ?? []).flatMap(
+		(page) => page.data,
+	);
+	const dedupedPosts = posts.filter(
+		(post, index) => posts.findIndex((p) => p.id === post.id) === index,
+	);
 
 	return (
 		<PageFrame>
@@ -105,16 +115,38 @@ function PostsRoute() {
 					<div className="text-center text-n-600 bg-n-100/50 rounded-xl p-12">
 						Failed to load posts. Please try again later.
 					</div>
+				) : dedupedPosts.length === 0 ? (
+					<a
+						href={FACEBOOK_PAGE_URL}
+						target="_blank"
+						rel="noreferrer"
+						className="flex max-w-md flex-col rounded-card border border-dashed border-rule-strong bg-card/60 p-8 text-left transition-colors duration-fast hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
+						data-testid="posts-empty-state"
+					>
+						<span className="t-eyebrow">Facebook</span>
+						<span className="t-h3 mt-2 text-foreground">
+							Follow our page for the latest updates
+						</span>
+						<span className="mt-3 text-[14px] leading-relaxed text-muted-foreground">
+							The school posts announcements, events and campus news regularly
+							on its Facebook timeline.
+						</span>
+						<span className="mt-5 inline-flex items-center gap-2 text-[13px] font-medium text-foreground">
+							Visit facebook.com/eebssbutwal
+							<ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+						</span>
+					</a>
 				) : (
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-						{posts.map((post, index) => (
+						{dedupedPosts.map((post, index) => (
 							<RevealUp key={post.id} index={index % 6}>
-								<div className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
+								<div className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring">
 									{post.full_picture && (
 										<div className="mb-6 h-[200px] w-full shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
 											<img
 												src={post.full_picture}
-												alt="Facebook Post Media"
+												alt={post.message.slice(0, 100) || "Facebook post"}
+												loading="lazy"
 												className="h-full w-full object-cover transition-transform duration-[400ms] group-hover:scale-105"
 											/>
 										</div>
@@ -150,7 +182,7 @@ function PostsRoute() {
 					{isFetchingNextPage && (
 						<div className="w-6 h-6 rounded-full border-2 border-n-200 border-t-accent animate-spin" />
 					)}
-					{!hasNextPage && posts.length > 0 && (
+					{!hasNextPage && dedupedPosts.length > 0 && (
 						<span className="text-n-500 text-sm">
 							You have reached the end.
 						</span>

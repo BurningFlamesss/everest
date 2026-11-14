@@ -13,11 +13,17 @@ export interface CanvasVideoSource {
 	frameCount: number;
 }
 
+/** Pure string key for the generation-guarded promise map. */
+const frameKey = (generation: number, index: number) =>
+	`${generation}:${index}`;
+
 export const DEFAULT_SOURCE: CanvasVideoSource = {
 	folder: `${PUBLIC_ADDRESS}/landing-footage/`,
 	prefix: "frame_",
 	extension: ".jpeg",
-	frameCount: 72,
+	// The shipped footage is 216 frames; a cleared/invalid CMS count must
+	// restore the real default, not a stale historical value.
+	frameCount: 216,
 };
 
 /**
@@ -37,8 +43,7 @@ export function resolveCanvasVideoSource(
 			: { ...DEFAULT_SOURCE, ...(source ?? {}) };
 
 	const folder = requested.folder.trim() || DEFAULT_SOURCE.folder;
-	const extension =
-		requested.extension.trim() || DEFAULT_SOURCE.extension;
+	const extension = requested.extension.trim() || DEFAULT_SOURCE.extension;
 	const prefix = requested.prefix.trim() || DEFAULT_SOURCE.prefix;
 	return {
 		folder: folder.endsWith("/") ? folder : `${folder}/`,
@@ -53,23 +58,32 @@ export function resolveCanvasVideoSource(
 
 export function useCanvasVideo(
 	canvasRef: React.RefObject<HTMLCanvasElement | null>,
-	source: number | Partial<CanvasVideoSource> | undefined = 72,
+	source: number | Partial<CanvasVideoSource> | undefined = DEFAULT_SOURCE,
 ) {
 	// Accept the historical bare frameCount number as well as a full/partial
 	// CMS config; malformed values fall back to the defaults per-key above.
-	const { folder: imageFolder, prefix: imagePrefix, extension: imageExtension, frameCount } =
-		resolveCanvasVideoSource(source);
+	const {
+		folder: imageFolder,
+		prefix: imagePrefix,
+		extension: imageExtension,
+		frameCount,
+	} = resolveCanvasVideoSource(source);
 
 	const [loadedCount, setLoadedCount] = useState(0);
 	const [isInitialized, setIsInitialized] = useState(false);
 	const [firstFrameLoaded, setFirstFrameLoaded] = useState(false);
 
 	const savedImages = useRef<Array<HTMLImageElement>>([]);
-	const loadingPromises = useRef<Map<number, Promise<HTMLImageElement>>>(
+	const loadingPromises = useRef<Map<string, Promise<HTMLImageElement>>>(
 		new Map(),
 	);
 	const lastDrawnIndex = useRef<number>(-1);
 	const currentRequestedIndex = useRef<number>(0);
+
+	// Generation stamp: bumped whenever the source changes. Every cache write
+	// is guarded by it, so in-flight loads from the OLD source that settle
+	// after a reset can never pollute the fresh cache.
+	const sourceGeneration = useRef(0);
 
 	// When the source changes (e.g. an admin repoints the hero footage in the
 	// CMS and the page re-renders with new fields), the cached images and
@@ -79,6 +93,7 @@ export function useCanvasVideo(
 	const lastSourceKey = useRef<string>(sourceKey);
 	if (lastSourceKey.current !== sourceKey) {
 		lastSourceKey.current = sourceKey;
+		sourceGeneration.current += 1;
 		savedImages.current = [];
 		loadingPromises.current = new Map();
 		lastDrawnIndex.current = -1;
@@ -94,8 +109,11 @@ export function useCanvasVideo(
 
 	const loadFrame = useCallback(
 		(index: number): Promise<HTMLImageElement> => {
-			if (loadingPromises.current.has(index)) {
-				return loadingPromises.current.get(index)!;
+			const generation = sourceGeneration.current;
+			const key = frameKey(generation, index);
+			const existing = loadingPromises.current.get(key);
+			if (existing) {
+				return existing;
 			}
 
 			const promise = new Promise<HTMLImageElement>((resolve, reject) => {
@@ -103,11 +121,21 @@ export function useCanvasVideo(
 				const filename = `${imagePrefix}${padNumber(index)}${imageExtension}`;
 				img.src = `${imageFolder}${filename}`;
 
-				img.onload = () => resolve(img);
+				img.onload = () => {
+					// The source changed while this frame was in flight — resolve it
+					// as a failure so no stale frame reaches the fresh cache.
+					if (sourceGeneration.current !== generation) {
+						reject(
+							new Error(`Frame ${index} belongs to a replaced footage source`),
+						);
+						return;
+					}
+					resolve(img);
+				};
 				img.onerror = () => reject(new Error(`Failed to load frame ${index}`));
 			});
 
-			loadingPromises.current.set(index, promise);
+			loadingPromises.current.set(key, promise);
 			return promise;
 		},
 		[imageFolder, imagePrefix, imageExtension, padNumber],
@@ -145,6 +173,8 @@ export function useCanvasVideo(
 			});
 			if (!context) return;
 
+			const generationAtDraw = sourceGeneration.current;
+
 			const imgIndex = Math.min(frameCount - 1, Math.max(0, Math.round(index)));
 			currentRequestedIndex.current = imgIndex;
 
@@ -161,9 +191,14 @@ export function useCanvasVideo(
 
 			if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) {
 				// Trigger background load for target frame if not loading
-				if (!loadingPromises.current.has(imgIndex + 1)) {
+				if (
+					!loadingPromises.current.has(
+						frameKey(sourceGeneration.current, imgIndex + 1),
+					)
+				) {
 					loadFrame(imgIndex + 1)
 						.then((loadedImg) => {
+							if (sourceGeneration.current !== generationAtDraw) return;
 							savedImages.current[imgIndex] = loadedImg;
 							setLoadedCount((prev) => prev + 1);
 							if (Math.abs(currentRequestedIndex.current - imgIndex) <= 2) {
@@ -217,12 +252,20 @@ export function useCanvasVideo(
 
 	useEffect(() => {
 		let isCancelled = false;
+		// Stamp this effect run with the generation it loaded for; a source
+		// change mid-load makes every subsequent write a no-op.
+		const generation = sourceGeneration.current;
+
+		const cacheIfCurrent = (index: number, img: HTMLImageElement) => {
+			if (isCancelled || sourceGeneration.current !== generation) return;
+			savedImages.current[index] = img;
+		};
 
 		const initFrames = async () => {
 			// 1. Load first frame FIRST for instantaneous initial render
 			try {
 				const firstImg = await loadFrame(1);
-				if (isCancelled) return;
+				if (isCancelled || sourceGeneration.current !== generation) return;
 				savedImages.current[0] = firstImg;
 				setFirstFrameLoaded(true);
 				setLoadedCount(1);
@@ -236,7 +279,7 @@ export function useCanvasVideo(
 
 			for (let i = 2; i <= initialFrames; i++) {
 				const promise = loadFrame(i).then((img) => {
-					savedImages.current[i - 1] = img;
+					cacheIfCurrent(i - 1, img);
 					return img;
 				});
 				initialPromises.push(promise);
@@ -244,24 +287,24 @@ export function useCanvasVideo(
 
 			try {
 				await Promise.allSettled(initialPromises);
-				if (isCancelled) return;
+				if (isCancelled || sourceGeneration.current !== generation) return;
 				setLoadedCount(initialFrames);
 				setIsInitialized(true);
 			} catch (error) {
-				if (isCancelled) return;
+				if (isCancelled || sourceGeneration.current !== generation) return;
 				setIsInitialized(true);
 			}
 
 			// 3. Preload all remaining frames (31..frameCount) in background batches
 			const BATCH_SIZE = 8;
 			for (let i = initialFrames + 1; i <= frameCount; i += BATCH_SIZE) {
-				if (isCancelled) break;
+				if (isCancelled || sourceGeneration.current !== generation) break;
 				const batchPromises: Promise<HTMLImageElement>[] = [];
 				for (let j = i; j < i + BATCH_SIZE && j <= frameCount; j++) {
 					if (!savedImages.current[j - 1]) {
 						batchPromises.push(
 							loadFrame(j).then((img) => {
-								savedImages.current[j - 1] = img;
+								cacheIfCurrent(j - 1, img);
 								return img;
 							}),
 						);
@@ -269,7 +312,7 @@ export function useCanvasVideo(
 				}
 				if (batchPromises.length > 0) {
 					await Promise.allSettled(batchPromises);
-					if (isCancelled) break;
+					if (isCancelled || sourceGeneration.current !== generation) break;
 					setLoadedCount((prev) =>
 						Math.min(prev + batchPromises.length, frameCount),
 					);
@@ -286,12 +329,15 @@ export function useCanvasVideo(
 
 	const preloadFrames = useCallback(
 		async (startIndex: number, endIndex: number) => {
+			const generation = sourceGeneration.current;
 			const promises: Promise<HTMLImageElement>[] = [];
 			for (let i = startIndex; i <= endIndex && i <= frameCount; i++) {
 				if (!savedImages.current[i - 1]) {
 					promises.push(
 						loadFrame(i).then((img) => {
-							savedImages.current[i - 1] = img;
+							if (sourceGeneration.current === generation) {
+								savedImages.current[i - 1] = img;
+							}
 							return img;
 						}),
 					);
@@ -299,6 +345,7 @@ export function useCanvasVideo(
 			}
 			if (promises.length > 0) {
 				await Promise.allSettled(promises);
+				if (sourceGeneration.current !== generation) return;
 				setLoadedCount((prev) => Math.min(prev + promises.length, frameCount));
 			}
 		},

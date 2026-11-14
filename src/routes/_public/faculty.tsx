@@ -51,7 +51,7 @@ const QuickAction = ({
 		type="button"
 		onClick={onClick}
 		data-testid={testId}
-		className="inline-flex min-h-[40px] items-center gap-2 rounded-field border border-border bg-background px-3 py-2 text-[13px] text-foreground transition-colors duration-fast hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+		className="inline-flex min-h-[40px] items-center gap-2 rounded-field border border-border bg-background px-3 py-2 text-[13px] text-foreground transition-colors duration-fast hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 	>
 		<Icon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
 		{label}
@@ -230,7 +230,7 @@ function RouteComponent() {
 									type="button"
 									onClick={() => setSelected(person)}
 									data-testid="leadership-card"
-									className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+									className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 								>
 									<MonogramAvatar
 										name={person.name}

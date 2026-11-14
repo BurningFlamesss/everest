@@ -1947,7 +1947,7 @@ export function buildSeed(): Collections {
 			logoMark: "NA",
 		},
 		socials: {
-			facebook: "https://facebook.com/everestacademy",
+			facebook: "https://www.facebook.com/eebssbutwal",
 			instagram: "https://instagram.com/everestacademy",
 			x: "https://x.com/everestacad",
 			youtube: "https://youtube.com/@everestacademy",

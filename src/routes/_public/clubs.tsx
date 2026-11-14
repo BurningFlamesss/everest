@@ -1,4 +1,4 @@
-import { createFileRoute, useSearch, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useRouter, useSearch } from "@tanstack/react-router";
 import {
 	Clock,
 	MessageSquare,
@@ -8,10 +8,11 @@ import {
 	Trash2,
 	Users,
 } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { type FormEvent, useState } from "react";
 import { str } from "#/components/cms/block-fields";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import { relativeTime } from "#/lib/format";
 import { clubPermissionsLabel } from "#/packages/clubs/permissions.ts";
 import {
 	createClubPostAction,
@@ -23,7 +24,6 @@ import {
 } from "#/packages/clubs/server.ts";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { getClubsFn } from "#/packages/content/server.ts";
-import { relativeTime } from "#/lib/format";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
 import { pageMeta } from "#/packages/school/meta.ts";
 import {
@@ -40,10 +40,7 @@ type ClubMemberRow = ClubRow["members"][number];
 
 /** Posts as returned by getClubBoardFn for one club. */
 type ClubBoardResult = Awaited<ReturnType<typeof getClubBoardFn>>;
-type ClubPost = Extract<
-	ClubBoardResult,
-	{ success: true }
->["posts"][number];
+type ClubPost = Extract<ClubBoardResult, { success: true }>["posts"][number];
 
 export const Route = createFileRoute("/_public/clubs")({
 	head: () =>
@@ -176,9 +173,7 @@ type ClubAccess = ClubAccessEntry;
 
 /** Post author label — staff author, student author, or system fallback. */
 function postAuthorName(post: ClubPost): string {
-	return (
-		post.author?.name ?? post.authorStudent?.user.name ?? "Club officer"
-	);
+	return post.author?.name ?? post.authorStudent?.user.name ?? "Club officer";
 }
 
 function ClubCard({
@@ -443,6 +438,7 @@ function ClubFeed({
 							key={post.id}
 							post={post}
 							userId={userId}
+							access={access}
 							canEditAny={canEditAny}
 							canPin={canPin}
 						/>
@@ -457,17 +453,30 @@ function ClubFeed({
 function ClubFeedPost({
 	post,
 	userId,
+	access,
 	canEditAny,
 	canPin,
 }: {
 	post: ClubPost;
 	userId?: string | null;
+	access?: ClubAccess;
 	canEditAny: boolean;
 	canPin: boolean;
 }) {
 	const router = useRouter();
 	const isOwnPost = Boolean(userId) && post.authorId === userId;
 	const canEdit = Boolean(isOwnPost || canEditAny);
+	// The server admits members and anyone whose club roles grant at least one
+	// permission (`permissions.size > 0`); a direct role with an empty
+	// permission list does not qualify. Mirror that exactly — `roleName` alone
+	// is too loose, since such a role still reports a name.
+	const hasClubPermission = Boolean(
+		access?.canCreatePosts ||
+			access?.canEditAnyPost ||
+			access?.canPinPosts ||
+			access?.canManageMembers,
+	);
+	const canComment = Boolean(userId && (access?.isMember || hasClubPermission));
 
 	/** null = render mode; non-null = inline edit form with those drafts. */
 	const [editDraft, setEditDraft] = useState<{
@@ -637,9 +646,7 @@ function ClubFeedPost({
 							<button
 								type="submit"
 								disabled={
-									isSaving ||
-									!editDraft.title.trim() ||
-									!editDraft.body.trim()
+									isSaving || !editDraft.title.trim() || !editDraft.body.trim()
 								}
 								className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
 							>
@@ -706,11 +713,7 @@ function ClubFeedPost({
 									title={post.isPinned ? "Unpin post" : "Pin post"}
 								>
 									<Pin className="h-3 w-3" />
-									{isPinning
-										? "Pinning…"
-										: post.isPinned
-											? "Unpin"
-											: "Pin"}
+									{isPinning ? "Pinning…" : post.isPinned ? "Unpin" : "Pin"}
 								</button>
 							) : null}
 							<button
@@ -762,7 +765,7 @@ function ClubFeedPost({
 									</li>
 								) : null}
 							</ul>
-							{userId ? (
+							{canComment ? (
 								<form
 									onSubmit={(event) => {
 										event.preventDefault();
@@ -799,7 +802,9 @@ function ClubFeedPost({
 								</form>
 							) : (
 								<p className="border-t border-rule pt-3 text-xs text-muted-foreground">
-									Sign in to join the conversation.
+									{userId
+										? "Join the club before commenting on its posts."
+										: "Sign in to join the conversation."}
 								</p>
 							)}
 						</div>
