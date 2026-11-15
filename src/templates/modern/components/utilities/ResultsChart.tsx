@@ -102,7 +102,7 @@ export function ResultsChart({ dbResults }: { dbResults?: any[] }) {
 	return (
 		<div className="flex flex-col gap-8" data-testid="results-chart">
 			<div className="flex flex-col gap-2">
-				<Eyebrow>Board results</Eyebrow>
+				<Eyebrow tone="muted">Board results</Eyebrow>
 				<WidgetCaption>
 					Division splits over the last five sessions.
 				</WidgetCaption>

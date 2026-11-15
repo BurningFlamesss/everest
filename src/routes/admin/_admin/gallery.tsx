@@ -3,10 +3,10 @@ import { Images, Loader2, Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ImageUploadField } from "#/components/content/ImageUploadField.tsx";
 import {
-	createGalleryImageAction,
-	deleteGalleryImageAction,
-	getGalleryAdminFn,
-	updateGalleryImageAction,
+	addGalleryPhotoAction,
+	createGalleryCollectionAction,
+	deleteGalleryPhotoAction,
+	getGalleryCollectionsFn,
 } from "#/packages/content/server.ts";
 
 export const Route = createFileRoute("/admin/_admin/gallery")({
@@ -18,29 +18,34 @@ export const Route = createFileRoute("/admin/_admin/gallery")({
 	component: AdminGallery,
 });
 
-interface ImageRow {
+interface CollectionPhoto {
+	src: string;
+	alt: string;
+}
+
+interface Collection {
 	id: string;
-	title: string | null;
-	caption: string | null;
-	imageUrl: string;
-	isPublished: boolean;
-	sortOrder: number;
+	event: string;
+	year: string;
+	category: string;
+	date: string;
+	photos: CollectionPhoto[];
 }
 
 function AdminGallery() {
-	const [images, setImages] = useState<Array<ImageRow>>([]);
+	const [collections, setCollections] = useState<Array<Collection>>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [isUploading] = useState(false);
 	const [error, setError] = useState("");
 	const [notice, setNotice] = useState("");
-	const [formVersion, setFormVersion] = useState(0);
+	const [collectionFormKey, setCollectionFormKey] = useState(0);
+	const [photoFormKey, setPhotoFormKey] = useState(0);
 
 	const load = useCallback(async () => {
-		const response = await getGalleryAdminFn();
+		const response = await getGalleryCollectionsFn();
 
 		if (!response.success) setError(response.error);
-		else setImages(response.images as Array<ImageRow>);
+		else setCollections(response.collections as Array<Collection>);
 
 		setIsLoading(false);
 	}, []);
@@ -49,21 +54,21 @@ function AdminGallery() {
 		void load();
 	}, [load]);
 
-	const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+	const createCollection = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (isUploading) return;
+		const form = event.currentTarget;
+		const data = new FormData(form);
+
 		setError("");
 		setNotice("");
 		setIsSubmitting(true);
 
-		const form = event.currentTarget;
-		const data = new FormData(form);
-		const response = await createGalleryImageAction({
+		const response = await createGalleryCollectionAction({
 			data: {
-				imageUrl: String(data.get("imageUrl") ?? ""),
-				title: String(data.get("title") ?? "") || undefined,
-				caption: String(data.get("caption") ?? "") || undefined,
-				sortOrder: Number(data.get("sortOrder") ?? 0),
+				event: String(data.get("event") ?? ""),
+				year: String(data.get("year") ?? ""),
+				category: String(data.get("category") ?? ""),
+				date: String(data.get("date") ?? "") || undefined,
 			},
 		});
 
@@ -75,8 +80,55 @@ function AdminGallery() {
 		}
 
 		form.reset();
-		setFormVersion((version) => version + 1);
-		setNotice("Photo added to the gallery.");
+		setCollectionFormKey((version) => version + 1);
+		setNotice(`Collection “${response.collection.event}” created.`);
+		await load();
+	};
+
+	const addPhoto = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		const form = event.currentTarget;
+		const data = new FormData(form);
+
+		setError("");
+		setNotice("");
+		setIsSubmitting(true);
+
+		const response = await addGalleryPhotoAction({
+			data: {
+				albumId: String(data.get("albumId") ?? ""),
+				imageUrl: String(data.get("imageUrl") ?? ""),
+				alt: String(data.get("alt") ?? "") || undefined,
+			},
+		});
+
+		setIsSubmitting(false);
+
+		if (!response.success) {
+			setError(response.error);
+			return;
+		}
+
+		form.reset();
+		setPhotoFormKey((version) => version + 1);
+		setNotice("Photo added to the collection — it is live on the website.");
+		await load();
+	};
+
+	const removePhoto = async (albumId: string, index: number) => {
+		if (!confirm("Remove this photo from the collection?")) return;
+
+		setError("");
+		const response = await deleteGalleryPhotoAction({
+			data: { albumId, index },
+		});
+
+		if (!response.success) {
+			setError(response.error);
+			return;
+		}
+
+		setNotice("Photo removed.");
 		await load();
 	};
 
@@ -85,8 +137,8 @@ function AdminGallery() {
 			<div>
 				<h1 className="text-3xl font-bold text-gray-900">Gallery</h1>
 				<p className="mt-1 text-sm text-gray-500">
-					Photos appear on the public gallery page. Unpublished photos stay
-					hidden.
+					Collections are the albums shown on the public gallery page. Photos
+					added to a collection appear there immediately.
 				</p>
 			</div>
 
@@ -102,131 +154,210 @@ function AdminGallery() {
 			) : null}
 
 			<section className="rounded-2xl border border-gray-200 bg-white p-6">
-				<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-					<Plus className="h-5 w-5 text-red-500" /> Add a photo
+				<h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-gray-900">
+					<Images className="h-5 w-5 text-red-500" /> New collection
 				</h2>
+				<p className="mb-4 text-sm text-gray-500">
+					Group photos by event, academic year and category.
+				</p>
 				<form
-					key={formVersion}
-					onSubmit={(event) => void submit(event)}
+					key={collectionFormKey}
+					onSubmit={(event) => void createCollection(event)}
 					className="grid gap-4 md:grid-cols-2"
 				>
-					<ImageUploadField
-						name="imageUrl"
-						prefix="gallery"
-						className="md:col-span-2"
-					/>
 					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Title</span>
+						<span className="mb-1 block font-medium text-gray-700">
+							Collection name
+						</span>
 						<input
-							name="title"
+							name="event"
+							required
+							placeholder="e.g. Inter-house Music Night"
 							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
 						/>
 					</label>
 					<label className="text-sm">
 						<span className="mb-1 block font-medium text-gray-700">
-							Sort order
+							Academic year
 						</span>
 						<input
-							type="number"
-							name="sortOrder"
-							min={0}
-							defaultValue={0}
+							name="year"
+							required
+							placeholder="e.g. 2083 BS"
 							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
 						/>
 					</label>
-					<label className="text-sm md:col-span-2">
+					<label className="text-sm">
 						<span className="mb-1 block font-medium text-gray-700">
-							Caption
+							Category
 						</span>
 						<input
-							name="caption"
+							name="category"
+							required
+							placeholder="e.g. Culture"
+							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+						/>
+					</label>
+					<label className="text-sm">
+						<span className="mb-1 block font-medium text-gray-700">
+							Date (optional)
+						</span>
+						<input
+							name="date"
+							placeholder="e.g. 14 Magh 2083"
 							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
 						/>
 					</label>
 					<div className="md:col-span-2">
 						<button
 							type="submit"
-							disabled={isSubmitting || isUploading}
+							disabled={isSubmitting}
 							className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
 						>
 							{isSubmitting ? (
 								<Loader2 className="h-4 w-4 animate-spin" />
 							) : (
-								<Images className="h-4 w-4" />
+								<Plus className="h-4 w-4" />
 							)}
-							Add photo
+							Create collection
 						</button>
 					</div>
 				</form>
 			</section>
 
 			<section className="rounded-2xl border border-gray-200 bg-white p-6">
-				<h2 className="mb-4 text-lg font-semibold text-gray-900">Photos</h2>
+				<h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-gray-900">
+					<Plus className="h-5 w-5 text-red-500" /> Add a photo
+				</h2>
+				<p className="mb-4 text-sm text-gray-500">
+					Choose the collection the photo belongs to.
+				</p>
+				{collections.length === 0 ? (
+					<p className="text-sm text-gray-500">
+						Create a collection first, then add photos to it.
+					</p>
+				) : (
+					<form
+						key={photoFormKey}
+						onSubmit={(event) => void addPhoto(event)}
+						className="grid gap-4 md:grid-cols-2"
+					>
+						<label className="text-sm md:col-span-2">
+							<span className="mb-1 block font-medium text-gray-700">
+								Collection
+							</span>
+							<select
+								name="albumId"
+								required
+								defaultValue={collections[0]?.id}
+								className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
+							>
+								{collections.map((collection) => (
+									<option key={collection.id} value={collection.id}>
+										{collection.event} · {collection.year}
+									</option>
+								))}
+							</select>
+						</label>
+						<ImageUploadField
+							name="imageUrl"
+							prefix="gallery"
+							className="md:col-span-2"
+						/>
+						<label className="text-sm">
+							<span className="mb-1 block font-medium text-gray-700">
+								Caption / alt text
+							</span>
+							<input
+								name="alt"
+								placeholder="What is happening in this photo?"
+								className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+							/>
+						</label>
+						<div className="flex items-end">
+							<button
+								type="submit"
+								disabled={isSubmitting}
+								className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+							>
+								{isSubmitting ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : (
+									<Plus className="h-4 w-4" />
+								)}
+								Add photo
+							</button>
+						</div>
+					</form>
+				)}
+			</section>
+
+			<section className="space-y-4">
+				<h2 className="text-lg font-semibold text-gray-900">Collections</h2>
 				{isLoading ? (
 					<p className="flex items-center gap-2 text-sm text-gray-500">
 						<Loader2 className="h-4 w-4 animate-spin" /> Loading…
 					</p>
-				) : images.length === 0 ? (
-					<p className="text-sm text-gray-500">No photos yet.</p>
+				) : collections.length === 0 ? (
+					<p className="text-sm text-gray-500">No collections yet.</p>
 				) : (
-					<ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-						{images.map((image) => (
-							<li
-								key={image.id}
-								className="overflow-hidden rounded-xl border border-gray-200"
-							>
-								<img
-									src={image.imageUrl}
-									alt={image.title ?? "Gallery photo"}
-									className="h-40 w-full object-cover"
-								/>
-								<div className="space-y-2 p-3">
-									<p className="text-sm font-medium text-gray-900">
-										{image.title ?? "Untitled"}
+					collections.map((collection) => (
+						<div
+							key={collection.id}
+							data-testid={`gallery-collection-${collection.id}`}
+							className="rounded-2xl border border-gray-200 bg-white p-6"
+						>
+							<div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+								<div>
+									<h3 className="text-base font-semibold text-gray-900">
+										{collection.event}
+									</h3>
+									<p className="mt-0.5 text-xs text-gray-500">
+										{[collection.category, collection.year, collection.date]
+											.filter(Boolean)
+											.join(" · ")}
 									</p>
-									{image.caption ? (
-										<p className="text-xs text-gray-500">{image.caption}</p>
-									) : null}
-									<div className="flex items-center justify-between gap-2">
-										<button
-											type="button"
-											onClick={async () => {
-												const response = await updateGalleryImageAction({
-													data: {
-														id: image.id,
-														isPublished: !image.isPublished,
-													},
-												});
-												if (!response.success) setError(response.error);
-												else await load();
-											}}
-											className={
-												image.isPublished
-													? "rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700"
-													: "rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-gray-600"
-											}
-										>
-											{image.isPublished ? "Published" : "Hidden"}
-										</button>
-										<button
-											type="button"
-											onClick={async () => {
-												if (!confirm("Delete this photo?")) return;
-												const response = await deleteGalleryImageAction({
-													data: { id: image.id },
-												});
-												if (!response.success) setError(response.error);
-												else await load();
-											}}
-											className="inline-flex items-center gap-1 text-xs font-medium text-red-600"
-										>
-											<Trash2 className="h-3.5 w-3.5" /> Delete
-										</button>
-									</div>
 								</div>
-							</li>
-						))}
-					</ul>
+								<span className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-gray-600">
+									{collection.photos.length} photo
+									{collection.photos.length === 1 ? "" : "s"}
+								</span>
+							</div>
+
+							{collection.photos.length === 0 ? (
+								<p className="text-sm text-gray-500">
+									No photos in this collection yet.
+								</p>
+							) : (
+								<ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+									{collection.photos.map((photo, index) => (
+										<li
+											key={`${collection.id}-${photo.src}`}
+											className="overflow-hidden rounded-xl border border-gray-200"
+										>
+											<img
+												src={photo.src}
+												alt={photo.alt || collection.event}
+												className="h-40 w-full object-cover"
+											/>
+											<div className="flex items-center justify-between gap-2 p-3">
+												<p className="min-w-0 truncate text-xs text-gray-600">
+													{photo.alt || "No caption"}
+												</p>
+												<button
+													type="button"
+													onClick={() => void removePhoto(collection.id, index)}
+													className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-red-600"
+												>
+													<Trash2 className="h-3.5 w-3.5" /> Remove
+												</button>
+											</div>
+										</li>
+									))}
+								</ul>
+							)}
+						</div>
+					))
 				)}
 			</section>
 		</div>

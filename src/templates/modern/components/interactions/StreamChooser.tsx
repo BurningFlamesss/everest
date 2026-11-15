@@ -63,7 +63,7 @@ export function StreamChooser({
 			id="stream-chooser"
 		>
 			<div className="flex flex-col gap-2">
-				<Eyebrow>Which stream</Eyebrow>
+				<Eyebrow tone="muted">Which stream</Eyebrow>
 				<WidgetCaption>
 					Six questions. The result shows all three streams and why each one
 					ranked where it did.

@@ -1,8 +1,8 @@
 import { useRouteContext } from "@tanstack/react-router";
 import { createContext, useCallback, useContext, useMemo } from "react";
+import { can as hasPermission, type Permission } from "#/lib/permissions";
 import { authClient } from "#/packages/auth/auth-client.ts";
-import { can as hasPermission, type Permission } from "@/lib/permissions";
-import type { Actor, AppUser } from "@/types";
+import type { Actor, AppUser } from "#/types";
 
 interface AuthContextValue {
 	user: AppUser | null;

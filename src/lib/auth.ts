@@ -1,5 +1,6 @@
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { auth } from "#/packages/auth/auth";
+import { prisma } from "#/packages/db/index.ts";
 import type { Session } from "@/generated/prisma/client";
 import { type Permission, ROLE_PERMISSIONS } from "@/lib/permissions";
 import type { Role } from "@/types";
@@ -10,6 +11,39 @@ export interface AuthUser {
 	email: string;
 	role: string;
 	image?: string;
+}
+
+/** Map the persisted `UserRole` enum onto the app's lowercase role keys. */
+const DB_ROLE_TO_APP_ROLE: Record<string, Role> = {
+	SUPERADMIN: "super_admin",
+	ADMIN: "admin",
+	STAFF: "staff",
+	STUDENT: "student",
+	GUARDIAN: "guardian",
+};
+
+/**
+ * better-auth's User model has no role column, so the session never carries
+ * one. Resolve it from the UserRole table (like `getSessionMiddleware` does),
+ * otherwise every server-side permission check falls back to "staff" and
+ * management writes are rejected with 403.
+ */
+async function resolveSessionRole(
+	userId: string,
+	fallback?: string,
+): Promise<Role> {
+	if (fallback && fallback in ROLE_PERMISSIONS) return fallback as Role;
+
+	try {
+		const row = await prisma.userRole.findFirst({
+			where: { userId },
+			select: { role: true },
+			orderBy: { createdAt: "asc" },
+		});
+		return (row && DB_ROLE_TO_APP_ROLE[row.role]) || "staff";
+	} catch {
+		return "staff";
+	}
 }
 
 /** Resolve a session from better-auth. No demo-session fallback; all role-based
@@ -32,7 +66,7 @@ async function resolveSession(): Promise<{
 					id: session.user.id,
 					name: session.user.name,
 					email: session.user.email,
-					role: betterAuthUser.role || "staff",
+					role: await resolveSessionRole(session.user.id, betterAuthUser.role),
 					image: session.user.image ?? undefined,
 				},
 				session: session.session as unknown as Session,

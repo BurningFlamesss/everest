@@ -26,9 +26,14 @@ import {
 import { prisma } from "#/packages/db/index.ts";
 import { collectOrphanedFileAssets } from "#/packages/storage/cleanup.ts";
 import {
+	addCollectionPhoto,
+	createCollection,
 	createGalleryImage,
+	deleteCollectionPhoto,
 	deleteGalleryImage,
+	listCollections,
 	listGallery,
+	toCollection,
 	updateGalleryImage,
 } from "./gallery-service.ts";
 
@@ -160,6 +165,80 @@ export const deleteGalleryImageAction = createServerFn()
 		try {
 			await requireManager();
 			await deleteGalleryImage(data.id);
+
+			return { success: true as const };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+/**
+ * Gallery collections are the `album` rows the public /gallery page renders.
+ * Uploading here appends to the collection's `photos`, so the photo is visible
+ * on the website immediately.
+ */
+const galleryCollectionSchema = z.object({
+	event: z.string().trim().min(2, "Name the collection").max(160),
+	year: z.string().trim().min(2, "Add the academic year").max(40),
+	category: z.string().trim().min(2, "Add a category").max(60),
+	date: z.string().trim().max(60).optional(),
+});
+
+export const getGalleryCollectionsFn = createServerFn().handler(async () => {
+	try {
+		await requireManager();
+		return { success: true as const, collections: await listCollections() };
+	} catch (error) {
+		return failure(error);
+	}
+});
+
+export const createGalleryCollectionAction = createServerFn()
+	.validator(galleryCollectionSchema)
+	.handler(async ({ data }) => {
+		try {
+			await requireManager();
+			const album = await createCollection(data);
+
+			return { success: true as const, collection: toCollection(album) };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+export const addGalleryPhotoAction = createServerFn()
+	.validator(
+		z.object({
+			albumId: z.string().min(1, "Choose a collection"),
+			imageUrl: z.string().trim().min(1, "Upload an image"),
+			alt: z.string().trim().max(300).optional(),
+		}),
+	)
+	.handler(async ({ data }) => {
+		try {
+			await requireManager();
+			await addCollectionPhoto(data.albumId, {
+				src: data.imageUrl,
+				alt: data.alt ?? "",
+			});
+
+			return { success: true as const };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+export const deleteGalleryPhotoAction = createServerFn()
+	.validator(
+		z.object({
+			albumId: z.string().min(1),
+			index: z.number().int().min(0),
+		}),
+	)
+	.handler(async ({ data }) => {
+		try {
+			await requireManager();
+			await deleteCollectionPhoto(data.albumId, data.index);
 
 			return { success: true as const };
 		} catch (error) {

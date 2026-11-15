@@ -160,3 +160,106 @@ export async function deleteTerm(id: string) {
 
 	return prisma.term.delete({ where: { id } });
 }
+
+export interface CalendarEventInput {
+	title: string;
+	titleNe?: string;
+	description?: string;
+	startDate: Date;
+	endDate: Date;
+	startBs?: string;
+	endBs?: string;
+	kind: string;
+	category?: string;
+	term?: string;
+}
+
+export async function listCalendarEvents() {
+	const rows = await prisma.calendarEvent.findMany({
+		orderBy: { startDate: "asc" },
+	});
+	return rows.map((r) => ({
+		...r,
+		startDate: r.startDate.toISOString(),
+		endDate: r.endDate.toISOString(),
+		createdAt: r.createdAt.toISOString(),
+		updatedAt: r.updatedAt.toISOString(),
+	}));
+}
+
+export async function createCalendarEvent(input: CalendarEventInput) {
+	assertRange(input.startDate, input.endDate);
+
+	const category =
+		input.category ||
+		(input.kind === "holiday"
+			? "Holiday"
+			: input.kind === "exam"
+				? "Examination"
+				: "General");
+
+	return prisma.calendarEvent.create({
+		data: {
+			title: input.title.trim(),
+			titleNe: input.titleNe?.trim() || null,
+			description: input.description?.trim() || null,
+			startDate: input.startDate,
+			endDate: input.endDate,
+			startBs: input.startBs?.trim() || null,
+			endBs: input.endBs?.trim() || null,
+			kind: input.kind,
+			category,
+			term: input.term?.trim() || null,
+		},
+	});
+}
+
+export async function deleteCalendarEvent(id: string) {
+	return prisma.calendarEvent.delete({ where: { id } });
+}
+
+export async function seedCalendarEventsFromStatic() {
+	const { calendarEvents } = await import("#/content/calendar.ts");
+	const results = [];
+
+	for (const ev of calendarEvents) {
+		const startDate = ev.date.ad ? new Date(ev.date.ad) : new Date();
+		const endDate = ev.endDate?.ad ? new Date(ev.endDate.ad) : startDate;
+		const category =
+			ev.kind === "holiday"
+				? "Holiday"
+				: ev.kind === "exam"
+					? "Examination"
+					: "General";
+
+		const row = await prisma.calendarEvent.upsert({
+			where: { slug: ev.id },
+			update: {
+				title: ev.title,
+				titleNe: ev.titleNe ?? null,
+				description: ev.detail ?? null,
+				startDate,
+				endDate,
+				startBs: ev.date.bs,
+				endBs: ev.endDate?.bs ?? null,
+				kind: ev.kind,
+				category,
+			},
+			create: {
+				slug: ev.id,
+				title: ev.title,
+				titleNe: ev.titleNe ?? null,
+				description: ev.detail ?? null,
+				startDate,
+				endDate,
+				startBs: ev.date.bs,
+				endBs: ev.endDate?.bs ?? null,
+				kind: ev.kind,
+				category,
+			},
+		});
+		results.push(row);
+	}
+
+	return listCalendarEvents();
+}

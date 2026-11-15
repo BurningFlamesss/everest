@@ -1,7 +1,14 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ChevronRight, Menu, Pin, PinOff, X } from "lucide-react";
+import {
+	ChevronRight,
+	LayoutDashboard,
+	Menu,
+	Pin,
+	PinOff,
+	X,
+} from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "#/lib/utils";
 import { authClient } from "#/packages/auth/auth-client.ts";
 import { useSchoolContent } from "#/packages/school/hook.tsx";
@@ -24,7 +31,7 @@ function SidebarItem({
 	pathname: string;
 }) {
 	const isActive = item.href
-		? pathname === item.href || pathname.startsWith(item.href + "/")
+		? pathname === item.href || pathname.startsWith(`${item.href}/`)
 		: false;
 	const [isOpen, setIsOpen] = useState(isActive);
 	const hasChildren = item.children && item.children.length > 0;
@@ -35,7 +42,7 @@ function SidebarItem({
 			hasChildren &&
 			item.children?.some(
 				(c) =>
-					c.href && (pathname === c.href || pathname.startsWith(c.href + "/")),
+					c.href && (pathname === c.href || pathname.startsWith(`${c.href}/`)),
 			)
 		) {
 			setIsOpen(true);
@@ -124,24 +131,153 @@ function SidebarItem({
 	);
 }
 
+export function getHeroEnd(): number {
+	if (typeof window === "undefined") return 0;
+	// @ts-expect-error ScrollTrigger may be registered on window
+	const st = window.ScrollTrigger?.getById?.("hero-scroll");
+	if (st && typeof st.end === "number") {
+		return st.end;
+	}
+	const el = document.getElementById("hero-track");
+	if (el) {
+		const top = el.getBoundingClientRect().top + window.scrollY;
+		return Math.max(0, top + el.offsetHeight - window.innerHeight);
+	}
+	return window.innerHeight * 5;
+}
+
+const POST_LOGIN_ITEMS: ItemDetail[] = [
+	{
+		id: "dashboard",
+		label: "Dashboard",
+		href: "/dashboard",
+	},
+	{
+		id: "my_portal",
+		label: "My Records & Classes",
+		children: [
+			{ id: "my_records", label: "Overview & Records", href: "/my-records" },
+			{ id: "my_classes", label: "My Classes", href: "/my-classes" },
+			{ id: "my_homework", label: "Homework", href: "/my-homework" },
+			{ id: "my_results", label: "Exam Results", href: "/my-results" },
+			{ id: "my_fees", label: "Fees & Dues", href: "/my-fees" },
+		],
+	},
+	{
+		id: "notifications",
+		label: "Notifications",
+		href: "/notifications",
+	},
+];
+
 export function Sidebar() {
 	const { data } = authClient.useSession();
 	const { sidebar } = useSchoolContent();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
 	const reduced = useReducedMotion();
 
+	const user = data?.user as
+		| { id?: string; name?: string; email?: string; role?: string }
+		| undefined;
+
+	const isLoggedIn = Boolean(user || data?.session?.id);
+	const isAdminUser = Boolean(
+		user &&
+			(user.role === "admin" ||
+				user.role === "super_admin" ||
+				user.role === "staff" ||
+				user.role?.toUpperCase() === "ADMIN" ||
+				user.role?.toUpperCase() === "SUPERADMIN" ||
+				user.role?.toUpperCase() === "STAFF"),
+	);
+
 	const isAdmin = pathname.startsWith("/admin");
 
 	const [isOpen, setIsOpen] = useState(() => pathname === "/");
 	const [pinned, setPinned] = useState(false);
+	// When the sidebar auto-collapses on scroll on the landing page, and the
+	// visitor explicitly re-opens it while inside the auto-scrolling hero
+	// section, heroPinned keeps the sidebar open (pinned) ONLY until the
+	// auto-scrolling hero section completes (scrollY <= heroEnd).
+	// Once the visitor scrolls past the hero, auto-collapse resumes and the
+	// sidebar collapses (unless pinned with the pin button).
+	const [heroPinned, setHeroPinned] = useState(false);
 	const [sheetOpen, setSheetOpen] = useState(false);
 
+	const asideRef = useRef<HTMLElement | null>(null);
+	const navRef = useRef<HTMLElement | null>(null);
+	const isHovered = useRef(false);
+
 	useEffect(() => {
-		if (pinned || pathname !== "/") return;
-		const onScroll = () => setIsOpen(window.scrollY <= 50);
+		const aside = asideRef.current;
+		if (!aside) return;
+
+		const onWheel = (e: WheelEvent) => {
+			// Prevent the main website from scrolling while mouse is in the sidebar
+			e.stopPropagation();
+			e.preventDefault();
+
+			if (navRef.current) {
+				navRef.current.scrollTop += e.deltaY;
+			}
+		};
+
+		aside.addEventListener("wheel", onWheel, { passive: false });
+		return () => aside.removeEventListener("wheel", onWheel);
+	}, []);
+
+	useEffect(() => {
+		if (pathname !== "/") return;
+
+		const onScroll = () => {
+			// If user has their mouse in the sidebar, keep it open and do not collapse
+			if (isHovered.current) {
+				setIsOpen(true);
+				return;
+			}
+
+			const scrollY = window.scrollY;
+
+			// If explicitly locked open with the Pin toggle, stay open everywhere.
+			if (pinned) {
+				setIsOpen(true);
+				return;
+			}
+
+			// If explicitly opened while in the auto-scrolling hero section:
+			if (heroPinned) {
+				const heroEnd = getHeroEnd();
+				if (scrollY > heroEnd) {
+					// Scrolled past the auto-scroll section: collapse and release hero pin.
+					setHeroPinned(false);
+					setIsOpen(false);
+				} else {
+					setIsOpen(true);
+				}
+				return;
+			}
+
+			// Default unpinned behavior: open only at the very top (<= 50px).
+			setIsOpen(scrollY <= 50);
+		};
+
 		window.addEventListener("scroll", onScroll, { passive: true });
 		return () => window.removeEventListener("scroll", onScroll);
-	}, [pinned, pathname]);
+	}, [pinned, heroPinned, pathname]);
+
+	// Hold the hero auto-play while the visitor has explicitly opened the
+	// navigation during the hero sequence or pinned it open, so the video
+	// does not keep advancing underneath the menu they stopped to read.
+	useEffect(() => {
+		if (heroPinned || (pinned && isOpen)) {
+			document.documentElement.dataset.navHeld = "true";
+		} else {
+			delete document.documentElement.dataset.navHeld;
+		}
+		return () => {
+			delete document.documentElement.dataset.navHeld;
+		};
+	}, [heroPinned, pinned, isOpen]);
 
 	useEffect(() => {
 		if (pathname === "/") setIsOpen(true);
@@ -162,6 +298,10 @@ export function Sidebar() {
 		};
 	}, [sheetOpen]);
 
+	// The admin console renders its own shell (AdminShell with an admin
+	// sidebar + topbar), so the public red sidebar must not stack on top of
+	// it on /admin routes. All hooks are declared above, so this early
+	// return is safe.
 	if (isAdmin) return null;
 
 	const logoMark = (
@@ -172,16 +312,33 @@ export function Sidebar() {
 		/>
 	);
 
-	const navFooter = data?.session?.id ? (
-		<>
-			{/* <div className="bg-[#EAB308] flex w-full items-center justify-center py-2 cursor-pointer text-black">
-			Dashboard Coming Soon!
-		</div> */}
-		</>
+	const navFooter = isLoggedIn ? (
+		<div className="flex flex-col gap-2 p-3 bg-primary border-t border-white/10">
+			{isAdminUser ? (
+				<Link
+					to="/admin"
+					data-testid="sidebar-admin-panel-btn"
+					className="bg-[#EAB308] flex min-h-11 w-full items-center justify-center gap-2 rounded py-2.5 px-3 cursor-pointer text-black font-semibold text-sm hover:bg-[#EAB308]/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors shadow-sm"
+				>
+					<LayoutDashboard className="h-4 w-4" />
+					<span>Admin Panel</span>
+				</Link>
+			) : (
+				<Link
+					to="/dashboard"
+					data-testid="sidebar-dashboard-btn"
+					className="bg-[#EAB308] flex min-h-11 w-full items-center justify-center gap-2 rounded py-2.5 px-3 cursor-pointer text-black font-semibold text-sm hover:bg-[#EAB308]/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors shadow-sm"
+				>
+					<LayoutDashboard className="h-4 w-4" />
+					<span>My Dashboard</span>
+				</Link>
+			)}
+		</div>
 	) : (
 		<Link
 			to="/login"
-			className="bg-[#EAB308] flex min-h-11 w-full items-center justify-center py-2.5 cursor-pointer text-black hover:bg-[#EAB308]/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+			data-testid="sidebar-login-btn"
+			className="bg-[#EAB308] flex min-h-11 w-full items-center justify-center py-2.5 cursor-pointer text-black font-semibold hover:bg-[#EAB308]/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
 		>
 			Login
 		</Link>
@@ -193,6 +350,20 @@ export function Sidebar() {
 				Object.values(sidebar.collapsible).map((item) => (
 					<SidebarItem key={item.id} item={item} pathname={pathname} />
 				))}
+
+			{isLoggedIn && (
+				<>
+					<li className="pt-3 pb-1 px-4">
+						<div className="h-px bg-white/20 mb-2" />
+						<span className="text-[10px] font-bold uppercase tracking-wider text-[#EAB308]">
+							My Portal
+						</span>
+					</li>
+					{POST_LOGIN_ITEMS.map((item) => (
+						<SidebarItem key={item.id} item={item} pathname={pathname} />
+					))}
+				</>
+			)}
 		</ul>
 	);
 
@@ -200,8 +371,25 @@ export function Sidebar() {
 		<>
 			{/* ── Desktop sidebar panel: fixed left edge ── */}
 			<aside
+				ref={asideRef}
+				onMouseEnter={() => {
+					isHovered.current = true;
+				}}
+				onMouseLeave={() => {
+					isHovered.current = false;
+					if (pathname === "/" && !pinned) {
+						const scrollY = window.scrollY;
+						const heroEnd = getHeroEnd();
+						if (heroPinned && scrollY > heroEnd) {
+							setHeroPinned(false);
+							setIsOpen(false);
+						} else if (!heroPinned && scrollY > 50) {
+							setIsOpen(false);
+						}
+					}
+				}}
 				className={cn(
-					"fixed top-0 left-0 z-nav hidden h-screen w-60 flex-col justify-between bg-primary shadow-xl transition-transform duration-500 lg:flex",
+					"fixed top-0 left-0 z-nav hidden h-screen w-60 flex-col justify-between bg-primary shadow-xl transition-transform duration-500 overscroll-contain lg:flex",
 					isOpen ? "translate-x-0" : "-translate-x-full invisible",
 				)}
 			>
@@ -216,8 +404,9 @@ export function Sidebar() {
 				</header>
 
 				<nav
+					ref={navRef}
 					aria-label="Main"
-					className="min-h-0 flex-1 overflow-auto text-primary-foreground"
+					className="min-h-0 flex-1 overflow-auto overscroll-contain text-primary-foreground"
 				>
 					{navLinks}
 				</nav>
@@ -229,7 +418,24 @@ export function Sidebar() {
 			<div className="fixed top-4 right-4 z-nav hidden flex-col items-center gap-2 rounded-full bg-primary/95 backdrop-blur-sm p-1.5 shadow-lg lg:flex">
 				<button
 					type="button"
-					onClick={() => setIsOpen((s) => !s)}
+					onClick={() => {
+						if (isOpen) {
+							// User explicitly closes navigation
+							setIsOpen(false);
+							setHeroPinned(false);
+							if (pinned) setPinned(false);
+						} else {
+							// User explicitly opens navigation
+							setIsOpen(true);
+							if (pathname === "/") {
+								const scrollY = window.scrollY;
+								const heroEnd = getHeroEnd();
+								if (scrollY <= heroEnd) {
+									setHeroPinned(true);
+								}
+							}
+						}
+					}}
 					aria-expanded={isOpen}
 					aria-label={isOpen ? "Close navigation" : "Open navigation"}
 					title={isOpen ? "Close navigation" : "Open navigation"}
@@ -241,7 +447,24 @@ export function Sidebar() {
 
 				<button
 					type="button"
-					onClick={() => setPinned((s) => !s)}
+					onClick={() => {
+						setPinned((prev) => {
+							const next = !prev;
+							if (next) {
+								setIsOpen(true);
+							} else {
+								// When explicitly unpinning, clear hero-pinned state and collapse if scrolled
+								setHeroPinned(false);
+								if (pathname === "/") {
+									const scrollY = window.scrollY;
+									if (scrollY > 50) {
+										setIsOpen(false);
+									}
+								}
+							}
+							return next;
+						});
+					}}
 					aria-pressed={pinned}
 					aria-label={pinned ? "Unlock sidebar" : "Lock sidebar open"}
 					title={pinned ? "Auto-collapse: OFF" : "Lock open"}

@@ -61,20 +61,34 @@ function toWebsitePage(
 }
 
 export async function listWebsitePages(): Promise<WebsitePage[]> {
-	const pages = await prisma.websitePage.findMany({
+	let pages = await prisma.websitePage.findMany({
 		include: { blocks: { orderBy: { order: "asc" } } },
 		orderBy: { key: "asc" },
 	});
+	if (pages.length < 20) {
+		await ensureDefaultPages();
+		pages = await prisma.websitePage.findMany({
+			include: { blocks: { orderBy: { order: "asc" } } },
+			orderBy: { key: "asc" },
+		});
+	}
 	return pages.map(toWebsitePage);
 }
 
 export async function getWebsitePage(
 	key: WebsitePageKey,
 ): Promise<WebsitePage | null> {
-	const page = await prisma.websitePage.findUnique({
+	let page = await prisma.websitePage.findUnique({
 		where: { key },
 		include: { blocks: { orderBy: { order: "asc" } } },
 	});
+	if (!page) {
+		await ensureDefaultPages();
+		page = await prisma.websitePage.findUnique({
+			where: { key },
+			include: { blocks: { orderBy: { order: "asc" } } },
+		});
+	}
 	return page ? toWebsitePage(page) : null;
 }
 
@@ -105,8 +119,10 @@ export async function saveSectionFields(
 			data: { fields: fields as any, updatedAt: new Date() },
 		});
 	} else {
-		const defaults = BLOCK_LIBRARY_DEFAULTS[sectionType];
-		if (!defaults) throw new Error("Unknown section type");
+		const defaults =
+			BLOCK_LIBRARY_DEFAULTS[sectionType] ??
+			SECTION_DEFAULTS[sectionType] ??
+			{};
 		const maxOrder =
 			page.blocks.length > 0
 				? Math.max(...page.blocks.map((b) => b.order))
@@ -630,32 +646,33 @@ export async function unpublishPage(
 
 export async function ensureDefaultPages(): Promise<void> {
 	const defaultPages: { key: WebsitePageKey; title: string; path: string }[] = [
-		{ key: "faculty", title: "Faculty & Administration", path: "/faculty" },
-		{ key: "login", title: "Sign in", path: "/login" },
-		{ key: "activate", title: "Activate", path: "/_onboard/activate/" },
 		{ key: "home", title: "Home", path: "/" },
 		{ key: "about", title: "About", path: "/about" },
-		{ key: "courses", title: "Courses", path: "/courses" },
+		{ key: "courses", title: "Courses & Programmes", path: "/courses" },
 		{ key: "course_finder", title: "Course Finder", path: "/course-finder" },
 		{ key: "facilities", title: "Facilities", path: "/facilities" },
-		{ key: "gallery", title: "Gallery", path: "/gallery" },
-		{ key: "calendar", title: "Calendar", path: "/calendar" },
-		{ key: "contact", title: "Contact", path: "/contact" },
-		{ key: "resources", title: "Resources", path: "/resources" },
-		{ key: "result", title: "Results", path: "/result" },
+		{ key: "gallery", title: "Photo Gallery", path: "/gallery" },
+		{ key: "calendar", title: "Academic Calendar", path: "/calendar" },
+		{ key: "contact", title: "Contact Us", path: "/contact" },
+		{ key: "resources", title: "Downloads & Resources", path: "/resources" },
+		{ key: "result", title: "Board Results", path: "/result" },
 		{ key: "transportation", title: "Transportation", path: "/transportation" },
-		{ key: "notices", title: "Notices", path: "/notices" },
+		{ key: "notices", title: "Notices & Circulars", path: "/notices" },
 		{ key: "scholarship", title: "Scholarships", path: "/scholarship" },
+		{ key: "faculty", title: "Faculty & Administration", path: "/faculty" },
+		{ key: "login", title: "Sign In", path: "/login" },
+		{ key: "activate", title: "Account Activation", path: "/activate" },
 		{ key: "posts", title: "Latest Posts", path: "/posts" },
 		{ key: "admissions", title: "Admissions", path: "/admissions" },
-		{ key: "clubs", title: "Clubs", path: "/clubs" },
-		{ key: "events", title: "Events", path: "/events" },
+		{ key: "clubs", title: "Clubs & Activities", path: "/clubs" },
+		{ key: "events", title: "School Events", path: "/events" },
 	];
 
 	for (const page of defaultPages) {
 		await prisma.websitePage.upsert({
 			where: { key: page.key },
 			update: {
+				title: page.title,
 				path: page.path,
 			},
 			create: {

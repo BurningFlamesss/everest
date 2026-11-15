@@ -61,7 +61,7 @@ export function AdminShell() {
 				<Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
 					<SheetContent
 						side="left"
-						className="w-[288px] border-border bg-sidebar p-0"
+						className="w-[288px] border-none bg-primary p-0 text-primary-foreground"
 					>
 						<Sidebar
 							collapsed={false}

@@ -7,14 +7,12 @@ import {
 	GraduationCap,
 	Library,
 	Megaphone,
-	Moon,
 	Search,
-	Sun,
 	UserCheck,
 	UserPlus,
 	Users,
+	X,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import {
 	Command,
@@ -61,7 +59,6 @@ interface CommandPaletteProps {
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 	const navigate = useNavigate();
 	const { can } = useAuth();
-	const { theme, setTheme } = useTheme();
 	const [term, setTerm] = useState("");
 
 	useEffect(() => {
@@ -97,20 +94,35 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="max-w-2xl overflow-hidden border-hairline bg-popover p-0 shadow-pop">
+			<DialogContent
+				showCloseButton={false}
+				className="max-w-2xl overflow-hidden rounded-lg border-border bg-popover p-0 shadow-pop"
+			>
 				<DialogTitle className="sr-only">Command palette</DialogTitle>
 				<Command
 					shouldFilter={false}
-					className="bg-popover"
+					className="rounded-none bg-popover"
 					data-testid="command-palette"
 				>
-					<CommandInput
-						autoFocus
-						value={term}
-						onValueChange={setTerm}
-						placeholder="Search students, staff, notices, events, classes, pages…"
-						data-testid="command-palette-input"
-					/>
+					<div className="relative">
+						<CommandInput
+							autoFocus
+							value={term}
+							onValueChange={setTerm}
+							placeholder="Search students, staff, notices, events, classes, pages…"
+							data-testid="command-palette-input"
+							className="pr-12 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+						/>
+						<button
+							type="button"
+							aria-label="Close search"
+							data-testid="command-palette-close"
+							onClick={() => onOpenChange(false)}
+							className="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-md border-none bg-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-ring"
+						>
+							<X className="h-4 w-4" />
+						</button>
+					</div>
 					<CommandList className="max-h-[420px]">
 						{term &&
 							!isFetching &&
@@ -174,7 +186,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 						<CommandGroup heading="Navigate">
 							{navItems.slice(0, term ? 5 : 16).map((item) => (
 								<CommandItem
-									key={item.to}
+									key={`${item.label}-${item.to}`}
 									value={`nav-${item.label}`}
 									onSelect={() => go(item.to)}
 									data-testid="command-palette-nav-item"
@@ -192,7 +204,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 							{can("students.manage") && (
 								<CommandItem
 									value="action-new-student"
-									onSelect={() => go("/students?new=1")}
+									onSelect={() => go("/admin/students?new=1")}
 									className="gap-3"
 								>
 									<UserPlus className="h-4 w-4 text-muted-foreground" />
@@ -202,7 +214,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 							{can("notices.manage") && (
 								<CommandItem
 									value="action-new-notice"
-									onSelect={() => go("/notices/new")}
+									onSelect={() => go("/admin/notices/new")}
 									className="gap-3"
 								>
 									<Megaphone className="h-4 w-4 text-muted-foreground" />
@@ -212,31 +224,13 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 							{can("attendance.mark") && (
 								<CommandItem
 									value="action-attendance"
-									onSelect={() => go("/attendance")}
+									onSelect={() => go("/admin/attendance")}
 									className="gap-3"
 								>
 									<UserCheck className="h-4 w-4 text-muted-foreground" />
 									<span className="text-sm">Mark today's attendance</span>
 								</CommandItem>
 							)}
-							<CommandItem
-								value="action-theme"
-								onSelect={() => {
-									setTheme(theme === "dark" ? "light" : "dark");
-									onOpenChange(false);
-								}}
-								className="gap-3"
-								data-testid="command-palette-theme"
-							>
-								{theme === "dark" ? (
-									<Sun className="h-4 w-4 text-muted-foreground" />
-								) : (
-									<Moon className="h-4 w-4 text-muted-foreground" />
-								)}
-								<span className="text-sm">
-									Switch to {theme === "dark" ? "light" : "dark"} theme
-								</span>
-							</CommandItem>
 						</CommandGroup>
 					</CommandList>
 				</Command>

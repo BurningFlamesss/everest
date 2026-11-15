@@ -93,18 +93,27 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiCronCleanupRouteImport } from './routes/api/cron/cleanup'
 import { Route as ApiWebsitePagesRouteImport } from './routes/api/website/pages'
 import { Route as OnboardActivateGuardianTokenRouteImport } from './routes/_onboard/activate.guardian.$token'
+import { Route as AdminAdminAdmissionsIndexRouteImport } from './routes/admin/_admin/admissions.index'
 import { Route as AdminAdminAdmissionsIdRouteImport } from './routes/admin/_admin/admissions.$id'
+import { Route as AdminAdminClassesIndexRouteImport } from './routes/admin/_admin/classes.index'
 import { Route as AdminAdminClassesIdRouteImport } from './routes/admin/_admin/classes.$id'
+import { Route as AdminAdminCoursesIndexRouteImport } from './routes/admin/_admin/courses.index'
 import { Route as AdminAdminCoursesIdRouteImport } from './routes/admin/_admin/courses.$id'
+import { Route as AdminAdminEventsIndexRouteImport } from './routes/admin/_admin/events.index'
 import { Route as AdminAdminEventsIdRouteImport } from './routes/admin/_admin/events.$id'
 import { Route as AdminAdminGalleryIdRouteImport } from './routes/admin/_admin/gallery.$id'
+import { Route as AdminAdminNoticesIndexRouteImport } from './routes/admin/_admin/notices.index'
 import { Route as AdminAdminNoticesIdRouteImport } from './routes/admin/_admin/notices.$id'
 import { Route as AdminAdminNoticesNewRouteImport } from './routes/admin/_admin/notices.new'
+import { Route as AdminAdminPaymentsIndexRouteImport } from './routes/admin/_admin/payments.index'
 import { Route as AdminAdminPaymentsIdRouteImport } from './routes/admin/_admin/payments.$id'
+import { Route as AdminAdminStaffIndexRouteImport } from './routes/admin/_admin/staff.index'
 import { Route as AdminAdminStaffIdRouteImport } from './routes/admin/_admin/staff.$id'
+import { Route as AdminAdminStudentsIndexRouteImport } from './routes/admin/_admin/students.index'
 import { Route as AdminAdminStudentsIdRouteImport } from './routes/admin/_admin/students.$id'
 import { Route as ApiWebsitePageKeyRouteImport } from './routes/api/website/page/$key'
 import { Route as ApiWebsitePagesKeyRouteImport } from './routes/api/website/pages/$key'
+import { Route as AdminAdminNoticesIdIndexRouteImport } from './routes/admin/_admin/notices.$id.index'
 import { Route as AdminAdminNoticesIdEditRouteImport } from './routes/admin/_admin/notices.$id.edit'
 import { Route as ApiWebsitePagesKeyBlocksRouteImport } from './routes/api/website/pages/$key/blocks'
 import { Route as ApiWebsitePagesKeyPublishRouteImport } from './routes/api/website/pages/$key/publish'
@@ -532,20 +541,41 @@ const OnboardActivateGuardianTokenRoute =
     path: '/activate/guardian/$token',
     getParentRoute: () => OnboardRoute,
   } as any)
+const AdminAdminAdmissionsIndexRoute =
+  AdminAdminAdmissionsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminAdminAdmissionsRoute,
+  } as any)
 const AdminAdminAdmissionsIdRoute = AdminAdminAdmissionsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => AdminAdminAdmissionsRoute,
+} as any)
+const AdminAdminClassesIndexRoute = AdminAdminClassesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAdminClassesRoute,
 } as any)
 const AdminAdminClassesIdRoute = AdminAdminClassesIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => AdminAdminClassesRoute,
 } as any)
+const AdminAdminCoursesIndexRoute = AdminAdminCoursesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAdminCoursesRoute,
+} as any)
 const AdminAdminCoursesIdRoute = AdminAdminCoursesIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => AdminAdminCoursesRoute,
+} as any)
+const AdminAdminEventsIndexRoute = AdminAdminEventsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAdminEventsRoute,
 } as any)
 const AdminAdminEventsIdRoute = AdminAdminEventsIdRouteImport.update({
   id: '/$id',
@@ -557,6 +587,11 @@ const AdminAdminGalleryIdRoute = AdminAdminGalleryIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AdminAdminGalleryRoute,
 } as any)
+const AdminAdminNoticesIndexRoute = AdminAdminNoticesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAdminNoticesRoute,
+} as any)
 const AdminAdminNoticesIdRoute = AdminAdminNoticesIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -567,15 +602,30 @@ const AdminAdminNoticesNewRoute = AdminAdminNoticesNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AdminAdminNoticesRoute,
 } as any)
+const AdminAdminPaymentsIndexRoute = AdminAdminPaymentsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAdminPaymentsRoute,
+} as any)
 const AdminAdminPaymentsIdRoute = AdminAdminPaymentsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => AdminAdminPaymentsRoute,
 } as any)
+const AdminAdminStaffIndexRoute = AdminAdminStaffIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAdminStaffRoute,
+} as any)
 const AdminAdminStaffIdRoute = AdminAdminStaffIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => AdminAdminStaffRoute,
+} as any)
+const AdminAdminStudentsIndexRoute = AdminAdminStudentsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAdminStudentsRoute,
 } as any)
 const AdminAdminStudentsIdRoute = AdminAdminStudentsIdRouteImport.update({
   id: '/$id',
@@ -592,6 +642,12 @@ const ApiWebsitePagesKeyRoute = ApiWebsitePagesKeyRouteImport.update({
   path: '/$key',
   getParentRoute: () => ApiWebsitePagesRoute,
 } as any)
+const AdminAdminNoticesIdIndexRoute =
+  AdminAdminNoticesIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminAdminNoticesIdRoute,
+  } as any)
 const AdminAdminNoticesIdEditRoute = AdminAdminNoticesIdEditRouteImport.update({
   id: '/edit',
   path: '/edit',
@@ -723,10 +779,19 @@ export interface FileRoutesByFullPath {
   '/admin/students/$id': typeof AdminAdminStudentsIdRoute
   '/api/website/page/$key': typeof ApiWebsitePageKeyRoute
   '/api/website/pages/$key': typeof ApiWebsitePagesKeyRouteWithChildren
+  '/admin/admissions/': typeof AdminAdminAdmissionsIndexRoute
+  '/admin/classes/': typeof AdminAdminClassesIndexRoute
+  '/admin/courses/': typeof AdminAdminCoursesIndexRoute
+  '/admin/events/': typeof AdminAdminEventsIndexRoute
+  '/admin/notices/': typeof AdminAdminNoticesIndexRoute
+  '/admin/payments/': typeof AdminAdminPaymentsIndexRoute
+  '/admin/staff/': typeof AdminAdminStaffIndexRoute
+  '/admin/students/': typeof AdminAdminStudentsIndexRoute
   '/admin/notices/$id/edit': typeof AdminAdminNoticesIdEditRoute
   '/api/website/pages/$key/blocks': typeof ApiWebsitePagesKeyBlocksRouteWithChildren
   '/api/website/pages/$key/publish': typeof ApiWebsitePagesKeyPublishRoute
   '/api/website/pages/$key/unpublish': typeof ApiWebsitePagesKeyUnpublishRoute
+  '/admin/notices/$id/': typeof AdminAdminNoticesIdIndexRoute
   '/api/website/pages/$key/blocks/$blockId': typeof ApiWebsitePagesKeyBlocksBlockIdRoute
   '/api/website/pages/$key/sections/$sectionType': typeof ApiWebsitePagesKeySectionsSectionTypeRoute
 }
@@ -769,14 +834,10 @@ export interface FileRoutesByTo {
   '/admin/$': typeof AdminAdminSplatRoute
   '/admin/academics': typeof AdminAdminAcademicsRoute
   '/admin/activity': typeof AdminAdminActivityRoute
-  '/admin/admissions': typeof AdminAdminAdmissionsRouteWithChildren
   '/admin/attendance': typeof AdminAdminAttendanceRoute
   '/admin/calendar': typeof AdminAdminCalendarRoute
-  '/admin/classes': typeof AdminAdminClassesRouteWithChildren
   '/admin/content': typeof AdminAdminContentRoute
-  '/admin/courses': typeof AdminAdminCoursesRouteWithChildren
   '/admin/directory': typeof AdminAdminDirectoryRoute
-  '/admin/events': typeof AdminAdminEventsRouteWithChildren
   '/admin/exams': typeof AdminAdminExamsRoute
   '/admin/facilities': typeof AdminAdminFacilitiesRoute
   '/admin/faculty': typeof AdminAdminFacultyRoute
@@ -786,16 +847,12 @@ export interface FileRoutesByTo {
   '/admin/inbox': typeof AdminAdminInboxRoute
   '/admin/invites': typeof AdminAdminInvitesRoute
   '/admin/mail': typeof AdminAdminMailRoute
-  '/admin/notices': typeof AdminAdminNoticesRouteWithChildren
   '/admin/overview': typeof AdminAdminOverviewRoute
-  '/admin/payments': typeof AdminAdminPaymentsRouteWithChildren
   '/admin/permissions': typeof AdminAdminPermissionsRoute
   '/admin/resources': typeof AdminAdminResourcesRoute
   '/admin/results': typeof AdminAdminResultsRoute
   '/admin/scholarships': typeof AdminAdminScholarshipsRoute
   '/admin/settings': typeof AdminAdminSettingsRoute
-  '/admin/staff': typeof AdminAdminStaffRouteWithChildren
-  '/admin/students': typeof AdminAdminStudentsRouteWithChildren
   '/admin/timetable': typeof AdminAdminTimetableRoute
   '/admin/transport': typeof AdminAdminTransportRoute
   '/admin/transportation': typeof AdminAdminTransportationRoute
@@ -814,17 +871,25 @@ export interface FileRoutesByTo {
   '/admin/courses/$id': typeof AdminAdminCoursesIdRoute
   '/admin/events/$id': typeof AdminAdminEventsIdRoute
   '/admin/gallery/$id': typeof AdminAdminGalleryIdRoute
-  '/admin/notices/$id': typeof AdminAdminNoticesIdRouteWithChildren
   '/admin/notices/new': typeof AdminAdminNoticesNewRoute
   '/admin/payments/$id': typeof AdminAdminPaymentsIdRoute
   '/admin/staff/$id': typeof AdminAdminStaffIdRoute
   '/admin/students/$id': typeof AdminAdminStudentsIdRoute
   '/api/website/page/$key': typeof ApiWebsitePageKeyRoute
   '/api/website/pages/$key': typeof ApiWebsitePagesKeyRouteWithChildren
+  '/admin/admissions': typeof AdminAdminAdmissionsIndexRoute
+  '/admin/classes': typeof AdminAdminClassesIndexRoute
+  '/admin/courses': typeof AdminAdminCoursesIndexRoute
+  '/admin/events': typeof AdminAdminEventsIndexRoute
+  '/admin/notices': typeof AdminAdminNoticesIndexRoute
+  '/admin/payments': typeof AdminAdminPaymentsIndexRoute
+  '/admin/staff': typeof AdminAdminStaffIndexRoute
+  '/admin/students': typeof AdminAdminStudentsIndexRoute
   '/admin/notices/$id/edit': typeof AdminAdminNoticesIdEditRoute
   '/api/website/pages/$key/blocks': typeof ApiWebsitePagesKeyBlocksRouteWithChildren
   '/api/website/pages/$key/publish': typeof ApiWebsitePagesKeyPublishRoute
   '/api/website/pages/$key/unpublish': typeof ApiWebsitePagesKeyUnpublishRoute
+  '/admin/notices/$id': typeof AdminAdminNoticesIdIndexRoute
   '/api/website/pages/$key/blocks/$blockId': typeof ApiWebsitePagesKeyBlocksBlockIdRoute
   '/api/website/pages/$key/sections/$sectionType': typeof ApiWebsitePagesKeySectionsSectionTypeRoute
 }
@@ -926,10 +991,19 @@ export interface FileRoutesById {
   '/admin/_admin/students/$id': typeof AdminAdminStudentsIdRoute
   '/api/website/page/$key': typeof ApiWebsitePageKeyRoute
   '/api/website/pages/$key': typeof ApiWebsitePagesKeyRouteWithChildren
+  '/admin/_admin/admissions/': typeof AdminAdminAdmissionsIndexRoute
+  '/admin/_admin/classes/': typeof AdminAdminClassesIndexRoute
+  '/admin/_admin/courses/': typeof AdminAdminCoursesIndexRoute
+  '/admin/_admin/events/': typeof AdminAdminEventsIndexRoute
+  '/admin/_admin/notices/': typeof AdminAdminNoticesIndexRoute
+  '/admin/_admin/payments/': typeof AdminAdminPaymentsIndexRoute
+  '/admin/_admin/staff/': typeof AdminAdminStaffIndexRoute
+  '/admin/_admin/students/': typeof AdminAdminStudentsIndexRoute
   '/admin/_admin/notices/$id/edit': typeof AdminAdminNoticesIdEditRoute
   '/api/website/pages/$key/blocks': typeof ApiWebsitePagesKeyBlocksRouteWithChildren
   '/api/website/pages/$key/publish': typeof ApiWebsitePagesKeyPublishRoute
   '/api/website/pages/$key/unpublish': typeof ApiWebsitePagesKeyUnpublishRoute
+  '/admin/_admin/notices/$id/': typeof AdminAdminNoticesIdIndexRoute
   '/api/website/pages/$key/blocks/$blockId': typeof ApiWebsitePagesKeyBlocksBlockIdRoute
   '/api/website/pages/$key/sections/$sectionType': typeof ApiWebsitePagesKeySectionsSectionTypeRoute
 }
@@ -1030,10 +1104,19 @@ export interface FileRouteTypes {
     | '/admin/students/$id'
     | '/api/website/page/$key'
     | '/api/website/pages/$key'
+    | '/admin/admissions/'
+    | '/admin/classes/'
+    | '/admin/courses/'
+    | '/admin/events/'
+    | '/admin/notices/'
+    | '/admin/payments/'
+    | '/admin/staff/'
+    | '/admin/students/'
     | '/admin/notices/$id/edit'
     | '/api/website/pages/$key/blocks'
     | '/api/website/pages/$key/publish'
     | '/api/website/pages/$key/unpublish'
+    | '/admin/notices/$id/'
     | '/api/website/pages/$key/blocks/$blockId'
     | '/api/website/pages/$key/sections/$sectionType'
   fileRoutesByTo: FileRoutesByTo
@@ -1076,14 +1159,10 @@ export interface FileRouteTypes {
     | '/admin/$'
     | '/admin/academics'
     | '/admin/activity'
-    | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/calendar'
-    | '/admin/classes'
     | '/admin/content'
-    | '/admin/courses'
     | '/admin/directory'
-    | '/admin/events'
     | '/admin/exams'
     | '/admin/facilities'
     | '/admin/faculty'
@@ -1093,16 +1172,12 @@ export interface FileRouteTypes {
     | '/admin/inbox'
     | '/admin/invites'
     | '/admin/mail'
-    | '/admin/notices'
     | '/admin/overview'
-    | '/admin/payments'
     | '/admin/permissions'
     | '/admin/resources'
     | '/admin/results'
     | '/admin/scholarships'
     | '/admin/settings'
-    | '/admin/staff'
-    | '/admin/students'
     | '/admin/timetable'
     | '/admin/transport'
     | '/admin/transportation'
@@ -1121,17 +1196,25 @@ export interface FileRouteTypes {
     | '/admin/courses/$id'
     | '/admin/events/$id'
     | '/admin/gallery/$id'
-    | '/admin/notices/$id'
     | '/admin/notices/new'
     | '/admin/payments/$id'
     | '/admin/staff/$id'
     | '/admin/students/$id'
     | '/api/website/page/$key'
     | '/api/website/pages/$key'
+    | '/admin/admissions'
+    | '/admin/classes'
+    | '/admin/courses'
+    | '/admin/events'
+    | '/admin/notices'
+    | '/admin/payments'
+    | '/admin/staff'
+    | '/admin/students'
     | '/admin/notices/$id/edit'
     | '/api/website/pages/$key/blocks'
     | '/api/website/pages/$key/publish'
     | '/api/website/pages/$key/unpublish'
+    | '/admin/notices/$id'
     | '/api/website/pages/$key/blocks/$blockId'
     | '/api/website/pages/$key/sections/$sectionType'
   id:
@@ -1232,10 +1315,19 @@ export interface FileRouteTypes {
     | '/admin/_admin/students/$id'
     | '/api/website/page/$key'
     | '/api/website/pages/$key'
+    | '/admin/_admin/admissions/'
+    | '/admin/_admin/classes/'
+    | '/admin/_admin/courses/'
+    | '/admin/_admin/events/'
+    | '/admin/_admin/notices/'
+    | '/admin/_admin/payments/'
+    | '/admin/_admin/staff/'
+    | '/admin/_admin/students/'
     | '/admin/_admin/notices/$id/edit'
     | '/api/website/pages/$key/blocks'
     | '/api/website/pages/$key/publish'
     | '/api/website/pages/$key/unpublish'
+    | '/admin/_admin/notices/$id/'
     | '/api/website/pages/$key/blocks/$blockId'
     | '/api/website/pages/$key/sections/$sectionType'
   fileRoutesById: FileRoutesById
@@ -1853,12 +1945,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardActivateGuardianTokenRouteImport
       parentRoute: typeof OnboardRoute
     }
+    '/admin/_admin/admissions/': {
+      id: '/admin/_admin/admissions/'
+      path: '/'
+      fullPath: '/admin/admissions/'
+      preLoaderRoute: typeof AdminAdminAdmissionsIndexRouteImport
+      parentRoute: typeof AdminAdminAdmissionsRoute
+    }
     '/admin/_admin/admissions/$id': {
       id: '/admin/_admin/admissions/$id'
       path: '/$id'
       fullPath: '/admin/admissions/$id'
       preLoaderRoute: typeof AdminAdminAdmissionsIdRouteImport
       parentRoute: typeof AdminAdminAdmissionsRoute
+    }
+    '/admin/_admin/classes/': {
+      id: '/admin/_admin/classes/'
+      path: '/'
+      fullPath: '/admin/classes/'
+      preLoaderRoute: typeof AdminAdminClassesIndexRouteImport
+      parentRoute: typeof AdminAdminClassesRoute
     }
     '/admin/_admin/classes/$id': {
       id: '/admin/_admin/classes/$id'
@@ -1867,12 +1973,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminClassesIdRouteImport
       parentRoute: typeof AdminAdminClassesRoute
     }
+    '/admin/_admin/courses/': {
+      id: '/admin/_admin/courses/'
+      path: '/'
+      fullPath: '/admin/courses/'
+      preLoaderRoute: typeof AdminAdminCoursesIndexRouteImport
+      parentRoute: typeof AdminAdminCoursesRoute
+    }
     '/admin/_admin/courses/$id': {
       id: '/admin/_admin/courses/$id'
       path: '/$id'
       fullPath: '/admin/courses/$id'
       preLoaderRoute: typeof AdminAdminCoursesIdRouteImport
       parentRoute: typeof AdminAdminCoursesRoute
+    }
+    '/admin/_admin/events/': {
+      id: '/admin/_admin/events/'
+      path: '/'
+      fullPath: '/admin/events/'
+      preLoaderRoute: typeof AdminAdminEventsIndexRouteImport
+      parentRoute: typeof AdminAdminEventsRoute
     }
     '/admin/_admin/events/$id': {
       id: '/admin/_admin/events/$id'
@@ -1888,6 +2008,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminGalleryIdRouteImport
       parentRoute: typeof AdminAdminGalleryRoute
     }
+    '/admin/_admin/notices/': {
+      id: '/admin/_admin/notices/'
+      path: '/'
+      fullPath: '/admin/notices/'
+      preLoaderRoute: typeof AdminAdminNoticesIndexRouteImport
+      parentRoute: typeof AdminAdminNoticesRoute
+    }
     '/admin/_admin/notices/$id': {
       id: '/admin/_admin/notices/$id'
       path: '/$id'
@@ -1902,6 +2029,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminNoticesNewRouteImport
       parentRoute: typeof AdminAdminNoticesRoute
     }
+    '/admin/_admin/payments/': {
+      id: '/admin/_admin/payments/'
+      path: '/'
+      fullPath: '/admin/payments/'
+      preLoaderRoute: typeof AdminAdminPaymentsIndexRouteImport
+      parentRoute: typeof AdminAdminPaymentsRoute
+    }
     '/admin/_admin/payments/$id': {
       id: '/admin/_admin/payments/$id'
       path: '/$id'
@@ -1909,12 +2043,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminPaymentsIdRouteImport
       parentRoute: typeof AdminAdminPaymentsRoute
     }
+    '/admin/_admin/staff/': {
+      id: '/admin/_admin/staff/'
+      path: '/'
+      fullPath: '/admin/staff/'
+      preLoaderRoute: typeof AdminAdminStaffIndexRouteImport
+      parentRoute: typeof AdminAdminStaffRoute
+    }
     '/admin/_admin/staff/$id': {
       id: '/admin/_admin/staff/$id'
       path: '/$id'
       fullPath: '/admin/staff/$id'
       preLoaderRoute: typeof AdminAdminStaffIdRouteImport
       parentRoute: typeof AdminAdminStaffRoute
+    }
+    '/admin/_admin/students/': {
+      id: '/admin/_admin/students/'
+      path: '/'
+      fullPath: '/admin/students/'
+      preLoaderRoute: typeof AdminAdminStudentsIndexRouteImport
+      parentRoute: typeof AdminAdminStudentsRoute
     }
     '/admin/_admin/students/$id': {
       id: '/admin/_admin/students/$id'
@@ -1936,6 +2084,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/website/pages/$key'
       preLoaderRoute: typeof ApiWebsitePagesKeyRouteImport
       parentRoute: typeof ApiWebsitePagesRoute
+    }
+    '/admin/_admin/notices/$id/': {
+      id: '/admin/_admin/notices/$id/'
+      path: '/'
+      fullPath: '/admin/notices/$id/'
+      preLoaderRoute: typeof AdminAdminNoticesIdIndexRouteImport
+      parentRoute: typeof AdminAdminNoticesIdRoute
     }
     '/admin/_admin/notices/$id/edit': {
       id: '/admin/_admin/notices/$id/edit'
@@ -2078,10 +2233,12 @@ const PublicRouteWithChildren =
 
 interface AdminAdminAdmissionsRouteChildren {
   AdminAdminAdmissionsIdRoute: typeof AdminAdminAdmissionsIdRoute
+  AdminAdminAdmissionsIndexRoute: typeof AdminAdminAdmissionsIndexRoute
 }
 
 const AdminAdminAdmissionsRouteChildren: AdminAdminAdmissionsRouteChildren = {
   AdminAdminAdmissionsIdRoute: AdminAdminAdmissionsIdRoute,
+  AdminAdminAdmissionsIndexRoute: AdminAdminAdmissionsIndexRoute,
 }
 
 const AdminAdminAdmissionsRouteWithChildren =
@@ -2089,10 +2246,12 @@ const AdminAdminAdmissionsRouteWithChildren =
 
 interface AdminAdminClassesRouteChildren {
   AdminAdminClassesIdRoute: typeof AdminAdminClassesIdRoute
+  AdminAdminClassesIndexRoute: typeof AdminAdminClassesIndexRoute
 }
 
 const AdminAdminClassesRouteChildren: AdminAdminClassesRouteChildren = {
   AdminAdminClassesIdRoute: AdminAdminClassesIdRoute,
+  AdminAdminClassesIndexRoute: AdminAdminClassesIndexRoute,
 }
 
 const AdminAdminClassesRouteWithChildren =
@@ -2100,10 +2259,12 @@ const AdminAdminClassesRouteWithChildren =
 
 interface AdminAdminCoursesRouteChildren {
   AdminAdminCoursesIdRoute: typeof AdminAdminCoursesIdRoute
+  AdminAdminCoursesIndexRoute: typeof AdminAdminCoursesIndexRoute
 }
 
 const AdminAdminCoursesRouteChildren: AdminAdminCoursesRouteChildren = {
   AdminAdminCoursesIdRoute: AdminAdminCoursesIdRoute,
+  AdminAdminCoursesIndexRoute: AdminAdminCoursesIndexRoute,
 }
 
 const AdminAdminCoursesRouteWithChildren =
@@ -2111,10 +2272,12 @@ const AdminAdminCoursesRouteWithChildren =
 
 interface AdminAdminEventsRouteChildren {
   AdminAdminEventsIdRoute: typeof AdminAdminEventsIdRoute
+  AdminAdminEventsIndexRoute: typeof AdminAdminEventsIndexRoute
 }
 
 const AdminAdminEventsRouteChildren: AdminAdminEventsRouteChildren = {
   AdminAdminEventsIdRoute: AdminAdminEventsIdRoute,
+  AdminAdminEventsIndexRoute: AdminAdminEventsIndexRoute,
 }
 
 const AdminAdminEventsRouteWithChildren =
@@ -2133,10 +2296,12 @@ const AdminAdminGalleryRouteWithChildren =
 
 interface AdminAdminNoticesIdRouteChildren {
   AdminAdminNoticesIdEditRoute: typeof AdminAdminNoticesIdEditRoute
+  AdminAdminNoticesIdIndexRoute: typeof AdminAdminNoticesIdIndexRoute
 }
 
 const AdminAdminNoticesIdRouteChildren: AdminAdminNoticesIdRouteChildren = {
   AdminAdminNoticesIdEditRoute: AdminAdminNoticesIdEditRoute,
+  AdminAdminNoticesIdIndexRoute: AdminAdminNoticesIdIndexRoute,
 }
 
 const AdminAdminNoticesIdRouteWithChildren =
@@ -2145,11 +2310,13 @@ const AdminAdminNoticesIdRouteWithChildren =
 interface AdminAdminNoticesRouteChildren {
   AdminAdminNoticesIdRoute: typeof AdminAdminNoticesIdRouteWithChildren
   AdminAdminNoticesNewRoute: typeof AdminAdminNoticesNewRoute
+  AdminAdminNoticesIndexRoute: typeof AdminAdminNoticesIndexRoute
 }
 
 const AdminAdminNoticesRouteChildren: AdminAdminNoticesRouteChildren = {
   AdminAdminNoticesIdRoute: AdminAdminNoticesIdRouteWithChildren,
   AdminAdminNoticesNewRoute: AdminAdminNoticesNewRoute,
+  AdminAdminNoticesIndexRoute: AdminAdminNoticesIndexRoute,
 }
 
 const AdminAdminNoticesRouteWithChildren =
@@ -2157,10 +2324,12 @@ const AdminAdminNoticesRouteWithChildren =
 
 interface AdminAdminPaymentsRouteChildren {
   AdminAdminPaymentsIdRoute: typeof AdminAdminPaymentsIdRoute
+  AdminAdminPaymentsIndexRoute: typeof AdminAdminPaymentsIndexRoute
 }
 
 const AdminAdminPaymentsRouteChildren: AdminAdminPaymentsRouteChildren = {
   AdminAdminPaymentsIdRoute: AdminAdminPaymentsIdRoute,
+  AdminAdminPaymentsIndexRoute: AdminAdminPaymentsIndexRoute,
 }
 
 const AdminAdminPaymentsRouteWithChildren =
@@ -2168,10 +2337,12 @@ const AdminAdminPaymentsRouteWithChildren =
 
 interface AdminAdminStaffRouteChildren {
   AdminAdminStaffIdRoute: typeof AdminAdminStaffIdRoute
+  AdminAdminStaffIndexRoute: typeof AdminAdminStaffIndexRoute
 }
 
 const AdminAdminStaffRouteChildren: AdminAdminStaffRouteChildren = {
   AdminAdminStaffIdRoute: AdminAdminStaffIdRoute,
+  AdminAdminStaffIndexRoute: AdminAdminStaffIndexRoute,
 }
 
 const AdminAdminStaffRouteWithChildren = AdminAdminStaffRoute._addFileChildren(
@@ -2180,10 +2351,12 @@ const AdminAdminStaffRouteWithChildren = AdminAdminStaffRoute._addFileChildren(
 
 interface AdminAdminStudentsRouteChildren {
   AdminAdminStudentsIdRoute: typeof AdminAdminStudentsIdRoute
+  AdminAdminStudentsIndexRoute: typeof AdminAdminStudentsIndexRoute
 }
 
 const AdminAdminStudentsRouteChildren: AdminAdminStudentsRouteChildren = {
   AdminAdminStudentsIdRoute: AdminAdminStudentsIdRoute,
+  AdminAdminStudentsIndexRoute: AdminAdminStudentsIndexRoute,
 }
 
 const AdminAdminStudentsRouteWithChildren =

@@ -34,6 +34,7 @@ import {
 } from "#/components/common/Skeletons";
 import { StatusBadge } from "#/components/common/StatusBadge";
 import { Timeline } from "#/components/common/Timeline";
+import { AdminPageLinks } from "#/components/layout/AdminPageLinks";
 import { Button } from "#/components/ui/button";
 import { formatDate, formatNumber, relativeTime } from "#/lib/format";
 import { cn } from "#/lib/utils";
@@ -150,6 +151,14 @@ export default function OverviewPage() {
 			) : (
 				<div className="space-y-5">
 					<MetricsStrip metrics={data.metrics} />
+
+					<Panel
+						title="Go to a page"
+						description="Jump straight into any part of the admin console"
+						testId="overview-page-links"
+					>
+						<AdminPageLinks />
+					</Panel>
 
 					<div className="grid gap-5 lg:grid-cols-12">
 						{/* Attendance ------------------------------------------------ */}
@@ -723,7 +732,7 @@ export default function OverviewPage() {
 									{
 										label: "Import CSV",
 										icon: UploadCloud,
-										to: "/admin/students?import=1",
+										to: "/admin/students?csv=1",
 										permission: "students.manage" as const,
 									},
 									{

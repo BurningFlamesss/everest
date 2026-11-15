@@ -118,7 +118,12 @@ export default function LandingPage({
 	return (
 		<>
 			<div className="relative min-h-screen bg-background">
-				<div ref={containerRef} className="relative h-[600vh]">
+				<div
+					id="hero-track"
+					data-hero-track="true"
+					ref={containerRef}
+					className="relative h-[600vh]"
+				>
 					<div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
 						<CmsSectionBox
 							preview={preview}
@@ -157,7 +162,7 @@ export default function LandingPage({
 									<dl className="border-t border-rule-soft">
 										{rows(facts, "facts").map((fact, i) => (
 											<div
-												key={i}
+												key={String(fact.label ?? i)}
 												className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft"
 											>
 												<dt className="text-[11px] sm:text-xs uppercase text-n-600 text-muted-foreground tracking-wider">
@@ -224,7 +229,7 @@ export default function LandingPage({
 										const image = str(card, "image", "");
 										return (
 											<Link
-												key={i}
+												key={href || String(i)}
 												to={href as never}
 												className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
 											>
@@ -613,7 +618,9 @@ function HeroStage({
 				<div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background">
 					<div className="text-center">
 						<div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-						<p className="text-lg font-medium font-display">Loading Experience</p>
+						<p className="text-lg font-medium font-display">
+							Loading Experience
+						</p>
 						<p className="mt-1 text-sm text-muted-foreground">
 							{Math.round(progress)}%
 						</p>

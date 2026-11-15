@@ -38,7 +38,7 @@ export function RoutineViewer() {
 	return (
 		<div className="flex flex-col gap-8" data-testid="routine-viewer">
 			<div className="flex flex-col gap-2">
-				<Eyebrow>Class routine</Eyebrow>
+				<Eyebrow tone="muted">Class routine</Eyebrow>
 				<WidgetCaption>
 					The period running right now is highlighted, in Nepal time.
 				</WidgetCaption>

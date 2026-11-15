@@ -61,7 +61,7 @@ export function StreamCompare({
 			id="stream-compare"
 		>
 			<div className="flex flex-col gap-2">
-				<Eyebrow>Compare two streams</Eyebrow>
+				<Eyebrow tone="muted">Compare two streams</Eyebrow>
 				<WidgetCaption>
 					Shared subjects sit in the middle; the differences push outward.
 				</WidgetCaption>

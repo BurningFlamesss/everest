@@ -107,7 +107,7 @@ export function FeeEstimator() {
 			id="fee-estimator"
 		>
 			<div className="flex flex-col gap-2">
-				<Eyebrow>Fee estimator</Eyebrow>
+				<Eyebrow tone="muted">Fee estimator</Eyebrow>
 				<WidgetCaption>
 					Choose a level and any extras. The figures update as you change them.
 				</WidgetCaption>

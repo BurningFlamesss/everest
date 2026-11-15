@@ -85,7 +85,7 @@ export default function StudentsPage() {
 	const [selected, setSelected] = useState<string[]>([]);
 
 	const [formOpen, setFormOpen] = useState(searchParams.new === "1");
-	const [importOpen, setImportOpen] = useState(searchParams.import === "1");
+	const [importOpen, setImportOpen] = useState(searchParams.csv === "1");
 	const [editing, setEditing] = useState<Student | null>(null);
 	const [transferTarget, setTransferTarget] = useState<Student | null>(null);
 	const [transferClassId, setTransferClassId] = useState("");
@@ -99,8 +99,8 @@ export default function StudentsPage() {
 
 	useEffect(() => {
 		if (searchParams.new === "1") setFormOpen(true);
-		if (searchParams.import === "1") setImportOpen(true);
-	}, [searchParams.new, searchParams.import]);
+		if (searchParams.csv === "1") setImportOpen(true);
+	}, [searchParams.new, searchParams.csv]);
 
 	const clearParams = () => {
 		navigate({
@@ -108,7 +108,7 @@ export default function StudentsPage() {
 			search: (prev) => {
 				const next: Record<string, string | undefined> = { ...prev };
 				delete next.new;
-				delete next.import;
+				delete next.csv;
 				return next;
 			},
 			replace: true,

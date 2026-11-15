@@ -1,5 +1,5 @@
 import { todayKey } from "@/lib/format";
-import { buildSeed } from "@/mock/seed";
+import { buildSeed, DB_SCHEMA_VERSION } from "@/mock/seed";
 import type {
 	AcademicYear,
 	Album,
@@ -60,7 +60,7 @@ export interface Collections {
 }
 
 const STORAGE_KEY = "scms.db.v4";
-const SCHEMA_VERSION = 5; // Bumped to force reload for missing website page paths
+const SCHEMA_VERSION = DB_SCHEMA_VERSION;
 
 let cache: Collections | null = null;
 

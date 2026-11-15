@@ -437,8 +437,8 @@ export const SECTION_DEFAULTS: Partial<
 	},
 	// Courses page (/courses): mirrors the route copy.
 	academics: {
+		title: "Programme index",
 		body: "Each row opens into the full subject list, credit hours, fee table and progression routes for that programme.",
-		title: "",
 	},
 	// Facilities page (/facilities): mirrors the route copy.
 	facilities: {
@@ -448,7 +448,7 @@ export const SECTION_DEFAULTS: Partial<
 	},
 	// Gallery page (/gallery): mirrors the route copy.
 	gallery_grid: {
-		title: "",
+		title: "Campus Photo Albums",
 	},
 	// Calendar page (/calendar): mirrors the route copy.
 	featured_events: {
@@ -457,8 +457,96 @@ export const SECTION_DEFAULTS: Partial<
 	},
 	// Result page (/result): mirrors the route copy.
 	stats: {
+		title: "Board Examination Performance",
+		body: "Division splits over the last five sessions for secondary education exams.",
+	},
+	// Rich text (resources, etc.): default prose block.
+	rich_text: {
+		title: "Academic Documentation & Policy",
+		html: "<p>Important files and documents for students and guardians.</p>",
+	},
+	// Generic hero banner (admissions, etc.)
+	hero: {
+		eyebrow: "Admissions",
+		headline: "A place to begin.",
+		subheadline:
+			"Admissions are open for the coming academic year. The process is simple, and the school office will guide you at every step.",
+		primaryCtaLabel: "Send an enquiry",
+		primaryCtaHref: "/contact",
+		secondaryCtaLabel: "View courses",
+		secondaryCtaHref: "/courses",
+	},
+	// Generic headline default
+	headline: {
+		eyebrow: "",
 		title: "",
 		body: "",
+	},
+};
+
+/** Default headline copy tailored specifically per public page. */
+export const SECTION_PAGE_HEADLINE_DEFAULTS: Partial<
+	Record<CmsPageKey, { eyebrow: string; title: string; body: string }>
+> = {
+	courses: {
+		eyebrow: "Academics",
+		title: "Courses & Academic Programmes",
+		body: "Subject lists, credit hours, fee structures and weekly routines for every programme from Nursery to Grade 12.",
+	},
+	course_finder: {
+		eyebrow: "Course finder",
+		title: "Which stream",
+		body: "Six questions. The result shows all three streams and why each one ranked where it did.",
+	},
+	calendar: {
+		eyebrow: "Calendar",
+		title: "Academic calendar & routine",
+		body: "Every holiday, exam date, fee deadline and assembly scheduled for the 2083 session.",
+	},
+	gallery: {
+		eyebrow: "Gallery",
+		title: "Life on the Butwal-8 campus",
+		body: "Assembly, laboratory work, athletics and graduation across three decades of Everest EBSS.",
+	},
+	notices: {
+		eyebrow: "Notices",
+		title: "Official notices & circulars",
+		body: "Every circular, date sheet and administrative order published for students, parents and staff.",
+	},
+	scholarship: {
+		eyebrow: "Scholarships",
+		title: "Chhatrabritti & Free Studentship",
+		body: "Every criterion, document and deadline published in full. Check yourself against a scheme, then download the form the desk asks for.",
+	},
+	posts: {
+		eyebrow: "Updates & News",
+		title: "Community Timeline",
+		body: "Live updates, achievements, and announcements from our official community channels.",
+	},
+	clubs: {
+		eyebrow: "Student life",
+		title: "Clubs",
+		body: "Clubs give students a place to build skills, make friends and take on responsibility beyond the classroom.",
+	},
+	events: {
+		eyebrow: "School calendar",
+		title: "Events",
+		body: "Programmes, examinations, sports and celebrations happening at the school.",
+	},
+	resources: {
+		eyebrow: "Resources",
+		title: "Downloads and Materials",
+		body: "Access important files, forms, and documents for the academic session.",
+	},
+	result: {
+		eyebrow: "RESULT",
+		title: "Board results",
+		body: "Division splits over the last five sessions for secondary education exams.",
+	},
+	transportation: {
+		eyebrow: "TRANSPORTATION",
+		title: "Bus route and pickup finder",
+		body: "Three routes cover Rupandehi from Devdaha in the north-east to Sunauli in the south.",
 	},
 };
 
@@ -466,8 +554,18 @@ export function sectionLabel(type: BlockType): string {
 	return SECTION_LABELS[type] ?? type.replace(/_/g, " ");
 }
 
-/** Default fields for a section, used to seed the editor and create blocks. */
-export function sectionDefaults(type: BlockType): Record<string, unknown> {
+/** Default fields for a section, optionally customized by target page. */
+export function sectionDefaults(
+	type: BlockType,
+	pageKey?: CmsPageKey,
+): Record<string, unknown> {
+	if (
+		type === "headline" &&
+		pageKey &&
+		SECTION_PAGE_HEADLINE_DEFAULTS[pageKey]
+	) {
+		return SECTION_PAGE_HEADLINE_DEFAULTS[pageKey];
+	}
 	return SECTION_DEFAULTS[type] ?? {};
 }
 

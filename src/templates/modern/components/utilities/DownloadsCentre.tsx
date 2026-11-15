@@ -72,7 +72,7 @@ export function DownloadsCentre({ dbResources }: { dbResources?: any[] }) {
 	return (
 		<div className="flex flex-col gap-8" data-testid="downloads-centre">
 			<div className="flex flex-col gap-2">
-				<Eyebrow>Downloads</Eyebrow>
+				<Eyebrow tone="muted">Downloads</Eyebrow>
 				<WidgetCaption>
 					Format and size are shown before you tap anything.
 				</WidgetCaption>

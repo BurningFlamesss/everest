@@ -1,11 +1,8 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { school } from "#content/school";
 import { DUR, EASE } from "#lib/motion";
-import { Button } from "../kit";
 
 const NAV_ITEMS = [
 	{ to: "/courses", label: "Courses", testId: "top-nav-link-courses" },
@@ -18,32 +15,6 @@ const NAV_ITEMS = [
 		testId: "top-nav-link-scholarship",
 	},
 ];
-
-const ThemeToggle = () => {
-	const { resolvedTheme, setTheme } = useTheme();
-	const [mounted, setMounted] = useState(false);
-
-	useEffect(() => setMounted(true), []);
-
-	const isDark = mounted && resolvedTheme === "dark";
-
-	return (
-		<Button
-			variant="ghost"
-			size="icon"
-			aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
-			data-testid="theme-toggle-button"
-			onClick={() => setTheme(isDark ? "light" : "dark")}
-			className="h-9 w-9 shrink-0 rounded-full text-muted-foreground transition-colors duration-fast hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-		>
-			{isDark ? (
-				<Sun className="h-[15px] w-[15px]" aria-hidden="true" />
-			) : (
-				<Moon className="h-[15px] w-[15px]" aria-hidden="true" />
-			)}
-		</Button>
-	);
-};
 
 const NavItem = ({
 	to,
@@ -125,11 +96,6 @@ export const TopNav = () => {
 							/>
 						))}
 					</nav>
-					<div
-						className="ml-1 hidden h-5 w-px bg-border md:block"
-						aria-hidden="true"
-					/>
-					<ThemeToggle />
 				</div>
 			</div>
 

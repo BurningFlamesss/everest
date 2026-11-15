@@ -99,7 +99,7 @@ export function BusFinder() {
 			id="transport"
 		>
 			<div className="flex flex-col gap-2">
-				<Eyebrow>Bus route and pickup finder</Eyebrow>
+				<Eyebrow tone="muted">Bus route and pickup finder</Eyebrow>
 				<WidgetCaption>
 					Type an area, a ward number or a landmark, in English or Nepali.
 				</WidgetCaption>
@@ -239,7 +239,7 @@ export function BusFinder() {
 					>
 						<div className="flex flex-wrap items-baseline justify-between gap-4">
 							<div className="flex flex-col gap-2">
-								<Eyebrow>{best!.route.busNo}</Eyebrow>
+								<Eyebrow tone="muted">{best!.route.busNo}</Eyebrow>
 								<h3
 									className="u-display text-display-m text-foreground"
 									data-testid="bus-route-name"

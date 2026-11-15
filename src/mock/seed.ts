@@ -284,6 +284,9 @@ function makeGuardian(rng: Rng, lastName: string): Guardian {
 
 // ---------------------------------------------------------------------------
 
+/** Bumped whenever the demo dataset shape changes so stored data is re-seeded. */
+export const DB_SCHEMA_VERSION = 5;
+
 export function buildSeed(): Collections {
 	const rng = createRng(0x5c3f19);
 	const now = new Date();
@@ -2023,7 +2026,7 @@ export function buildSeed(): Collections {
 	};
 
 	return {
-		meta: { seedDate: todayKey(), version: 3 },
+		meta: { seedDate: todayKey(), version: DB_SCHEMA_VERSION },
 		branches,
 		academicYears,
 		classes,

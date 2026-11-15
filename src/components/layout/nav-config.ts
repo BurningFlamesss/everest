@@ -155,7 +155,7 @@ export const NAV_GROUPS: NavGroup[] = [
 		items: [
 			{
 				label: "Notices",
-				to: "/admin/directory",
+				to: "/admin/notices",
 				icon: Megaphone,
 				permission: "notices.view",
 				badgeKey: "draftNotices",

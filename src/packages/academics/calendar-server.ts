@@ -8,9 +8,13 @@ import {
 import {
 	activateAcademicYear,
 	createAcademicYear,
+	createCalendarEvent,
 	createTerm,
+	deleteCalendarEvent,
 	deleteTerm,
 	listAcademicYears,
+	listCalendarEvents,
+	seedCalendarEventsFromStatic,
 	updateAcademicYear,
 } from "./calendar-service.ts";
 
@@ -62,9 +66,12 @@ const termSchema = z.object({
 export const getCalendarDataFn = createServerFn().handler(async () => {
 	try {
 		await requireManager();
-		const years = await listAcademicYears();
+		const [years, events] = await Promise.all([
+			listAcademicYears(),
+			listCalendarEvents(),
+		]);
 
-		return { success: true as const, years };
+		return { success: true as const, years, events };
 	} catch (error) {
 		return failure(error);
 	}
@@ -150,3 +157,64 @@ export const deleteTermAction = createServerFn()
 			return failure(error);
 		}
 	});
+
+const calendarEventSchema = z.object({
+	title: z.string().trim().min(1, "Title is required"),
+	titleNe: z.string().trim().optional(),
+	description: z.string().trim().optional(),
+	startDate: z.string().min(1, "Start date is required"),
+	endDate: z.string().min(1, "End date is required"),
+	startBs: z.string().trim().optional(),
+	endBs: z.string().trim().optional(),
+	kind: z.string().min(1, "Event kind is required"),
+	category: z.string().optional(),
+	term: z.string().optional(),
+});
+
+export const createCalendarEventAction = createServerFn()
+	.validator(calendarEventSchema)
+	.handler(async ({ data }) => {
+		try {
+			await requireManager();
+			await createCalendarEvent({
+				title: data.title,
+				titleNe: data.titleNe,
+				description: data.description,
+				startDate: new Date(data.startDate),
+				endDate: new Date(data.endDate),
+				startBs: data.startBs,
+				endBs: data.endBs,
+				kind: data.kind,
+				category: data.category,
+				term: data.term,
+			});
+
+			return { success: true as const, events: await listCalendarEvents() };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+export const deleteCalendarEventAction = createServerFn()
+	.validator(z.object({ id: z.string().min(1) }))
+	.handler(async ({ data }) => {
+		try {
+			await requireManager();
+			await deleteCalendarEvent(data.id);
+
+			return { success: true as const, events: await listCalendarEvents() };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+export const seedCalendarEventsAction = createServerFn().handler(async () => {
+	try {
+		await requireManager();
+		const events = await seedCalendarEventsFromStatic();
+
+		return { success: true as const, events };
+	} catch (error) {
+		return failure(error);
+	}
+});

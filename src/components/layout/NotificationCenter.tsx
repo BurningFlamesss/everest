@@ -12,7 +12,6 @@ import {
 	Megaphone,
 	Server,
 	UserPlus,
-	X,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "#/components/ui/button";
@@ -28,14 +27,32 @@ import { Skeleton } from "#/components/ui/skeleton";
 import { dayLabel, relativeTime } from "#/lib/format";
 import { cn } from "#/lib/utils";
 import {
-	clearNotification,
-	listNotifications,
-	markAllNotificationsRead,
-	markNotificationRead,
-} from "#/services/notifications";
-import type { AppNotification } from "#/types";
+	getNotificationsFn,
+	markAllNotificationsReadAction,
+	markNotificationReadAction,
+} from "#/packages/notifications/server.ts";
 
-const KIND_ICON: Record<AppNotification["kind"], typeof Bell> = {
+/** Row shape returned by `getNotificationsFn` (Prisma `Notification`). */
+interface NotificationRow {
+	id: string;
+	type: string;
+	title: string;
+	body: string | null;
+	refType: string | null;
+	refId: string | null;
+	readAt: string | Date | null;
+	createdAt: string | Date;
+}
+
+const TYPE_ICON: Record<string, typeof Bell> = {
+	// Real DB notification types (packages/notifications/notification-service.ts)
+	INVITE_APPROVED: UserPlus,
+	INVITE_REJECTED: UserPlus,
+	NOTICE_PUBLISHED: Megaphone,
+	EXAM_PUBLISHED: GraduationCap,
+	PAYMENT_RECEIVED: CreditCard,
+	ACCOUNT: Server,
+	// Mock kinds kept for parity during the transition (used by seeded demo data)
 	admission: GraduationCap,
 	user: UserPlus,
 	attendance: AlertTriangle,
@@ -46,23 +63,12 @@ const KIND_ICON: Record<AppNotification["kind"], typeof Bell> = {
 	system: Server,
 };
 
-const SEVERITY_STYLE: Record<AppNotification["severity"], string> = {
-	info: "bg-info/12 text-info",
-	success: "bg-success/12 text-success",
-	warning: "bg-warning/15 text-warning",
-	critical: "bg-destructive/12 text-destructive",
-};
-
 const FILTERS: {
-	key: "all" | "unread" | AppNotification["kind"];
+	key: "all" | "unread";
 	label: string;
 }[] = [
 	{ key: "all", label: "All" },
 	{ key: "unread", label: "Unread" },
-	{ key: "admission", label: "Admissions" },
-	{ key: "attendance", label: "Attendance" },
-	{ key: "payment", label: "Payments" },
-	{ key: "system", label: "System" },
 ];
 
 interface NotificationCenterProps {
@@ -70,44 +76,59 @@ interface NotificationCenterProps {
 	onOpenChange: (open: boolean) => void;
 }
 
+/** Map a real DB notification to the in-app route its "Open" link targets. */
+function linkFor(type: string, refType: string | null): string | null {
+	if (refType === "notice") return "/notices";
+	if (refType === "exam") return "/my-results";
+	if (refType === "invite-request") return "/dashboard";
+	if (type === "NOTICE_PUBLISHED") return "/admin/notices";
+	if (type === "EXAM_PUBLISHED") return "/admin/exams";
+	if (type === "PAYMENT_RECEIVED") return "/admin/payments";
+	if (type === "INVITE_APPROVED" || type === "INVITE_REJECTED")
+		return "/admin/invites";
+	if (type === "ACCOUNT") return "/admin/settings";
+	return "/admin/overview";
+}
+
 export function NotificationCenter({
 	open,
 	onOpenChange,
 }: NotificationCenterProps) {
-	const [filter, setFilter] = useState<(typeof FILTERS)[number]["key"]>("all");
+	const [filter, setFilter] = useState<"all" | "unread">("all");
 	const navigate = useNavigate();
 	const qc = useQueryClient();
 
-	const { data: notifications, isLoading } = useQuery({
-		queryKey: ["notifications", filter],
-		queryFn: () => listNotifications(filter),
+	const { data, isLoading } = useQuery({
+		queryKey: ["notifications", "center", filter],
+		queryFn: () => getNotificationsFn(),
 		enabled: open,
 	});
+
+	const notifications = (data?.notifications ?? []).filter((n) =>
+		filter === "unread" ? !n.readAt : true,
+	);
 
 	const invalidate = () => {
 		qc.invalidateQueries({ queryKey: ["notifications"] });
 	};
 
 	const markRead = useMutation({
-		mutationFn: markNotificationRead,
+		mutationFn: (id: string) => markNotificationReadAction({ data: { id } }),
 		onSuccess: invalidate,
 	});
 	const markAll = useMutation({
-		mutationFn: markAllNotificationsRead,
-		onSuccess: invalidate,
-	});
-	const clear = useMutation({
-		mutationFn: clearNotification,
+		mutationFn: () => markAllNotificationsReadAction(),
 		onSuccess: invalidate,
 	});
 
-	const groups = (notifications ?? []).reduce<
-		Record<string, AppNotification[]>
-	>((acc, item) => {
-		const key = item.createdAt.slice(0, 10);
-		acc[key] = acc[key] ? [...acc[key], item] : [item];
-		return acc;
-	}, {});
+	const groups = notifications.reduce<Record<string, Array<NotificationRow>>>(
+		(acc, item) => {
+			const key = new Date(item.createdAt).toISOString().slice(0, 10);
+			acc[key] = acc[key] ? [...acc[key], item] : [item];
+			return acc;
+		},
+		{},
+	);
 
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
@@ -165,7 +186,7 @@ export function NotificationCenter({
 							</div>
 						)}
 
-						{!isLoading && (notifications ?? []).length === 0 && (
+						{!isLoading && notifications.length === 0 && (
 							<div
 								className="py-16 text-center"
 								data-testid="notifications-empty"
@@ -189,46 +210,41 @@ export function NotificationCenter({
 								<p className="eyebrow-label mb-2">{dayLabel(day)}</p>
 								<ul className="space-y-1.5">
 									{items.map((item) => {
-										const Icon = KIND_ICON[item.kind];
+										const Icon = TYPE_ICON[item.type] ?? Server;
+										const href = linkFor(item.type, item.refType);
 										return (
 											<li
 												key={item.id}
 												className={cn(
 													"group relative rounded-lg border border-hairline bg-[#FEF2F2] p-3 transition-colors hover:bg-gray-100",
-													!item.read && "border-l-2 border-l-primary",
+													!item.readAt && "border-l-2 border-l-primary",
 												)}
 												data-testid="notification-item"
 											>
 												<div className="flex gap-3">
-													<span
-														className={cn(
-															"mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-md",
-															SEVERITY_STYLE[item.severity],
-														)}
-													>
+													<span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-md bg-info/12 text-info">
 														<Icon className="h-3.5 w-3.5" />
 													</span>
 													<div className="min-w-0 flex-1">
 														<p className="text-sm font-medium leading-snug text-foreground">
 															{item.title}
 														</p>
-														<p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-															{item.body}
-														</p>
+														{item.body ? (
+															<p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+																{item.body}
+															</p>
+														) : null}
 														<div className="mt-1.5 flex items-center gap-2 text-[11px] text-muted-foreground">
 															<span>{relativeTime(item.createdAt)}</span>
-															{item.actorName && (
-																<span>· {item.actorName}</span>
-															)}
-															{item.href && (
+															{href && (
 																<button
 																	type="button"
 																	className="ml-auto text-primary hover:underline"
 																	data-testid="notification-open"
 																	onClick={() => {
-																		markRead.mutate(item.id);
+																		if (!item.readAt) markRead.mutate(item.id);
 																		onOpenChange(false);
-																		navigate({ to: item.href as never });
+																		navigate({ to: href as never });
 																	}}
 																>
 																	Open
@@ -237,7 +253,7 @@ export function NotificationCenter({
 														</div>
 													</div>
 													<div className="row-actions flex flex-col gap-1">
-														{!item.read && (
+														{!item.readAt && (
 															<button
 																type="button"
 																aria-label="Mark as read"
@@ -248,15 +264,6 @@ export function NotificationCenter({
 																<CheckCheck className="h-3.5 w-3.5" />
 															</button>
 														)}
-														<button
-															type="button"
-															aria-label="Dismiss"
-															data-testid="notification-dismiss"
-															className="rounded p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
-															onClick={() => clear.mutate(item.id)}
-														>
-															<X className="h-3.5 w-3.5" />
-														</button>
 													</div>
 												</div>
 											</li>

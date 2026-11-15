@@ -1,8 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireAdmin } from "#/packages/auth/server/guard.ts";
-import { prisma } from "#/packages/db/index.ts";
-import { issueUserInvite } from "#/packages/invite/invite-service.ts";
 
 /**
  * Shared row shape for a single CSV import line after field mapping. Each
@@ -57,6 +55,14 @@ export function buildImportServer(type: "STUDENT" | "STAFF") {
 		.middleware([requireAdmin])
 		.validator(ImportRequestSchema)
 		.handler(async ({ data }): Promise<ImportSummary> => {
+			// Imported lazily so the CSV wizard's client bundle never pulls the
+			// server-only Prisma client (top-level imports leaked it into the
+			// browser and crashed the students/staff pages with "Buffer is not
+			// defined").
+			const [{ prisma }, { issueUserInvite }] = await Promise.all([
+				import("#/packages/db/index.ts"),
+				import("#/packages/invite/invite-service.ts"),
+			]);
 			const results: RowResult[] = [];
 			const seenEmails = new Set<string>();
 

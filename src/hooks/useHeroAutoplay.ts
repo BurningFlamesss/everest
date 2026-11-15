@@ -59,6 +59,15 @@ export function useHeroAutoplay({
 
 	const step = useCallback(
 		(ts: number) => {
+			// Hold the sequence while the visitor has the navigation held open
+			// (opened by hand or pinned) instead of scrolling underneath it.
+			// The loop stays alive so playback resumes when the nav closes.
+			if (document.documentElement.dataset.navHeld === "true") {
+				lastTs.current = null;
+				rafId.current = requestAnimationFrame(step);
+				return;
+			}
+
 			const dt = lastTs.current === null ? 16 : ts - lastTs.current;
 			lastTs.current = ts;
 

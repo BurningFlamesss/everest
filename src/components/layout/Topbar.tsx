@@ -5,18 +5,16 @@ import {
 	Building2,
 	Check,
 	ChevronRight,
+	Globe,
 	LogOut,
 	Menu,
-	Moon,
 	PanelsTopLeft,
 	Plus,
 	Search,
 	Settings,
-	Sun,
 	User,
 } from "lucide-react";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "#/components/ui/button";
 import {
 	DropdownMenu,
@@ -27,8 +25,8 @@ import {
 	DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu";
 import { ROLE_LABEL } from "#/lib/permissions";
+import { getUnreadNotificationCountFn } from "#/packages/notifications/server.ts";
 import { useAuth } from "#/providers/AuthProvider";
-import { unreadCount } from "#/services/notifications";
 import { listBranches } from "#/services/website";
 import { NotificationCenter } from "./NotificationCenter";
 import { ROUTE_TITLES } from "./nav-config";
@@ -46,7 +44,6 @@ export function Topbar({
 	onToggleSidebar,
 }: TopbarProps) {
 	const { user, signOut } = useAuth();
-	const { theme, setTheme } = useTheme();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -54,16 +51,13 @@ export function Topbar({
 
 	const { data: unread = 0 } = useQuery({
 		queryKey: ["notifications", "unread"],
-		queryFn: unreadCount,
+		queryFn: () => getUnreadNotificationCountFn(),
 		refetchInterval: 20_000,
 	});
 	const { data: branches = [] } = useQuery({
 		queryKey: ["branches"],
 		queryFn: listBranches,
 	});
-
-	const [mounted, setMounted] = useState(false);
-	useEffect(() => setMounted(true), []);
 
 	const segments = location.pathname.split("/").filter(Boolean);
 	const currentSegment =
@@ -155,6 +149,19 @@ export function Topbar({
 					<Search className="h-4 w-4" />
 				</Button>
 
+				<Button
+					variant="ghost"
+					size="sm"
+					asChild
+					className="hidden sm:inline-flex gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+					data-testid="topbar-public-site-btn"
+				>
+					<Link to="/">
+						<Globe className="h-3.5 w-3.5" />
+						<span>Public site</span>
+					</Link>
+				</Button>
+
 				<QuickCreate />
 
 				<DropdownMenu>
@@ -216,20 +223,6 @@ export function Topbar({
 					)}
 				</Button>
 
-				<Button
-					variant="ghost"
-					size="icon"
-					aria-label="Toggle theme"
-					data-testid="theme-toggle"
-					onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-				>
-					{mounted && theme === "dark" ? (
-						<Sun className="h-4 w-4" />
-					) : (
-						<Moon className="h-4 w-4" />
-					)}
-				</Button>
-
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<button
@@ -275,6 +268,12 @@ export function Topbar({
 							onClick={() => navigate({ to: "/admin/settings" })}
 						>
 							<Settings className="mr-2 h-4 w-4" /> School settings
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							data-testid="profile-menu-public"
+							onClick={() => navigate({ to: "/" })}
+						>
+							<Globe className="mr-2 h-4 w-4" /> View public website
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem

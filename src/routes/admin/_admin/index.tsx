@@ -8,6 +8,7 @@ import {
 	UserPlus,
 	Users,
 } from "lucide-react";
+import { AdminPageLinks } from "#/components/layout/AdminPageLinks";
 import { getAdminStatsFn } from "#/packages/admin/server.ts";
 
 export const Route = createFileRoute("/admin/_admin/")({
@@ -93,6 +94,16 @@ function AdminOverview() {
 						</Link>
 					);
 				})}
+			</div>
+
+			<div className="rounded-2xl border border-gray-200 bg-white p-6">
+				<h2 className="text-lg font-semibold text-gray-900">Go to a page</h2>
+				<p className="mt-1 text-sm text-gray-500">
+					Jump straight into any part of the admin console.
+				</p>
+				<div className="mt-5">
+					<AdminPageLinks />
+				</div>
 			</div>
 
 			<div className="rounded-2xl border border-gray-200 bg-white p-6">

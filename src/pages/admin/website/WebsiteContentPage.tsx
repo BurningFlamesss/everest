@@ -1,8 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import {
+	ArrowUpRight,
 	CloudUpload,
+	Database,
+	ExternalLink,
 	Globe,
+	Info,
 	Pencil,
 	RefreshCw,
 	Search,
@@ -10,13 +14,13 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { SectionEditor } from "@/components/cms/SectionEditor";
-import { EmptyState } from "@/components/common/EmptyState";
-import { PageHeader } from "@/components/common/PageHeader";
-import { Panel } from "@/components/common/Panel";
-import { PanelSkeleton } from "@/components/common/Skeletons";
-import { StatusBadge } from "@/components/common/StatusBadge";
-import { Button } from "@/components/ui/button";
+import { SectionEditor } from "#/components/cms/SectionEditor";
+import { EmptyState } from "#/components/common/EmptyState";
+import { PageHeader } from "#/components/common/PageHeader";
+import { Panel } from "#/components/common/Panel";
+import { PanelSkeleton } from "#/components/common/Skeletons";
+import { StatusBadge } from "#/components/common/StatusBadge";
+import { Button } from "#/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -24,25 +28,27 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "#/components/ui/dialog";
+import { Input } from "#/components/ui/input";
+import { Label } from "#/components/ui/label";
 import {
 	Select,
 	SelectContent,
+	SelectGroup,
 	SelectItem,
+	SelectLabel,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+} from "#/components/ui/select";
+import { Textarea } from "#/components/ui/textarea";
 import {
 	type CmsPageKey,
 	pageSectionTypes,
 	sectionDefaults,
 	sectionLabel,
-} from "@/lib/cms-sections";
-import { formatDateTime, relativeTime } from "@/lib/format";
-import { cn } from "@/lib/utils";
+} from "#/lib/cms-sections";
+import { formatDateTime, relativeTime } from "#/lib/format";
+import { cn } from "#/lib/utils";
 import {
 	getWebsitePage,
 	listWebsitePages,
@@ -50,32 +56,254 @@ import {
 	saveSectionFields,
 	unpublishPage,
 	updatePageSeo,
-} from "@/lib/website-admin-api";
-import { useAuth } from "@/providers/AuthProvider";
-import type { BlockType, WebsitePage, WebsitePageKey } from "@/types";
+} from "#/lib/website-admin-api";
+import { useAuth } from "#/providers/AuthProvider";
+import type { BlockType, WebsitePage, WebsitePageKey } from "#/types";
 
-const PAGE_KEYS: WebsitePageKey[] = [
-	"home",
-	"about",
-	"courses",
-	"course_finder",
-	"facilities",
-	"gallery",
-	"calendar",
-	"contact",
-	"resources",
-	"result",
-	"transportation",
-	"notices",
-	"scholarship",
-	"faculty",
-	"login",
-	"activate",
-	"posts",
-	"admissions",
-	"clubs",
-	"events",
+export interface PublicPageMeta {
+	key: WebsitePageKey;
+	title: string;
+	path: string;
+	group:
+		| "Core & Institutional"
+		| "Academics & Admissions"
+		| "Campus Life & Community"
+		| "Portal & Authentication";
+	description: string;
+	dedicatedCms?: {
+		label: string;
+		to: string;
+		description: string;
+	};
+}
+
+export const PUBLIC_PAGES: PublicPageMeta[] = [
+	{
+		key: "home",
+		title: "Home",
+		path: "/",
+		group: "Core & Institutional",
+		description:
+			"Landing page, scroll hero footage, institution facts, and section headings",
+	},
+	{
+		key: "about",
+		title: "About Us",
+		path: "/about",
+		group: "Core & Institutional",
+		description:
+			"School heritage, mission & vision, leadership, and institutional chapters",
+	},
+	{
+		key: "contact",
+		title: "Contact Us",
+		path: "/contact",
+		group: "Core & Institutional",
+		description:
+			"Contact details, office hours, departmental directory, map embed, and socials",
+	},
+	{
+		key: "facilities",
+		title: "Facilities",
+		path: "/facilities",
+		group: "Core & Institutional",
+		description: "Campus facilities heading and spaces",
+		dedicatedCms: {
+			label: "Facilities Records",
+			to: "/admin/facilities",
+			description:
+				"Manage physical rooms, laboratories, hostels, and facility specifications",
+		},
+	},
+	{
+		key: "faculty",
+		title: "Faculty & Administration",
+		path: "/faculty",
+		group: "Core & Institutional",
+		description: "Leadership headings and faculty directory copy",
+		dedicatedCms: {
+			label: "Staff Directory CMS",
+			to: "/admin/staff",
+			description:
+				"Manage teacher profiles, qualifications, and department roles",
+		},
+	},
+	{
+		key: "courses",
+		title: "Courses & Programmes",
+		path: "/courses",
+		group: "Academics & Admissions",
+		description:
+			"Academic levels, curriculum overviews, fee tables, and programme index",
+		dedicatedCms: {
+			label: "Academics Management",
+			to: "/admin/academics",
+			description: "Manage classes, academic programmes, subjects, and routine",
+		},
+	},
+	{
+		key: "course_finder",
+		title: "Course Finder",
+		path: "/course-finder",
+		group: "Academics & Admissions",
+		description:
+			"Interactive stream guidance questions and recommendations header",
+	},
+	{
+		key: "admissions",
+		title: "Admissions",
+		path: "/admissions",
+		group: "Academics & Admissions",
+		description:
+			"Admissions banner, application steps guide, and call to action",
+		dedicatedCms: {
+			label: "Admissions Desk",
+			to: "/admin/admissions",
+			description: "Review applicant submissions, statuses, and documents",
+		},
+	},
+	{
+		key: "scholarship",
+		title: "Scholarships",
+		path: "/scholarship",
+		group: "Academics & Admissions",
+		description:
+			"Scholarship scheme guidelines, criteria overview, and application instructions",
+		dedicatedCms: {
+			label: "Scholarships CMS",
+			to: "/admin/scholarships",
+			description: "Configure scholarship quotas, grants, and eligibility",
+		},
+	},
+	{
+		key: "calendar",
+		title: "Academic Calendar",
+		path: "/calendar",
+		group: "Academics & Admissions",
+		description:
+			"Bikram Sambat (BS) & Gregorian (AD) academic schedule and term dates",
+		dedicatedCms: {
+			label: "Calendar Events CMS",
+			to: "/admin/calendar",
+			description:
+				"Add, edit, or delete school holidays, exam dates, and academic terms",
+		},
+	},
+	{
+		key: "result",
+		title: "Board Results",
+		path: "/result",
+		group: "Academics & Admissions",
+		description: "SEE and +2 board performance charts and historical metrics",
+		dedicatedCms: {
+			label: "Board Results Ledger",
+			to: "/admin/results",
+			description: "Manage examination results and division score sheets",
+		},
+	},
+	{
+		key: "clubs",
+		title: "Clubs & Activities",
+		path: "/clubs",
+		group: "Campus Life & Community",
+		description: "Extracurricular student clubs and society announcements",
+		dedicatedCms: {
+			label: "Clubs CMS",
+			to: "/admin/clubs",
+			description: "Manage student clubs, executives, and club boards",
+		},
+	},
+	{
+		key: "events",
+		title: "School Events",
+		path: "/events",
+		group: "Campus Life & Community",
+		description:
+			"School celebrations, sports meets, exhibitions, and programme schedules",
+		dedicatedCms: {
+			label: "Events CMS",
+			to: "/admin/events",
+			description: "Publish school events, dates, images, and schedules",
+		},
+	},
+	{
+		key: "gallery",
+		title: "Photo Gallery",
+		path: "/gallery",
+		group: "Campus Life & Community",
+		description: "Photo gallery page header and album grid copy",
+		dedicatedCms: {
+			label: "Gallery CMS",
+			to: "/admin/gallery",
+			description: "Upload photo albums, tags, and campus imagery",
+		},
+	},
+	{
+		key: "notices",
+		title: "Notices & Circulars",
+		path: "/notices",
+		group: "Campus Life & Community",
+		description:
+			"Official school announcements, circulars, and archive headline",
+		dedicatedCms: {
+			label: "Notices CMS",
+			to: "/admin/notices",
+			description: "Create, schedule, pin, and attach PDFs to notices",
+		},
+	},
+	{
+		key: "posts",
+		title: "Community Timeline / Posts",
+		path: "/posts",
+		group: "Campus Life & Community",
+		description: "Social media and community timeline updates feed headline",
+	},
+	{
+		key: "transportation",
+		title: "Transportation",
+		path: "/transportation",
+		group: "Campus Life & Community",
+		description: "Transport office contact details and route finder headline",
+		dedicatedCms: {
+			label: "Transportation CMS",
+			to: "/admin/transportation",
+			description: "Manage bus routes, drivers, and pickup points",
+		},
+	},
+	{
+		key: "resources",
+		title: "Downloads & Resources",
+		path: "/resources",
+		group: "Campus Life & Community",
+		description:
+			"Downloadable documents, forms, curriculum guides, and rich text note",
+	},
+	{
+		key: "login",
+		title: "Sign In / Portal Entry",
+		path: "/login",
+		group: "Portal & Authentication",
+		description:
+			"Visual entrance column, intro copy, sign-in form labels, and support footer",
+	},
+	{
+		key: "activate",
+		title: "Account Activation",
+		path: "/activate",
+		group: "Portal & Authentication",
+		description:
+			"First-time account activation visual column, intro kicker, and credential setup form",
+	},
 ];
+
+const PAGE_KEYS = PUBLIC_PAGES.map((p) => p.key);
+
+const GROUPS = [
+	"Core & Institutional",
+	"Academics & Admissions",
+	"Campus Life & Community",
+	"Portal & Authentication",
+] as const;
 
 function clone<T>(value: T): T {
 	return JSON.parse(JSON.stringify(value)) as T;
@@ -91,7 +319,10 @@ export default function WebsiteContentPage() {
 
 	const rawKey = searchParams.page as WebsitePageKey | null;
 	const pageKey: WebsitePageKey =
-		rawKey && PAGE_KEYS.includes(rawKey) ? rawKey : "faculty";
+		rawKey && PAGE_KEYS.includes(rawKey) ? rawKey : "home";
+
+	const currentMeta =
+		PUBLIC_PAGES.find((p) => p.key === pageKey) ?? PUBLIC_PAGES[0];
 
 	const [selectedType, setSelectedType] = useState<BlockType | null>(null);
 	const [iframeVersion, setIframeVersion] = useState(0);
@@ -116,7 +347,9 @@ export default function WebsiteContentPage() {
 	});
 
 	useEffect(() => {
-		setSelectedType(null);
+		if (pageKey) {
+			setSelectedType(null);
+		}
 	}, [pageKey]);
 
 	useEffect(() => {
@@ -150,7 +383,8 @@ export default function WebsiteContentPage() {
 	const selectedBlock =
 		page?.blocks.find((block) => block.type === selectedType) ?? null;
 	const selectedFields = selectedType
-		? (selectedBlock?.fields ?? sectionDefaults(selectedType))
+		? (selectedBlock?.fields ??
+			sectionDefaults(selectedType, pageKey as CmsPageKey))
 		: undefined;
 
 	const applyPage = (next: WebsitePage) => {
@@ -204,9 +438,9 @@ export default function WebsiteContentPage() {
 
 	const changePage = (value: string) => {
 		navigate({
-			search: (prev: any) => ({ ...prev, page: value }),
+			search: (prev: Record<string, unknown>) => ({ ...prev, page: value }),
 			replace: true,
-		} as any);
+		} as never);
 	};
 
 	return (
@@ -285,30 +519,59 @@ export default function WebsiteContentPage() {
 			/>
 
 			<div className="mb-4 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
-				<Select value={pageKey} onValueChange={changePage}>
-					<SelectTrigger className="w-[280px]" data-testid="cms-page-select">
-						<SelectValue placeholder="Select a page to edit" />
-					</SelectTrigger>
-					<SelectContent>
-						{PAGE_KEYS.map((key) => {
-							const entry = pages.find((item) => item.key === key);
-							return (
-								<SelectItem
-									key={key}
-									value={key}
-									data-testid={`cms-page-option-${key}`}
-								>
-									<span className="flex items-center gap-2">
-										{entry?.title ?? key}
-										{entry?.hasUnpublishedChanges && (
-											<span className="h-1.5 w-1.5 rounded-full bg-accent" />
-										)}
-									</span>
-								</SelectItem>
-							);
-						})}
-					</SelectContent>
-				</Select>
+				<div className="flex flex-col sm:flex-row sm:items-center gap-3">
+					<Select value={pageKey} onValueChange={changePage}>
+						<SelectTrigger className="w-[320px]" data-testid="cms-page-select">
+							<SelectValue placeholder="Select a page to edit" />
+						</SelectTrigger>
+						<SelectContent className="max-h-[380px]">
+							{GROUPS.map((group) => {
+								const groupPages = PUBLIC_PAGES.filter(
+									(p) => p.group === group,
+								);
+								if (groupPages.length === 0) return null;
+								return (
+									<SelectGroup key={group}>
+										<SelectLabel className="px-2 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+											{group}
+										</SelectLabel>
+										{groupPages.map((p) => {
+											const entry = pages.find((item) => item.key === p.key);
+											return (
+												<SelectItem
+													key={p.key}
+													value={p.key}
+													data-testid={`cms-page-option-${p.key}`}
+												>
+													<span className="flex items-center justify-between gap-3 w-full">
+														<span className="flex items-center gap-2">
+															<span className="font-medium text-foreground">
+																{p.title}
+															</span>
+															<span className="text-[11px] font-mono text-muted-foreground">
+																{p.path}
+															</span>
+														</span>
+														{entry?.hasUnpublishedChanges && (
+															<span
+																className="h-1.5 w-1.5 rounded-full bg-accent"
+																title="Unpublished changes"
+															/>
+														)}
+													</span>
+												</SelectItem>
+											);
+										})}
+									</SelectGroup>
+								);
+							})}
+						</SelectContent>
+					</Select>
+
+					<span className="text-xs text-muted-foreground">
+						{currentMeta.description}
+					</span>
+				</div>
 			</div>
 
 			{isLoading ? (
@@ -327,8 +590,15 @@ export default function WebsiteContentPage() {
 				<div className="panel">
 					<EmptyState
 						icon={Globe}
-						title="That page isn't set up yet"
-						description="Choose Faculty & Administration or Sign in from the tabs above."
+						title="Preparing page..."
+						description="The public page content model is being initialized."
+						actionLabel="Reload page"
+						onAction={() => {
+							void qc.invalidateQueries({ queryKey: ["website-pages"] });
+							void qc.invalidateQueries({
+								queryKey: ["website-page", pageKey],
+							});
+						}}
 						testId="cms-page-missing"
 					/>
 				</div>
@@ -383,11 +653,52 @@ export default function WebsiteContentPage() {
 									);
 								})}
 							</ul>
+
+							{currentMeta.dedicatedCms && (
+								<div className="mt-5 border-t border-hairline pt-3.5">
+									<p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+										Database Records
+									</p>
+									<Link
+										to={currentMeta.dedicatedCms.to}
+										className="flex w-full items-center justify-between gap-2 rounded-lg border border-hairline bg-surface-2 px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-surface-1"
+										data-testid="cms-dedicated-bridge-link"
+									>
+										<span className="flex items-center gap-2">
+											<Database className="h-3.5 w-3.5 text-accent" />
+											{currentMeta.dedicatedCms.label}
+										</span>
+										<ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+									</Link>
+								</div>
+							)}
 						</Panel>
 					</div>
 
 					{/* Live preview — the real public route in an iframe */}
 					<div className="xl:col-span-6">
+						{currentMeta.dedicatedCms && (
+							<div
+								className="mb-3 flex flex-col gap-2 rounded-xl border border-blue-200/80 bg-blue-50/70 p-3 text-xs text-blue-900 sm:flex-row sm:items-center sm:justify-between dark:border-blue-900/40 dark:bg-blue-950/30 dark:text-blue-200"
+								data-testid="cms-dedicated-bridge-alert"
+							>
+								<div className="flex items-center gap-2">
+									<Info className="h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
+									<span>
+										<strong>{currentMeta.dedicatedCms.label}:</strong>{" "}
+										{currentMeta.dedicatedCms.description}
+									</span>
+								</div>
+								<Link
+									to={currentMeta.dedicatedCms.to}
+									className="inline-flex shrink-0 items-center gap-1 font-semibold text-blue-700 hover:text-blue-800 hover:underline dark:text-blue-400"
+								>
+									Manage Records
+									<ArrowUpRight className="h-3.5 w-3.5" />
+								</Link>
+							</div>
+						)}
+
 						<Panel
 							eyebrow="Live preview"
 							title={page.title}
