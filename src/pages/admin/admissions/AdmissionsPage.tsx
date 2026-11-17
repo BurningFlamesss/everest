@@ -378,6 +378,7 @@ export default function AdmissionsPage() {
 	return (
 		<div data-testid="admissions-page">
 			<PageHeader
+				testId="admissions-page-header"
 				eyebrow="Operations"
 				title="Admissions"
 				description="Move applications through the pipeline, review assessments and enrol accepted applicants."
@@ -471,7 +472,7 @@ export default function AdmissionsPage() {
 						className={cn(
 							"rounded-lg border bg-surface-1 px-3 py-2.5 text-left transition-colors duration-150 focus-ring",
 							statusParam === stage.status
-								? "border-primary/50 bg-primary/6"
+								? "border-primary/50 bg-primary/[0.06]"
 								: "border-hairline hover:border-primary/35",
 						)}
 					>
@@ -564,16 +565,18 @@ export default function AdmissionsPage() {
 					className="flex gap-3 overflow-hidden"
 					data-testid="admissions-loading"
 				>
-					{Array.from({ length: 5 }).map((_, index) => (
-						<div
-							key={index}
-							className="panel min-w-[240px] flex-1 space-y-2 p-3"
-						>
-							<Skeleton className="h-3.5 w-24" />
-							<Skeleton className="h-20 w-full" />
-							<Skeleton className="h-20 w-full" />
-						</div>
-					))}
+					{["pending", "waitlisted", "accepted", "converted", "rejected"].map(
+						(stage) => (
+							<div
+								key={stage}
+								className="panel min-w-[240px] flex-1 space-y-2 p-3"
+							>
+								<Skeleton className="h-3.5 w-24" />
+								<Skeleton className="h-20 w-full" />
+								<Skeleton className="h-20 w-full" />
+							</div>
+						),
+					)}
 				</div>
 			) : view === "board" ? (
 				<DndContext

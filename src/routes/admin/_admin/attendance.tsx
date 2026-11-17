@@ -1,5 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
+	AlertTriangle,
 	BarChart3,
 	CalendarCheck,
 	CheckCircle2,
@@ -7,6 +8,13 @@ import {
 	RefreshCw,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { EmptyState } from "#/components/common/EmptyState";
+import { PageHeader } from "#/components/common/PageHeader";
+import { Panel } from "#/components/common/Panel";
+import { ListSkeleton } from "#/components/common/Skeletons";
+import { Button } from "#/components/ui/button";
+import { Label } from "#/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "#/components/ui/tabs";
 import { cn } from "#/lib/utils.ts";
 import {
 	deleteAttendanceSessionAction,
@@ -79,11 +87,14 @@ interface SummaryRow {
 const MARKS: Array<AttendanceMark> = ["PRESENT", "ABSENT", "LATE", "EXCUSED"];
 
 const markStyles: Record<AttendanceMark, string> = {
-	PRESENT: "bg-green-100 text-green-700",
-	ABSENT: "bg-red-100 text-red-700",
-	LATE: "bg-amber-100 text-amber-700",
-	EXCUSED: "bg-sky-100 text-sky-700",
+	PRESENT: "bg-success/12 text-success",
+	ABSENT: "bg-destructive/12 text-destructive",
+	LATE: "bg-accent/14 text-accent",
+	EXCUSED: "bg-info/12 text-info",
 };
+
+const fieldClasses =
+	"h-9 w-full rounded-md border border-hairline bg-surface-1 px-3 text-sm outline-none transition-colors duration-150 placeholder:text-muted-foreground focus-ring";
 
 function AdminAttendance() {
 	const [view, setView] = useState<"registers" | "summary">("registers");
@@ -248,70 +259,81 @@ function AdminAttendance() {
 	).length;
 
 	return (
-		<div className="space-y-8">
-			<div>
-				<h1 className="text-3xl font-bold text-gray-900">Attendance</h1>
-				<p className="mt-1 text-sm text-gray-500">
-					Open a daily register for a course, mark students and save the record.
-				</p>
-			</div>
+		<div className="space-y-5" data-testid="attendance-page">
+			<PageHeader
+				eyebrow="Academics"
+				title="Attendance"
+				description="Open a daily register for a course, mark students and save the record."
+				meta={
+					<>
+						<span data-testid="attendance-session-count">
+							{sessions.length} register{sessions.length === 1 ? "" : "s"}
+						</span>
+						<span data-testid="attendance-course-count">
+							{courses.length} course{courses.length === 1 ? "" : "s"}
+						</span>
+					</>
+				}
+				testId="attendance-page-header"
+			/>
 
-			<div className="flex gap-2">
-				<button
-					type="button"
-					onClick={() => setView("registers")}
-					className={cn(
-						"inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-semibold",
-						view === "registers"
-							? "bg-red-500 text-white"
-							: "border border-gray-300 text-gray-700 hover:bg-gray-50",
-					)}
-				>
-					<CalendarCheck className="h-4 w-4" /> Registers
-				</button>
-				<button
-					type="button"
-					onClick={() => setView("summary")}
-					className={cn(
-						"inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-semibold",
-						view === "summary"
-							? "bg-red-500 text-white"
-							: "border border-gray-300 text-gray-700 hover:bg-gray-50",
-					)}
-				>
-					<BarChart3 className="h-4 w-4" /> Summary
-				</button>
-			</div>
+			<Tabs
+				value={view}
+				onValueChange={(value: string) =>
+					setView(value as "registers" | "summary")
+				}
+			>
+				<TabsList className="h-9" data-testid="attendance-tabs">
+					<TabsTrigger value="registers" data-testid="attendance-tab-registers">
+						<CalendarCheck className="mr-1.5 h-3.5 w-3.5" /> Registers
+					</TabsTrigger>
+					<TabsTrigger value="summary" data-testid="attendance-tab-summary">
+						<BarChart3 className="mr-1.5 h-3.5 w-3.5" /> Summary
+					</TabsTrigger>
+				</TabsList>
+			</Tabs>
 
 			{error ? (
-				<div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-					{error}
+				<div
+					className="flex items-start gap-2.5 rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive"
+					data-testid="attendance-error-banner"
+				>
+					<AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+					<p className="min-w-0 break-words">{error}</p>
 				</div>
 			) : null}
 			{notice ? (
-				<div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
-					{notice}
+				<div
+					className="flex items-start gap-2.5 rounded-lg border border-success/20 bg-success/10 p-4 text-sm text-success"
+					data-testid="attendance-notice-banner"
+				>
+					<CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+					<p className="min-w-0 break-words">{notice}</p>
 				</div>
 			) : null}
 
 			{view === "registers" ? (
 				<>
-					<section className="rounded-2xl border border-gray-200 bg-white p-6">
-						<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-							<CalendarCheck className="h-5 w-5 text-red-500" /> Open a register
-						</h2>
+					<Panel
+						title="Open a register"
+						description="Pick a course and date; every enrolled student starts as present."
+						testId="attendance-open-panel"
+						bodyClassName="p-5"
+					>
 						<form
 							onSubmit={(event) => void openSession(event)}
 							className="grid gap-4 md:grid-cols-3"
 						>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
+							<label className="space-y-1.5">
+								<Label htmlFor="attendance-course" className="text-xs">
 									Course
-								</span>
+								</Label>
 								<select
+									id="attendance-course"
 									name="courseId"
 									required
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+									className={fieldClasses}
+									data-testid="attendance-course"
 								>
 									<option value="">Select a course…</option>
 									{courses.map((course) => (
@@ -321,100 +343,113 @@ function AdminAttendance() {
 									))}
 								</select>
 							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
+							<label className="space-y-1.5">
+								<Label htmlFor="attendance-date" className="text-xs">
 									Date
-								</span>
+								</Label>
 								<input
+									id="attendance-date"
 									type="date"
 									name="date"
 									required
 									defaultValue={new Date().toISOString().slice(0, 10)}
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+									className={fieldClasses}
+									data-testid="attendance-date"
 								/>
 							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Topic <span className="text-gray-400">(optional)</span>
-								</span>
+							<label className="space-y-1.5">
+								<Label htmlFor="attendance-topic" className="text-xs">
+									Topic{" "}
+									<span className="font-normal text-muted-foreground">
+										(optional)
+									</span>
+								</Label>
 								<input
+									id="attendance-topic"
 									name="topic"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+									className={fieldClasses}
+									data-testid="attendance-topic"
 								/>
 							</label>
 							<div className="md:col-span-3">
-								<button
+								<Button
 									type="submit"
+									size="sm"
+									className="gap-1.5"
 									disabled={isSubmitting}
-									className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+									data-testid="attendance-open-submit"
 								>
 									{isSubmitting ? (
-										<Loader2 className="h-4 w-4 animate-spin" />
+										<Loader2 className="h-3.5 w-3.5 animate-spin" />
 									) : (
-										<CalendarCheck className="h-4 w-4" />
+										<CalendarCheck className="h-3.5 w-3.5" />
 									)}
 									{isSubmitting ? "Opening…" : "Open register"}
-								</button>
+								</Button>
 							</div>
 						</form>
-					</section>
+					</Panel>
 
 					{session ? (
-						<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-							<header className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 px-5 py-4">
-								<div>
-									<h2 className="font-semibold text-gray-900">
-										{session.course.code} · {session.course.name}
-									</h2>
-									<p className="text-xs text-gray-500">
-										{new Date(session.date).toLocaleDateString(undefined, {
-											dateStyle: "full",
-										})}
-										{session.topic ? ` · ${session.topic}` : ""} ·{" "}
-										{session.takenBy?.user.name ?? "Unassigned"}
-									</p>
-								</div>
+						<Panel
+							title={`${session.course.code} · ${session.course.name}`}
+							description={`${new Date(session.date).toLocaleDateString(undefined, { dateStyle: "full" })}${session.topic ? ` · ${session.topic}` : ""} · ${session.takenBy?.user.name ?? "Unassigned"}`}
+							actions={
 								<div className="flex items-center gap-2">
-									<span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
+									<span
+										className="num rounded-full bg-success/12 px-2.5 py-1 text-xs font-semibold text-success"
+										data-testid="attendance-present-count"
+									>
 										{presentCount}/{records.length} present
 									</span>
-									<button
+									<Button
 										type="button"
+										size="sm"
+										className="gap-1.5"
 										onClick={() => void save()}
 										disabled={isSaving || records.length === 0}
-										className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-3 py-2 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+										data-testid="attendance-save"
 									>
 										{isSaving ? (
-											<Loader2 className="h-4 w-4 animate-spin" />
+											<Loader2 className="h-3.5 w-3.5 animate-spin" />
 										) : (
-											<CheckCircle2 className="h-4 w-4" />
+											<CheckCircle2 className="h-3.5 w-3.5" />
 										)}
 										Save attendance
-									</button>
+									</Button>
 								</div>
-							</header>
-
+							}
+							testId="attendance-register-panel"
+							bodyClassName="p-0"
+						>
 							{records.length === 0 ? (
-								<p className="p-6 text-sm text-gray-500">
-									No students are enrolled in this course. Add enrolments from
-									the academics page first.
-								</p>
+								<EmptyState
+									icon={CalendarCheck}
+									title="No students enrolled"
+									description="No students are enrolled in this course. Add enrolments from the academics page first."
+									testId="attendance-register-empty"
+									compact
+								/>
 							) : (
-								<ul className="divide-y divide-gray-100">
+								<ul className="divide-y divide-hairline">
 									{records.map((record) => (
 										<li
 											key={record.studentId}
+											data-testid={`attendance-record-${record.studentId}`}
 											className="grid gap-3 px-5 py-4 md:grid-cols-[1fr_auto_1fr] md:items-center"
 										>
-											<div>
-												<p className="font-medium text-gray-900">
+											<div className="min-w-0">
+												<p className="text-sm font-medium text-foreground">
 													{record.student.user.name}
 												</p>
-												<p className="text-xs text-gray-500">
+												<p className="text-xs text-muted-foreground">
 													{record.student.user.email}
 												</p>
 											</div>
-											<div className="flex flex-wrap gap-1">
+											<fieldset className="flex min-w-0 flex-wrap gap-1">
+												<legend className="sr-only">
+													Attendance mark for {record.student.user.name}
+												</legend>
 												{MARKS.map((mark) => (
 													<button
 														key={mark}
@@ -429,16 +464,17 @@ function AdminAttendance() {
 															)
 														}
 														className={cn(
-															"rounded-full px-2.5 py-1 text-xs font-semibold transition-colors",
+															"rounded-full px-2.5 py-1 text-xs font-semibold transition-colors duration-150 focus-ring",
 															record.status === mark
 																? markStyles[mark]
-																: "bg-gray-100 text-gray-500 hover:bg-gray-200",
+																: "bg-surface-2 text-muted-foreground hover:text-foreground",
 														)}
+														data-testid={`attendance-mark-${record.studentId}-${mark.toLowerCase()}`}
 													>
 														{mark.charAt(0) + mark.slice(1).toLowerCase()}
 													</button>
 												))}
-											</div>
+											</fieldset>
 											<input
 												value={record.note ?? ""}
 												onChange={(event) =>
@@ -451,96 +487,111 @@ function AdminAttendance() {
 													)
 												}
 												placeholder="Note (optional)"
-												className="w-full rounded-lg border border-gray-200 px-3 py-1.5 text-sm md:max-w-xs md:justify-self-end"
+												aria-label={`Note for ${record.student.user.name}`}
+												className="h-9 w-full rounded-md border border-hairline bg-surface-1 px-3 text-sm outline-none transition-colors duration-150 placeholder:text-muted-foreground focus-ring md:max-w-xs md:justify-self-end"
 											/>
 										</li>
 									))}
 								</ul>
 							)}
-						</section>
+						</Panel>
 					) : null}
 
-					<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-						<header className="flex items-center justify-between gap-3 border-b border-gray-200 px-5 py-4">
-							<h2 className="font-semibold text-gray-900">Recent registers</h2>
-							<button
+					<Panel
+						title="Recent registers"
+						description="Reopen or delete a saved register."
+						actions={
+							<Button
 								type="button"
+								variant="outline"
+								size="sm"
+								className="h-7 gap-1 px-2 text-xs"
 								onClick={() => void load()}
-								className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
+								data-testid="attendance-refresh"
 							>
 								<RefreshCw
 									className={cn("h-3.5 w-3.5", isLoading && "animate-spin")}
 								/>
 								Refresh
-							</button>
-						</header>
-
+							</Button>
+						}
+						testId="attendance-registers-panel"
+						bodyClassName="p-0"
+					>
 						{isLoading ? (
-							<p className="flex items-center gap-2 p-6 text-sm text-gray-500">
-								<Loader2 className="h-4 w-4 animate-spin" /> Loading…
-							</p>
+							<div className="p-5" data-testid="attendance-registers-loading">
+								<ListSkeleton rows={5} />
+							</div>
 						) : sessions.length === 0 ? (
-							<p className="p-8 text-center text-sm text-gray-500">
-								No registers have been opened yet.
-							</p>
+							<EmptyState
+								icon={CalendarCheck}
+								title="No registers yet"
+								description="No registers have been opened yet. Open one above."
+								testId="attendance-registers-empty"
+							/>
 						) : (
-							<ul className="divide-y divide-gray-100">
+							<ul className="divide-y divide-hairline">
 								{sessions.map((entry) => (
 									<li
 										key={entry.id}
+										data-testid={`attendance-session-${entry.id}`}
 										className="flex flex-wrap items-center gap-3 px-5 py-4"
 									>
 										<div className="min-w-0 flex-1">
-											<p className="font-medium text-gray-900">
+											<p className="text-sm font-medium text-foreground">
 												{entry.course.code} · {entry.course.name}
 											</p>
-											<p className="text-xs text-gray-500">
+											<p className="num mt-0.5 text-xs text-muted-foreground">
 												{new Date(entry.date).toLocaleDateString()}
 												{entry.topic ? ` · ${entry.topic}` : ""} ·{" "}
 												{entry._count.records} record
 												{entry._count.records === 1 ? "" : "s"}
 											</p>
 										</div>
-										<button
+										<Button
 											type="button"
+											variant="outline"
+											size="sm"
+											className="h-7 gap-1 px-2 text-xs"
 											onClick={() => void viewSession(entry.id)}
-											className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+											data-testid={`attendance-session-open-${entry.id}`}
 										>
 											Open
-										</button>
-										<button
+										</Button>
+										<Button
 											type="button"
+											variant="ghost"
+											size="sm"
+											className="h-7 shrink-0 gap-1 px-2 text-xs text-destructive hover:text-destructive"
 											onClick={() => void removeSession(entry.id)}
-											className="text-xs font-medium text-red-600 hover:text-red-700"
+											data-testid={`attendance-session-delete-${entry.id}`}
 										>
 											Delete
-										</button>
+										</Button>
 									</li>
 								))}
 							</ul>
 						)}
-					</section>
+					</Panel>
 				</>
 			) : (
-				<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-					<header className="border-b border-gray-200 px-5 py-4">
-						<h2 className="flex items-center gap-2 font-semibold text-gray-900">
-							<BarChart3 className="h-5 w-5 text-red-500" /> Attendance summary
-						</h2>
-						<p className="mt-1 text-xs text-gray-500">
-							Per-student totals across every register recorded for a course.
-						</p>
-					</header>
-
-					<div className="border-b border-gray-100 p-5">
-						<label className="block max-w-md text-sm">
-							<span className="mb-1 block font-medium text-gray-700">
+				<Panel
+					title="Attendance summary"
+					description="Per-student totals across every register recorded for a course."
+					testId="attendance-summary-panel"
+					bodyClassName="p-0"
+				>
+					<div className="border-b border-hairline p-5">
+						<label className="block max-w-md space-y-1.5">
+							<Label htmlFor="attendance-summary-course" className="text-xs">
 								Course
-							</span>
+							</Label>
 							<select
+								id="attendance-summary-course"
 								value={summaryCourseId}
 								onChange={(event) => setSummaryCourseId(event.target.value)}
-								className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+								className={fieldClasses}
+								data-testid="attendance-summary-course"
 							>
 								<option value="">Select a course…</option>
 								{courses.map((course) => (
@@ -553,32 +604,51 @@ function AdminAttendance() {
 					</div>
 
 					{isLoadingSummary ? (
-						<p className="flex items-center gap-2 p-6 text-sm text-gray-500">
-							<Loader2 className="h-4 w-4 animate-spin" /> Loading summary…
-						</p>
+						<div className="p-5" data-testid="attendance-summary-loading">
+							<ListSkeleton rows={5} />
+						</div>
 					) : !summaryCourseId ? (
-						<p className="p-8 text-center text-sm text-gray-500">
-							Choose a course to see its attendance summary.
-						</p>
+						<EmptyState
+							icon={BarChart3}
+							title="Choose a course"
+							description="Choose a course to see its attendance summary."
+							testId="attendance-summary-pick-course"
+						/>
 					) : summary.length === 0 ? (
-						<p className="p-8 text-center text-sm text-gray-500">
-							No attendance has been recorded for this course yet.
-						</p>
+						<EmptyState
+							icon={BarChart3}
+							title="No attendance recorded"
+							description="No attendance has been recorded for this course yet."
+							testId="attendance-summary-empty"
+						/>
 					) : (
 						<div className="overflow-x-auto">
-							<table className="w-full text-left text-sm">
-								<thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
-									<tr>
-										<th className="px-5 py-3 font-semibold">Student</th>
-										<th className="px-3 py-3 font-semibold">Present</th>
-										<th className="px-3 py-3 font-semibold">Absent</th>
-										<th className="px-3 py-3 font-semibold">Late</th>
-										<th className="px-3 py-3 font-semibold">Excused</th>
-										<th className="px-3 py-3 font-semibold">Registers</th>
-										<th className="px-5 py-3 font-semibold">Rate</th>
+							<table className="w-full min-w-[640px] border-collapse text-sm">
+								<thead className="bg-surface-2">
+									<tr className="border-b border-hairline">
+										{[
+											"Student",
+											"Present",
+											"Absent",
+											"Late",
+											"Excused",
+											"Registers",
+											"Rate",
+										].map((header, index) => (
+											<th
+												key={header}
+												className={cn(
+													"px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground",
+													index === 0 && "px-5",
+													index === 6 && "px-5",
+												)}
+											>
+												{header}
+											</th>
+										))}
 									</tr>
 								</thead>
-								<tbody className="divide-y divide-gray-100">
+								<tbody className="divide-y divide-hairline">
 									{summary.map((row) => {
 										const rate =
 											row.total === 0
@@ -588,20 +658,30 @@ function AdminAttendance() {
 													);
 
 										return (
-											<tr key={row.id}>
-												<td className="px-5 py-3 font-medium text-gray-900">
+											<tr
+												key={row.id}
+												data-testid={`attendance-summary-row-${row.id}`}
+												className="transition-colors duration-150 hover:bg-surface-2"
+											>
+												<td className="px-5 py-2.5 font-medium text-foreground">
 													{row.name}
 												</td>
-												<td className="px-3 py-3 text-green-700">
+												<td className="num px-3 py-2.5 text-success">
 													{row.present}
 												</td>
-												<td className="px-3 py-3 text-red-700">{row.absent}</td>
-												<td className="px-3 py-3 text-amber-700">{row.late}</td>
-												<td className="px-3 py-3 text-sky-700">
+												<td className="num px-3 py-2.5 text-destructive">
+													{row.absent}
+												</td>
+												<td className="num px-3 py-2.5 text-warning">
+													{row.late}
+												</td>
+												<td className="num px-3 py-2.5 text-info">
 													{row.excused}
 												</td>
-												<td className="px-3 py-3 text-gray-600">{row.total}</td>
-												<td className="px-5 py-3 font-semibold text-gray-900">
+												<td className="num px-3 py-2.5 text-muted-foreground">
+													{row.total}
+												</td>
+												<td className="num px-5 py-2.5 font-semibold text-foreground">
 													{rate}%
 												</td>
 											</tr>
@@ -611,7 +691,7 @@ function AdminAttendance() {
 							</table>
 						</div>
 					)}
-				</section>
+				</Panel>
 			)}
 		</div>
 	);

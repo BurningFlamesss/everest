@@ -1,6 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
+	CalendarDays,
+	Inbox,
 	Loader2,
+	type LucideIcon,
+	Megaphone,
 	Paperclip,
 	Pencil,
 	Plus,
@@ -9,8 +13,15 @@ import {
 	Users,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { ConfirmDialog } from "#/components/common/ConfirmDialog";
+import { EmptyState } from "#/components/common/EmptyState";
+import { PageHeader } from "#/components/common/PageHeader";
+import { Panel } from "#/components/common/Panel";
+import { ListSkeleton } from "#/components/common/Skeletons";
 import { AttachmentUploadField } from "#/components/content/AttachmentUploadField.tsx";
 import { ImageUploadField } from "#/components/content/ImageUploadField.tsx";
+import { Button } from "#/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "#/components/ui/tabs";
 import { cn } from "#/lib/utils.ts";
 import { CLUB_PERMISSIONS } from "#/packages/clubs/permissions.ts";
 import {
@@ -206,6 +217,11 @@ function AdminContent() {
 	const [boardMembers, setBoardMembers] = useState<Array<BoardMember>>([]);
 	const [isLoadingBoard, setIsLoadingBoard] = useState(false);
 	const [isSavingBoard, setIsSavingBoard] = useState(false);
+	const [pendingDelete, setPendingDelete] = useState<{
+		kind: Tab;
+		id: string;
+	} | null>(null);
+	const [isDeleting, setIsDeleting] = useState(false);
 
 	const load = useCallback(async () => {
 		setIsLoading(true);
@@ -671,22 +687,34 @@ function AdminContent() {
 	};
 
 	const remove = async (kind: Tab, id: string) => {
-		if (!confirm("Delete this item permanently?")) return;
+		setIsDeleting(true);
+		try {
+			const response =
+				kind === "notices"
+					? await deleteNoticeAction({ data: { id } })
+					: kind === "events"
+						? await deleteEventAction({ data: { id } })
+						: await deleteClubAction({ data: { id } });
 
-		const response =
-			kind === "notices"
-				? await deleteNoticeAction({ data: { id } })
-				: kind === "events"
-					? await deleteEventAction({ data: { id } })
-					: await deleteClubAction({ data: { id } });
+			if (!response.success) {
+				setError(response.error);
+				return;
+			}
 
-		if (!response.success) setError(response.error);
-		else {
 			setEditingClub((current) => (current?.id === id ? null : current));
 			setEditingNotice((current) => (current?.id === id ? null : current));
 			setEditingEvent((current) => (current?.id === id ? null : current));
 			setEditingClubDetails((current) => (current?.id === id ? null : current));
+			setPendingDelete(null);
 			await load();
+		} catch (deleteError) {
+			setError(
+				deleteError instanceof Error
+					? deleteError.message
+					: "Could not delete this item.",
+			);
+		} finally {
+			setIsDeleting(false);
 		}
 	};
 
@@ -713,101 +741,269 @@ function AdminContent() {
 	};
 
 	return (
-		<div className="space-y-8">
-			<div className="flex flex-wrap items-end justify-between gap-4">
-				<div>
-					<h1 className="text-3xl font-bold text-gray-900">Website content</h1>
-					<p className="mt-1 text-sm text-gray-500">
-						Publish notices, add calendar events and manage the clubs shown to
-						families.
-					</p>
-				</div>
-				<button
-					type="button"
-					onClick={() => void runCleanup()}
-					disabled={isCleaning}
-					className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
-				>
-					{isCleaning ? (
-						<Loader2 className="h-3.5 w-3.5 animate-spin" />
-					) : (
-						<RefreshCw className="h-3.5 w-3.5" />
-					)}
-					Clean up unused uploads
-				</button>
-			</div>
-
-			<div className="flex gap-1 rounded-lg border border-gray-200 bg-white p-1">
-				{(["notices", "events", "clubs"] as Array<Tab>).map((item) => (
-					<button
-						key={item}
-						type="button"
-						disabled={
-							isUploading ||
-							isSubmitting ||
-							isEditingUpload ||
-							isSavingAttachments ||
-							isSavingContent
-						}
-						onClick={() => {
-							setTab(item);
-							setEditingClub(null);
-							setEditingNotice(null);
-							setEditingEvent(null);
-							setEditingClubDetails(null);
-						}}
-						className={cn(
-							"rounded-md px-3 py-1.5 text-sm font-medium capitalize",
-							tab === item
-								? "bg-red-500 text-white"
-								: "text-gray-600 hover:bg-gray-100",
-						)}
-					>
-						{item}
-					</button>
-				))}
-			</div>
-
-			{error ? (
-				<div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-					{error}
-				</div>
-			) : null}
-			{noticeMessage ? (
-				<div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
-					{noticeMessage}
-				</div>
-			) : null}
-
-			<section className="rounded-2xl border border-gray-200 bg-white p-6">
-				<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-					<Plus className="h-5 w-5 text-red-500" /> New{" "}
-					{tab === "notices" ? "notice" : tab === "events" ? "event" : "club"}
-				</h2>
-
-				<form
-					key={`${tab}-${formVersion}`}
-					onSubmit={(event) => void submit(event, tab)}
-					className="grid gap-4 md:grid-cols-2"
-				>
-					{tab === "notices" ? (
+		<div data-testid="content-page">
+			<PageHeader
+				testId="content-page-header"
+				eyebrow="Website"
+				title="Website content"
+				description="Publish notices, add calendar events and manage the clubs shown to families."
+				meta={
+					isLoading ? null : (
 						<>
-							<Input label="Title" name="title" required />
-							<Input label="Category" name="category" />
-							<Input label="Summary" name="summary" className="md:col-span-2" />
+							<span className="num">
+								{notices.length} notice{notices.length === 1 ? "" : "s"}
+							</span>
+							<span className="num">
+								{events.length} event{events.length === 1 ? "" : "s"}
+							</span>
+							<span className="num">
+								{clubs.length} club{clubs.length === 1 ? "" : "s"}
+							</span>
+						</>
+					)
+				}
+				actions={
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						className="gap-1.5"
+						onClick={() => void runCleanup()}
+						disabled={isCleaning}
+						data-testid="content-cleanup"
+					>
+						{isCleaning ? (
+							<Loader2 className="h-3.5 w-3.5 animate-spin" />
+						) : (
+							<RefreshCw className="h-3.5 w-3.5" />
+						)}
+						Clean up unused uploads
+					</Button>
+				}
+			/>
+
+			<div className="space-y-6">
+				<Tabs
+					value={tab}
+					onValueChange={(value: string) => {
+						setTab(value as Tab);
+						setEditingClub(null);
+						setEditingNotice(null);
+						setEditingEvent(null);
+						setEditingClubDetails(null);
+					}}
+				>
+					<TabsList className="h-9" data-testid="content-tabs">
+						{(["notices", "events", "clubs"] as Array<Tab>).map((item) => (
+							<TabsTrigger
+								key={item}
+								value={item}
+								disabled={
+									isUploading ||
+									isSubmitting ||
+									isEditingUpload ||
+									isSavingAttachments ||
+									isSavingContent
+								}
+								className="capitalize"
+								data-testid={`content-tab-${item}`}
+							>
+								{item}
+							</TabsTrigger>
+						))}
+					</TabsList>
+				</Tabs>
+
+				{error ? (
+					<div
+						className="rounded-xl border border-destructive/25 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+						data-testid="content-error"
+					>
+						{error}
+					</div>
+				) : null}
+				{noticeMessage ? (
+					<div
+						className="rounded-xl border border-success/25 bg-success/10 px-4 py-3 text-sm text-success"
+						data-testid="content-notice"
+					>
+						{noticeMessage}
+					</div>
+				) : null}
+
+				<Panel
+					title={`New ${tab === "notices" ? "notice" : tab === "events" ? "event" : "club"}`}
+					testId="content-new-panel"
+				>
+					<form
+						key={`${tab}-${formVersion}`}
+						onSubmit={(event) => void submit(event, tab)}
+						className="grid gap-4 md:grid-cols-2"
+					>
+						{tab === "notices" ? (
+							<>
+								<Input label="Title" name="title" required />
+								<Input label="Category" name="category" />
+								<Input
+									label="Summary"
+									name="summary"
+									className="md:col-span-2"
+								/>
+								<Textarea
+									label="Body"
+									name="body"
+									required
+									className="md:col-span-2"
+								/>
+								<label className="text-sm">
+									<span className="mb-1.5 block text-xs font-medium text-muted-foreground">
+										Audience
+									</span>
+									<select
+										name="audience"
+										className="w-full rounded-md border border-hairline bg-surface-1 px-3 py-2 text-sm outline-none transition-colors duration-150 focus-ring"
+									>
+										<option value="ALL">Everyone</option>
+										<option value="STUDENTS">Students</option>
+										<option value="STAFF">Staff</option>
+										<option value="GUARDIANS">Guardians</option>
+									</select>
+								</label>
+								<Input label="Expires at" name="expiresAt" type="date" />
+								<ImageUploadField
+									name="coverImage"
+									prefix="notices"
+									className="md:col-span-2"
+								/>
+								<AttachmentUploadField
+									name="attachments"
+									disabled={isSubmitting}
+									onUploadingChange={setIsUploading}
+									prefix="notices"
+									className="md:col-span-2"
+								/>
+							</>
+						) : tab === "events" ? (
+							<>
+								<Input label="Title" name="title" required />
+								<Input label="Location" name="location" />
+								<Input
+									label="Starts at"
+									name="startsAt"
+									type="datetime-local"
+									required
+								/>
+								<Input label="Ends at" name="endsAt" type="datetime-local" />
+								<Textarea
+									label="Description"
+									name="description"
+									className="md:col-span-2"
+								/>
+								<ImageUploadField
+									name="coverImage"
+									prefix="events"
+									className="md:col-span-2"
+								/>
+								<AttachmentUploadField
+									name="attachments"
+									disabled={isSubmitting}
+									onUploadingChange={setIsUploading}
+									prefix="events"
+									className="md:col-span-2"
+								/>
+							</>
+						) : (
+							<>
+								<Input label="Name" name="name" required />
+								<Input label="Meeting schedule" name="meetingSchedule" />
+								<Textarea
+									label="Description"
+									name="description"
+									className="md:col-span-2"
+								/>
+								<ImageUploadField
+									name="coverImage"
+									prefix="clubs"
+									className="md:col-span-2"
+								/>
+								<AttachmentUploadField
+									name="attachments"
+									prefix="clubs"
+									disabled={isSubmitting}
+									onUploadingChange={setIsUploading}
+									className="md:col-span-2"
+								/>
+							</>
+						)}
+
+						<label className="flex items-center gap-2.5 text-sm text-foreground md:col-span-2">
+							<input
+								type="checkbox"
+								name={tab === "clubs" ? "isActive" : "isPublished"}
+								defaultChecked
+								className="h-4 w-4 accent-primary"
+							/>
+							{tab === "clubs" ? "Active" : "Publish immediately"}
+						</label>
+
+						<div className="md:col-span-2">
+							<Button
+								type="submit"
+								size="sm"
+								className="gap-1.5"
+								disabled={isSubmitting || isUploading}
+								data-testid="content-form-save"
+							>
+								{isSubmitting ? (
+									<Loader2 className="h-3.5 w-3.5 animate-spin" />
+								) : (
+									<Plus className="h-3.5 w-3.5" />
+								)}
+								Save
+							</Button>
+						</div>
+					</form>
+				</Panel>
+
+				{tab === "notices" && editingNotice ? (
+					<Panel title="Edit notice" testId="content-edit-notice-panel">
+						<form
+							key={editingNotice.id}
+							onSubmit={(event) => void saveNotice(event)}
+							className="grid gap-4 md:grid-cols-2"
+						>
+							<Input
+								label="Title"
+								name="title"
+								defaultValue={editingNotice.title}
+								required
+							/>
+							<Input
+								label="Category"
+								name="category"
+								defaultValue={editingNotice.category ?? ""}
+							/>
+							<Input
+								label="Summary"
+								name="summary"
+								defaultValue={editingNotice.summary ?? ""}
+								className="md:col-span-2"
+							/>
 							<Textarea
 								label="Body"
 								name="body"
+								defaultValue={editingNotice.body}
 								required
 								className="md:col-span-2"
 							/>
 							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
+								<span className="mb-1.5 block text-xs font-medium text-muted-foreground">
 									Audience
 								</span>
 								<select
 									name="audience"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+									defaultValue={editingNotice.audience}
+									className="w-full rounded-md border border-hairline bg-surface-1 px-3 py-2 text-sm outline-none transition-colors duration-150 focus-ring"
 								>
 									<option value="ALL">Everyone</option>
 									<option value="STUDENTS">Students</option>
@@ -815,704 +1011,597 @@ function AdminContent() {
 									<option value="GUARDIANS">Guardians</option>
 								</select>
 							</label>
-							<Input label="Expires at" name="expiresAt" type="date" />
-							<ImageUploadField
-								name="coverImage"
-								prefix="notices"
-								className="md:col-span-2"
-							/>
-							<AttachmentUploadField
-								name="attachments"
-								disabled={isSubmitting}
-								onUploadingChange={setIsUploading}
-								prefix="notices"
-								className="md:col-span-2"
-							/>
-						</>
-					) : tab === "events" ? (
-						<>
-							<Input label="Title" name="title" required />
-							<Input label="Location" name="location" />
 							<Input
-								label="Starts at"
-								name="startsAt"
-								type="datetime-local"
-								required
-							/>
-							<Input label="Ends at" name="endsAt" type="datetime-local" />
-							<Textarea
-								label="Description"
-								name="description"
-								className="md:col-span-2"
+								label="Expires at"
+								name="expiresAt"
+								type="date"
+								defaultValue={toDateInput(editingNotice.expiresAt)}
 							/>
 							<ImageUploadField
 								name="coverImage"
-								prefix="events"
+								prefix="notices"
+								defaultUrl={editingNotice.coverImage}
 								className="md:col-span-2"
 							/>
 							<AttachmentUploadField
 								name="attachments"
-								disabled={isSubmitting}
-								onUploadingChange={setIsUploading}
-								prefix="events"
-								className="md:col-span-2"
-							/>
-						</>
-					) : (
-						<>
-							<Input label="Name" name="name" required />
-							<Input label="Meeting schedule" name="meetingSchedule" />
-							<Textarea
-								label="Description"
-								name="description"
-								className="md:col-span-2"
-							/>
-							<ImageUploadField
-								name="coverImage"
-								prefix="clubs"
-								className="md:col-span-2"
-							/>
-							<AttachmentUploadField
-								name="attachments"
-								prefix="clubs"
-								disabled={isSubmitting}
-								onUploadingChange={setIsUploading}
-								className="md:col-span-2"
-							/>
-						</>
-					)}
-
-					<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
-						<input
-							type="checkbox"
-							name={tab === "clubs" ? "isActive" : "isPublished"}
-							defaultChecked
-						/>
-						{tab === "clubs" ? "Active" : "Publish immediately"}
-					</label>
-
-					<div className="md:col-span-2">
-						<button
-							type="submit"
-							disabled={isSubmitting || isUploading}
-							className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
-						>
-							{isSubmitting ? (
-								<Loader2 className="h-4 w-4 animate-spin" />
-							) : (
-								<Plus className="h-4 w-4" />
-							)}
-							Save
-						</button>
-					</div>
-				</form>
-			</section>
-
-			{tab === "notices" && editingNotice ? (
-				<section className="rounded-2xl border border-gray-200 bg-white p-6">
-					<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-						<Pencil className="h-5 w-5 text-red-500" /> Edit notice
-					</h2>
-					<form
-						key={editingNotice.id}
-						onSubmit={(event) => void saveNotice(event)}
-						className="grid gap-4 md:grid-cols-2"
-					>
-						<Input
-							label="Title"
-							name="title"
-							defaultValue={editingNotice.title}
-							required
-						/>
-						<Input
-							label="Category"
-							name="category"
-							defaultValue={editingNotice.category ?? ""}
-						/>
-						<Input
-							label="Summary"
-							name="summary"
-							defaultValue={editingNotice.summary ?? ""}
-							className="md:col-span-2"
-						/>
-						<Textarea
-							label="Body"
-							name="body"
-							defaultValue={editingNotice.body}
-							required
-							className="md:col-span-2"
-						/>
-						<label className="text-sm">
-							<span className="mb-1 block font-medium text-gray-700">
-								Audience
-							</span>
-							<select
-								name="audience"
-								defaultValue={editingNotice.audience}
-								className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-							>
-								<option value="ALL">Everyone</option>
-								<option value="STUDENTS">Students</option>
-								<option value="STAFF">Staff</option>
-								<option value="GUARDIANS">Guardians</option>
-							</select>
-						</label>
-						<Input
-							label="Expires at"
-							name="expiresAt"
-							type="date"
-							defaultValue={toDateInput(editingNotice.expiresAt)}
-						/>
-						<ImageUploadField
-							name="coverImage"
-							prefix="notices"
-							defaultUrl={editingNotice.coverImage}
-							className="md:col-span-2"
-						/>
-						<AttachmentUploadField
-							name="attachments"
-							prefix="notices"
-							initialEntries={editingNotice.attachments.map((attachment) => ({
-								fileAssetId: attachment.fileAssetId,
-								url: attachment.fileAsset.url,
-								name: attachment.fileAsset.originalName,
-								label: attachment.label ?? "",
-							}))}
-							disabled={isSavingContent}
-							onUploadingChange={setIsEditingUpload}
-							className="md:col-span-2"
-						/>
-						<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
-							<input
-								type="checkbox"
-								name="isPublished"
-								defaultChecked={editingNotice.isPublished}
-							/>{" "}
-							Published
-						</label>
-						<div className="flex gap-3 md:col-span-2">
-							<button
-								type="submit"
-								disabled={isSavingContent || isEditingUpload}
-								className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
-							>
-								{isSavingContent ? (
-									<Loader2 className="h-4 w-4 animate-spin" />
-								) : (
-									<Pencil className="h-4 w-4" />
-								)}
-								{isSavingContent ? "Saving…" : "Save changes"}
-							</button>
-							<button
-								type="button"
-								disabled={isSavingContent || isEditingUpload}
-								onClick={() => setEditingNotice(null)}
-								className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-60"
-							>
-								Cancel
-							</button>
-						</div>
-					</form>
-				</section>
-			) : null}
-
-			{tab === "events" && editingEvent ? (
-				<section className="rounded-2xl border border-gray-200 bg-white p-6">
-					<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-						<Pencil className="h-5 w-5 text-red-500" /> Edit event
-					</h2>
-					<form
-						key={editingEvent.id}
-						onSubmit={(event) => void saveEvent(event)}
-						className="grid gap-4 md:grid-cols-2"
-					>
-						<Input
-							label="Title"
-							name="title"
-							defaultValue={editingEvent.title}
-							required
-						/>
-						<Input
-							label="Location"
-							name="location"
-							defaultValue={editingEvent.location ?? ""}
-						/>
-						<Input
-							label="Starts at"
-							name="startsAt"
-							type="datetime-local"
-							defaultValue={toDateTimeLocal(editingEvent.startsAt)}
-							required
-						/>
-						<Input
-							label="Ends at"
-							name="endsAt"
-							type="datetime-local"
-							defaultValue={toDateTimeLocal(editingEvent.endsAt)}
-						/>
-						<Textarea
-							label="Description"
-							name="description"
-							defaultValue={editingEvent.description ?? ""}
-							className="md:col-span-2"
-						/>
-						<ImageUploadField
-							name="coverImage"
-							prefix="events"
-							defaultUrl={editingEvent.coverImage}
-							className="md:col-span-2"
-						/>
-						<AttachmentUploadField
-							name="attachments"
-							prefix="events"
-							initialEntries={editingEvent.attachments.map((attachment) => ({
-								fileAssetId: attachment.fileAssetId,
-								url: attachment.fileAsset.url,
-								name: attachment.fileAsset.originalName,
-								label: attachment.label ?? "",
-							}))}
-							disabled={isSavingContent}
-							onUploadingChange={setIsEditingUpload}
-							className="md:col-span-2"
-						/>
-						<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
-							<input
-								type="checkbox"
-								name="isPublished"
-								defaultChecked={editingEvent.isPublished}
-							/>{" "}
-							Published
-						</label>
-						<div className="flex gap-3 md:col-span-2">
-							<button
-								type="submit"
-								disabled={isSavingContent || isEditingUpload}
-								className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
-							>
-								{isSavingContent ? (
-									<Loader2 className="h-4 w-4 animate-spin" />
-								) : (
-									<Pencil className="h-4 w-4" />
-								)}
-								{isSavingContent ? "Saving…" : "Save changes"}
-							</button>
-							<button
-								type="button"
-								disabled={isSavingContent || isEditingUpload}
-								onClick={() => setEditingEvent(null)}
-								className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-60"
-							>
-								Cancel
-							</button>
-						</div>
-					</form>
-				</section>
-			) : null}
-
-			{tab === "clubs" && editingClubDetails ? (
-				<section className="rounded-2xl border border-gray-200 bg-white p-6">
-					<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-						<Pencil className="h-5 w-5 text-red-500" /> Edit club
-					</h2>
-					<form
-						key={editingClubDetails.id}
-						onSubmit={(event) => void saveClubDetails(event)}
-						className="grid gap-4 md:grid-cols-2"
-					>
-						<Input
-							label="Name"
-							name="name"
-							defaultValue={editingClubDetails.name}
-							required
-						/>
-						<Input
-							label="Meeting schedule"
-							name="meetingSchedule"
-							defaultValue={editingClubDetails.meetingSchedule ?? ""}
-						/>
-						<Textarea
-							label="Description"
-							name="description"
-							defaultValue={editingClubDetails.description ?? ""}
-							className="md:col-span-2"
-						/>
-						<ImageUploadField
-							name="coverImage"
-							prefix="clubs"
-							defaultUrl={editingClubDetails.coverImage}
-							className="md:col-span-2"
-						/>
-						<AttachmentUploadField
-							name="attachments"
-							prefix="clubs"
-							initialEntries={editingClubDetails.attachments.map(
-								(attachment) => ({
+								prefix="notices"
+								initialEntries={editingNotice.attachments.map((attachment) => ({
 									fileAssetId: attachment.fileAssetId,
 									url: attachment.fileAsset.url,
 									name: attachment.fileAsset.originalName,
 									label: attachment.label ?? "",
-								}),
-							)}
-							disabled={isSavingContent}
-							onUploadingChange={setIsEditingUpload}
-							className="md:col-span-2"
-						/>
-						<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
-							<input
-								type="checkbox"
-								name="isActive"
-								defaultChecked={editingClubDetails.isActive}
-							/>{" "}
-							Active
-						</label>
-						<div className="flex gap-3 md:col-span-2">
-							<button
-								type="submit"
-								disabled={isSavingContent || isEditingUpload}
-								className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
-							>
-								{isSavingContent ? (
-									<Loader2 className="h-4 w-4 animate-spin" />
-								) : (
-									<Pencil className="h-4 w-4" />
-								)}
-								{isSavingContent ? "Saving…" : "Save changes"}
-							</button>
-							<button
-								type="button"
-								disabled={isSavingContent || isEditingUpload}
-								onClick={() => setEditingClubDetails(null)}
-								className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-60"
-							>
-								Cancel
-							</button>
-						</div>
-					</form>
-				</section>
-			) : null}
-
-			{tab === "clubs" && editingClub ? (
-				<section className="rounded-2xl border border-gray-200 bg-white p-6">
-					<h2 className="mb-4 text-lg font-semibold text-gray-900">
-						Attachments for {editingClub.name}
-					</h2>
-					<form
-						key={editingClub.id}
-						onSubmit={(event) => void saveClubAttachments(event)}
-						className="space-y-4"
-					>
-						<AttachmentUploadField
-							prefix="clubs"
-							initialEntries={editingClub.attachments.map((attachment) => ({
-								fileAssetId: attachment.fileAssetId,
-								url: attachment.fileAsset.url,
-								name: attachment.fileAsset.originalName,
-								label: attachment.label ?? "",
-							}))}
-							disabled={isSavingAttachments}
-							onUploadingChange={setIsEditingUpload}
-						/>
-						<div className="flex gap-3">
-							<button
-								type="submit"
-								disabled={isSavingAttachments || isEditingUpload}
-								className="rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
-							>
-								{isSavingAttachments ? "Saving…" : "Save attachments"}
-							</button>
-							<button
-								type="button"
-								disabled={isSavingAttachments || isEditingUpload}
-								onClick={() => setEditingClub(null)}
-								className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 disabled:opacity-60"
-							>
-								Cancel
-							</button>
-						</div>
-					</form>
-				</section>
-			) : null}
-
-			{tab === "clubs" && boardClub ? (
-				<section className="rounded-2xl border border-gray-200 bg-white p-6">
-					<h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-gray-900">
-						<Pencil className="h-5 w-5 text-red-500" /> Roles & permissions —{" "}
-						{boardClub.name}
-					</h2>
-					<p className="mb-4 text-sm text-gray-500">
-						A plain Member role with no permissions cannot publish posts. The
-						President and officers can — permissions are editable here.
-					</p>
-
-					<form
-						onSubmit={(event) => void saveClubBoard(event)}
-						className="space-y-6"
-					>
-						<div className="space-y-4">
-							{boardRoles.map((role, index) => (
-								<div
-									key={role.key}
-									className="rounded-xl border border-gray-200 p-4"
+								}))}
+								disabled={isSavingContent}
+								onUploadingChange={setIsEditingUpload}
+								className="md:col-span-2"
+							/>
+							<label className="flex items-center gap-2.5 text-sm text-foreground md:col-span-2">
+								<input
+									type="checkbox"
+									name="isPublished"
+									defaultChecked={editingNotice.isPublished}
+									className="h-4 w-4 accent-primary"
+								/>{" "}
+								Published
+							</label>
+							<div className="flex gap-3 md:col-span-2">
+								<Button
+									type="submit"
+									size="sm"
+									className="gap-1.5"
+									disabled={isSavingContent || isEditingUpload}
 								>
-									<div className="flex flex-wrap items-center gap-3">
-										<Input
-											label="Role name"
-											className="min-w-[200px] flex-1"
-											value={role.name}
-											onChange={(event) =>
-												setBoardRoles((current) =>
-													current.map((item, itemIndex) =>
-														itemIndex === index
-															? { ...item, name: event.target.value }
-															: item,
-													),
-												)
-											}
-										/>
-										<button
-											type="button"
-											disabled={isSavingBoard}
-											onClick={() => removeBoardRole(index)}
-											className="mt-6 inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60"
-										>
-											<Trash2 className="h-3.5 w-3.5" /> Remove role
-										</button>
-									</div>
-									<label className="mt-3 flex items-center gap-2 text-sm text-gray-700">
-										<input
-											type="checkbox"
-											checked={role.isBoard}
-											onChange={(event) =>
-												setBoardRoles((current) =>
-													current.map((item, itemIndex) =>
-														itemIndex === index
-															? { ...item, isBoard: event.target.checked }
-															: item,
-													),
-												)
-											}
-										/>
-										Show on the public club board
-									</label>
-									<fieldset className="mt-3">
-										<legend className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-											Permissions
-										</legend>
-										<div className="mt-2 grid gap-2 sm:grid-cols-2">
-											{CLUB_PERMISSIONS.map((permission) => (
-												<label
-													key={permission.key}
-													className="flex items-start gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-700"
-												>
-													<input
-														type="checkbox"
-														className="mt-0.5"
-														checked={role.permissions.includes(permission.key)}
-														onChange={(event) =>
-															toggleRolePermission(
-																index,
-																permission.key,
-																event.target.checked,
-															)
-														}
-													/>
-													<span>
-														<span className="block font-medium text-gray-900">
-															{permission.label}
-														</span>
-														<span className="block text-xs text-gray-500">
-															{permission.description}
-														</span>
-													</span>
-												</label>
-											))}
-										</div>
-									</fieldset>
-								</div>
-							))}
-						</div>
+									{isSavingContent ? (
+										<Loader2 className="h-3.5 w-3.5 animate-spin" />
+									) : (
+										<Pencil className="h-3.5 w-3.5" />
+									)}
+									{isSavingContent ? "Saving…" : "Save changes"}
+								</Button>
+								<Button
+									type="button"
+									variant="outline"
+									size="sm"
+									disabled={isSavingContent || isEditingUpload}
+									onClick={() => setEditingNotice(null)}
+								>
+									Cancel
+								</Button>
+							</div>
+						</form>
+					</Panel>
+				) : null}
 
-						<button
-							type="button"
-							disabled={isSavingBoard || isLoadingBoard}
-							onClick={addBoardRole}
-							className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+				{tab === "events" && editingEvent ? (
+					<Panel title="Edit event" testId="content-edit-event-panel">
+						<form
+							key={editingEvent.id}
+							onSubmit={(event) => void saveEvent(event)}
+							className="grid gap-4 md:grid-cols-2"
 						>
-							<Plus className="h-3.5 w-3.5" /> Add role
-						</button>
+							<Input
+								label="Title"
+								name="title"
+								defaultValue={editingEvent.title}
+								required
+							/>
+							<Input
+								label="Location"
+								name="location"
+								defaultValue={editingEvent.location ?? ""}
+							/>
+							<Input
+								label="Starts at"
+								name="startsAt"
+								type="datetime-local"
+								defaultValue={toDateTimeLocal(editingEvent.startsAt)}
+								required
+							/>
+							<Input
+								label="Ends at"
+								name="endsAt"
+								type="datetime-local"
+								defaultValue={toDateTimeLocal(editingEvent.endsAt)}
+							/>
+							<Textarea
+								label="Description"
+								name="description"
+								defaultValue={editingEvent.description ?? ""}
+								className="md:col-span-2"
+							/>
+							<ImageUploadField
+								name="coverImage"
+								prefix="events"
+								defaultUrl={editingEvent.coverImage}
+								className="md:col-span-2"
+							/>
+							<AttachmentUploadField
+								name="attachments"
+								prefix="events"
+								initialEntries={editingEvent.attachments.map((attachment) => ({
+									fileAssetId: attachment.fileAssetId,
+									url: attachment.fileAsset.url,
+									name: attachment.fileAsset.originalName,
+									label: attachment.label ?? "",
+								}))}
+								disabled={isSavingContent}
+								onUploadingChange={setIsEditingUpload}
+								className="md:col-span-2"
+							/>
+							<label className="flex items-center gap-2.5 text-sm text-foreground md:col-span-2">
+								<input
+									type="checkbox"
+									name="isPublished"
+									defaultChecked={editingEvent.isPublished}
+									className="h-4 w-4 accent-primary"
+								/>{" "}
+								Published
+							</label>
+							<div className="flex gap-3 md:col-span-2">
+								<Button
+									type="submit"
+									size="sm"
+									className="gap-1.5"
+									disabled={isSavingContent || isEditingUpload}
+								>
+									{isSavingContent ? (
+										<Loader2 className="h-3.5 w-3.5 animate-spin" />
+									) : (
+										<Pencil className="h-3.5 w-3.5" />
+									)}
+									{isSavingContent ? "Saving…" : "Save changes"}
+								</Button>
+								<Button
+									type="button"
+									variant="outline"
+									size="sm"
+									disabled={isSavingContent || isEditingUpload}
+									onClick={() => setEditingEvent(null)}
+								>
+									Cancel
+								</Button>
+							</div>
+						</form>
+					</Panel>
+				) : null}
 
-						<div className="border-t border-gray-200 pt-4">
-							<h3 className="text-sm font-semibold text-gray-900">
-								Members &amp; assignments
-							</h3>
-							<p className="mb-3 text-xs text-gray-500">
-								{isLoadingBoard
-									? "Loading members…"
-									: `${boardMembers.length} member${boardMembers.length === 1 ? "" : "s"}. Members without a role can read the club but cannot publish.`}
-							</p>
-							{boardMembers.length === 0 ? (
-								<p className="text-sm text-gray-500">
-									No members yet. Students join a club from the member area.
-								</p>
-							) : (
-								<ul className="space-y-2">
-									{boardMembers.map((member, memberIndex) => (
-										<li
-											key={member.id}
-											className="flex flex-wrap items-center gap-3 rounded-lg bg-gray-50 px-3 py-2"
-										>
-											<span className="min-w-0 flex-1 text-sm font-medium text-gray-900">
-												{member.name}
-												{member.grade ? (
-													<span className="ml-2 text-xs text-gray-500">
-														Grade {member.grade}
-														{member.section ? ` · ${member.section}` : ""}
-													</span>
-												) : null}
-											</span>
-											<select
-												value={member.roleName ?? ""}
+				{tab === "clubs" && editingClubDetails ? (
+					<Panel title="Edit club" testId="content-edit-club-panel">
+						<form
+							key={editingClubDetails.id}
+							onSubmit={(event) => void saveClubDetails(event)}
+							className="grid gap-4 md:grid-cols-2"
+						>
+							<Input
+								label="Name"
+								name="name"
+								defaultValue={editingClubDetails.name}
+								required
+							/>
+							<Input
+								label="Meeting schedule"
+								name="meetingSchedule"
+								defaultValue={editingClubDetails.meetingSchedule ?? ""}
+							/>
+							<Textarea
+								label="Description"
+								name="description"
+								defaultValue={editingClubDetails.description ?? ""}
+								className="md:col-span-2"
+							/>
+							<ImageUploadField
+								name="coverImage"
+								prefix="clubs"
+								defaultUrl={editingClubDetails.coverImage}
+								className="md:col-span-2"
+							/>
+							<AttachmentUploadField
+								name="attachments"
+								prefix="clubs"
+								initialEntries={editingClubDetails.attachments.map(
+									(attachment) => ({
+										fileAssetId: attachment.fileAssetId,
+										url: attachment.fileAsset.url,
+										name: attachment.fileAsset.originalName,
+										label: attachment.label ?? "",
+									}),
+								)}
+								disabled={isSavingContent}
+								onUploadingChange={setIsEditingUpload}
+								className="md:col-span-2"
+							/>
+							<label className="flex items-center gap-2.5 text-sm text-foreground md:col-span-2">
+								<input
+									type="checkbox"
+									name="isActive"
+									defaultChecked={editingClubDetails.isActive}
+									className="h-4 w-4 accent-primary"
+								/>{" "}
+								Active
+							</label>
+							<div className="flex gap-3 md:col-span-2">
+								<Button
+									type="submit"
+									size="sm"
+									className="gap-1.5"
+									disabled={isSavingContent || isEditingUpload}
+								>
+									{isSavingContent ? (
+										<Loader2 className="h-3.5 w-3.5 animate-spin" />
+									) : (
+										<Pencil className="h-3.5 w-3.5" />
+									)}
+									{isSavingContent ? "Saving…" : "Save changes"}
+								</Button>
+								<Button
+									type="button"
+									variant="outline"
+									size="sm"
+									disabled={isSavingContent || isEditingUpload}
+									onClick={() => setEditingClubDetails(null)}
+								>
+									Cancel
+								</Button>
+							</div>
+						</form>
+					</Panel>
+				) : null}
+
+				{tab === "clubs" && editingClub ? (
+					<Panel
+						title={`Attachments for ${editingClub.name}`}
+						testId="content-attachments-panel"
+					>
+						<form
+							key={editingClub.id}
+							onSubmit={(event) => void saveClubAttachments(event)}
+							className="space-y-4"
+						>
+							<AttachmentUploadField
+								prefix="clubs"
+								initialEntries={editingClub.attachments.map((attachment) => ({
+									fileAssetId: attachment.fileAssetId,
+									url: attachment.fileAsset.url,
+									name: attachment.fileAsset.originalName,
+									label: attachment.label ?? "",
+								}))}
+								disabled={isSavingAttachments}
+								onUploadingChange={setIsEditingUpload}
+							/>
+							<div className="flex gap-3">
+								<Button
+									type="submit"
+									size="sm"
+									disabled={isSavingAttachments || isEditingUpload}
+								>
+									{isSavingAttachments ? "Saving…" : "Save attachments"}
+								</Button>
+								<Button
+									type="button"
+									variant="outline"
+									size="sm"
+									disabled={isSavingAttachments || isEditingUpload}
+									onClick={() => setEditingClub(null)}
+								>
+									Cancel
+								</Button>
+							</div>
+						</form>
+					</Panel>
+				) : null}
+
+				{tab === "clubs" && boardClub ? (
+					<Panel
+						title={`Roles & permissions — ${boardClub.name}`}
+						description="A plain Member role with no permissions cannot publish posts. The President and officers can — permissions are editable here."
+						testId="content-board-panel"
+					>
+						<form
+							onSubmit={(event) => void saveClubBoard(event)}
+							className="space-y-6"
+						>
+							<div className="space-y-4">
+								{boardRoles.map((role, index) => (
+									<div
+										key={role.key}
+										className="rounded-xl border border-hairline bg-surface-1 p-4"
+										data-testid={`content-board-role-${role.key}`}
+									>
+										<div className="flex flex-wrap items-center gap-3">
+											<Input
+												label="Role name"
+												className="min-w-[200px] flex-1"
+												value={role.name}
 												onChange={(event) =>
-													setBoardMembers((current) =>
+													setBoardRoles((current) =>
 														current.map((item, itemIndex) =>
-															itemIndex === memberIndex
-																? {
-																		...item,
-																		roleName: event.target.value || null,
-																	}
+															itemIndex === index
+																? { ...item, name: event.target.value }
 																: item,
 														),
 													)
 												}
-												className="rounded-lg border border-gray-300 px-2 py-1 text-sm"
+											/>
+											<Button
+												type="button"
+												variant="outline"
+												size="sm"
+												className="mt-6 gap-1.5 text-destructive hover:text-destructive"
+												disabled={isSavingBoard}
+												onClick={() => removeBoardRole(index)}
 											>
-												<option value="">No role (cannot publish)</option>
-												{boardRoles.map((role) => (
-													<option key={role.key} value={role.name}>
-														{role.name}
-													</option>
+												<Trash2 className="h-3.5 w-3.5" /> Remove role
+											</Button>
+										</div>
+										<label className="mt-3 flex items-center gap-2.5 text-sm text-foreground">
+											<input
+												type="checkbox"
+												checked={role.isBoard}
+												onChange={(event) =>
+													setBoardRoles((current) =>
+														current.map((item, itemIndex) =>
+															itemIndex === index
+																? { ...item, isBoard: event.target.checked }
+																: item,
+														),
+													)
+												}
+												className="h-4 w-4 accent-primary"
+											/>
+											Show on the public club board
+										</label>
+										<fieldset className="mt-3">
+											<legend className="text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+												Permissions
+											</legend>
+											<div className="mt-2 grid gap-2 sm:grid-cols-2">
+												{CLUB_PERMISSIONS.map((permission) => (
+													<label
+														key={permission.key}
+														className="flex items-start gap-2.5 rounded-lg border border-hairline bg-surface-2 px-3 py-2 text-sm transition-colors duration-150 hover:border-primary/35"
+													>
+														<input
+															type="checkbox"
+															className="mt-0.5 h-4 w-4 accent-primary"
+															checked={role.permissions.includes(
+																permission.key,
+															)}
+															onChange={(event) =>
+																toggleRolePermission(
+																	index,
+																	permission.key,
+																	event.target.checked,
+																)
+															}
+														/>
+														<span>
+															<span className="block text-xs font-medium text-foreground">
+																{permission.label}
+															</span>
+															<span className="block text-[11px] text-muted-foreground">
+																{permission.description}
+															</span>
+														</span>
+													</label>
 												))}
-											</select>
-										</li>
-									))}
-								</ul>
-							)}
-						</div>
+											</div>
+										</fieldset>
+									</div>
+								))}
+							</div>
 
-						<div className="flex gap-3">
-							<button
-								type="submit"
-								disabled={isSavingBoard || isLoadingBoard}
-								className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
-							>
-								{isSavingBoard ? (
-									<Loader2 className="h-4 w-4 animate-spin" />
-								) : (
-									<Pencil className="h-4 w-4" />
-								)}
-								{isSavingBoard ? "Saving…" : "Save roles & members"}
-							</button>
-							<button
+							<Button
 								type="button"
-								disabled={isSavingBoard}
-								onClick={() => setBoardClub(null)}
-								className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 disabled:opacity-60"
+								variant="outline"
+								size="sm"
+								className="gap-1.5"
+								disabled={isSavingBoard || isLoadingBoard}
+								onClick={addBoardRole}
 							>
-								Close
-							</button>
+								<Plus className="h-3.5 w-3.5" /> Add role
+							</Button>
+
+							<div className="border-t border-hairline pt-4">
+								<h3 className="text-sm font-semibold text-foreground">
+									Members &amp; assignments
+								</h3>
+								<p className="mb-3 text-xs text-muted-foreground">
+									{isLoadingBoard
+										? "Loading members…"
+										: `${boardMembers.length} member${boardMembers.length === 1 ? "" : "s"}. Members without a role can read the club but cannot publish.`}
+								</p>
+								{boardMembers.length === 0 ? (
+									<p className="text-sm text-muted-foreground">
+										No members yet. Students join a club from the member area.
+									</p>
+								) : (
+									<ul className="space-y-2">
+										{boardMembers.map((member, memberIndex) => (
+											<li
+												key={member.id}
+												className="flex flex-wrap items-center gap-3 rounded-lg border border-hairline bg-surface-1 px-3 py-2"
+											>
+												<span className="min-w-0 flex-1 text-sm font-medium text-foreground">
+													{member.name}
+													{member.grade ? (
+														<span className="ml-2 text-xs text-muted-foreground">
+															Grade {member.grade}
+															{member.section ? ` · ${member.section}` : ""}
+														</span>
+													) : null}
+												</span>
+												<select
+													value={member.roleName ?? ""}
+													onChange={(event) =>
+														setBoardMembers((current) =>
+															current.map((item, itemIndex) =>
+																itemIndex === memberIndex
+																	? {
+																			...item,
+																			roleName: event.target.value || null,
+																		}
+																	: item,
+															),
+														)
+													}
+													className="h-8 rounded-md border border-hairline bg-surface-1 px-2 text-sm outline-none transition-colors duration-150 focus-ring"
+												>
+													<option value="">No role (cannot publish)</option>
+													{boardRoles.map((role) => (
+														<option key={role.key} value={role.name}>
+															{role.name}
+														</option>
+													))}
+												</select>
+											</li>
+										))}
+									</ul>
+								)}
+							</div>
+
+							<div className="flex gap-3">
+								<Button
+									type="submit"
+									size="sm"
+									className="gap-1.5"
+									disabled={isSavingBoard || isLoadingBoard}
+								>
+									{isSavingBoard ? (
+										<Loader2 className="h-3.5 w-3.5 animate-spin" />
+									) : (
+										<Pencil className="h-3.5 w-3.5" />
+									)}
+									{isSavingBoard ? "Saving…" : "Save roles & members"}
+								</Button>
+								<Button
+									type="button"
+									variant="outline"
+									size="sm"
+									disabled={isSavingBoard}
+									onClick={() => setBoardClub(null)}
+								>
+									Close
+								</Button>
+							</div>
+						</form>
+					</Panel>
+				) : null}
+
+				<section className="panel overflow-hidden" data-testid="content-list">
+					<header className="panel-header">
+						<h2 className="panel-title capitalize">All {tab}</h2>
+					</header>
+
+					{isLoading ? (
+						<div className="p-5" data-testid="content-list-loading">
+							<ListSkeleton rows={4} />
 						</div>
-					</form>
-				</section>
-			) : null}
-
-			<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-				<header className="border-b border-gray-200 px-5 py-4">
-					<h2 className="font-semibold capitalize text-gray-900">All {tab}</h2>
-				</header>
-
-				{isLoading ? (
-					<p className="p-5 text-sm text-gray-500">Loading…</p>
-				) : tab === "notices" ? (
-					<ContentList
-						items={notices.map((notice) => ({
-							id: notice.id,
-							title: notice.title,
-							subtitle: notice.summary ?? notice.category ?? "",
-							active: notice.isPublished,
-							meta: new Date(
-								notice.publishedAt ?? Date.now(),
-							).toLocaleDateString(),
-						}))}
-						activeLabel="Published"
-						inactiveLabel="Draft"
-						onToggle={(id) => {
-							const notice = notices.find((item) => item.id === id);
-							if (notice) void toggleNotice(notice);
-						}}
-						onDelete={(id) => void remove("notices", id)}
-						onEdit={(id) =>
-							setEditingNotice(notices.find((item) => item.id === id) ?? null)
-						}
-					/>
-				) : tab === "events" ? (
-					<ContentList
-						items={events.map((event) => ({
-							id: event.id,
-							title: event.title,
-							subtitle: event.location ?? event.description ?? "",
-							active: event.isPublished,
-							meta: new Date(event.startsAt).toLocaleString(),
-						}))}
-						activeLabel="Published"
-						inactiveLabel="Draft"
-						onToggle={(id) => {
-							const event = events.find((item) => item.id === id);
-							if (event) void toggleEvent(event);
-						}}
-						onDelete={(id) => void remove("events", id)}
-						onEdit={(id) =>
-							setEditingEvent(events.find((item) => item.id === id) ?? null)
-						}
-					/>
-				) : (
-					<ContentList
-						items={clubs.map((club) => ({
-							id: club.id,
-							title: club.name,
-							subtitle: club.meetingSchedule ?? club.description ?? "",
-							active: club.isActive,
-							meta: `${club.attachments.length} attachment${club.attachments.length === 1 ? "" : "s"}`,
-						}))}
-						activeLabel="Active"
-						inactiveLabel="Inactive"
-						disabled={isSavingAttachments || isEditingUpload}
-						onToggle={(id) => {
-							const club = clubs.find((item) => item.id === id);
-							if (club) void toggleClub(club);
-						}}
-						onDelete={(id) => void remove("clubs", id)}
-						onEdit={(id) => {
-							setEditingClubDetails(
-								clubs.find((club) => club.id === id) ?? null,
-							);
-							setEditingClub(null);
-						}}
-						onEditAttachments={(id) => {
-							if (isSavingAttachments || isEditingUpload) return;
-							setEditingClub(clubs.find((club) => club.id === id) ?? null);
-							setEditingClubDetails(null);
-						}}
-						onEditRoles={(id) => {
-							const club = clubs.find((item) => item.id === id);
-							if (club) {
-								setEditingClub(null);
-								setEditingClubDetails(null);
-								void openClubBoard(club);
+					) : tab === "notices" ? (
+						<ContentList
+							items={notices.map((notice) => ({
+								id: notice.id,
+								title: notice.title,
+								subtitle: notice.summary ?? notice.category ?? "",
+								active: notice.isPublished,
+								meta: new Date(
+									notice.publishedAt ?? Date.now(),
+								).toLocaleDateString(),
+							}))}
+							activeLabel="Published"
+							inactiveLabel="Draft"
+							emptyIcon={Megaphone}
+							emptyTitle="No notices yet"
+							emptyDescription="Publish your first notice to share news with students, guardians and staff."
+							onToggle={(id) => {
+								const notice = notices.find((item) => item.id === id);
+								if (notice) void toggleNotice(notice);
+							}}
+							onDelete={(id) => setPendingDelete({ kind: "notices", id })}
+							onEdit={(id) =>
+								setEditingNotice(notices.find((item) => item.id === id) ?? null)
 							}
-						}}
-					/>
-				)}
-			</section>
+						/>
+					) : tab === "events" ? (
+						<ContentList
+							items={events.map((event) => ({
+								id: event.id,
+								title: event.title,
+								subtitle: event.location ?? event.description ?? "",
+								active: event.isPublished,
+								meta: new Date(event.startsAt).toLocaleString(),
+							}))}
+							activeLabel="Published"
+							inactiveLabel="Draft"
+							emptyIcon={CalendarDays}
+							emptyTitle="No events yet"
+							emptyDescription="Add a calendar event to show upcoming activities to families."
+							onToggle={(id) => {
+								const event = events.find((item) => item.id === id);
+								if (event) void toggleEvent(event);
+							}}
+							onDelete={(id) => setPendingDelete({ kind: "events", id })}
+							onEdit={(id) =>
+								setEditingEvent(events.find((item) => item.id === id) ?? null)
+							}
+						/>
+					) : (
+						<ContentList
+							items={clubs.map((club) => ({
+								id: club.id,
+								title: club.name,
+								subtitle: club.meetingSchedule ?? club.description ?? "",
+								active: club.isActive,
+								meta: `${club.attachments.length} attachment${club.attachments.length === 1 ? "" : "s"}`,
+							}))}
+							activeLabel="Active"
+							inactiveLabel="Inactive"
+							emptyIcon={Users}
+							emptyTitle="No clubs yet"
+							emptyDescription="Create your first club to showcase activities on the website."
+							disabled={isSavingAttachments || isEditingUpload}
+							onToggle={(id) => {
+								const club = clubs.find((item) => item.id === id);
+								if (club) void toggleClub(club);
+							}}
+							onDelete={(id) => setPendingDelete({ kind: "clubs", id })}
+							onEdit={(id) => {
+								setEditingClubDetails(
+									clubs.find((club) => club.id === id) ?? null,
+								);
+								setEditingClub(null);
+							}}
+							onEditAttachments={(id) => {
+								if (isSavingAttachments || isEditingUpload) return;
+								setEditingClub(clubs.find((club) => club.id === id) ?? null);
+								setEditingClubDetails(null);
+							}}
+							onEditRoles={(id) => {
+								const club = clubs.find((item) => item.id === id);
+								if (club) {
+									setEditingClub(null);
+									setEditingClubDetails(null);
+									void openClubBoard(club);
+								}
+							}}
+						/>
+					)}
+				</section>
+			</div>
+
+			<ConfirmDialog
+				open={!!pendingDelete}
+				onOpenChange={(open) => !open && setPendingDelete(null)}
+				testId="content-delete-confirm"
+				title="Delete this item permanently?"
+				description="This removes the item and cannot be undone."
+				confirmLabel="Delete"
+				destructive
+				busy={isDeleting}
+				onConfirm={() =>
+					pendingDelete && void remove(pendingDelete.kind, pendingDelete.id)
+				}
+			/>
 		</div>
 	);
 }
@@ -1524,10 +1613,12 @@ function Input({
 }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
 	return (
 		<label className={cn("text-sm", className)}>
-			<span className="mb-1 block font-medium text-gray-700">{label}</span>
+			<span className="mb-1.5 block text-xs font-medium text-muted-foreground">
+				{label}
+			</span>
 			<input
 				{...props}
-				className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100"
+				className="h-9 w-full rounded-md border border-hairline bg-surface-1 px-3 py-1 text-sm outline-none transition-colors duration-150 placeholder:text-muted-foreground focus-ring disabled:opacity-50"
 			/>
 		</label>
 	);
@@ -1540,11 +1631,13 @@ function Textarea({
 }: React.TextareaHTMLAttributes<HTMLTextAreaElement> & { label: string }) {
 	return (
 		<label className={cn("text-sm", className)}>
-			<span className="mb-1 block font-medium text-gray-700">{label}</span>
+			<span className="mb-1.5 block text-xs font-medium text-muted-foreground">
+				{label}
+			</span>
 			<textarea
 				{...props}
 				rows={4}
-				className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100"
+				className="w-full rounded-md border border-hairline bg-surface-1 px-3 py-2 text-sm outline-none transition-colors duration-150 placeholder:text-muted-foreground focus-ring disabled:opacity-50"
 			/>
 		</label>
 	);
@@ -1559,6 +1652,9 @@ function ContentList({
 	onEdit,
 	onEditAttachments,
 	onEditRoles,
+	emptyIcon,
+	emptyTitle,
+	emptyDescription,
 	disabled = false,
 }: {
 	items: Array<{
@@ -1575,40 +1671,56 @@ function ContentList({
 	onEdit?: (id: string) => void;
 	onEditAttachments?: (id: string) => void;
 	onEditRoles?: (id: string) => void;
+	emptyIcon?: LucideIcon;
+	emptyTitle?: string;
+	emptyDescription?: string;
 	disabled?: boolean;
 }) {
 	if (items.length === 0) {
 		return (
-			<p className="p-8 text-center text-sm text-gray-500">Nothing here yet.</p>
+			<EmptyState
+				icon={emptyIcon ?? Inbox}
+				title={emptyTitle ?? "Nothing here yet"}
+				description={
+					emptyDescription ?? "Create your first item with the form above."
+				}
+				testId="content-list-empty"
+			/>
 		);
 	}
 
 	return (
-		<ul className="divide-y divide-gray-100">
+		<ul className="divide-y divide-hairline">
 			{items.map((item) => (
 				<li
 					key={item.id}
-					className="flex flex-wrap items-center gap-4 px-5 py-4"
+					className="flex flex-wrap items-center gap-4 px-5 py-4 transition-colors duration-150 hover:bg-surface-2"
+					data-testid={`content-row-${item.id}`}
 				>
 					<div className="min-w-0 flex-1">
-						<p className="font-medium text-gray-900">{item.title}</p>
+						<p className="font-medium text-foreground">{item.title}</p>
 						{item.subtitle ? (
-							<p className="truncate text-xs text-gray-500">{item.subtitle}</p>
+							<p className="truncate text-xs text-muted-foreground">
+								{item.subtitle}
+							</p>
 						) : null}
 					</div>
 					{item.meta ? (
-						<span className="text-xs text-gray-400">{item.meta}</span>
+						<span className="num text-xs text-muted-foreground">
+							{item.meta}
+						</span>
 					) : null}
 					<button
 						type="button"
 						onClick={() => onToggle(item.id)}
 						disabled={disabled}
 						className={cn(
-							"rounded-full px-2.5 py-1 text-xs font-semibold",
+							"rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-150 focus-ring disabled:opacity-50",
 							item.active
-								? "bg-green-100 text-green-700"
-								: "bg-gray-100 text-gray-600",
+								? "bg-success/12 text-success"
+								: "bg-muted text-muted-foreground",
 						)}
+						data-testid={`content-toggle-${item.id}`}
 					>
 						{item.active ? activeLabel : inactiveLabel}
 					</button>
@@ -1617,7 +1729,8 @@ function ContentList({
 							type="button"
 							onClick={() => onEdit(item.id)}
 							disabled={disabled}
-							className="inline-flex items-center gap-1 text-xs font-medium text-gray-700 hover:text-red-600"
+							className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors duration-150 hover:text-foreground focus-ring disabled:opacity-50"
+							data-testid={`content-edit-${item.id}`}
 						>
 							<Pencil className="h-3.5 w-3.5" /> Edit
 						</button>
@@ -1627,7 +1740,8 @@ function ContentList({
 							type="button"
 							onClick={() => onEditAttachments(item.id)}
 							disabled={disabled}
-							className="inline-flex items-center gap-1 text-xs font-medium text-gray-600 hover:text-red-600"
+							className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors duration-150 hover:text-foreground focus-ring disabled:opacity-50"
+							data-testid={`content-edit-attachments-${item.id}`}
 						>
 							<Paperclip className="h-3.5 w-3.5" /> Edit attachments
 						</button>
@@ -1637,7 +1751,8 @@ function ContentList({
 							type="button"
 							onClick={() => onEditRoles(item.id)}
 							disabled={disabled}
-							className="inline-flex items-center gap-1 text-xs font-medium text-gray-600 hover:text-red-600"
+							className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors duration-150 hover:text-foreground focus-ring disabled:opacity-50"
+							data-testid={`content-edit-roles-${item.id}`}
 						>
 							<Users className="h-3.5 w-3.5" /> Roles
 						</button>
@@ -1646,7 +1761,8 @@ function ContentList({
 						type="button"
 						onClick={() => onDelete(item.id)}
 						disabled={disabled}
-						className="inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-700"
+						className="inline-flex items-center gap-1 text-xs font-medium text-destructive transition-colors duration-150 hover:text-destructive/80 focus-ring disabled:opacity-50"
+						data-testid={`content-delete-${item.id}`}
 					>
 						<Trash2 className="h-3.5 w-3.5" /> Delete
 					</button>

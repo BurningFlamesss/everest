@@ -89,6 +89,8 @@ export default function ResultsPage() {
 						variant="ghost"
 						size="icon"
 						className="h-8 w-8"
+						aria-label={`Edit ${row.year}`}
+						data-testid={`result-edit-${row.id}`}
 						onClick={() => {
 							setEditing(row);
 							setOpen(true);
@@ -100,6 +102,8 @@ export default function ResultsPage() {
 						variant="ghost"
 						size="icon"
 						className="h-8 w-8 text-destructive"
+						aria-label={`Delete ${row.year}`}
+						data-testid={`result-delete-${row.id}`}
 						onClick={() => setPendingDelete(row)}
 					>
 						<Trash2 className="h-4 w-4" />
@@ -110,173 +114,172 @@ export default function ResultsPage() {
 	];
 
 	return (
-		<main className="flex-1 overflow-y-auto bg-surface-base px-6 py-8">
-			<div className="mx-auto max-w-5xl space-y-6">
-				<PageHeader
-					eyebrow="Academics"
-					title="Board Results"
-					description="Manage historical board examination results."
-					actions={
-						<Button
-							onClick={() => {
-								setEditing({});
-								setOpen(true);
-							}}
-						>
-							<Plus className="mr-2 h-4 w-4" /> Add Result
-						</Button>
-					}
-				/>
+		<div data-testid="results-page">
+			<PageHeader
+				eyebrow="Academics"
+				title="Board Results"
+				description="Manage historical board examination results."
+				actions={
+					<Button
+						size="sm"
+						className="gap-1.5"
+						onClick={() => {
+							setEditing({});
+							setOpen(true);
+						}}
+					>
+						<Plus className="h-3.5 w-3.5" /> Add Result
+					</Button>
+				}
+			/>
 
-				{results.length > 0 ? (
-					<DataTable
-						columns={columns}
-						rows={results}
-						rowId={(r) => r.id}
-						testId="results-table"
+			<DataTable
+				columns={columns}
+				rows={results}
+				rowId={(r) => r.id}
+				testId="results-table"
+				loading={isLoading}
+				empty={
+					<EmptyState
+						icon={Award}
+						title="No results yet"
+						description="Add your first board result to get started."
+						primaryLabel="Add result"
+						onPrimary={() => {
+							setEditing(null);
+							setOpen(true);
+						}}
 					/>
-				) : (
-					!isLoading && (
-						<EmptyState
-							icon={Award}
-							title="No results yet"
-							description="Add your first board result to get started."
-							primaryLabel="Add result"
-							onPrimary={() => {
-								setEditing(null);
-								setOpen(true);
-							}}
-						/>
-					)
-				)}
+				}
+			/>
 
-				<Dialog open={open} onOpenChange={setOpen}>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle>
-								{editing?.id ? "Edit Result" : "Add Result"}
-							</DialogTitle>
-							<DialogDescription>
-								Enter the board statistics for the academic year.
-							</DialogDescription>
-						</DialogHeader>
-						<div className="grid gap-4 py-4">
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>Board</Label>
-									<Input
-										value={editing?.board || ""}
-										onChange={(e: any) =>
-											setEditing((prev) => ({ ...prev, board: e.target.value }))
-										}
-										placeholder="e.g. SEE or NEB"
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Year (B.S.)</Label>
-									<Input
-										value={editing?.year || ""}
-										onChange={(e: any) =>
-											setEditing((prev) => ({ ...prev, year: e.target.value }))
-										}
-										placeholder="e.g. 2080"
-									/>
-								</div>
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent className="border-hairline bg-popover sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle>
+							{editing?.id ? "Edit Result" : "Add Result"}
+						</DialogTitle>
+						<DialogDescription>
+							Enter the board statistics for the academic year.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="space-y-3.5">
+						<div className="grid grid-cols-2 gap-4">
+							<div className="space-y-2">
+								<Label className="text-xs">Board</Label>
+								<Input
+									value={editing?.board || ""}
+									onChange={(e: any) =>
+										setEditing((prev) => ({ ...prev, board: e.target.value }))
+									}
+									placeholder="e.g. SEE or NEB"
+								/>
 							</div>
-							<div className="grid grid-cols-5 gap-4">
-								<div className="space-y-2">
-									<Label>Appeared</Label>
-									<Input
-										type="number"
-										value={editing?.appeared || ""}
-										onChange={(e: any) =>
-											setEditing((prev) => ({
-												...prev,
-												appeared: Number(e.target.value),
-											}))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Passed</Label>
-									<Input
-										type="number"
-										value={editing?.passed || ""}
-										onChange={(e: any) =>
-											setEditing((prev) => ({
-												...prev,
-												passed: Number(e.target.value),
-											}))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Dist.</Label>
-									<Input
-										type="number"
-										value={editing?.distinction || ""}
-										onChange={(e: any) =>
-											setEditing((prev) => ({
-												...prev,
-												distinction: Number(e.target.value),
-											}))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>1st Div</Label>
-									<Input
-										type="number"
-										value={editing?.firstDivision || ""}
-										onChange={(e: any) =>
-											setEditing((prev) => ({
-												...prev,
-												firstDivision: Number(e.target.value),
-											}))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>2nd Div</Label>
-									<Input
-										type="number"
-										value={editing?.secondDivision || ""}
-										onChange={(e: any) =>
-											setEditing((prev) => ({
-												...prev,
-												secondDivision: Number(e.target.value),
-											}))
-										}
-									/>
-								</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Year (B.S.)</Label>
+								<Input
+									value={editing?.year || ""}
+									onChange={(e: any) =>
+										setEditing((prev) => ({ ...prev, year: e.target.value }))
+									}
+									placeholder="e.g. 2080"
+								/>
 							</div>
 						</div>
-						<DialogFooter>
-							<Button variant="outline" onClick={() => setOpen(false)}>
-								Cancel
-							</Button>
-							<Button
-								onClick={() => saveMutation.mutate(editing)}
-								disabled={saveMutation.isPending || !editing?.board}
-							>
-								Save Result
-							</Button>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
+						<div className="grid grid-cols-5 gap-4">
+							<div className="space-y-2">
+								<Label className="text-xs">Appeared</Label>
+								<Input
+									type="number"
+									value={editing?.appeared || ""}
+									onChange={(e: any) =>
+										setEditing((prev) => ({
+											...prev,
+											appeared: Number(e.target.value),
+										}))
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Passed</Label>
+								<Input
+									type="number"
+									value={editing?.passed || ""}
+									onChange={(e: any) =>
+										setEditing((prev) => ({
+											...prev,
+											passed: Number(e.target.value),
+										}))
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Dist.</Label>
+								<Input
+									type="number"
+									value={editing?.distinction || ""}
+									onChange={(e: any) =>
+										setEditing((prev) => ({
+											...prev,
+											distinction: Number(e.target.value),
+										}))
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">1st Div</Label>
+								<Input
+									type="number"
+									value={editing?.firstDivision || ""}
+									onChange={(e: any) =>
+										setEditing((prev) => ({
+											...prev,
+											firstDivision: Number(e.target.value),
+										}))
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">2nd Div</Label>
+								<Input
+									type="number"
+									value={editing?.secondDivision || ""}
+									onChange={(e: any) =>
+										setEditing((prev) => ({
+											...prev,
+											secondDivision: Number(e.target.value),
+										}))
+									}
+								/>
+							</div>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setOpen(false)}>
+							Cancel
+						</Button>
+						<Button
+							onClick={() => saveMutation.mutate(editing)}
+							disabled={saveMutation.isPending || !editing?.board}
+						>
+							Save Result
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
-				<ConfirmDialog
-					open={!!pendingDelete}
-					onOpenChange={(op) => !op && setPendingDelete(null)}
-					title="Delete Result"
-					description={`Are you sure you want to delete the result for ${pendingDelete?.year}?`}
-					destructive
-					onConfirm={() =>
-						pendingDelete && deleteMutation.mutate(pendingDelete.id)
-					}
-					busy={deleteMutation.isPending}
-				/>
-			</div>
-		</main>
+			<ConfirmDialog
+				open={!!pendingDelete}
+				onOpenChange={(op) => !op && setPendingDelete(null)}
+				testId="results-delete-confirm"
+				title="Delete Result"
+				description={`Are you sure you want to delete the result for ${pendingDelete?.year}?`}
+				destructive
+				onConfirm={() =>
+					pendingDelete && deleteMutation.mutate(pendingDelete.id)
+				}
+				busy={deleteMutation.isPending}
+			/>
+		</div>
 	);
 }

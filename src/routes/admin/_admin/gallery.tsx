@@ -1,7 +1,23 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Images, Loader2, Plus, Trash2 } from "lucide-react";
+import {
+	AlertTriangle,
+	CheckCircle2,
+	ImagePlus,
+	Images,
+	Loader2,
+	Plus,
+	Trash2,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { ConfirmDialog } from "#/components/common/ConfirmDialog";
+import { EmptyState } from "#/components/common/EmptyState";
+import { PageHeader } from "#/components/common/PageHeader";
+import { Panel } from "#/components/common/Panel";
+import { PanelSkeleton } from "#/components/common/Skeletons";
 import { ImageUploadField } from "#/components/content/ImageUploadField.tsx";
+import { Button } from "#/components/ui/button";
+import { Input } from "#/components/ui/input";
+import { Label } from "#/components/ui/label";
 import {
 	addGalleryPhotoAction,
 	createGalleryCollectionAction,
@@ -40,6 +56,10 @@ function AdminGallery() {
 	const [notice, setNotice] = useState("");
 	const [collectionFormKey, setCollectionFormKey] = useState(0);
 	const [photoFormKey, setPhotoFormKey] = useState(0);
+	const [pendingPhoto, setPendingPhoto] = useState<{
+		albumId: string;
+		index: number;
+	} | null>(null);
 
 	const load = useCallback(async () => {
 		const response = await getGalleryCollectionsFn();
@@ -116,9 +136,9 @@ function AdminGallery() {
 	};
 
 	const removePhoto = async (albumId: string, index: number) => {
-		if (!confirm("Remove this photo from the collection?")) return;
-
+		setPendingPhoto(null);
 		setError("");
+
 		const response = await deleteGalleryPhotoAction({
 			data: { albumId, index },
 		});
@@ -133,233 +153,278 @@ function AdminGallery() {
 	};
 
 	return (
-		<div className="space-y-8">
-			<div>
-				<h1 className="text-3xl font-bold text-gray-900">Gallery</h1>
-				<p className="mt-1 text-sm text-gray-500">
-					Collections are the albums shown on the public gallery page. Photos
-					added to a collection appear there immediately.
-				</p>
-			</div>
+		<div data-testid="gallery-page">
+			<PageHeader
+				eyebrow="Website"
+				title="Gallery"
+				description="Collections are the albums shown on the public gallery page. Photos added to a collection appear there immediately."
+				testId="gallery-page-header"
+			/>
 
-			{error ? (
-				<div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-					{error}
-				</div>
-			) : null}
-			{notice ? (
-				<div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
-					{notice}
-				</div>
-			) : null}
-
-			<section className="rounded-2xl border border-gray-200 bg-white p-6">
-				<h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-gray-900">
-					<Images className="h-5 w-5 text-red-500" /> New collection
-				</h2>
-				<p className="mb-4 text-sm text-gray-500">
-					Group photos by event, academic year and category.
-				</p>
-				<form
-					key={collectionFormKey}
-					onSubmit={(event) => void createCollection(event)}
-					className="grid gap-4 md:grid-cols-2"
-				>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">
-							Collection name
-						</span>
-						<input
-							name="event"
-							required
-							placeholder="e.g. Inter-house Music Night"
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">
-							Academic year
-						</span>
-						<input
-							name="year"
-							required
-							placeholder="e.g. 2083 BS"
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">
-							Category
-						</span>
-						<input
-							name="category"
-							required
-							placeholder="e.g. Culture"
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">
-							Date (optional)
-						</span>
-						<input
-							name="date"
-							placeholder="e.g. 14 Magh 2083"
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
-					<div className="md:col-span-2">
-						<button
-							type="submit"
-							disabled={isSubmitting}
-							className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
-						>
-							{isSubmitting ? (
-								<Loader2 className="h-4 w-4 animate-spin" />
-							) : (
-								<Plus className="h-4 w-4" />
-							)}
-							Create collection
-						</button>
+			<div className="space-y-5">
+				{error ? (
+					<div
+						className="flex items-start gap-2.5 rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive"
+						data-testid="gallery-error-banner"
+					>
+						<AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+						<p className="min-w-0 break-words">{error}</p>
 					</div>
-				</form>
-			</section>
+				) : null}
+				{notice ? (
+					<div
+						className="flex items-start gap-2.5 rounded-lg border border-success/20 bg-success/10 p-4 text-sm text-success"
+						data-testid="gallery-notice-banner"
+					>
+						<CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+						<p className="min-w-0 break-words">{notice}</p>
+					</div>
+				) : null}
 
-			<section className="rounded-2xl border border-gray-200 bg-white p-6">
-				<h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-gray-900">
-					<Plus className="h-5 w-5 text-red-500" /> Add a photo
-				</h2>
-				<p className="mb-4 text-sm text-gray-500">
-					Choose the collection the photo belongs to.
-				</p>
-				{collections.length === 0 ? (
-					<p className="text-sm text-gray-500">
-						Create a collection first, then add photos to it.
-					</p>
-				) : (
+				<Panel
+					title="New collection"
+					description="Group photos by event, academic year and category."
+					testId="gallery-new-collection-panel"
+				>
 					<form
-						key={photoFormKey}
-						onSubmit={(event) => void addPhoto(event)}
+						key={collectionFormKey}
+						onSubmit={(event) => void createCollection(event)}
 						className="grid gap-4 md:grid-cols-2"
 					>
-						<label className="text-sm md:col-span-2">
-							<span className="mb-1 block font-medium text-gray-700">
-								Collection
-							</span>
-							<select
-								name="albumId"
+						<div className="space-y-2">
+							<Label htmlFor="gallery-collection-event" className="text-xs">
+								Collection name
+							</Label>
+							<Input
+								id="gallery-collection-event"
+								name="event"
 								required
-								defaultValue={collections[0]?.id}
-								className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
-							>
-								{collections.map((collection) => (
-									<option key={collection.id} value={collection.id}>
-										{collection.event} · {collection.year}
-									</option>
-								))}
-							</select>
-						</label>
-						<ImageUploadField
-							name="imageUrl"
-							prefix="gallery"
-							className="md:col-span-2"
-						/>
-						<label className="text-sm">
-							<span className="mb-1 block font-medium text-gray-700">
-								Caption / alt text
-							</span>
-							<input
-								name="alt"
-								placeholder="What is happening in this photo?"
-								className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+								placeholder="e.g. Inter-house Music Night"
 							/>
-						</label>
-						<div className="flex items-end">
-							<button
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="gallery-collection-year" className="text-xs">
+								Academic year
+							</Label>
+							<Input
+								id="gallery-collection-year"
+								name="year"
+								required
+								placeholder="e.g. 2083 BS"
+							/>
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="gallery-collection-category" className="text-xs">
+								Category
+							</Label>
+							<Input
+								id="gallery-collection-category"
+								name="category"
+								required
+								placeholder="e.g. Culture"
+							/>
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="gallery-collection-date" className="text-xs">
+								Date (optional)
+							</Label>
+							<Input
+								id="gallery-collection-date"
+								name="date"
+								placeholder="e.g. 14 Magh 2083"
+							/>
+						</div>
+						<div className="md:col-span-2">
+							<Button
 								type="submit"
+								size="sm"
+								className="gap-1.5"
 								disabled={isSubmitting}
-								className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
 							>
 								{isSubmitting ? (
-									<Loader2 className="h-4 w-4 animate-spin" />
+									<Loader2 className="h-3.5 w-3.5 animate-spin" />
 								) : (
-									<Plus className="h-4 w-4" />
+									<Plus className="h-3.5 w-3.5" />
 								)}
-								Add photo
-							</button>
+								Create collection
+							</Button>
 						</div>
 					</form>
-				)}
-			</section>
+				</Panel>
 
-			<section className="space-y-4">
-				<h2 className="text-lg font-semibold text-gray-900">Collections</h2>
-				{isLoading ? (
-					<p className="flex items-center gap-2 text-sm text-gray-500">
-						<Loader2 className="h-4 w-4 animate-spin" /> Loading…
-					</p>
-				) : collections.length === 0 ? (
-					<p className="text-sm text-gray-500">No collections yet.</p>
-				) : (
-					collections.map((collection) => (
-						<div
-							key={collection.id}
-							data-testid={`gallery-collection-${collection.id}`}
-							className="rounded-2xl border border-gray-200 bg-white p-6"
+				<Panel
+					title="Add a photo"
+					description="Choose the collection the photo belongs to."
+					testId="gallery-add-photo-panel"
+				>
+					{collections.length === 0 ? (
+						<EmptyState
+							compact
+							icon={Images}
+							title="No collections yet"
+							description="Create a collection first, then add photos to it."
+							testId="gallery-add-photo-empty"
+						/>
+					) : (
+						<form
+							key={photoFormKey}
+							onSubmit={(event) => void addPhoto(event)}
+							className="grid gap-4 md:grid-cols-2"
 						>
-							<div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-								<div>
-									<h3 className="text-base font-semibold text-gray-900">
-										{collection.event}
-									</h3>
-									<p className="mt-0.5 text-xs text-gray-500">
-										{[collection.category, collection.year, collection.date]
-											.filter(Boolean)
-											.join(" · ")}
-									</p>
-								</div>
-								<span className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-gray-600">
-									{collection.photos.length} photo
-									{collection.photos.length === 1 ? "" : "s"}
-								</span>
-							</div>
-
-							{collection.photos.length === 0 ? (
-								<p className="text-sm text-gray-500">
-									No photos in this collection yet.
-								</p>
-							) : (
-								<ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-									{collection.photos.map((photo, index) => (
-										<li
-											key={`${collection.id}-${photo.src}`}
-											className="overflow-hidden rounded-xl border border-gray-200"
-										>
-											<img
-												src={photo.src}
-												alt={photo.alt || collection.event}
-												className="h-40 w-full object-cover"
-											/>
-											<div className="flex items-center justify-between gap-2 p-3">
-												<p className="min-w-0 truncate text-xs text-gray-600">
-													{photo.alt || "No caption"}
-												</p>
-												<button
-													type="button"
-													onClick={() => void removePhoto(collection.id, index)}
-													className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-red-600"
-												>
-													<Trash2 className="h-3.5 w-3.5" /> Remove
-												</button>
-											</div>
-										</li>
+							<div className="space-y-2 md:col-span-2">
+								<Label htmlFor="gallery-photo-album" className="text-xs">
+									Collection
+								</Label>
+								<select
+									id="gallery-photo-album"
+									name="albumId"
+									required
+									defaultValue={collections[0]?.id}
+									className="h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+								>
+									{collections.map((collection) => (
+										<option key={collection.id} value={collection.id}>
+											{collection.event} · {collection.year}
+										</option>
 									))}
-								</ul>
-							)}
+								</select>
+							</div>
+							<ImageUploadField
+								name="imageUrl"
+								prefix="gallery"
+								className="md:col-span-2"
+							/>
+							<div className="space-y-2">
+								<Label htmlFor="gallery-photo-alt" className="text-xs">
+									Caption / alt text
+								</Label>
+								<Input
+									id="gallery-photo-alt"
+									name="alt"
+									placeholder="What is happening in this photo?"
+								/>
+							</div>
+							<div className="flex items-end">
+								<Button
+									type="submit"
+									size="sm"
+									className="gap-1.5"
+									disabled={isSubmitting}
+								>
+									{isSubmitting ? (
+										<Loader2 className="h-3.5 w-3.5 animate-spin" />
+									) : (
+										<Plus className="h-3.5 w-3.5" />
+									)}
+									Add photo
+								</Button>
+							</div>
+						</form>
+					)}
+				</Panel>
+
+				<section className="space-y-4">
+					<h2 className="font-display text-sm font-semibold text-foreground">
+						Collections
+					</h2>
+					{isLoading ? (
+						<div
+							className="space-y-4"
+							data-testid="gallery-collections-loading"
+						>
+							<PanelSkeleton height="h-44" />
+							<PanelSkeleton height="h-44" />
 						</div>
-					))
-				)}
-			</section>
+					) : collections.length === 0 ? (
+						<div className="panel">
+							<EmptyState
+								icon={Images}
+								title="No collections yet"
+								description="Create a collection above — photos added to it appear on the public gallery immediately."
+								testId="gallery-collections-empty"
+							/>
+						</div>
+					) : (
+						collections.map((collection) => (
+							<Panel
+								key={collection.id}
+								title={collection.event}
+								description={[
+									collection.category,
+									collection.year,
+									collection.date,
+								]
+									.filter(Boolean)
+									.join(" · ")}
+								actions={
+									<span className="num rounded-full bg-muted px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
+										{collection.photos.length} photo
+										{collection.photos.length === 1 ? "" : "s"}
+									</span>
+								}
+								testId={`gallery-collection-${collection.id}`}
+							>
+								{collection.photos.length === 0 ? (
+									<EmptyState
+										compact
+										icon={ImagePlus}
+										title="No photos in this collection yet"
+										description="Add the first photo with the form above — it goes live on the website straight away."
+										testId={`gallery-collection-empty-${collection.id}`}
+									/>
+								) : (
+									<ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+										{collection.photos.map((photo, index) => (
+											<li
+												key={`${collection.id}-${photo.src}`}
+												className="overflow-hidden rounded-lg border border-hairline bg-surface-1 transition-colors duration-150 hover:border-primary/35"
+											>
+												<img
+													src={photo.src}
+													alt={photo.alt || collection.event}
+													className="h-40 w-full object-cover"
+												/>
+												<div className="flex items-center justify-between gap-2 p-3">
+													<p className="min-w-0 truncate text-xs text-muted-foreground">
+														{photo.alt || "No caption"}
+													</p>
+													<Button
+														variant="ghost"
+														size="sm"
+														className="h-7 shrink-0 gap-1 px-2 text-xs text-destructive hover:text-destructive"
+														onClick={() =>
+															setPendingPhoto({
+																albumId: collection.id,
+																index,
+															})
+														}
+													>
+														<Trash2 className="h-3.5 w-3.5" /> Remove
+													</Button>
+												</div>
+											</li>
+										))}
+									</ul>
+								)}
+							</Panel>
+						))
+					)}
+				</section>
+			</div>
+
+			<ConfirmDialog
+				open={pendingPhoto !== null}
+				onOpenChange={(open) => !open && setPendingPhoto(null)}
+				title="Remove this photo?"
+				description="The photo will be removed from the collection and the public gallery. This cannot be undone."
+				confirmLabel="Remove photo"
+				destructive
+				onConfirm={() => {
+					if (!pendingPhoto) return;
+					void removePhoto(pendingPhoto.albumId, pendingPhoto.index);
+				}}
+				testId="gallery-remove-photo-confirm"
+			/>
 		</div>
 	);
 }

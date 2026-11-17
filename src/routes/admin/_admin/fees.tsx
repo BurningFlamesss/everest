@@ -1,6 +1,23 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Banknote, Loader2, Plus, Receipt, Trash2 } from "lucide-react";
+import {
+	AlertTriangle,
+	Banknote,
+	CheckCircle2,
+	Loader2,
+	Receipt,
+	Trash2,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { ConfirmDialog } from "#/components/common/ConfirmDialog";
+import { EmptyState } from "#/components/common/EmptyState";
+import { PageHeader } from "#/components/common/PageHeader";
+import { Panel } from "#/components/common/Panel";
+import { ListSkeleton } from "#/components/common/Skeletons";
+import { StatusBadge } from "#/components/common/StatusBadge";
+import { Button } from "#/components/ui/button";
+import { Input } from "#/components/ui/input";
+import { Label } from "#/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "#/components/ui/tabs";
 import {
 	createFeeStructureAction,
 	deleteFeeStructureAction,
@@ -77,6 +94,10 @@ function AdminFees() {
 	const [payInvoiceId, setPayInvoiceId] = useState("");
 	const [paymentAmount, setPaymentAmount] = useState("");
 	const [paymentMethod, setPaymentMethod] = useState("Cash");
+	const [pendingStructure, setPendingStructure] = useState<StructureRow | null>(
+		null,
+	);
+	const [isDeletingStructure, setIsDeletingStructure] = useState(false);
 
 	const load = useCallback(async () => {
 		setIsLoading(true);
@@ -177,331 +198,399 @@ function AdminFees() {
 		await load();
 	};
 
+	const removeStructure = async (structure: StructureRow) => {
+		setIsDeletingStructure(true);
+		try {
+			const response = await deleteFeeStructureAction({
+				data: { id: structure.id },
+			});
+			if (!response.success) setError(response.error);
+			else {
+				setPendingStructure(null);
+				setNotice("Fee structure deleted.");
+				await load();
+			}
+		} catch (deleteError) {
+			setError(
+				deleteError instanceof Error
+					? deleteError.message
+					: "Could not delete this fee structure.",
+			);
+		} finally {
+			setIsDeletingStructure(false);
+		}
+	};
+
 	return (
-		<div className="space-y-8">
-			<div>
-				<h1 className="text-3xl font-bold text-gray-900">Fees & finance</h1>
-				<p className="mt-1 text-sm text-gray-500">
-					Phase 1: define what is due, issue invoices and record payments. No
-					online gateway yet.
-				</p>
-			</div>
+		<div data-testid="fees-page">
+			<PageHeader
+				eyebrow="Operations"
+				title="Fees & finance"
+				description="Phase 1: define what is due, issue invoices and record payments. No online gateway yet."
+				meta={
+					<>
+						<span data-testid="fees-term-count">
+							{terms.length} term{terms.length === 1 ? "" : "s"}
+						</span>
+						<span data-testid="fees-structure-count">
+							{structures.length} structure{structures.length === 1 ? "" : "s"}
+						</span>
+						<span data-testid="fees-invoice-count">
+							{invoices.length} invoice{invoices.length === 1 ? "" : "s"}
+						</span>
+					</>
+				}
+				testId="fees-page-header"
+			/>
 
-			{error ? (
-				<div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-					{error}
-				</div>
-			) : null}
-			{notice ? (
-				<div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
-					{notice}
-				</div>
-			) : null}
-
-			<div className="flex gap-1 rounded-lg border border-gray-200 bg-white p-1">
-				{(["structures", "invoices"] as Array<Tab>).map((item) => (
-					<button
-						key={item}
-						type="button"
-						onClick={() => setTab(item)}
-						className={
-							tab === item
-								? "rounded-md bg-red-500 px-3 py-1.5 text-sm font-medium capitalize text-white"
-								: "rounded-md px-3 py-1.5 text-sm font-medium capitalize text-gray-600 hover:bg-gray-100"
-						}
+			<div className="space-y-5">
+				{error ? (
+					<div
+						className="flex items-start gap-2.5 rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive"
+						data-testid="fees-error-banner"
 					>
-						{item}
-					</button>
-				))}
-			</div>
+						<AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+						<p className="min-w-0 break-words">{error}</p>
+					</div>
+				) : null}
+				{notice ? (
+					<div
+						className="flex items-start gap-2.5 rounded-lg border border-success/20 bg-success/10 p-4 text-sm text-success"
+						data-testid="fees-notice-banner"
+					>
+						<CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+						<p className="min-w-0 break-words">{notice}</p>
+					</div>
+				) : null}
 
-			{tab === "structures" ? (
-				<>
-					<section className="rounded-2xl border border-gray-200 bg-white p-6">
-						<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-							<Plus className="h-5 w-5 text-red-500" /> New fee structure
-						</h2>
-						<form
-							onSubmit={(event) => void createStructure(event)}
-							className="grid gap-4 md:grid-cols-3"
+				<Tabs
+					value={tab}
+					onValueChange={(value: string) => setTab(value as Tab)}
+				>
+					<TabsList className="h-9" data-testid="fees-tabs">
+						<TabsTrigger value="structures" data-testid="fees-tab-structures">
+							Structures
+						</TabsTrigger>
+						<TabsTrigger value="invoices" data-testid="fees-tab-invoices">
+							Invoices
+						</TabsTrigger>
+					</TabsList>
+				</Tabs>
+
+				{tab === "structures" ? (
+					<>
+						<Panel
+							title="New fee structure"
+							description="Define what is due, for which grades, and when."
+							testId="fees-new-structure-panel"
+							bodyClassName="p-5"
 						>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Term
-								</span>
-								<select
-									name="termId"
-									required
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								>
-									<option value="">Select…</option>
-									{terms.map((term) => (
-										<option key={term.id} value={term.id}>
-											{term.academicYear.name} · {term.name}
-										</option>
-									))}
-								</select>
-							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Name
-								</span>
-								<input
-									name="name"
-									required
-									placeholder="Tuition"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								/>
-							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Amount (₹)
-								</span>
-								<input
-									type="number"
-									name="amount"
-									min={0}
-									step="0.01"
-									required
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								/>
-							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Grade
-								</span>
-								<input
-									name="grade"
-									placeholder="All grades"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								/>
-							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Section
-								</span>
-								<input
-									name="section"
-									placeholder="All sections"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								/>
-							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Due
-								</span>
-								<input
-									type="date"
-									name="dueDate"
-									required
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								/>
-							</label>
-							<div className="md:col-span-3">
-								<button
-									type="submit"
-									disabled={isSubmitting}
-									className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
-								>
-									{isSubmitting ? (
-										<Loader2 className="h-4 w-4 animate-spin" />
-									) : (
-										<Banknote className="h-4 w-4" />
-									)}
-									Create structure
-								</button>
-							</div>
-						</form>
-					</section>
-
-					<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-						<header className="border-b border-gray-200 px-5 py-4">
-							<h2 className="font-semibold text-gray-900">Fee structures</h2>
-						</header>
-						{isLoading ? (
-							<p className="flex items-center gap-2 p-6 text-sm text-gray-500">
-								<Loader2 className="h-4 w-4 animate-spin" /> Loading…
-							</p>
-						) : structures.length === 0 ? (
-							<p className="p-8 text-center text-sm text-gray-500">
-								No fee structures yet.
-							</p>
-						) : (
-							<ul className="divide-y divide-gray-100">
-								{structures.map((structure) => (
-									<li
-										key={structure.id}
-										className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
+							<form
+								onSubmit={(event) => void createStructure(event)}
+								className="grid gap-4 md:grid-cols-3"
+							>
+								<div className="space-y-2">
+									<Label htmlFor="fee-term" className="text-xs">
+										Term
+									</Label>
+									<select
+										id="fee-term"
+										name="termId"
+										required
+										className="h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 									>
-										<div>
-											<p className="font-medium text-gray-900">
-												{structure.name} · {money(structure.amount)}
-											</p>
-											<p className="text-xs text-gray-500">
-												{structure.term.academicYear.name} ·{" "}
-												{structure.term.name}
-												{structure.grade ? ` · Grade ${structure.grade}` : ""}
-												{structure.section ? ` ${structure.section}` : ""} · due{" "}
-												{new Date(structure.dueDate).toLocaleDateString()} ·{" "}
-												{structure._count.invoices} invoice
-												{structure._count.invoices === 1 ? "" : "s"}
-											</p>
-										</div>
-										<div className="flex gap-3">
-											<button
-												type="button"
-												onClick={() => void generate(structure.id)}
-												className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-600"
-											>
-												Issue invoices
-											</button>
-											<button
-												type="button"
-												onClick={async () => {
-													if (!confirm("Delete this fee structure?")) return;
-													const response = await deleteFeeStructureAction({
-														data: { id: structure.id },
-													});
-													if (!response.success) setError(response.error);
-													else await load();
-												}}
-												className="inline-flex items-center gap-1 text-xs font-medium text-red-600"
-											>
-												<Trash2 className="h-3.5 w-3.5" /> Delete
-											</button>
-										</div>
-									</li>
-								))}
+										<option value="">Select…</option>
+										{terms.map((term) => (
+											<option key={term.id} value={term.id}>
+												{term.academicYear.name} · {term.name}
+											</option>
+										))}
+									</select>
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="fee-name" className="text-xs">
+										Name
+									</Label>
+									<Input
+										id="fee-name"
+										name="name"
+										required
+										placeholder="Tuition"
+									/>
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="fee-amount" className="text-xs">
+										Amount (₹)
+									</Label>
+									<Input
+										id="fee-amount"
+										type="number"
+										name="amount"
+										min={0}
+										step="0.01"
+										required
+									/>
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="fee-grade" className="text-xs">
+										Grade
+									</Label>
+									<Input id="fee-grade" name="grade" placeholder="All grades" />
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="fee-section" className="text-xs">
+										Section
+									</Label>
+									<Input
+										id="fee-section"
+										name="section"
+										placeholder="All sections"
+									/>
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="fee-due-date" className="text-xs">
+										Due
+									</Label>
+									<Input
+										id="fee-due-date"
+										type="date"
+										name="dueDate"
+										required
+									/>
+								</div>
+								<div className="md:col-span-3">
+									<Button
+										type="submit"
+										size="sm"
+										className="gap-1.5"
+										disabled={isSubmitting}
+									>
+										{isSubmitting ? (
+											<Loader2 className="h-3.5 w-3.5 animate-spin" />
+										) : (
+											<Banknote className="h-3.5 w-3.5" />
+										)}
+										Create structure
+									</Button>
+								</div>
+							</form>
+						</Panel>
+
+						<Panel
+							title="Fee structures"
+							description="Issue invoices for every active student matching a structure."
+							testId="fees-structures-panel"
+							bodyClassName="p-0"
+						>
+							{isLoading ? (
+								<div className="p-5" data-testid="fees-structures-loading">
+									<ListSkeleton rows={5} />
+								</div>
+							) : structures.length === 0 ? (
+								<EmptyState
+									compact
+									icon={Receipt}
+									title="No fee structures yet"
+									description="Create the first structure above, then issue invoices from it."
+									testId="fees-structures-empty"
+								/>
+							) : (
+								<ul className="divide-y divide-hairline/60">
+									{structures.map((structure) => (
+										<li
+											key={structure.id}
+											className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
+											data-testid={`fees-structure-${structure.id}`}
+										>
+											<div className="min-w-0">
+												<p className="text-sm font-medium text-foreground">
+													{structure.name} ·{" "}
+													<span className="num">{money(structure.amount)}</span>
+												</p>
+												<p className="num mt-0.5 text-xs text-muted-foreground">
+													{structure.term.academicYear.name} ·{" "}
+													{structure.term.name}
+													{structure.grade ? ` · Grade ${structure.grade}` : ""}
+													{structure.section ? ` ${structure.section}` : ""} ·
+													due {new Date(structure.dueDate).toLocaleDateString()}{" "}
+													· {structure._count.invoices} invoice
+													{structure._count.invoices === 1 ? "" : "s"}
+												</p>
+											</div>
+											<div className="flex shrink-0 items-center gap-2">
+												<Button
+													type="button"
+													size="sm"
+													className="gap-1.5"
+													onClick={() => void generate(structure.id)}
+													data-testid={`fees-generate-${structure.id}`}
+												>
+													Issue invoices
+												</Button>
+												<Button
+													type="button"
+													variant="ghost"
+													size="sm"
+													className="h-7 shrink-0 gap-1 px-2 text-xs text-destructive hover:text-destructive"
+													onClick={() => setPendingStructure(structure)}
+													data-testid={`fees-delete-${structure.id}`}
+												>
+													<Trash2 className="h-3.5 w-3.5" /> Delete
+												</Button>
+											</div>
+										</li>
+									))}
+								</ul>
+							)}
+						</Panel>
+					</>
+				) : (
+					<Panel
+						title="Invoices"
+						description="Record payments against each student invoice."
+						testId="fees-invoices-panel"
+						bodyClassName="p-0"
+					>
+						{isLoading ? (
+							<div className="p-5" data-testid="fees-invoices-loading">
+								<ListSkeleton rows={5} />
+							</div>
+						) : invoices.length === 0 ? (
+							<EmptyState
+								compact
+								icon={Receipt}
+								title="No invoices yet"
+								description="Issue them from a fee structure."
+								testId="fees-invoices-empty"
+							/>
+						) : (
+							<ul className="divide-y divide-hairline/60">
+								{invoices.map((invoice) => {
+									const paid = paidOf(invoice);
+									const balance = invoice.amount - paid;
+
+									return (
+										<li
+											key={invoice.id}
+											className="px-5 py-4"
+											data-testid={`fees-invoice-${invoice.id}`}
+										>
+											<div className="flex flex-wrap items-center justify-between gap-3">
+												<div className="min-w-0">
+													<p className="text-sm font-medium text-foreground">
+														{invoice.student.user.name} ·{" "}
+														{invoice.feeStructure?.name ?? "Fee"}
+													</p>
+													<p className="num mt-0.5 text-xs text-muted-foreground">
+														{invoice.term.name} · due{" "}
+														{new Date(invoice.dueDate).toLocaleDateString()} ·{" "}
+														{money(paid)} of {money(invoice.amount)} paid
+													</p>
+												</div>
+												<div className="flex items-center gap-2">
+													<StatusBadge
+														value={invoice.status.toLowerCase()}
+														testId={`fees-invoice-status-${invoice.id}`}
+													/>
+													{balance > 0 ? (
+														<Button
+															type="button"
+															variant="outline"
+															size="sm"
+															className="gap-1.5"
+															onClick={() => {
+																setPayInvoiceId(
+																	payInvoiceId === invoice.id ? "" : invoice.id,
+																);
+																setPaymentAmount(String(balance / 100));
+															}}
+															data-testid={`fees-pay-${invoice.id}`}
+														>
+															Record payment
+														</Button>
+													) : null}
+												</div>
+											</div>
+
+											{payInvoiceId === invoice.id ? (
+												<div className="mt-3 flex flex-wrap items-end gap-2 rounded-lg border border-hairline bg-surface-2 p-3">
+													<label className="grid gap-1.5">
+														<span className="text-xs font-medium text-foreground">
+															Amount (₹)
+														</span>
+														<input
+															type="number"
+															min={0}
+															step="0.01"
+															value={paymentAmount}
+															onChange={(event) =>
+																setPaymentAmount(event.target.value)
+															}
+															className="h-9 w-32 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+														/>
+													</label>
+													<label className="grid gap-1.5">
+														<span className="text-xs font-medium text-foreground">
+															Method
+														</span>
+														<select
+															value={paymentMethod}
+															onChange={(event) =>
+																setPaymentMethod(event.target.value)
+															}
+															className="h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+														>
+															<option>Cash</option>
+															<option>Bank transfer</option>
+															<option>Cheque</option>
+															<option>Card</option>
+															<option>UPI</option>
+														</select>
+													</label>
+													<Button
+														type="button"
+														size="sm"
+														className="gap-1.5"
+														onClick={() => void pay(invoice)}
+														disabled={isSubmitting}
+													>
+														Save payment
+													</Button>
+												</div>
+											) : null}
+
+											{invoice.payments.length > 0 ? (
+												<ul className="num mt-2 space-y-1 text-xs text-muted-foreground">
+													{invoice.payments.map((payment) => (
+														<li key={payment.id}>
+															{money(payment.amount)} · {payment.method} ·{" "}
+															{new Date(payment.paidAt).toLocaleDateString()}
+														</li>
+													))}
+												</ul>
+											) : null}
+										</li>
+									);
+								})}
 							</ul>
 						)}
-					</section>
-				</>
-			) : (
-				<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-					<header className="flex items-center gap-2 border-b border-gray-200 px-5 py-4">
-						<Receipt className="h-5 w-5 text-red-500" />
-						<h2 className="font-semibold text-gray-900">Invoices</h2>
-					</header>
-					{isLoading ? (
-						<p className="flex items-center gap-2 p-6 text-sm text-gray-500">
-							<Loader2 className="h-4 w-4 animate-spin" /> Loading…
-						</p>
-					) : invoices.length === 0 ? (
-						<p className="p-8 text-center text-sm text-gray-500">
-							No invoices yet. Issue them from a fee structure.
-						</p>
-					) : (
-						<ul className="divide-y divide-gray-100">
-							{invoices.map((invoice) => {
-								const paid = paidOf(invoice);
-								const balance = invoice.amount - paid;
+					</Panel>
+				)}
+			</div>
 
-								return (
-									<li key={invoice.id} className="px-5 py-4">
-										<div className="flex flex-wrap items-center justify-between gap-3">
-											<div>
-												<p className="font-medium text-gray-900">
-													{invoice.student.user.name} ·{" "}
-													{invoice.feeStructure?.name ?? "Fee"}
-												</p>
-												<p className="text-xs text-gray-500">
-													{invoice.term.name} · due{" "}
-													{new Date(invoice.dueDate).toLocaleDateString()} ·{" "}
-													{money(paid)} of {money(invoice.amount)} paid
-												</p>
-											</div>
-											<div className="flex items-center gap-2">
-												<span
-													className={
-														invoice.status === "PAID"
-															? "rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700"
-															: invoice.status === "PARTIAL"
-																? "rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700"
-																: "rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-semibold text-red-700"
-													}
-												>
-													{invoice.status}
-												</span>
-												{balance > 0 ? (
-													<button
-														type="button"
-														onClick={() => {
-															setPayInvoiceId(
-																payInvoiceId === invoice.id ? "" : invoice.id,
-															);
-															setPaymentAmount(String(balance / 100));
-														}}
-														className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
-													>
-														Record payment
-													</button>
-												) : null}
-											</div>
-										</div>
-
-										{payInvoiceId === invoice.id ? (
-											<div className="mt-3 flex flex-wrap items-end gap-2 rounded-lg bg-gray-50 p-3">
-												<label className="text-xs">
-													<span className="mb-1 block font-medium text-gray-700">
-														Amount (₹)
-													</span>
-													<input
-														type="number"
-														min={0}
-														step="0.01"
-														value={paymentAmount}
-														onChange={(event) =>
-															setPaymentAmount(event.target.value)
-														}
-														className="w-32 rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
-													/>
-												</label>
-												<label className="text-xs">
-													<span className="mb-1 block font-medium text-gray-700">
-														Method
-													</span>
-													<select
-														value={paymentMethod}
-														onChange={(event) =>
-															setPaymentMethod(event.target.value)
-														}
-														className="rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
-													>
-														<option>Cash</option>
-														<option>Bank transfer</option>
-														<option>Cheque</option>
-														<option>Card</option>
-														<option>UPI</option>
-													</select>
-												</label>
-												<button
-													type="button"
-													onClick={() => void pay(invoice)}
-													disabled={isSubmitting}
-													className="rounded-lg bg-red-500 px-3 py-2 text-xs font-semibold text-white hover:bg-red-600 disabled:opacity-60"
-												>
-													Save payment
-												</button>
-											</div>
-										) : null}
-
-										{invoice.payments.length > 0 ? (
-											<ul className="mt-2 text-xs text-gray-500">
-												{invoice.payments.map((payment) => (
-													<li key={payment.id}>
-														{money(payment.amount)} · {payment.method} ·{" "}
-														{new Date(payment.paidAt).toLocaleDateString()}
-													</li>
-												))}
-											</ul>
-										) : null}
-									</li>
-								);
-							})}
-						</ul>
-					)}
-				</section>
-			)}
+			<ConfirmDialog
+				open={!!pendingStructure}
+				onOpenChange={(open) => !open && setPendingStructure(null)}
+				testId="fees-delete-confirm"
+				title="Delete this fee structure?"
+				description={`Delete ${pendingStructure?.name ?? "this structure"}? Issued invoices stay recorded.`}
+				confirmLabel="Delete"
+				destructive
+				busy={isDeletingStructure}
+				onConfirm={() =>
+					pendingStructure && void removeStructure(pendingStructure)
+				}
+			/>
 		</div>
 	);
 }

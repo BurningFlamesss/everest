@@ -113,7 +113,7 @@ export default function ScholarshipsAdminPage() {
 				<div className="flex items-center gap-2">
 					<span className="font-medium">{row.name}</span>
 					{row.spotlight && (
-						<Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+						<Star className="h-3.5 w-3.5 fill-warning text-warning" />
 					)}
 				</div>
 			),
@@ -140,6 +140,8 @@ export default function ScholarshipsAdminPage() {
 						variant="ghost"
 						size="icon"
 						className="h-8 w-8"
+						aria-label={`Edit ${row.name}`}
+						data-testid={`scholarship-edit-${row.id}`}
 						onClick={() => {
 							setEditing(row);
 							setOpen(true);
@@ -151,6 +153,8 @@ export default function ScholarshipsAdminPage() {
 						variant="ghost"
 						size="icon"
 						className="h-8 w-8 text-destructive"
+						aria-label={`Delete ${row.name}`}
+						data-testid={`scholarship-delete-${row.id}`}
 						onClick={() => setPendingDelete(row)}
 					>
 						<Trash2 className="h-4 w-4" />
@@ -161,254 +165,253 @@ export default function ScholarshipsAdminPage() {
 	];
 
 	return (
-		<main className="flex-1 overflow-y-auto bg-surface-base px-6 py-8">
-			<div className="mx-auto max-w-6xl space-y-6">
-				<PageHeader
-					eyebrow="Operations"
-					title="Scholarships"
-					description="Scholarship schemes shown on the public website."
-					actions={
-						<Button
-							onClick={() => {
-								setEditing({
-									category: "Merit",
-									benefits: [],
-									documents: [],
-									process: [],
-									eligibility: [],
-								});
-								setOpen(true);
-							}}
-						>
-							<Plus className="mr-2 h-4 w-4" /> Add Scholarship
-						</Button>
-					}
-				/>
+		<div data-testid="scholarships-page">
+			<PageHeader
+				eyebrow="Operations"
+				title="Scholarships"
+				description="Scholarship schemes shown on the public website."
+				actions={
+					<Button
+						size="sm"
+						className="gap-1.5"
+						onClick={() => {
+							setEditing({
+								category: "Merit",
+								benefits: [],
+								documents: [],
+								process: [],
+								eligibility: [],
+							});
+							setOpen(true);
+						}}
+					>
+						<Plus className="h-3.5 w-3.5" /> Add Scholarship
+					</Button>
+				}
+			/>
 
-				{scholarships.length > 0 ? (
-					<DataTable
-						columns={columns}
-						rows={scholarships as ScholarshipRow[]}
-						rowId={(r) => r.id}
-						testId="scholarships-table"
+			<DataTable
+				columns={columns}
+				rows={scholarships as ScholarshipRow[]}
+				rowId={(r) => r.id}
+				testId="scholarships-table"
+				loading={isLoading}
+				empty={
+					<EmptyState
+						icon={GraduationCap}
+						title="No scholarships yet"
+						description="Add your first scholarship scheme to display it publicly."
+						primaryLabel="Add scholarship"
+						onPrimary={() => {
+							setEditing({
+								category: "Merit",
+								benefits: [],
+								documents: [],
+								process: [],
+								eligibility: [],
+							});
+							setOpen(true);
+						}}
 					/>
-				) : (
-					!isLoading && (
-						<EmptyState
-							icon={GraduationCap}
-							title="No scholarships yet"
-							description="Add your first scholarship scheme to display it publicly."
-							primaryLabel="Add scholarship"
-							onPrimary={() => {
-								setEditing({
-									category: "Merit",
-									benefits: [],
-									documents: [],
-									process: [],
-									eligibility: [],
-								});
-								setOpen(true);
-							}}
-						/>
-					)
-				)}
+				}
+			/>
 
-				<Dialog open={open} onOpenChange={setOpen}>
-					<DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-						<DialogHeader>
-							<DialogTitle>
-								{editing?.id ? "Edit Scholarship" : "Add Scholarship"}
-							</DialogTitle>
-							<DialogDescription>
-								Details shown on the public scholarship page.
-							</DialogDescription>
-						</DialogHeader>
-						<div className="grid gap-4 py-4">
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>Name (English)</Label>
-									<Input
-										value={editing?.name || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, name: e.target.value }))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Name (Nepali)</Label>
-									<Input
-										value={editing?.nepaliName || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, nepaliName: e.target.value }))
-										}
-									/>
-								</div>
-							</div>
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>Reference</Label>
-									<Input
-										value={editing?.ref || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, ref: e.target.value }))
-										}
-										placeholder="e.g. SCH-01"
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Category</Label>
-									<Select
-										value={editing?.category || "Merit"}
-										onValueChange={(v: string) =>
-											setEditing((p) => ({ ...p, category: v }))
-										}
-									>
-										<SelectTrigger>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent className="bg-popover">
-											{CATEGORIES.map((c) => (
-												<SelectItem key={c} value={c}>
-													{c}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								</div>
-							</div>
-							<div className="grid grid-cols-3 gap-4">
-								<div className="space-y-2">
-									<Label>Coverage (%)</Label>
-									<Input
-										type="number"
-										value={editing?.coverage ?? ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({
-												...p,
-												coverage: Number(e.target.value),
-											}))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Amount (NPR)</Label>
-									<Input
-										type="number"
-										value={editing?.amountNpr ?? ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({
-												...p,
-												amountNpr: Number(e.target.value),
-											}))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Seats</Label>
-									<Input
-										type="number"
-										value={editing?.seats ?? ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({
-												...p,
-												seats: Number(e.target.value),
-											}))
-										}
-									/>
-								</div>
-							</div>
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>Deadline (A.D.)</Label>
-									<Input
-										value={editing?.deadlineAd || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, deadlineAd: e.target.value }))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Deadline (B.S.)</Label>
-									<Input
-										value={editing?.deadlineBs || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, deadlineBs: e.target.value }))
-										}
-									/>
-								</div>
-							</div>
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent className="max-h-[90vh] overflow-y-auto border-hairline bg-popover sm:max-w-2xl">
+					<DialogHeader>
+						<DialogTitle>
+							{editing?.id ? "Edit Scholarship" : "Add Scholarship"}
+						</DialogTitle>
+						<DialogDescription>
+							Details shown on the public scholarship page.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="space-y-3.5">
+						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label>Summary</Label>
-								<Textarea
-									rows={2}
-									value={editing?.summary || ""}
-									onChange={(e: any) =>
-										setEditing((p) => ({ ...p, summary: e.target.value }))
-									}
-								/>
-							</div>
-							<div className="space-y-2">
-								<Label>Benefits (comma-separated)</Label>
+								<Label className="text-xs">Name (English)</Label>
 								<Input
-									value={
-										Array.isArray(editing?.benefits)
-											? editing.benefits.join(", ")
-											: ""
-									}
+									value={editing?.name || ""}
 									onChange={(e: any) =>
-										setEditing((p) => ({
-											...p,
-											benefits: e.target.value
-												.split(",")
-												.map((s: string) => s.trim())
-												.filter(Boolean),
-										}))
+										setEditing((p) => ({ ...p, name: e.target.value }))
 									}
 								/>
 							</div>
-							<div className="flex items-center justify-between rounded-lg border border-hairline p-3">
-								<div>
-									<Label>Spotlight</Label>
-									<p className="text-xs text-muted-foreground">
-										Feature this scholarship prominently.
-									</p>
-								</div>
-								<Switch
-									checked={Boolean(editing?.spotlight)}
-									onCheckedChange={(v: boolean) =>
-										setEditing((p) => ({ ...p, spotlight: v }))
+							<div className="space-y-2">
+								<Label className="text-xs">Name (Nepali)</Label>
+								<Input
+									value={editing?.nepaliName || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, nepaliName: e.target.value }))
 									}
 								/>
 							</div>
 						</div>
-						<DialogFooter>
-							<Button variant="outline" onClick={() => setOpen(false)}>
-								Cancel
-							</Button>
-							<Button
-								onClick={() => saveMutation.mutate(editing)}
-								disabled={
-									saveMutation.isPending || !editing?.name || !editing?.ref
+						<div className="grid grid-cols-2 gap-4">
+							<div className="space-y-2">
+								<Label className="text-xs">Reference</Label>
+								<Input
+									value={editing?.ref || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, ref: e.target.value }))
+									}
+									placeholder="e.g. SCH-01"
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Category</Label>
+								<Select
+									value={editing?.category || "Merit"}
+									onValueChange={(v: string) =>
+										setEditing((p) => ({ ...p, category: v }))
+									}
+								>
+									<SelectTrigger>
+										<SelectValue />
+									</SelectTrigger>
+									<SelectContent className="bg-popover">
+										{CATEGORIES.map((c) => (
+											<SelectItem key={c} value={c}>
+												{c}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
+						</div>
+						<div className="grid grid-cols-3 gap-4">
+							<div className="space-y-2">
+								<Label className="text-xs">Coverage (%)</Label>
+								<Input
+									type="number"
+									value={editing?.coverage ?? ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({
+											...p,
+											coverage: Number(e.target.value),
+										}))
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Amount (NPR)</Label>
+								<Input
+									type="number"
+									value={editing?.amountNpr ?? ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({
+											...p,
+											amountNpr: Number(e.target.value),
+										}))
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Seats</Label>
+								<Input
+									type="number"
+									value={editing?.seats ?? ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({
+											...p,
+											seats: Number(e.target.value),
+										}))
+									}
+								/>
+							</div>
+						</div>
+						<div className="grid grid-cols-2 gap-4">
+							<div className="space-y-2">
+								<Label className="text-xs">Deadline (A.D.)</Label>
+								<Input
+									value={editing?.deadlineAd || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, deadlineAd: e.target.value }))
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Deadline (B.S.)</Label>
+								<Input
+									value={editing?.deadlineBs || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, deadlineBs: e.target.value }))
+									}
+								/>
+							</div>
+						</div>
+						<div className="space-y-2">
+							<Label className="text-xs">Summary</Label>
+							<Textarea
+								rows={2}
+								value={editing?.summary || ""}
+								onChange={(e: any) =>
+									setEditing((p) => ({ ...p, summary: e.target.value }))
 								}
-							>
-								Save Scholarship
-							</Button>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
+							/>
+						</div>
+						<div className="space-y-2">
+							<Label className="text-xs">Benefits (comma-separated)</Label>
+							<Input
+								value={
+									Array.isArray(editing?.benefits)
+										? editing.benefits.join(", ")
+										: ""
+								}
+								onChange={(e: any) =>
+									setEditing((p) => ({
+										...p,
+										benefits: e.target.value
+											.split(",")
+											.map((s: string) => s.trim())
+											.filter(Boolean),
+									}))
+								}
+							/>
+						</div>
+						<div className="flex items-center justify-between rounded-lg border border-hairline p-3">
+							<div>
+								<Label className="text-xs">Spotlight</Label>
+								<p className="text-xs text-muted-foreground">
+									Feature this scholarship prominently.
+								</p>
+							</div>
+							<Switch
+								checked={Boolean(editing?.spotlight)}
+								onCheckedChange={(v: boolean) =>
+									setEditing((p) => ({ ...p, spotlight: v }))
+								}
+							/>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setOpen(false)}>
+							Cancel
+						</Button>
+						<Button
+							onClick={() => saveMutation.mutate(editing)}
+							disabled={
+								saveMutation.isPending || !editing?.name || !editing?.ref
+							}
+						>
+							Save Scholarship
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
-				<ConfirmDialog
-					open={!!pendingDelete}
-					onOpenChange={(op) => !op && setPendingDelete(null)}
-					title="Delete Scholarship"
-					description={`Are you sure you want to delete "${pendingDelete?.name}"?`}
-					destructive
-					onConfirm={() =>
-						pendingDelete && deleteMutation.mutate(pendingDelete.id)
-					}
-					busy={deleteMutation.isPending}
-				/>
-			</div>
-		</main>
+			<ConfirmDialog
+				open={!!pendingDelete}
+				onOpenChange={(op) => !op && setPendingDelete(null)}
+				testId="scholarships-delete-confirm"
+				title="Delete Scholarship"
+				description={`Are you sure you want to delete "${pendingDelete?.name}"?`}
+				destructive
+				onConfirm={() =>
+					pendingDelete && deleteMutation.mutate(pendingDelete.id)
+				}
+				busy={deleteMutation.isPending}
+			/>
+		</div>
 	);
 }

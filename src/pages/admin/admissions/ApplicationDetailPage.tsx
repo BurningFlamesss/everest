@@ -175,6 +175,7 @@ export default function ApplicationDetailPage() {
 	return (
 		<div data-testid="application-detail-page">
 			<PageHeader
+				testId="application-detail-page-header"
 				eyebrow="Admissions"
 				title={application.applicantName}
 				description={`${application.applicationNo} · applied for ${application.gradeApplied} at ${branch?.name ?? "Everest"}`}
@@ -450,7 +451,7 @@ export default function ApplicationDetailPage() {
 												: "Below threshold — consider the waitlist"}
 								</p>
 							</div>
-							<dl className="grid gap-3 grid-cols-2">
+							<dl className="grid grid-cols-2 gap-3">
 								<KeyValue
 									label="Status"
 									value={<StatusBadge value={application.status} />}
@@ -539,7 +540,7 @@ export default function ApplicationDetailPage() {
 
 			<Dialog open={infoOpen} onOpenChange={setInfoOpen}>
 				<DialogContent
-					className="bg-popover sm:max-w-md"
+					className="border-hairline bg-popover sm:max-w-md"
 					data-testid="application-info-dialog"
 				>
 					<DialogHeader>

@@ -56,9 +56,23 @@ export const getClubBoardFn = createServerFn()
 			return { success: false as const, error: "Club not found" };
 		}
 
-		const [roles, posts] = await Promise.all([
+		const [roles, posts, unassignedMembers] = await Promise.all([
 			listClubRoles(club.id),
 			listClubPosts(club.id),
+			prisma.clubMember.findMany({
+				where: { clubId: club.id, roleId: null },
+				select: {
+					student: {
+						select: {
+							id: true,
+							grade: true,
+							section: true,
+							user: { select: { id: true, name: true } },
+						},
+					},
+				},
+				orderBy: { createdAt: "asc" },
+			}),
 		]);
 
 		return {
@@ -78,6 +92,14 @@ export const getClubBoardFn = createServerFn()
 					section: member.student.section,
 					roleId: member.role?.id ?? null,
 				})),
+			})),
+			// Members with no role assigned are kept visible for the admin board
+			// editor; without them the editor would delete them on the next save.
+			unassignedMembers: unassignedMembers.map((member) => ({
+				id: member.student.id,
+				name: member.student.user.name,
+				grade: member.student.grade,
+				section: member.student.section,
 			})),
 			posts,
 		};
@@ -325,9 +347,7 @@ export const saveClubMembersAction = createServerFn()
 
 		for (const member of data.members) {
 			const roleId =
-				member.roleId && validRoleIds.has(member.roleId)
-					? member.roleId
-					: null;
+				member.roleId && validRoleIds.has(member.roleId) ? member.roleId : null;
 			await upsertClubMember(clubId, member.studentId, roleId);
 		}
 

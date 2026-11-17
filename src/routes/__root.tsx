@@ -33,7 +33,7 @@ import globalCss from "../styles.css?url";
 
 function ErrorComponent() {
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-muted p-4">
+		<div className="flex min-h-screen items-center justify-center bg-muted p-4 lg:pl-[var(--nav-w)]">
 			<div className="text-center max-w-md">
 				<h1 className="font-display text-4xl font-bold text-foreground mb-4">
 					Something went wrong
@@ -55,7 +55,7 @@ function ErrorComponent() {
 
 function NotFoundComponent() {
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-background px-4 md:pl-72">
+		<div className="flex min-h-screen items-center justify-center bg-background px-4 lg:pl-[var(--nav-w)]">
 			<div className="text-center">
 				<p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
 					404

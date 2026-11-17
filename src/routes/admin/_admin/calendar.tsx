@@ -1,8 +1,10 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
+	AlertTriangle,
+	CalendarClock,
 	CalendarDays,
 	CalendarRange,
-	Filter,
+	CheckCircle2,
 	Loader2,
 	Plus,
 	Power,
@@ -10,6 +12,15 @@ import {
 	Trash2,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { ConfirmDialog } from "#/components/common/ConfirmDialog";
+import { EmptyState } from "#/components/common/EmptyState";
+import { PageHeader } from "#/components/common/PageHeader";
+import { Panel } from "#/components/common/Panel";
+import { ListSkeleton } from "#/components/common/Skeletons";
+import { StatusBadge } from "#/components/common/StatusBadge";
+import { Button } from "#/components/ui/button";
+import { Label } from "#/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "#/components/ui/tabs";
 import { adToBs, bsToAd } from "#/lib/nepaliDate.ts";
 import { cn } from "#/lib/utils";
 import {
@@ -68,32 +79,19 @@ interface CalendarEventRow {
 }
 
 const EVENT_KINDS = [
-	{
-		id: "holiday",
-		label: "Holiday",
-		color: "bg-red-100 text-red-800 border-red-200",
-	},
-	{
-		id: "festival",
-		label: "Festival",
-		color: "bg-amber-100 text-amber-800 border-amber-200",
-	},
-	{
-		id: "exam",
-		label: "Examination",
-		color: "bg-purple-100 text-purple-800 border-purple-200",
-	},
-	{
-		id: "admission",
-		label: "Admission",
-		color: "bg-blue-100 text-blue-800 border-blue-200",
-	},
-	{
-		id: "event",
-		label: "School Event",
-		color: "bg-emerald-100 text-emerald-800 border-emerald-200",
-	},
-];
+	{ id: "holiday", label: "Holiday" },
+	{ id: "festival", label: "Festival" },
+	{ id: "exam", label: "Examination" },
+	{ id: "admission", label: "Admission" },
+	{ id: "event", label: "School Event" },
+] as const;
+
+function kindLabel(kind?: string | null) {
+	return EVENT_KINDS.find((k) => k.id === kind)?.label ?? kind ?? "Event";
+}
+
+const fieldClasses =
+	"h-9 w-full rounded-md border border-hairline bg-surface-1 px-3 text-sm outline-none transition-colors duration-150 placeholder:text-muted-foreground focus-ring";
 
 function toInput(value: string | Date) {
 	const date = new Date(value);
@@ -107,11 +105,22 @@ function AdminCalendar() {
 	const [events, setEvents] = useState<Array<CalendarEventRow>>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isDeletingEvent, setIsDeletingEvent] = useState(false);
+	const [isSeeding, setIsSeeding] = useState(false);
+	const [isDeletingTerm, setIsDeletingTerm] = useState(false);
 	const [error, setError] = useState("");
 	const [notice, setNotice] = useState("");
 	const [termYearId, setTermYearId] = useState("");
 	const [termVersion, setTermVersion] = useState(0);
 	const [kindFilter, setKindFilter] = useState("all");
+
+	const [pendingEventDelete, setPendingEventDelete] =
+		useState<CalendarEventRow | null>(null);
+	const [pendingSeed, setPendingSeed] = useState(false);
+	const [pendingTermDelete, setPendingTermDelete] = useState<{
+		term: TermRow;
+		yearName: string;
+	} | null>(null);
 
 	// Two-way date syncing for calendar events form
 	const [adStartDate, setAdStartDate] = useState("");
@@ -121,17 +130,25 @@ function AdminCalendar() {
 
 	const load = useCallback(async () => {
 		setIsLoading(true);
-		const response = await getCalendarDataFn();
+		try {
+			const response = await getCalendarDataFn();
 
-		if (!response.success) {
-			setError(response.error);
-		} else {
-			setYears(response.years as Array<YearRow>);
-			setEvents((response.events ?? []) as Array<CalendarEventRow>);
-			setError("");
+			if (!response.success) {
+				setError(response.error);
+			} else {
+				setYears(response.years as Array<YearRow>);
+				setEvents((response.events ?? []) as Array<CalendarEventRow>);
+				setError("");
+			}
+		} catch (loadError) {
+			setError(
+				loadError instanceof Error
+					? loadError.message
+					: "Could not load the calendar.",
+			);
+		} finally {
+			setIsLoading(false);
 		}
-
-		setIsLoading(false);
 	}, []);
 
 	useEffect(() => {
@@ -189,72 +206,97 @@ function AdminCalendar() {
 		const description = String(data.get("description") ?? "").trim();
 		const term = String(data.get("term") ?? "").trim();
 
-		const response = await createCalendarEventAction({
-			data: {
-				title,
-				titleNe: titleNe || undefined,
-				kind,
-				startDate,
-				endDate,
-				startBs: startBs || undefined,
-				endBs: endBs || undefined,
-				description: description || undefined,
-				term: term || undefined,
-			},
-		});
+		try {
+			const response = await createCalendarEventAction({
+				data: {
+					title,
+					titleNe: titleNe || undefined,
+					kind,
+					startDate,
+					endDate,
+					startBs: startBs || undefined,
+					endBs: endBs || undefined,
+					description: description || undefined,
+					term: term || undefined,
+				},
+			});
 
-		setIsSubmitting(false);
+			if (!response.success) {
+				setError(response.error);
+				return;
+			}
 
-		if (!response.success) {
-			setError(response.error);
-			return;
+			form.reset();
+			setAdStartDate("");
+			setAdEndDate("");
+			setBsStartDate("");
+			setBsEndDate("");
+			setEvents(response.events as Array<CalendarEventRow>);
+			setNotice(
+				"Calendar event created. It is now live on the public /calendar page.",
+			);
+		} catch (createError) {
+			setError(
+				createError instanceof Error
+					? createError.message
+					: "Could not create this event.",
+			);
+		} finally {
+			setIsSubmitting(false);
 		}
-
-		form.reset();
-		setAdStartDate("");
-		setAdEndDate("");
-		setBsStartDate("");
-		setBsEndDate("");
-		setEvents(response.events as Array<CalendarEventRow>);
-		setNotice(
-			"Calendar event created. It is now live on the public /calendar page.",
-		);
 	};
 
-	const removeEvent = async (id: string) => {
-		if (!confirm("Are you sure you want to delete this calendar event?"))
-			return;
-
+	const removeEvent = async (row: CalendarEventRow) => {
+		setIsDeletingEvent(true);
 		setError("");
-		const response = await deleteCalendarEventAction({ data: { id } });
+		try {
+			const response = await deleteCalendarEventAction({
+				data: { id: row.id },
+			});
 
-		if (!response.success) {
-			setError(response.error);
-		} else {
-			setEvents(response.events as Array<CalendarEventRow>);
-			setNotice("Calendar event deleted.");
+			if (!response.success) {
+				setError(response.error);
+				setPendingEventDelete(null);
+			} else {
+				setEvents(response.events as Array<CalendarEventRow>);
+				setPendingEventDelete(null);
+				setNotice("Calendar event deleted.");
+			}
+		} catch (deleteError) {
+			setError(
+				deleteError instanceof Error
+					? deleteError.message
+					: "Could not delete this event.",
+			);
+			setPendingEventDelete(null);
+		} finally {
+			setIsDeletingEvent(false);
 		}
 	};
 
 	const seedEvents = async () => {
-		if (
-			!confirm(
-				"Populate standard school calendar events (48 events across all 12 Bikram Sambat months) into the database?",
-			)
-		) {
-			return;
-		}
-
-		setIsSubmitting(true);
+		setIsSeeding(true);
 		setError("");
-		const response = await seedCalendarEventsAction();
-		setIsSubmitting(false);
+		try {
+			const response = await seedCalendarEventsAction();
 
-		if (!response.success) {
-			setError(response.error);
-		} else {
-			setEvents(response.events as Array<CalendarEventRow>);
-			setNotice("Default calendar events loaded successfully.");
+			if (!response.success) {
+				setError(response.error);
+				setPendingSeed(false);
+			} else {
+				setEvents(response.events as Array<CalendarEventRow>);
+				setPendingSeed(false);
+				setNotice("Default calendar events loaded successfully.");
+			}
+		} catch (seedError) {
+			setError(
+				seedError instanceof Error
+					? seedError.message
+					: "Could not load the default events.",
+			);
+			setPendingSeed(false);
+		} finally {
+			setIsSeeding(false);
 		}
 	};
 
@@ -266,35 +308,51 @@ function AdminCalendar() {
 
 		const form = event.currentTarget;
 		const data = new FormData(form);
-		const response = await createAcademicYearAction({
-			data: {
-				name: String(data.get("name") ?? ""),
-				startsOn: String(data.get("startsOn") ?? ""),
-				endsOn: String(data.get("endsOn") ?? ""),
-				isActive: data.get("isActive") === "on",
-			},
-		});
+		try {
+			const response = await createAcademicYearAction({
+				data: {
+					name: String(data.get("name") ?? ""),
+					startsOn: String(data.get("startsOn") ?? ""),
+					endsOn: String(data.get("endsOn") ?? ""),
+					isActive: data.get("isActive") === "on",
+				},
+			});
 
-		setIsSubmitting(false);
+			if (!response.success) {
+				setError(response.error);
+				return;
+			}
 
-		if (!response.success) {
-			setError(response.error);
-			return;
+			form.reset();
+			setYears(response.years as Array<YearRow>);
+			setNotice("Academic year created.");
+		} catch (yearError) {
+			setError(
+				yearError instanceof Error
+					? yearError.message
+					: "Could not create this academic year.",
+			);
+		} finally {
+			setIsSubmitting(false);
 		}
-
-		form.reset();
-		setYears(response.years as Array<YearRow>);
-		setNotice("Academic year created.");
 	};
 
 	const activate = async (id: string) => {
 		setError("");
-		const response = await activateAcademicYearAction({ data: { id } });
+		try {
+			const response = await activateAcademicYearAction({ data: { id } });
 
-		if (!response.success) setError(response.error);
-		else {
-			setYears(response.years as Array<YearRow>);
-			setNotice("Active year updated.");
+			if (!response.success) setError(response.error);
+			else {
+				setYears(response.years as Array<YearRow>);
+				setNotice("Active year updated.");
+			}
+		} catch (activateError) {
+			setError(
+				activateError instanceof Error
+					? activateError.message
+					: "Could not activate this year.",
+			);
 		}
 	};
 
@@ -306,38 +364,59 @@ function AdminCalendar() {
 
 		const form = event.currentTarget;
 		const data = new FormData(form);
-		const response = await createTermAction({
-			data: {
-				academicYearId: termYearId,
-				name: String(data.get("termName") ?? ""),
-				startsOn: String(data.get("termStartsOn") ?? ""),
-				endsOn: String(data.get("termEndsOn") ?? ""),
-			},
-		});
+		try {
+			const response = await createTermAction({
+				data: {
+					academicYearId: termYearId,
+					name: String(data.get("termName") ?? ""),
+					startsOn: String(data.get("termStartsOn") ?? ""),
+					endsOn: String(data.get("termEndsOn") ?? ""),
+				},
+			});
 
-		setIsSubmitting(false);
+			if (!response.success) {
+				setError(response.error);
+				return;
+			}
 
-		if (!response.success) {
-			setError(response.error);
-			return;
+			form.reset();
+			setTermVersion((version) => version + 1);
+			setYears(response.years as Array<YearRow>);
+			setNotice("Term added.");
+		} catch (termError) {
+			setError(
+				termError instanceof Error
+					? termError.message
+					: "Could not add this term.",
+			);
+		} finally {
+			setIsSubmitting(false);
 		}
-
-		form.reset();
-		setTermVersion((version) => version + 1);
-		setYears(response.years as Array<YearRow>);
-		setNotice("Term added.");
 	};
 
 	const removeTerm = async (id: string) => {
-		if (!confirm("Delete this term?")) return;
-
+		setIsDeletingTerm(true);
 		setError("");
-		const response = await deleteTermAction({ data: { id } });
+		try {
+			const response = await deleteTermAction({ data: { id } });
 
-		if (!response.success) setError(response.error);
-		else {
-			setYears(response.years as Array<YearRow>);
-			setNotice("Term deleted.");
+			if (!response.success) {
+				setError(response.error);
+				setPendingTermDelete(null);
+			} else {
+				setYears(response.years as Array<YearRow>);
+				setPendingTermDelete(null);
+				setNotice("Term deleted.");
+			}
+		} catch (deleteError) {
+			setError(
+				deleteError instanceof Error
+					? deleteError.message
+					: "Could not delete this term.",
+			);
+			setPendingTermDelete(null);
+		} finally {
+			setIsDeletingTerm(false);
 		}
 	};
 
@@ -356,108 +435,114 @@ function AdminCalendar() {
 		return events.filter((e) => e.kind === kindFilter);
 	}, [events, kindFilter]);
 
-	return (
-		<div className="space-y-8">
-			{/* Top Header & Navigation Tabs */}
-			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 pb-4">
-				<div>
-					<h1 className="text-3xl font-bold text-gray-900">
-						Calendar & Academic Cycles
-					</h1>
-					<p className="mt-1 text-sm text-gray-500">
-						Manage dates for the public /calendar page, as well as operational
-						academic years and terms.
-					</p>
-				</div>
-				<div className="flex items-center gap-2">
-					<button
-						type="button"
-						onClick={() => setActiveTab("events")}
-						data-testid="tab-calendar-events"
-						className={cn(
-							"flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors",
-							activeTab === "events"
-								? "bg-primary text-primary-foreground shadow-sm"
-								: "bg-gray-100 text-gray-700 hover:bg-gray-200",
-						)}
-					>
-						<CalendarDays className="h-4 w-4" />
-						Public Events ({events.length})
-					</button>
-					<button
-						type="button"
-						onClick={() => setActiveTab("academic")}
-						data-testid="tab-academic-cycles"
-						className={cn(
-							"flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors",
-							activeTab === "academic"
-								? "bg-primary text-primary-foreground shadow-sm"
-								: "bg-gray-100 text-gray-700 hover:bg-gray-200",
-						)}
-					>
-						<CalendarRange className="h-4 w-4" />
-						Years & Terms ({years.length})
-					</button>
-				</div>
-			</div>
+	const eventsEmpty = events.length === 0;
 
-			{/* Feedback banners */}
+	return (
+		<div className="space-y-5" data-testid="calendar-page">
+			<PageHeader
+				eyebrow="Academics"
+				title="Calendar &amp; academic cycles"
+				description="Manage dates for the public /calendar page, as well as operational academic years and terms."
+				meta={
+					<>
+						<span data-testid="calendar-event-count">
+							{events.length} event{events.length === 1 ? "" : "s"}
+						</span>
+						<span data-testid="calendar-year-count">
+							{years.length} academic year{years.length === 1 ? "" : "s"}
+						</span>
+					</>
+				}
+				testId="calendar-page-header"
+			/>
+
+			<Tabs
+				value={activeTab}
+				onValueChange={(value: string) =>
+					setActiveTab(value as "events" | "academic")
+				}
+			>
+				<TabsList className="h-9" data-testid="calendar-tabs">
+					<TabsTrigger value="events" data-testid="tab-calendar-events">
+						<CalendarDays className="mr-1.5 h-3.5 w-3.5" />
+						Public events ({events.length})
+					</TabsTrigger>
+					<TabsTrigger value="academic" data-testid="tab-academic-cycles">
+						<CalendarRange className="mr-1.5 h-3.5 w-3.5" />
+						Years &amp; terms ({years.length})
+					</TabsTrigger>
+				</TabsList>
+			</Tabs>
+
 			{error ? (
-				<div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-					{error}
+				<div
+					className="flex items-start gap-2.5 rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive"
+					data-testid="calendar-error-banner"
+				>
+					<AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+					<p className="min-w-0 break-words">{error}</p>
 				</div>
 			) : null}
 			{notice ? (
-				<div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
-					{notice}
+				<div
+					className="flex items-start gap-2.5 rounded-lg border border-success/20 bg-success/10 p-4 text-sm text-success"
+					data-testid="calendar-notice-banner"
+				>
+					<CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+					<p className="min-w-0 break-words">{notice}</p>
 				</div>
 			) : null}
 
-			{/* TAB 1: CALENDAR EVENTS */}
 			{activeTab === "events" ? (
-				<div className="space-y-8">
-					{/* Add Calendar Event Form */}
-					<section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-						<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-							<Plus className="h-5 w-5 text-primary" /> Add Calendar Event /
-							Date
-						</h2>
+				<div className="space-y-5">
+					<Panel
+						title="Add calendar event"
+						description="Dates publish straight to the public /calendar page."
+						testId="calendar-new-event-panel"
+						bodyClassName="p-5"
+					>
 						<form
 							onSubmit={(event) => void createEvent(event)}
 							className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
 						>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Event Title (English) *
-								</span>
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-event-title" className="text-xs">
+									Event title (English) *
+								</Label>
 								<input
+									id="calendar-event-title"
 									name="title"
 									required
 									placeholder="e.g. Nepali New Year 2083"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-event-title"
 								/>
 							</label>
 
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Title in Nepali (Optional)
-								</span>
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-event-title-ne" className="text-xs">
+									Title in Nepali (optional)
+								</Label>
 								<input
+									id="calendar-event-title-ne"
 									name="titleNe"
 									placeholder="e.g. नयाँ वर्ष २०८३"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-event-title-ne"
 								/>
 							</label>
 
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Event Category / Kind *
-								</span>
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-event-kind" className="text-xs">
+									Event category / kind *
+								</Label>
 								<select
+									id="calendar-event-kind"
 									name="kind"
 									required
 									defaultValue="holiday"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-event-kind"
 								>
 									{EVENT_KINDS.map((k) => (
 										<option key={k.id} value={k.id}>
@@ -467,43 +552,49 @@ function AdminCalendar() {
 								</select>
 							</label>
 
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Start Date (AD) *
-								</span>
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-event-start" className="text-xs">
+									Start date (AD) *
+								</Label>
 								<input
+									id="calendar-event-start"
 									type="date"
 									name="startDate"
 									required
 									value={adStartDate}
 									onChange={(e) => handleAdStartChange(e.target.value)}
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-event-start"
 								/>
 							</label>
 
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Start Date (BS){" "}
-									<span className="text-xs text-gray-400 font-normal">
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-event-start-bs" className="text-xs">
+									Start date (BS){" "}
+									<span className="font-normal text-muted-foreground">
 										(auto-syncs)
 									</span>
-								</span>
+								</Label>
 								<input
+									id="calendar-event-start-bs"
 									name="startBs"
 									placeholder="YYYY-MM-DD (e.g. 2083-01-01)"
 									value={bsStartDate}
 									onChange={(e) => handleBsStartChange(e.target.value)}
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-event-start-bs"
 								/>
 							</label>
 
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Associated Term (Optional)
-								</span>
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-event-term" className="text-xs">
+									Associated term (optional)
+								</Label>
 								<select
+									id="calendar-event-term"
 									name="term"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-event-term"
 								>
 									<option value="">No specific term</option>
 									{allTerms.map((t) => (
@@ -514,161 +605,178 @@ function AdminCalendar() {
 								</select>
 							</label>
 
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									End Date (AD) (Optional range)
-								</span>
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-event-end" className="text-xs">
+									End date (AD) (optional range)
+								</Label>
 								<input
+									id="calendar-event-end"
 									type="date"
 									name="endDate"
 									value={adEndDate}
 									onChange={(e) => handleAdEndChange(e.target.value)}
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-event-end"
 								/>
 							</label>
 
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									End Date (BS){" "}
-									<span className="text-xs text-gray-400 font-normal">
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-event-end-bs" className="text-xs">
+									End date (BS){" "}
+									<span className="font-normal text-muted-foreground">
 										(auto-syncs)
 									</span>
-								</span>
+								</Label>
 								<input
+									id="calendar-event-end-bs"
 									name="endBs"
 									placeholder="YYYY-MM-DD (e.g. 2083-01-05)"
 									value={bsEndDate}
 									onChange={(e) => handleBsEndChange(e.target.value)}
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-event-end-bs"
 								/>
 							</label>
 
-							<label className="text-sm md:col-span-2 lg:col-span-1">
-								<span className="mb-1 block font-medium text-gray-700">
-									Details / Note (Optional)
-								</span>
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-event-note" className="text-xs">
+									Details / note (optional)
+								</Label>
 								<input
+									id="calendar-event-note"
 									name="description"
 									placeholder="e.g. School closed, or 10:00 to 14:00"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-event-note"
 								/>
 							</label>
 
-							<div className="md:col-span-2 lg:col-span-3 pt-2">
-								<button
+							<div className="pt-2 md:col-span-2 lg:col-span-3">
+								<Button
 									type="submit"
+									size="sm"
+									className="gap-1.5"
 									disabled={isSubmitting}
-									className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 shadow-sm"
+									data-testid="calendar-event-submit"
 								>
 									{isSubmitting ? (
-										<Loader2 className="h-4 w-4 animate-spin" />
+										<Loader2 className="h-3.5 w-3.5 animate-spin" />
 									) : (
-										<Plus className="h-4 w-4" />
+										<Plus className="h-3.5 w-3.5" />
 									)}
-									{isSubmitting ? "Saving…" : "Save Event to Calendar"}
-								</button>
+									{isSubmitting ? "Saving…" : "Save event to calendar"}
+								</Button>
 							</div>
 						</form>
-					</section>
+					</Panel>
 
-					{/* Events List & Filter */}
-					<section className="space-y-4">
-						<div className="flex flex-wrap items-center justify-between gap-3">
-							<div className="flex items-center gap-2">
-								<Filter className="h-4 w-4 text-gray-400" />
-								<span className="text-sm font-medium text-gray-700">
-									Filter:
-								</span>
-								<button
+					<Panel
+						title="Calendar events"
+						description="Everything published on the public /calendar page."
+						actions={
+							eventsEmpty ? (
+								<Button
 									type="button"
-									onClick={() => setKindFilter("all")}
-									className={cn(
-										"rounded-md px-2.5 py-1 text-xs font-semibold transition-colors",
-										kindFilter === "all"
-											? "bg-gray-800 text-white"
-											: "bg-gray-100 text-gray-600 hover:bg-gray-200",
+									variant="outline"
+									size="sm"
+									className="gap-1.5"
+									disabled={isSubmitting || isSeeding}
+									onClick={() => setPendingSeed(true)}
+									data-testid="calendar-seed"
+								>
+									{isSeeding ? (
+										<Loader2 className="h-3.5 w-3.5 animate-spin" />
+									) : (
+										<Sparkles className="h-3.5 w-3.5" />
 									)}
-								>
-									All ({events.length})
-								</button>
-								{EVENT_KINDS.map((k) => {
-									const count = events.filter((e) => e.kind === k.id).length;
-									return (
-										<button
-											key={k.id}
-											type="button"
-											onClick={() => setKindFilter(k.id)}
-											className={cn(
-												"rounded-md px-2.5 py-1 text-xs font-semibold transition-colors",
-												kindFilter === k.id
-													? "bg-gray-800 text-white"
-													: "bg-gray-100 text-gray-600 hover:bg-gray-200",
-											)}
-										>
-											{k.label} ({count})
-										</button>
-									);
-								})}
-							</div>
-
-							{events.length === 0 && (
-								<button
-									type="button"
-									onClick={() => void seedEvents()}
-									disabled={isSubmitting}
-									className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors"
-								>
-									<Sparkles className="h-3.5 w-3.5" />
-									Load Standard School Calendar Events
-								</button>
-							)}
+									Load standard events
+								</Button>
+							) : null
+						}
+						testId="calendar-events-panel"
+						bodyClassName="p-0"
+					>
+						<div
+							className="flex flex-wrap items-center gap-1.5 border-b border-hairline px-5 py-3"
+							data-testid="calendar-kind-filter"
+						>
+							<span className="mr-1 text-xs font-medium text-muted-foreground">
+								Filter:
+							</span>
+							{["all", ...EVENT_KINDS.map((k) => k.id)].map((id) => {
+								const count =
+									id === "all"
+										? events.length
+										: events.filter((e) => e.kind === id).length;
+								return (
+									<button
+										key={id}
+										type="button"
+										onClick={() => setKindFilter(id)}
+										className={cn(
+											"rounded-full border px-2.5 py-1 text-xs font-medium transition-colors duration-150",
+											kindFilter === id
+												? "border-primary/40 bg-primary/12 text-primary"
+												: "border-hairline bg-surface-1 text-muted-foreground hover:text-foreground",
+										)}
+										data-testid={`calendar-filter-${id}`}
+									>
+										{id === "all" ? "All" : kindLabel(id)} ({count})
+									</button>
+								);
+							})}
 						</div>
 
 						{isLoading ? (
-							<p className="flex items-center gap-2 text-sm text-gray-500">
-								<Loader2 className="h-4 w-4 animate-spin" /> Loading calendar
-								events…
-							</p>
-						) : filteredEvents.length === 0 ? (
-							<div className="rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-500 space-y-3">
-								<p>
-									{events.length === 0
-										? "No calendar events in the database yet. The public /calendar page is currently rendering default static events."
-										: "No events match this filter."}
-								</p>
-								{events.length === 0 && (
-									<button
-										type="button"
-										onClick={() => void seedEvents()}
-										disabled={isSubmitting}
-										className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-									>
-										<Sparkles className="h-4 w-4" /> Load Default School
-										Calendar Events
-									</button>
-								)}
+							<div className="p-5" data-testid="calendar-events-loading">
+								<ListSkeleton rows={5} />
 							</div>
+						) : filteredEvents.length === 0 ? (
+							<EmptyState
+								icon={CalendarClock}
+								title={
+									eventsEmpty ? "No calendar events" : "No matching events"
+								}
+								description={
+									eventsEmpty
+										? "The public /calendar page is currently rendering default static events."
+										: "No events match this filter."
+								}
+								{...(eventsEmpty
+									? {
+											primaryLabel: "Load standard events",
+											onPrimary: () => setPendingSeed(true),
+										}
+									: {})}
+								testId="calendar-events-empty"
+							/>
 						) : (
-							<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-								<table className="w-full text-left text-sm text-gray-700">
-									<thead className="border-b border-gray-200 bg-gray-50 text-xs uppercase font-semibold text-gray-600">
-										<tr>
-											<th className="px-4 py-3">Event</th>
-											<th className="px-4 py-3">Type</th>
-											<th className="px-4 py-3">Date (Bikram Sambat)</th>
-											<th className="px-4 py-3">Date (AD)</th>
-											<th className="px-4 py-3">Details / Term</th>
-											<th className="px-4 py-3 text-right">Actions</th>
+							<div className="overflow-x-auto">
+								<table className="w-full min-w-[720px] border-collapse text-sm">
+									<thead className="bg-surface-2">
+										<tr className="border-b border-hairline">
+											<th className="px-4 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+												Event
+											</th>
+											<th className="px-4 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+												Type
+											</th>
+											<th className="px-4 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+												Date (Bikram Sambat)
+											</th>
+											<th className="px-4 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+												Date (AD)
+											</th>
+											<th className="px-4 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+												Details / term
+											</th>
+											<th className="px-4 py-2 text-right text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+												Actions
+											</th>
 										</tr>
 									</thead>
-									<tbody className="divide-y divide-gray-100">
+									<tbody className="divide-y divide-hairline">
 										{filteredEvents.map((ev) => {
-											const kindMeta = EVENT_KINDS.find(
-												(k) => k.id === ev.kind,
-											) ?? {
-												label: ev.kind ?? "Event",
-												color: "bg-gray-100 text-gray-800 border-gray-200",
-											};
 											const startBs =
 												ev.startBs || adToBs(toInput(ev.startDate));
 											const endBs =
@@ -679,54 +787,52 @@ function AdminCalendar() {
 											return (
 												<tr
 													key={ev.id}
-													className="hover:bg-gray-50/80 transition-colors"
+													data-testid={`calendar-event-${ev.id}`}
+													className="transition-colors duration-150 hover:bg-surface-2"
 												>
-													<td className="px-4 py-3 font-medium text-gray-900">
+													<td className="px-4 py-2.5 font-medium text-foreground">
 														<div>{ev.title}</div>
 														{ev.titleNe && (
-															<div className="text-xs text-gray-500 font-normal">
+															<div className="text-xs font-normal text-muted-foreground">
 																{ev.titleNe}
 															</div>
 														)}
 													</td>
-													<td className="px-4 py-3">
-														<span
-															className={cn(
-																"inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold",
-																kindMeta.color,
-															)}
-														>
-															{kindMeta.label}
-														</span>
+													<td className="px-4 py-2.5">
+														<StatusBadge
+															value={ev.kind ?? "event"}
+															testId={`calendar-event-kind-${ev.id}`}
+														/>
 													</td>
-													<td className="px-4 py-3 font-mono text-xs">
+													<td className="num px-4 py-2.5 text-xs text-foreground">
 														{startBs}
 														{hasRange ? ` → ${endBs}` : ""}
 													</td>
-													<td className="px-4 py-3 text-xs text-gray-600">
+													<td className="num px-4 py-2.5 text-xs text-muted-foreground">
 														{toInput(ev.startDate)}
 														{toInput(ev.endDate) !== toInput(ev.startDate)
 															? ` → ${toInput(ev.endDate)}`
 															: ""}
 													</td>
-													<td className="px-4 py-3 text-xs text-gray-600">
+													<td className="px-4 py-2.5 text-xs text-muted-foreground">
 														{ev.term && (
-															<span className="mr-2 inline-flex items-center rounded bg-gray-100 px-1.5 py-0.5 font-medium text-gray-700">
+															<span className="mr-2 inline-flex items-center rounded-full bg-muted px-2 py-0.5 font-medium text-muted-foreground">
 																{ev.term}
 															</span>
 														)}
 														{ev.description || "—"}
 													</td>
-													<td className="px-4 py-3 text-right">
-														<button
+													<td className="px-4 py-2.5 text-right">
+														<Button
 															type="button"
-															onClick={() => void removeEvent(ev.id)}
-															className="inline-flex items-center gap-1 rounded p-1 text-xs font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
-															title="Delete event"
+															variant="ghost"
+															size="sm"
+															className="h-7 shrink-0 gap-1 px-2 text-xs text-destructive hover:text-destructive"
+															onClick={() => setPendingEventDelete(ev)}
+															data-testid={`calendar-event-delete-${ev.id}`}
 														>
-															<Trash2 className="h-4 w-4" />
-															<span className="sr-only">Delete</span>
-														</button>
+															<Trash2 className="h-3.5 w-3.5" /> Delete
+														</Button>
 													</td>
 												</tr>
 											);
@@ -735,95 +841,109 @@ function AdminCalendar() {
 								</table>
 							</div>
 						)}
-					</section>
+					</Panel>
 				</div>
 			) : (
-				/* TAB 2: ACADEMIC YEARS & TERMS */
-				<div className="space-y-8">
-					<section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-						<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-							<Plus className="h-5 w-5 text-primary" /> New Academic Year
-						</h2>
+				<div className="space-y-5">
+					<Panel
+						title="New academic year"
+						description="Operational years group terms and timetable slots."
+						testId="calendar-new-year-panel"
+						bodyClassName="p-5"
+					>
 						<form
 							onSubmit={(event) => void createYear(event)}
 							className="grid gap-4 md:grid-cols-2"
 						>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Year Name *
-								</span>
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-year-name" className="text-xs">
+									Year name *
+								</Label>
 								<input
+									id="calendar-year-name"
 									name="name"
 									required
 									placeholder="2026-27"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-year-name"
 								/>
 							</label>
-							<label className="flex items-end gap-2 pb-2.5 text-sm text-gray-700">
+							<label className="flex items-end gap-2 pb-2.5 text-sm text-muted-foreground">
 								<input
 									type="checkbox"
 									name="isActive"
-									className="rounded border-gray-300 text-primary"
-								/>{" "}
+									className="h-4 w-4 rounded border-hairline accent-primary focus-ring"
+									data-testid="calendar-year-active"
+								/>
 								Make this the active year
 							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-year-start" className="text-xs">
 									Starts on *
-								</span>
+								</Label>
 								<input
+									id="calendar-year-start"
 									type="date"
 									name="startsOn"
 									required
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-year-start"
 								/>
 							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-year-end" className="text-xs">
 									Ends on *
-								</span>
+								</Label>
 								<input
+									id="calendar-year-end"
 									type="date"
 									name="endsOn"
 									required
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-year-end"
 								/>
 							</label>
 							<div className="md:col-span-2">
-								<button
+								<Button
 									type="submit"
+									size="sm"
+									className="gap-1.5"
 									disabled={isSubmitting}
-									className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 shadow-sm"
+									data-testid="calendar-year-submit"
 								>
 									{isSubmitting ? (
-										<Loader2 className="h-4 w-4 animate-spin" />
+										<Loader2 className="h-3.5 w-3.5 animate-spin" />
 									) : (
-										<CalendarRange className="h-4 w-4" />
+										<CalendarRange className="h-3.5 w-3.5" />
 									)}
-									{isSubmitting ? "Saving…" : "Create Academic Year"}
-								</button>
+									{isSubmitting ? "Saving…" : "Create academic year"}
+								</Button>
 							</div>
 						</form>
-					</section>
+					</Panel>
 
-					<section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-						<h2 className="mb-4 text-lg font-semibold text-gray-900">
-							Add Term to Academic Year
-						</h2>
+					<Panel
+						title="Add term to academic year"
+						description="Terms drive fees, exams and report cards."
+						testId="calendar-new-term-panel"
+						bodyClassName="p-5"
+					>
 						<form
 							key={`${termYearId}-${termVersion}`}
 							onSubmit={(event) => void createTerm(event)}
 							className="grid gap-4 md:grid-cols-4"
 						>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Academic Year *
-								</span>
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-term-year" className="text-xs">
+									Academic year *
+								</Label>
 								<select
+									id="calendar-term-year"
 									value={termYearId}
 									onChange={(event) => setTermYearId(event.target.value)}
 									required
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-term-year"
 								>
 									<option value="">Select a year…</option>
 									{years.map((year) => (
@@ -833,130 +953,189 @@ function AdminCalendar() {
 									))}
 								</select>
 							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Term Name *
-								</span>
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-term-name" className="text-xs">
+									Term name *
+								</Label>
 								<input
+									id="calendar-term-name"
 									name="termName"
 									required
 									placeholder="e.g. First Term"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-term-name"
 								/>
 							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-term-start" className="text-xs">
 									Starts *
-								</span>
+								</Label>
 								<input
+									id="calendar-term-start"
 									type="date"
 									name="termStartsOn"
 									required
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-term-start"
 								/>
 							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
+							<label className="space-y-1.5">
+								<Label htmlFor="calendar-term-end" className="text-xs">
 									Ends *
-								</span>
+								</Label>
 								<input
+									id="calendar-term-end"
 									type="date"
 									name="termEndsOn"
 									required
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+									className={fieldClasses}
+									data-testid="calendar-term-end"
 								/>
 							</label>
 							<div className="md:col-span-4">
-								<button
+								<Button
 									type="submit"
+									size="sm"
 									disabled={isSubmitting || !termYearId}
-									className="rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 shadow-sm"
+									data-testid="calendar-term-submit"
 								>
-									Add Term
-								</button>
+									Add term
+								</Button>
 							</div>
 						</form>
-					</section>
+					</Panel>
 
-					<section className="space-y-4">
-						{isLoading ? (
-							<p className="flex items-center gap-2 text-sm text-gray-500">
-								<Loader2 className="h-4 w-4 animate-spin" /> Loading academic
-								years…
-							</p>
-						) : years.length === 0 ? (
-							<p className="rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-500">
-								No academic years yet. Create one above.
-							</p>
-						) : (
-							years.map((year) => (
-								<article
+					{isLoading ? (
+						<div className="panel p-5" data-testid="calendar-years-loading">
+							<ListSkeleton rows={4} />
+						</div>
+					) : years.length === 0 ? (
+						<div className="panel">
+							<EmptyState
+								icon={CalendarRange}
+								title="No academic years"
+								description="No academic years yet. Create one above."
+								testId="calendar-years-empty"
+							/>
+						</div>
+					) : (
+						<div className="space-y-4">
+							{years.map((year) => (
+								<Panel
 									key={year.id}
-									className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-								>
-									<header className="flex flex-wrap items-center justify-between gap-3">
-										<div>
-											<h2 className="text-lg font-semibold text-gray-900">
-												{year.name}
-												{year.isActive ? (
-													<span className="ml-2 rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700">
-														Active
-													</span>
-												) : null}
-											</h2>
-											<p className="text-xs text-gray-500">
-												{toInput(year.startsOn)} → {toInput(year.endsOn)} ·{" "}
-												{year._count.timetableSlots} timetable slot
-												{year._count.timetableSlots === 1 ? "" : "s"}
-											</p>
+									title={year.name}
+									description={`${toInput(year.startsOn)} → ${toInput(year.endsOn)} · ${year._count.timetableSlots} timetable slot${year._count.timetableSlots === 1 ? "" : "s"}`}
+									actions={
+										<div className="flex items-center gap-2">
+											{year.isActive ? (
+												<StatusBadge
+													value="active"
+													testId={`calendar-year-status-${year.id}`}
+												/>
+											) : (
+												<Button
+													type="button"
+													variant="outline"
+													size="sm"
+													className="h-7 gap-1 px-2 text-xs"
+													onClick={() => void activate(year.id)}
+													data-testid={`calendar-year-activate-${year.id}`}
+												>
+													<Power className="h-3.5 w-3.5" /> Make active
+												</Button>
+											)}
 										</div>
-										{!year.isActive ? (
-											<button
-												type="button"
-												onClick={() => void activate(year.id)}
-												className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
-											>
-												<Power className="h-3.5 w-3.5" /> Make active
-											</button>
-										) : null}
-									</header>
-
+									}
+									testId={`calendar-year-${year.id}`}
+									bodyClassName="p-0"
+								>
 									{year.terms.length === 0 ? (
-										<p className="mt-3 text-sm text-gray-500">
+										<p
+											className="px-5 py-4 text-sm text-muted-foreground"
+											data-testid={`calendar-year-terms-empty-${year.id}`}
+										>
 											No terms yet for this year.
 										</p>
 									) : (
-										<ul className="mt-4 divide-y divide-gray-100">
+										<ul className="divide-y divide-hairline/60">
 											{year.terms.map((term) => (
 												<li
 													key={term.id}
-													className="flex flex-wrap items-center justify-between gap-3 py-2"
+													data-testid={`calendar-term-${term.id}`}
+													className="flex flex-wrap items-center justify-between gap-3 px-5 py-3"
 												>
-													<div>
-														<p className="text-sm font-medium text-gray-900">
+													<div className="min-w-0">
+														<p className="text-sm font-medium text-foreground">
 															{term.name}
 														</p>
-														<p className="text-xs text-gray-500">
+														<p className="num mt-0.5 text-xs text-muted-foreground">
 															{toInput(term.startsOn)} → {toInput(term.endsOn)}
 														</p>
 													</div>
-													<button
+													<Button
 														type="button"
-														onClick={() => void removeTerm(term.id)}
-														className="inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-700"
+														variant="ghost"
+														size="sm"
+														className="h-7 shrink-0 gap-1 px-2 text-xs text-destructive hover:text-destructive"
+														onClick={() =>
+															setPendingTermDelete({
+																term,
+																yearName: year.name,
+															})
+														}
+														data-testid={`calendar-term-delete-${term.id}`}
 													>
 														<Trash2 className="h-3.5 w-3.5" /> Delete
-													</button>
+													</Button>
 												</li>
 											))}
 										</ul>
 									)}
-								</article>
-							))
-						)}
-					</section>
+								</Panel>
+							))}
+						</div>
+					)}
 				</div>
 			)}
+
+			<ConfirmDialog
+				open={!!pendingEventDelete}
+				onOpenChange={(open) => !open && setPendingEventDelete(null)}
+				testId="calendar-event-delete-confirm"
+				title="Delete this calendar event?"
+				description={`Delete "${pendingEventDelete?.title ?? ""}"? It disappears from the public /calendar page immediately.`}
+				confirmLabel="Delete event"
+				destructive
+				busy={isDeletingEvent}
+				onConfirm={() =>
+					pendingEventDelete && void removeEvent(pendingEventDelete)
+				}
+			/>
+
+			<ConfirmDialog
+				open={pendingSeed}
+				onOpenChange={(open) => !open && setPendingSeed(false)}
+				testId="calendar-seed-confirm"
+				title="Load standard school calendar events?"
+				description="This populates 48 standard events across all 12 Bikram Sambat months into the database."
+				confirmLabel="Load events"
+				busy={isSeeding}
+				onConfirm={() => void seedEvents()}
+			/>
+
+			<ConfirmDialog
+				open={!!pendingTermDelete}
+				onOpenChange={(open) => !open && setPendingTermDelete(null)}
+				testId="calendar-term-delete-confirm"
+				title="Delete this term?"
+				description={`Delete ${pendingTermDelete?.term.name ?? "this term"} from ${pendingTermDelete?.yearName ?? "this year"}?`}
+				confirmLabel="Delete term"
+				destructive
+				busy={isDeletingTerm}
+				onConfirm={() =>
+					pendingTermDelete && void removeTerm(pendingTermDelete.term.id)
+				}
+			/>
 		</div>
 	);
 }

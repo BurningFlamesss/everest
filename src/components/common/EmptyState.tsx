@@ -10,6 +10,8 @@ interface EmptyStateProps {
 	onPrimary?: () => void;
 	secondaryLabel?: string;
 	onSecondary?: () => void;
+	actionLabel?: string;
+	onAction?: () => void;
 	testId?: string;
 	compact?: boolean;
 }
@@ -22,6 +24,8 @@ export function EmptyState({
 	onPrimary,
 	secondaryLabel,
 	onSecondary,
+	actionLabel,
+	onAction,
 	testId = "empty-state",
 	compact = false,
 }: EmptyStateProps) {
@@ -39,7 +43,7 @@ export function EmptyState({
 			<p className="mt-1.5 max-w-sm text-sm leading-relaxed text-muted-foreground">
 				{description}
 			</p>
-			{(primaryLabel || secondaryLabel) && (
+			{(primaryLabel || secondaryLabel || actionLabel) && (
 				<div className="mt-4 flex flex-wrap items-center justify-center gap-2">
 					{primaryLabel && (
 						<Button
@@ -58,6 +62,16 @@ export function EmptyState({
 							data-testid={`${testId}-secondary`}
 						>
 							{secondaryLabel}
+						</Button>
+					)}
+					{actionLabel && onAction && (
+						<Button
+							size="sm"
+							variant="outline"
+							onClick={onAction}
+							data-testid={`${testId}-action`}
+						>
+							{actionLabel}
 						</Button>
 					)}
 				</div>

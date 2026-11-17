@@ -107,19 +107,19 @@ export function RecordPaymentDialog({
 				{invoice && (
 					<div className="space-y-3.5">
 						<div className="grid grid-cols-3 gap-2">
-							<div className="rounded-lg border border-hairline bg-surface-2 px-2.5 py-2">
+							<div className="rounded-lg border border-hairline bg-surface-2 px-3 py-2.5">
 								<p className="text-[11px] text-muted-foreground">Invoiced</p>
 								<p className="num text-sm font-semibold text-foreground">
 									{formatCurrency(invoice.amount)}
 								</p>
 							</div>
-							<div className="rounded-lg border border-hairline bg-surface-2 px-2.5 py-2">
+							<div className="rounded-lg border border-hairline bg-surface-2 px-3 py-2.5">
 								<p className="text-[11px] text-muted-foreground">Paid</p>
 								<p className="num text-sm font-semibold text-success">
 									{formatCurrency(invoice.amountPaid)}
 								</p>
 							</div>
-							<div className="rounded-lg border border-hairline bg-surface-2 px-2.5 py-2">
+							<div className="rounded-lg border border-hairline bg-surface-2 px-3 py-2.5">
 								<p className="text-[11px] text-muted-foreground">Balance</p>
 								<p
 									className="num text-sm font-semibold text-destructive"

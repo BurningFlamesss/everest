@@ -745,7 +745,10 @@ export async function resendInviteEmail(input: {
 		});
 
 		if (!invite) {
-			throw new InviteError("Invitation not found", ERROR_CODES.INVITE_NOT_FOUND);
+			throw new InviteError(
+				"Invitation not found",
+				ERROR_CODES.INVITE_NOT_FOUND,
+			);
 		}
 		if (invite.usedAt) {
 			throw new InviteError(

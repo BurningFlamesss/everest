@@ -134,7 +134,7 @@ Work top-to-bottom inside each milestone; milestones are ordered by real-school 
 - AC: audience-scoped tests pass for each value.
 
 **T-19 ☑ Dashboard upgrades**
-- Files: `src/routes/dashboard.tsx`, `src/packages/admin/server.ts`
+- Files: `src/routes/_portal/dashboard.tsx`, `src/packages/admin/server.ts`
 - Role cards: STUDENT (attendance %, next exam, dues), GUARDIAN (per-child digest), STAFF (today's classes + pending attendance), ADMIN (pending invites, dues, upcoming events).
 - AC: data served via loaders; no admin-only content reaching student guard views.
 

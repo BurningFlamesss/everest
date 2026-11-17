@@ -3,6 +3,7 @@ import { useNavigate, useSearch } from "@tanstack/react-router";
 import { FilePlus2, Wallet } from "lucide-react";
 import { useState } from "react";
 import { PageHeader } from "#/components/common/PageHeader";
+import { MetricsSkeleton } from "#/components/common/Skeletons";
 import { FeeStructuresPanel } from "#/components/payments/FeeStructuresPanel";
 import { InvoiceFormDialog } from "#/components/payments/InvoiceFormDialog";
 import { InvoicesTable } from "#/components/payments/InvoicesTable";
@@ -123,6 +124,7 @@ export default function PaymentsPage() {
 	return (
 		<div data-testid="payments-page">
 			<PageHeader
+				testId="payments-page-header"
 				eyebrow="Operations"
 				title="Payments"
 				description="Issue invoices, record receipts and keep collections on track across every grade and term."
@@ -154,53 +156,51 @@ export default function PaymentsPage() {
 				}
 			/>
 
-			<div
-				className="mb-5 grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-8"
-				data-testid="payments-kpis"
-			>
-				{kpis.map((kpi) => (
-					<button
-						key={kpi.key}
-						type="button"
-						data-testid={`payments-kpi-${kpi.key}`}
-						onClick={() => {
-							navigate({
-								to: "/admin/payments",
-								search: (prev) => ({
-									...prev,
-									tab: "invoices",
-									...(kpi.status === "all" ? {} : { status: kpi.status }),
-								}),
-								replace: true,
-							});
-						}}
-						className={cn(
-							"rounded-lg border bg-surface-1 px-3 py-2.5 text-left transition-colors duration-150 focus-ring",
-							tab === "invoices" && status !== "all" && status === kpi.status
-								? "border-primary/50 bg-primary/[0.06]"
-								: "border-hairline hover:border-primary/35 hover:bg-surface-2",
-						)}
-					>
-						<p className="truncate text-[11px] font-medium text-muted-foreground">
-							{kpi.label}
-						</p>
-						<p
-							className={cn(
-								"num mt-1 font-display text-lg font-semibold leading-none",
-								kpi.tone,
-							)}
-						>
-							{kpi.value}
-						</p>
-					</button>
-				))}
-				{kpis.length === 0 &&
-					Array.from({ length: 8 }).map((_, index) => (
-						<div
-							key={index}
-							className="h-[62px] animate-pulse rounded-lg border border-hairline bg-surface-2"
-						/>
-					))}
+			<div className="mb-5" data-testid="payments-kpis">
+				{summary ? (
+					<div className="grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-8">
+						{kpis.map((kpi) => (
+							<button
+								key={kpi.key}
+								type="button"
+								data-testid={`payments-kpi-${kpi.key}`}
+								onClick={() => {
+									navigate({
+										to: "/admin/payments",
+										search: (prev) => ({
+											...prev,
+											tab: "invoices",
+											...(kpi.status === "all" ? {} : { status: kpi.status }),
+										}),
+										replace: true,
+									});
+								}}
+								className={cn(
+									"rounded-lg border bg-surface-1 px-3 py-2.5 text-left transition-colors duration-150 focus-ring",
+									tab === "invoices" &&
+										status !== "all" &&
+										status === kpi.status
+										? "border-primary/50 bg-primary/[0.06]"
+										: "border-hairline hover:border-primary/35 hover:bg-surface-2",
+								)}
+							>
+								<p className="truncate text-[11px] font-medium text-muted-foreground">
+									{kpi.label}
+								</p>
+								<p
+									className={cn(
+										"num mt-1 font-display text-lg font-semibold leading-none",
+										kpi.tone,
+									)}
+								>
+									{kpi.value}
+								</p>
+							</button>
+						))}
+					</div>
+				) : (
+					<MetricsSkeleton count={8} />
+				)}
 			</div>
 
 			<Tabs

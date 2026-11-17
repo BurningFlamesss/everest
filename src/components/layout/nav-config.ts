@@ -16,6 +16,7 @@ import {
 	ShieldCheck,
 	UserCheck,
 	Users,
+	UsersRound,
 } from "lucide-react";
 import type { Permission } from "@/lib/permissions";
 
@@ -218,6 +219,12 @@ export const NAV_GROUPS: NavGroup[] = [
 				icon: Library,
 				permission: "website.view",
 			},
+			{
+				label: "Clubs",
+				to: "/admin/clubs",
+				icon: UsersRound,
+				permission: "website.view",
+			},
 		],
 	},
 	{
@@ -264,6 +271,7 @@ export const ROUTE_TITLES: Record<string, string> = {
 	faculty: "Faculty Directory",
 	facilities: "Facilities",
 	resources: "Resources",
+	clubs: "Clubs",
 	activity: "Activity",
 	settings: "Settings",
 };

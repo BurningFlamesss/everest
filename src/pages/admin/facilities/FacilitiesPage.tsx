@@ -125,179 +125,177 @@ export default function FacilitiesPage() {
 	];
 
 	return (
-		<main className="flex-1 overflow-y-auto bg-surface-base px-6 py-8">
-			<div className="mx-auto max-w-5xl space-y-6">
-				<PageHeader
-					eyebrow="Website"
-					title="Facilities"
-					description="Campus facilities shown on the public facilities page."
-					actions={
-						canManage ? (
-							<Button
-								data-testid="facility-add"
-								onClick={() => {
-									setEditing({ category: "Campus" });
-									setOpen(true);
-								}}
-							>
-								<Plus className="mr-2 h-4 w-4" /> Add Facility
-							</Button>
-						) : null
-					}
-				/>
+		<div data-testid="facilities-page">
+			<PageHeader
+				eyebrow="Website"
+				title="Facilities"
+				description="Campus facilities shown on the public facilities page."
+				actions={
+					canManage ? (
+						<Button
+							size="sm"
+							className="gap-1.5"
+							data-testid="facility-add"
+							onClick={() => {
+								setEditing({ category: "Campus" });
+								setOpen(true);
+							}}
+						>
+							<Plus className="h-3.5 w-3.5" /> Add Facility
+						</Button>
+					) : null
+				}
+			/>
 
-				{facilities.length > 0 ? (
-					<DataTable
-						columns={columns}
-						rows={facilities as Facility[]}
-						rowId={(r) => r.id}
-						testId="facilities-table"
+			<DataTable
+				columns={columns}
+				rows={facilities as Facility[]}
+				rowId={(r) => r.id}
+				testId="facilities-table"
+				loading={isLoading}
+				empty={
+					<EmptyState
+						icon={Building2}
+						title="No facilities yet"
+						description="Add your first campus facility to show it on the public page."
+						primaryLabel={canManage ? "Add facility" : undefined}
+						onPrimary={
+							canManage
+								? () => {
+										setEditing({ category: "Campus" });
+										setOpen(true);
+									}
+								: undefined
+						}
+						testId="facilities-empty"
 					/>
-				) : (
-					!isLoading && (
-						<EmptyState
-							icon={Building2}
-							title="No facilities yet"
-							description="Add your first campus facility to show it on the public page."
-							primaryLabel={canManage ? "Add facility" : undefined}
-							onPrimary={
-								canManage
-									? () => {
-											setEditing({ category: "Campus" });
-											setOpen(true);
-										}
-									: undefined
-							}
-							testId="facilities-empty"
-						/>
-					)
-				)}
+				}
+			/>
 
-				<Dialog open={open} onOpenChange={setOpen}>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle>
-								{editing?.id ? "Edit Facility" : "Add Facility"}
-							</DialogTitle>
-							<DialogDescription>
-								Name, category and a short description shown on the public page.
-							</DialogDescription>
-						</DialogHeader>
-						<div className="grid gap-4 py-4">
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>Name</Label>
-									<Input
-										value={editing?.name || ""}
-										data-testid="facility-form-name"
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, name: e.target.value }))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Category</Label>
-									<Input
-										value={editing?.category || ""}
-										placeholder="e.g. Campus, Lab, Sports"
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, category: e.target.value }))
-										}
-									/>
-								</div>
-							</div>
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent className="border-hairline bg-popover sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle>
+							{editing?.id ? "Edit Facility" : "Add Facility"}
+						</DialogTitle>
+						<DialogDescription>
+							Name, category and a short description shown on the public page.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="space-y-3.5">
+						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label>Short blurb</Label>
+								<Label className="text-xs">Name</Label>
 								<Input
-									value={editing?.blurb || ""}
+									value={editing?.name || ""}
+									data-testid="facility-form-name"
 									onChange={(e: any) =>
-										setEditing((p) => ({ ...p, blurb: e.target.value }))
+										setEditing((p) => ({ ...p, name: e.target.value }))
 									}
 								/>
 							</div>
 							<div className="space-y-2">
-								<Label>Description</Label>
-								<Textarea
-									rows={3}
-									value={editing?.description || ""}
+								<Label className="text-xs">Category</Label>
+								<Input
+									value={editing?.category || ""}
+									placeholder="e.g. Campus, Lab, Sports"
 									onChange={(e: any) =>
-										setEditing((p) => ({ ...p, description: e.target.value }))
+										setEditing((p) => ({ ...p, category: e.target.value }))
 									}
 								/>
-							</div>
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>Block / location</Label>
-									<Input
-										value={editing?.block || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, block: e.target.value }))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Hours</Label>
-									<Input
-										value={editing?.hours || ""}
-										placeholder="e.g. 08:00–17:00"
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, hours: e.target.value }))
-										}
-									/>
-								</div>
-							</div>
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>In charge</Label>
-									<Input
-										value={editing?.inCharge || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, inCharge: e.target.value }))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Image URL</Label>
-									<Input
-										value={editing?.image || ""}
-										placeholder="/images/…"
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, image: e.target.value }))
-										}
-									/>
-								</div>
 							</div>
 						</div>
-						<DialogFooter>
-							<Button variant="outline" onClick={() => setOpen(false)}>
-								Cancel
-							</Button>
-							<Button
-								data-testid="facility-form-save"
-								onClick={() => saveMutation.mutate(editing)}
-								disabled={
-									saveMutation.isPending || !editing?.name || !editing?.category
+						<div className="space-y-2">
+							<Label className="text-xs">Short blurb</Label>
+							<Input
+								value={editing?.blurb || ""}
+								onChange={(e: any) =>
+									setEditing((p) => ({ ...p, blurb: e.target.value }))
 								}
-							>
-								{saveMutation.isPending ? "Saving…" : "Save Facility"}
-							</Button>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
+							/>
+						</div>
+						<div className="space-y-2">
+							<Label className="text-xs">Description</Label>
+							<Textarea
+								rows={3}
+								value={editing?.description || ""}
+								onChange={(e: any) =>
+									setEditing((p) => ({ ...p, description: e.target.value }))
+								}
+							/>
+						</div>
+						<div className="grid grid-cols-2 gap-4">
+							<div className="space-y-2">
+								<Label className="text-xs">Block / location</Label>
+								<Input
+									value={editing?.block || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, block: e.target.value }))
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Hours</Label>
+								<Input
+									value={editing?.hours || ""}
+									placeholder="e.g. 08:00–17:00"
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, hours: e.target.value }))
+									}
+								/>
+							</div>
+						</div>
+						<div className="grid grid-cols-2 gap-4">
+							<div className="space-y-2">
+								<Label className="text-xs">In charge</Label>
+								<Input
+									value={editing?.inCharge || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, inCharge: e.target.value }))
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Image URL</Label>
+								<Input
+									value={editing?.image || ""}
+									placeholder="/images/…"
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, image: e.target.value }))
+									}
+								/>
+							</div>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setOpen(false)}>
+							Cancel
+						</Button>
+						<Button
+							data-testid="facility-form-save"
+							onClick={() => saveMutation.mutate(editing)}
+							disabled={
+								saveMutation.isPending || !editing?.name || !editing?.category
+							}
+						>
+							{saveMutation.isPending ? "Saving…" : "Save Facility"}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
-				<ConfirmDialog
-					open={!!pendingDelete}
-					onOpenChange={(op) => !op && setPendingDelete(null)}
-					title="Delete Facility"
-					description={`Are you sure you want to delete "${pendingDelete?.name}"?`}
-					destructive
-					onConfirm={() =>
-						pendingDelete && deleteMutation.mutate(pendingDelete.id)
-					}
-					busy={deleteMutation.isPending}
-					testId="facility-delete-dialog"
-				/>
-			</div>
-		</main>
+			<ConfirmDialog
+				open={!!pendingDelete}
+				onOpenChange={(op) => !op && setPendingDelete(null)}
+				title="Delete Facility"
+				description={`Are you sure you want to delete "${pendingDelete?.name}"?`}
+				destructive
+				onConfirm={() =>
+					pendingDelete && deleteMutation.mutate(pendingDelete.id)
+				}
+				busy={deleteMutation.isPending}
+				testId="facility-delete-dialog"
+			/>
+		</div>
 	);
 }

@@ -99,7 +99,7 @@ export default function FacultyAdminPage() {
 				<div className="flex items-center gap-2">
 					<span className="font-medium">{row.name}</span>
 					{row.leadership && (
-						<Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+						<Star className="h-3.5 w-3.5 fill-warning text-warning" />
 					)}
 				</div>
 			),
@@ -126,6 +126,8 @@ export default function FacultyAdminPage() {
 						variant="ghost"
 						size="icon"
 						className="h-8 w-8"
+						aria-label={`Edit ${row.name}`}
+						data-testid={`faculty-edit-${row.id}`}
 						onClick={() => {
 							setEditing(row);
 							setOpen(true);
@@ -137,6 +139,8 @@ export default function FacultyAdminPage() {
 						variant="ghost"
 						size="icon"
 						className="h-8 w-8 text-destructive"
+						aria-label={`Delete ${row.name}`}
+						data-testid={`faculty-delete-${row.id}`}
 						onClick={() => setPendingDelete(row)}
 					>
 						<Trash2 className="h-4 w-4" />
@@ -147,227 +151,226 @@ export default function FacultyAdminPage() {
 	];
 
 	return (
-		<main className="flex-1 overflow-y-auto bg-surface-base px-6 py-8">
-			<div className="mx-auto max-w-6xl space-y-6">
-				<PageHeader
-					eyebrow="Website"
-					title="Faculty Directory"
-					description="Teachers and leadership shown on the public faculty page."
-					actions={
-						<Button
-							onClick={() => {
-								setEditing({ subjects: [], leadership: false });
-								setOpen(true);
-							}}
-						>
-							<Plus className="mr-2 h-4 w-4" /> Add Member
-						</Button>
-					}
-				/>
+		<div data-testid="faculty-page">
+			<PageHeader
+				eyebrow="Website"
+				title="Faculty Directory"
+				description="Teachers and leadership shown on the public faculty page."
+				actions={
+					<Button
+						size="sm"
+						className="gap-1.5"
+						onClick={() => {
+							setEditing({ subjects: [], leadership: false });
+							setOpen(true);
+						}}
+					>
+						<Plus className="h-3.5 w-3.5" /> Add Member
+					</Button>
+				}
+			/>
 
-				{members.length > 0 ? (
-					<DataTable
-						columns={columns}
-						rows={members as FacultyRow[]}
-						rowId={(r) => r.id}
-						testId="faculty-table"
+			<DataTable
+				columns={columns}
+				rows={members as FacultyRow[]}
+				rowId={(r) => r.id}
+				testId="faculty-table"
+				loading={isLoading}
+				empty={
+					<EmptyState
+						icon={Users}
+						title="No faculty members yet"
+						description="Add your first faculty member to populate the public directory."
+						primaryLabel="Add member"
+						onPrimary={() => {
+							setEditing({ subjects: [], leadership: false });
+							setOpen(true);
+						}}
 					/>
-				) : (
-					!isLoading && (
-						<EmptyState
-							icon={Users}
-							title="No faculty members yet"
-							description="Add your first faculty member to populate the public directory."
-							primaryLabel="Add member"
-							onPrimary={() => {
-								setEditing({ subjects: [], leadership: false });
-								setOpen(true);
-							}}
-						/>
-					)
-				)}
+				}
+			/>
 
-				<Dialog open={open} onOpenChange={setOpen}>
-					<DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-						<DialogHeader>
-							<DialogTitle>
-								{editing?.id ? "Edit Member" : "Add Member"}
-							</DialogTitle>
-							<DialogDescription>
-								Details shown on the public faculty directory.
-							</DialogDescription>
-						</DialogHeader>
-						<div className="grid gap-4 py-4">
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>Full name</Label>
-									<Input
-										value={editing?.name || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({
-												...p,
-												name: e.target.value,
-												slug: p?.id ? p.slug : slugify(e.target.value),
-											}))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Slug</Label>
-									<Input
-										value={editing?.slug || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({
-												...p,
-												slug: slugify(e.target.value),
-											}))
-										}
-										placeholder="auto-generated"
-									/>
-								</div>
-							</div>
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>Role</Label>
-									<Input
-										value={editing?.role || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, role: e.target.value }))
-										}
-										placeholder="e.g. Principal, Science Teacher"
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Department</Label>
-									<Input
-										value={editing?.department || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, department: e.target.value }))
-										}
-										placeholder="e.g. Science"
-									/>
-								</div>
-							</div>
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>Qualification</Label>
-									<Input
-										value={editing?.qualification || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({
-												...p,
-												qualification: e.target.value,
-											}))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Experience</Label>
-									<Input
-										value={editing?.experience || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, experience: e.target.value }))
-										}
-										placeholder="e.g. 12 years"
-									/>
-								</div>
-							</div>
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent className="max-h-[90vh] overflow-y-auto border-hairline bg-popover sm:max-w-2xl">
+					<DialogHeader>
+						<DialogTitle>
+							{editing?.id ? "Edit Member" : "Add Member"}
+						</DialogTitle>
+						<DialogDescription>
+							Details shown on the public faculty directory.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="space-y-3.5">
+						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label>Subjects (comma-separated)</Label>
+								<Label className="text-xs">Full name</Label>
 								<Input
-									value={
-										Array.isArray(editing?.subjects)
-											? editing.subjects.join(", ")
-											: ""
-									}
+									value={editing?.name || ""}
 									onChange={(e: any) =>
 										setEditing((p) => ({
 											...p,
-											subjects: e.target.value
-												.split(",")
-												.map((s: string) => s.trim())
-												.filter(Boolean),
+											name: e.target.value,
+											slug: p?.id ? p.slug : slugify(e.target.value),
 										}))
 									}
 								/>
 							</div>
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>Email</Label>
-									<Input
-										value={editing?.email || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, email: e.target.value }))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Office hours</Label>
-									<Input
-										value={editing?.officeHours || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, officeHours: e.target.value }))
-										}
-									/>
-								</div>
-							</div>
 							<div className="space-y-2">
-								<Label>Bio</Label>
-								<Textarea
-									value={editing?.bio || ""}
+								<Label className="text-xs">Slug</Label>
+								<Input
+									value={editing?.slug || ""}
 									onChange={(e: any) =>
-										setEditing((p) => ({ ...p, bio: e.target.value }))
+										setEditing((p) => ({
+											...p,
+											slug: slugify(e.target.value),
+										}))
 									}
-									rows={3}
+									placeholder="auto-generated"
 								/>
 							</div>
-							<div className="flex items-center justify-between rounded-lg border border-hairline p-3">
-								<div>
-									<Label>Leadership</Label>
-									<p className="text-xs text-muted-foreground">
-										Show this member in the leadership section.
-									</p>
-								</div>
-								<Switch
-									checked={Boolean(editing?.leadership)}
-									onCheckedChange={(v: boolean) =>
-										setEditing((p) => ({ ...p, leadership: v }))
+						</div>
+						<div className="grid grid-cols-2 gap-4">
+							<div className="space-y-2">
+								<Label className="text-xs">Role</Label>
+								<Input
+									value={editing?.role || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, role: e.target.value }))
+									}
+									placeholder="e.g. Principal, Science Teacher"
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Department</Label>
+								<Input
+									value={editing?.department || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, department: e.target.value }))
+									}
+									placeholder="e.g. Science"
+								/>
+							</div>
+						</div>
+						<div className="grid grid-cols-2 gap-4">
+							<div className="space-y-2">
+								<Label className="text-xs">Qualification</Label>
+								<Input
+									value={editing?.qualification || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({
+											...p,
+											qualification: e.target.value,
+										}))
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Experience</Label>
+								<Input
+									value={editing?.experience || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, experience: e.target.value }))
+									}
+									placeholder="e.g. 12 years"
+								/>
+							</div>
+						</div>
+						<div className="space-y-2">
+							<Label className="text-xs">Subjects (comma-separated)</Label>
+							<Input
+								value={
+									Array.isArray(editing?.subjects)
+										? editing.subjects.join(", ")
+										: ""
+								}
+								onChange={(e: any) =>
+									setEditing((p) => ({
+										...p,
+										subjects: e.target.value
+											.split(",")
+											.map((s: string) => s.trim())
+											.filter(Boolean),
+									}))
+								}
+							/>
+						</div>
+						<div className="grid grid-cols-2 gap-4">
+							<div className="space-y-2">
+								<Label className="text-xs">Email</Label>
+								<Input
+									value={editing?.email || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, email: e.target.value }))
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Office hours</Label>
+								<Input
+									value={editing?.officeHours || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, officeHours: e.target.value }))
 									}
 								/>
 							</div>
 						</div>
-						<DialogFooter>
-							<Button variant="outline" onClick={() => setOpen(false)}>
-								Cancel
-							</Button>
-							<Button
-								onClick={() => saveMutation.mutate(editing)}
-								disabled={
-									saveMutation.isPending ||
-									!editing?.name ||
-									!editing?.slug ||
-									!editing?.role ||
-									!editing?.department
+						<div className="space-y-2">
+							<Label className="text-xs">Bio</Label>
+							<Textarea
+								value={editing?.bio || ""}
+								onChange={(e: any) =>
+									setEditing((p) => ({ ...p, bio: e.target.value }))
 								}
-							>
-								Save Member
-							</Button>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
+								rows={3}
+							/>
+						</div>
+						<div className="flex items-center justify-between rounded-lg border border-hairline p-3">
+							<div>
+								<Label className="text-xs">Leadership</Label>
+								<p className="text-xs text-muted-foreground">
+									Show this member in the leadership section.
+								</p>
+							</div>
+							<Switch
+								checked={Boolean(editing?.leadership)}
+								onCheckedChange={(v: boolean) =>
+									setEditing((p) => ({ ...p, leadership: v }))
+								}
+							/>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setOpen(false)}>
+							Cancel
+						</Button>
+						<Button
+							onClick={() => saveMutation.mutate(editing)}
+							disabled={
+								saveMutation.isPending ||
+								!editing?.name ||
+								!editing?.slug ||
+								!editing?.role ||
+								!editing?.department
+							}
+						>
+							Save Member
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
-				<ConfirmDialog
-					open={!!pendingDelete}
-					onOpenChange={(op) => !op && setPendingDelete(null)}
-					title="Delete Faculty Member"
-					description={`Are you sure you want to remove ${pendingDelete?.name} from the directory?`}
-					destructive
-					onConfirm={() =>
-						pendingDelete && deleteMutation.mutate(pendingDelete.id)
-					}
-					busy={deleteMutation.isPending}
-				/>
-			</div>
-		</main>
+			<ConfirmDialog
+				open={!!pendingDelete}
+				onOpenChange={(op) => !op && setPendingDelete(null)}
+				testId="faculty-delete-confirm"
+				title="Delete Faculty Member"
+				description={`Are you sure you want to remove ${pendingDelete?.name} from the directory?`}
+				destructive
+				onConfirm={() =>
+					pendingDelete && deleteMutation.mutate(pendingDelete.id)
+				}
+				busy={deleteMutation.isPending}
+			/>
+		</div>
 	);
 }

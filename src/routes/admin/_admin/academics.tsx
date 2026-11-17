@@ -2,6 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
 	BookOpen,
 	Loader2,
+	type LucideIcon,
 	Pencil,
 	Plus,
 	School,
@@ -11,7 +12,15 @@ import {
 	X,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { ConfirmDialog } from "#/components/common/ConfirmDialog";
+import { type Column, DataTable } from "#/components/common/DataTable";
+import { EmptyState } from "#/components/common/EmptyState";
+import { PageHeader } from "#/components/common/PageHeader";
+import { Panel } from "#/components/common/Panel";
+import { ListSkeleton } from "#/components/common/Skeletons";
 import { useStudentSearch } from "#/components/people/useStudentSearch.ts";
+import { Button } from "#/components/ui/button";
+import { Label } from "#/components/ui/label";
 import { cn } from "#/lib/utils.ts";
 import {
 	createClassroomAction,
@@ -37,6 +46,12 @@ export const Route = createFileRoute("/admin/_admin/academics")({
 });
 
 type Tab = "courses" | "classrooms" | "enrolments";
+
+const TAB_ITEMS: Array<{ value: Tab; label: string; icon: LucideIcon }> = [
+	{ value: "courses", label: "Courses", icon: BookOpen },
+	{ value: "classrooms", label: "Classrooms", icon: School },
+	{ value: "enrolments", label: "Enrolments", icon: Users },
+];
 
 interface CourseRow {
 	id: string;
@@ -99,6 +114,10 @@ function AdminAcademics() {
 	const [notice, setNotice] = useState("");
 	const [editingCourse, setEditingCourse] = useState<CourseRow | null>(null);
 	const [editingClassroom, setEditingClassroom] = useState<ClassroomRow | null>(
+		null,
+	);
+	const [pendingCourse, setPendingCourse] = useState<CourseRow | null>(null);
+	const [pendingClassroom, setPendingClassroom] = useState<ClassroomRow | null>(
 		null,
 	);
 
@@ -307,27 +326,29 @@ function AdminAcademics() {
 	};
 
 	const removeCourse = async (course: CourseRow) => {
-		if (!confirm(`Delete ${course.code} — ${course.name}?`)) return;
-
 		const response = await deleteCourseAction({ data: { id: course.id } });
-		if (!response.success) setError(response.error);
-		else {
-			setNotice("Course deleted.");
-			await load();
+		if (!response.success) {
+			setError(response.error);
+			return;
 		}
+
+		setPendingCourse(null);
+		setNotice("Course deleted.");
+		await load();
 	};
 
 	const removeClassroom = async (classroom: ClassroomRow) => {
-		if (!confirm(`Delete ${classroom.name}?`)) return;
-
 		const response = await deleteClassroomAction({
 			data: { id: classroom.id },
 		});
-		if (!response.success) setError(response.error);
-		else {
-			setNotice("Classroom deleted.");
-			await load();
+		if (!response.success) {
+			setError(response.error);
+			return;
 		}
+
+		setPendingClassroom(null);
+		setNotice("Classroom deleted.");
+		await load();
 	};
 
 	const toggleStudent = (student: StudentOption, checked: boolean) => {
@@ -394,53 +415,143 @@ function AdminAcademics() {
 		await Promise.all([load(), loadCourse(selectedCourseId)]);
 	};
 
-	return (
-		<div className="space-y-8">
-			<div className="flex flex-wrap items-end justify-between gap-4">
-				<div>
-					<h1 className="text-3xl font-bold text-gray-900">Academics</h1>
-					<p className="mt-1 text-sm text-gray-500">
-						Manage courses, classrooms and student enrolments.
+	const courseColumns: Column<CourseRow>[] = [
+		{
+			key: "course",
+			header: "Course",
+			render: (course) => (
+				<div className="min-w-0">
+					<p className="font-medium text-foreground">{course.name}</p>
+					<p className="mt-0.5 text-xs text-muted-foreground">
+						{course.code}
+						{course.schedule ? ` · ${course.schedule}` : ""}
 					</p>
 				</div>
-				<div className="flex gap-1 rounded-lg border border-gray-200 bg-white p-1">
-					{(["courses", "classrooms", "enrolments"] as Array<Tab>).map(
-						(item) => (
+			),
+		},
+		{
+			key: "class",
+			header: "Class",
+			render: (course) =>
+				[course.grade, course.section, course.classroom?.name]
+					.filter(Boolean)
+					.join(" · ") || "—",
+		},
+		{
+			key: "teacher",
+			header: "Teacher",
+			render: (course) => course.teacher?.user.name ?? "Unassigned",
+		},
+		{
+			key: "enrolled",
+			header: "Enrolled",
+			render: (course) => (
+				<span className="num text-foreground">{course._count.enrollments}</span>
+			),
+		},
+		{
+			key: "actions",
+			header: "",
+			align: "right",
+			render: (course) => (
+				<div className="row-actions justify-end">
+					<Button
+						variant="ghost"
+						size="icon"
+						className="h-8 w-8"
+						aria-label={`Edit ${course.name}`}
+						data-testid={`academics-course-edit-${course.id}`}
+						onClick={() => setEditingCourse(course)}
+					>
+						<Pencil className="h-4 w-4" />
+					</Button>
+					<Button
+						variant="ghost"
+						size="icon"
+						className="h-8 w-8 text-destructive"
+						aria-label={`Delete ${course.name}`}
+						data-testid={`academics-course-delete-${course.id}`}
+						onClick={() => setPendingCourse(course)}
+					>
+						<Trash2 className="h-4 w-4" />
+					</Button>
+				</div>
+			),
+		},
+	];
+
+	return (
+		<div data-testid="academics-page" className="space-y-5">
+			<PageHeader
+				testId="academics-page-header"
+				eyebrow="Academics"
+				title="Academics"
+				description="Manage courses, classrooms and student enrolments."
+				meta={
+					!isLoading ? (
+						<>
+							<span data-testid="academics-meta-courses">
+								{courses.length} {courses.length === 1 ? "course" : "courses"}
+							</span>
+							<span data-testid="academics-meta-classrooms">
+								{classrooms.length}{" "}
+								{classrooms.length === 1 ? "classroom" : "classrooms"}
+							</span>
+						</>
+					) : undefined
+				}
+				actions={
+					<div
+						className="flex items-center rounded-md border border-hairline bg-surface-1 p-0.5"
+						data-testid="academics-tabs"
+					>
+						{TAB_ITEMS.map((item) => (
 							<button
-								key={item}
+								key={item.value}
 								type="button"
-								onClick={() => setTab(item)}
+								onClick={() => setTab(item.value)}
+								data-testid={`academics-tab-${item.value}`}
 								className={cn(
-									"rounded-md px-3 py-1.5 text-sm font-medium capitalize",
-									tab === item
-										? "bg-red-500 text-white"
-										: "text-gray-600 hover:bg-gray-100",
+									"inline-flex h-8 items-center gap-1.5 rounded px-2.5 text-xs font-medium capitalize transition-colors duration-150 focus-ring",
+									tab === item.value
+										? "bg-secondary text-foreground"
+										: "text-muted-foreground hover:text-foreground",
 								)}
 							>
-								{item}
+								<item.icon className="h-3.5 w-3.5" />
+								{item.label}
 							</button>
-						),
-					)}
-				</div>
-			</div>
+						))}
+					</div>
+				}
+			/>
 
 			{error ? (
-				<div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+				<div
+					role="alert"
+					data-testid="academics-error"
+					className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+				>
 					{error}
 				</div>
 			) : null}
 			{notice ? (
-				<div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+				<div
+					data-testid="academics-notice"
+					className="rounded-lg border border-success/30 bg-success/10 p-3 text-sm text-success"
+				>
 					{notice}
 				</div>
 			) : null}
 
 			{tab === "courses" ? (
 				<>
-					<section className="rounded-2xl border border-gray-200 bg-white p-6">
-						<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-							<Plus className="h-5 w-5 text-red-500" /> New course
-						</h2>
+					<Panel
+						title="New course"
+						description="Create a course to schedule classes and enrol students."
+						testId="academics-new-course-panel"
+						bodyClassName="p-5"
+					>
 						<form
 							onSubmit={(event) => void createCourse(event)}
 							className="grid gap-4 md:grid-cols-2"
@@ -450,46 +561,36 @@ function AdminAcademics() {
 							<Input label="Grade / class" name="grade" />
 							<Input label="Section" name="section" />
 							<Input label="Schedule" name="schedule" />
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Teacher
-								</span>
-								<select
-									name="teacherId"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								>
-									<option value="">Unassigned</option>
-									{staff.map((member) => (
-										<option key={member.id} value={member.id}>
-											{member.user.name} · {member.designation}
-										</option>
-									))}
-								</select>
-							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Classroom
-								</span>
-								<select
-									name="classroomId"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								>
-									<option value="">Unassigned</option>
-									{classrooms.map((room) => (
-										<option key={room.id} value={room.id}>
-											{room.name}
-											{room.building ? ` · ${room.building}` : ""}
-										</option>
-									))}
-								</select>
-							</label>
+							<Select label="Teacher" name="teacherId">
+								<option value="">Unassigned</option>
+								{staff.map((member) => (
+									<option key={member.id} value={member.id}>
+										{member.user.name} · {member.designation}
+									</option>
+								))}
+							</Select>
+							<Select label="Classroom" name="classroomId">
+								<option value="">Unassigned</option>
+								{classrooms.map((room) => (
+									<option key={room.id} value={room.id}>
+										{room.name}
+										{room.building ? ` · ${room.building}` : ""}
+									</option>
+								))}
+							</Select>
 							<Textarea
 								label="Description"
 								name="description"
 								className="md:col-span-2"
 							/>
-							<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
-								<input type="checkbox" name="isActive" defaultChecked /> Active
+							<label className="flex items-center gap-2 text-sm text-foreground md:col-span-2">
+								<input
+									type="checkbox"
+									name="isActive"
+									defaultChecked
+									className="h-4 w-4 accent-primary focus-ring"
+								/>{" "}
+								Active
 							</label>
 							<div className="md:col-span-2">
 								<SubmitButton
@@ -498,13 +599,15 @@ function AdminAcademics() {
 								/>
 							</div>
 						</form>
-					</section>
+					</Panel>
 
 					{editingCourse ? (
-						<section className="rounded-2xl border border-gray-200 bg-white p-6">
-							<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-								<Pencil className="h-5 w-5 text-red-500" /> Edit course
-							</h2>
+						<Panel
+							title="Edit course"
+							description="Update the details for this course."
+							testId="academics-edit-course-panel"
+							bodyClassName="p-5"
+						>
 							<form
 								key={editingCourse.id}
 								onSubmit={(event) => void saveCourse(event)}
@@ -537,162 +640,96 @@ function AdminAcademics() {
 									name="schedule"
 									defaultValue={editingCourse.schedule ?? ""}
 								/>
-								<label className="text-sm">
-									<span className="mb-1 block font-medium text-gray-700">
-										Teacher
-									</span>
-									<select
-										name="teacherId"
-										defaultValue={editingCourse.teacher?.id ?? ""}
-										className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-									>
-										<option value="">Unassigned</option>
-										{staff.map((member) => (
-											<option key={member.id} value={member.id}>
-												{member.user.name} · {member.designation}
-											</option>
-										))}
-									</select>
-								</label>
-								<label className="text-sm">
-									<span className="mb-1 block font-medium text-gray-700">
-										Classroom
-									</span>
-									<select
-										name="classroomId"
-										defaultValue={editingCourse.classroom?.id ?? ""}
-										className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-									>
-										<option value="">Unassigned</option>
-										{classrooms.map((room) => (
-											<option key={room.id} value={room.id}>
-												{room.name}
-												{room.building ? ` · ${room.building}` : ""}
-											</option>
-										))}
-									</select>
-								</label>
+								<Select
+									label="Teacher"
+									name="teacherId"
+									defaultValue={editingCourse.teacher?.id ?? ""}
+								>
+									<option value="">Unassigned</option>
+									{staff.map((member) => (
+										<option key={member.id} value={member.id}>
+											{member.user.name} · {member.designation}
+										</option>
+									))}
+								</Select>
+								<Select
+									label="Classroom"
+									name="classroomId"
+									defaultValue={editingCourse.classroom?.id ?? ""}
+								>
+									<option value="">Unassigned</option>
+									{classrooms.map((room) => (
+										<option key={room.id} value={room.id}>
+											{room.name}
+											{room.building ? ` · ${room.building}` : ""}
+										</option>
+									))}
+								</Select>
 								<Textarea
 									label="Description"
 									name="description"
 									defaultValue={editingCourse.description ?? ""}
 									className="md:col-span-2"
 								/>
-								<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
+								<label className="flex items-center gap-2 text-sm text-foreground md:col-span-2">
 									<input
 										type="checkbox"
 										name="isActive"
 										defaultChecked={editingCourse.isActive}
+										className="h-4 w-4 accent-primary focus-ring"
 									/>{" "}
 									Active
 								</label>
-								<div className="flex gap-2 md:col-span-2">
-									<button
+								<div className="flex flex-wrap gap-2 md:col-span-2">
+									<Button
 										type="submit"
 										disabled={isSubmitting}
-										className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+										className="gap-1.5"
 									>
 										{isSubmitting ? (
-											<Loader2 className="h-4 w-4 animate-spin" />
+											<Loader2 className="h-3.5 w-3.5 animate-spin" />
 										) : (
-											<Pencil className="h-4 w-4" />
+											<Pencil className="h-3.5 w-3.5" />
 										)}
 										{isSubmitting ? "Saving…" : "Save changes"}
-									</button>
-									<button
+									</Button>
+									<Button
 										type="button"
+										variant="outline"
 										onClick={() => setEditingCourse(null)}
-										className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
 									>
 										Cancel
-									</button>
+									</Button>
 								</div>
 							</form>
-						</section>
+						</Panel>
 					) : null}
 
-					<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-						<header className="border-b border-gray-200 px-5 py-4">
-							<h2 className="font-semibold text-gray-900">Courses</h2>
-						</header>
-						{isLoading ? (
-							<LoadingRow />
-						) : courses.length === 0 ? (
-							<EmptyRow
+					<DataTable
+						columns={courseColumns}
+						rows={courses}
+						rowId={(course) => course.id}
+						testId="academics-courses-table"
+						loading={isLoading}
+						footNote={`${courses.length} ${courses.length === 1 ? "course" : "courses"}`}
+						empty={
+							<EmptyState
 								icon={BookOpen}
-								message="No courses have been created yet."
+								title="No courses yet"
+								description="No courses have been created yet."
+								testId="academics-courses-empty"
 							/>
-						) : (
-							<div className="overflow-x-auto">
-								<table className="min-w-full text-left text-sm">
-									<thead className="bg-gray-50 text-xs uppercase text-gray-500">
-										<tr>
-											<th className="px-5 py-3">Course</th>
-											<th className="px-5 py-3">Class</th>
-											<th className="px-5 py-3">Teacher</th>
-											<th className="px-5 py-3">Enrolled</th>
-											<th className="px-5 py-3" />
-										</tr>
-									</thead>
-									<tbody>
-										{courses.map((course) => (
-											<tr key={course.id} className="border-t border-gray-100">
-												<td className="px-5 py-3">
-													<p className="font-medium text-gray-900">
-														{course.name}
-													</p>
-													<p className="text-xs text-gray-500">
-														{course.code}
-														{course.schedule ? ` · ${course.schedule}` : ""}
-													</p>
-												</td>
-												<td className="px-5 py-3 text-gray-600">
-													{[
-														course.grade,
-														course.section,
-														course.classroom?.name,
-													]
-														.filter(Boolean)
-														.join(" · ") || "—"}
-												</td>
-												<td className="px-5 py-3 text-gray-600">
-													{course.teacher?.user.name ?? "Unassigned"}
-												</td>
-												<td className="px-5 py-3 text-gray-600">
-													{course._count.enrollments}
-												</td>
-												<td className="px-5 py-3">
-													<div className="flex items-center justify-end gap-3">
-														<button
-															type="button"
-															onClick={() => setEditingCourse(course)}
-															className="inline-flex items-center gap-1 text-xs font-medium text-gray-700 hover:text-gray-900"
-														>
-															<Pencil className="h-3.5 w-3.5" /> Edit
-														</button>
-														<button
-															type="button"
-															onClick={() => void removeCourse(course)}
-															className="inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-700"
-														>
-															<Trash2 className="h-3.5 w-3.5" /> Delete
-														</button>
-													</div>
-												</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
-							</div>
-						)}
-					</section>
+						}
+					/>
 				</>
 			) : tab === "classrooms" ? (
 				<>
-					<section className="rounded-2xl border border-gray-200 bg-white p-6">
-						<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-							<Plus className="h-5 w-5 text-red-500" /> New classroom
-						</h2>
+					<Panel
+						title="New classroom"
+						description="Add a room that courses can be scheduled into."
+						testId="academics-new-classroom-panel"
+						bodyClassName="p-5"
+					>
 						<form
 							onSubmit={(event) => void createClassroom(event)}
 							className="grid gap-4 md:grid-cols-2"
@@ -702,8 +739,14 @@ function AdminAcademics() {
 							<Input label="Floor" name="floor" />
 							<Input label="Capacity" name="capacity" type="number" min={1} />
 							<Textarea label="Notes" name="notes" className="md:col-span-2" />
-							<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
-								<input type="checkbox" name="isActive" defaultChecked /> Active
+							<label className="flex items-center gap-2 text-sm text-foreground md:col-span-2">
+								<input
+									type="checkbox"
+									name="isActive"
+									defaultChecked
+									className="h-4 w-4 accent-primary focus-ring"
+								/>{" "}
+								Active
 							</label>
 							<div className="md:col-span-2">
 								<SubmitButton
@@ -712,13 +755,15 @@ function AdminAcademics() {
 								/>
 							</div>
 						</form>
-					</section>
+					</Panel>
 
 					{editingClassroom ? (
-						<section className="rounded-2xl border border-gray-200 bg-white p-6">
-							<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-								<Pencil className="h-5 w-5 text-red-500" /> Edit classroom
-							</h2>
+						<Panel
+							title="Edit classroom"
+							description="Update the details for this classroom."
+							testId="academics-edit-classroom-panel"
+							bodyClassName="p-5"
+						>
 							<form
 								key={editingClassroom.id}
 								onSubmit={(event) => void saveClassroom(event)}
@@ -753,60 +798,66 @@ function AdminAcademics() {
 									defaultValue={editingClassroom.notes ?? ""}
 									className="md:col-span-2"
 								/>
-								<label className="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
+								<label className="flex items-center gap-2 text-sm text-foreground md:col-span-2">
 									<input
 										type="checkbox"
 										name="isActive"
 										defaultChecked={editingClassroom.isActive}
+										className="h-4 w-4 accent-primary focus-ring"
 									/>{" "}
 									Active
 								</label>
-								<div className="flex gap-2 md:col-span-2">
-									<button
+								<div className="flex flex-wrap gap-2 md:col-span-2">
+									<Button
 										type="submit"
 										disabled={isSubmitting}
-										className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+										className="gap-1.5"
 									>
 										{isSubmitting ? (
-											<Loader2 className="h-4 w-4 animate-spin" />
+											<Loader2 className="h-3.5 w-3.5 animate-spin" />
 										) : (
-											<Pencil className="h-4 w-4" />
+											<Pencil className="h-3.5 w-3.5" />
 										)}
 										{isSubmitting ? "Saving…" : "Save changes"}
-									</button>
-									<button
+									</Button>
+									<Button
 										type="button"
+										variant="outline"
 										onClick={() => setEditingClassroom(null)}
-										className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
 									>
 										Cancel
-									</button>
+									</Button>
 								</div>
 							</form>
-						</section>
+						</Panel>
 					) : null}
 
-					<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-						<header className="border-b border-gray-200 px-5 py-4">
-							<h2 className="font-semibold text-gray-900">Classrooms</h2>
-						</header>
+					<Panel
+						title="Classrooms"
+						testId="academics-classrooms-panel"
+						bodyClassName="p-0"
+					>
 						{isLoading ? (
-							<LoadingRow />
+							<div className="p-5">
+								<ListSkeleton rows={4} />
+							</div>
 						) : classrooms.length === 0 ? (
-							<EmptyRow
+							<EmptyState
 								icon={School}
-								message="No classrooms have been added yet."
+								title="No classrooms yet"
+								description="No classrooms have been added yet."
+								testId="academics-classrooms-empty"
 							/>
 						) : (
-							<ul className="divide-y divide-gray-100">
+							<ul className="divide-y divide-hairline">
 								{classrooms.map((room) => (
 									<li
 										key={room.id}
-										className="flex flex-wrap items-center gap-4 px-5 py-4"
+										className="group flex flex-wrap items-center gap-4 px-5 py-4 transition-colors duration-150 hover:bg-surface-2"
 									>
 										<div className="min-w-0 flex-1">
-											<p className="font-medium text-gray-900">{room.name}</p>
-											<p className="text-xs text-gray-500">
+											<p className="font-medium text-foreground">{room.name}</p>
+											<p className="text-xs text-muted-foreground">
 												{[
 													room.building,
 													room.floor,
@@ -816,101 +867,112 @@ function AdminAcademics() {
 													.join(" · ") || "No location details"}
 											</p>
 											{room.notes ? (
-												<p className="mt-1 text-xs text-gray-400">
+												<p className="mt-1 text-xs text-muted-foreground">
 													{room.notes}
 												</p>
 											) : null}
 										</div>
-										<span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">
+										<span className="num rounded-full border border-hairline bg-surface-1 px-2 py-0.5 text-xs font-medium text-muted-foreground">
 											{room._count.courses} course
 											{room._count.courses === 1 ? "" : "s"}
 										</span>
-										<button
-											type="button"
-											onClick={() => setEditingClassroom(room)}
-											className="inline-flex items-center gap-1 text-xs font-medium text-gray-700 hover:text-gray-900"
-										>
-											<Pencil className="h-3.5 w-3.5" /> Edit
-										</button>
-										<button
-											type="button"
-											onClick={() => void removeClassroom(room)}
-											className="inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-700"
-										>
-											<Trash2 className="h-3.5 w-3.5" /> Delete
-										</button>
+										<div className="row-actions">
+											<Button
+												variant="ghost"
+												size="icon"
+												className="h-8 w-8"
+												aria-label={`Edit ${room.name}`}
+												data-testid={`academics-classroom-edit-${room.id}`}
+												onClick={() => setEditingClassroom(room)}
+											>
+												<Pencil className="h-4 w-4" />
+											</Button>
+											<Button
+												variant="ghost"
+												size="icon"
+												className="h-8 w-8 text-destructive"
+												aria-label={`Delete ${room.name}`}
+												data-testid={`academics-classroom-delete-${room.id}`}
+												onClick={() => setPendingClassroom(room)}
+											>
+												<Trash2 className="h-4 w-4" />
+											</Button>
+										</div>
 									</li>
 								))}
 							</ul>
 						)}
-					</section>
+					</Panel>
 				</>
 			) : (
-				<section className="space-y-5 rounded-2xl border border-gray-200 bg-white p-6">
-					<div>
-						<h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-							<Users className="h-5 w-5 text-red-500" /> Student enrolments
-						</h2>
-						<p className="mt-1 text-sm text-gray-500">
-							Pick a course, then tick the students who should be enrolled.
-						</p>
-					</div>
-
-					<label className="block max-w-md text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Course</span>
-						<select
-							value={selectedCourseId}
-							onChange={(event) => setSelectedCourseId(event.target.value)}
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						>
-							<option value="">Select a course…</option>
-							{courses.map((course) => (
-								<option key={course.id} value={course.id}>
-									{course.code} · {course.name}
-								</option>
-							))}
-						</select>
-					</label>
+				<Panel
+					title="Student enrolments"
+					description="Pick a course, then tick the students who should be enrolled."
+					testId="academics-enrolments-panel"
+					bodyClassName="space-y-5 p-5"
+				>
+					<Select
+						label="Course"
+						value={selectedCourseId}
+						onChange={(event) => setSelectedCourseId(event.target.value)}
+						className="max-w-md"
+						testId="academics-course-select"
+					>
+						<option value="">Select a course…</option>
+						{courses.map((course) => (
+							<option key={course.id} value={course.id}>
+								{course.code} · {course.name}
+							</option>
+						))}
+					</Select>
 
 					{!selectedCourseId ? (
-						<p className="text-sm text-gray-500">
+						<p
+							className="text-sm text-muted-foreground"
+							data-testid="academics-enrolments-hint"
+						>
 							Choose a course to manage its roster.
 						</p>
 					) : isLoadingCourse ? (
-						<LoadingRow />
+						<ListSkeleton rows={3} />
 					) : (
 						<div className="grid gap-6 lg:grid-cols-2">
 							<div>
-								<h3 className="mb-2 text-sm font-semibold text-gray-900">
+								<h3 className="text-xs font-semibold uppercase tracking-[0.05em] text-muted-foreground">
 									Enrolled students ({enrollments.length})
 								</h3>
 								{enrollments.length === 0 ? (
-									<p className="rounded-lg border border-dashed border-gray-200 p-4 text-sm text-gray-500">
+									<p
+										className="mt-2 rounded-lg border border-dashed border-hairline bg-surface-1 p-4 text-sm text-muted-foreground"
+										data-testid="academics-enrolled-empty"
+									>
 										Nobody is enrolled in this course yet.
 									</p>
 								) : (
-									<ul className="divide-y divide-gray-100 rounded-lg border border-gray-200">
+									<ul className="mt-2 divide-y divide-hairline rounded-lg border border-hairline">
 										{enrollments.map((enrollment) => (
 											<li
 												key={enrollment.id}
-												className="flex items-center justify-between gap-3 px-3 py-2"
+												className="group flex items-center justify-between gap-3 px-3 py-2 transition-colors duration-150 hover:bg-surface-2"
 											>
-												<div>
-													<p className="text-sm font-medium text-gray-900">
+												<div className="min-w-0">
+													<p className="truncate text-sm font-medium text-foreground">
 														{enrollment.student.user.name}
 													</p>
-													<p className="text-xs text-gray-500">
+													<p className="truncate text-xs text-muted-foreground">
 														{enrollment.student.user.email}
 													</p>
 												</div>
-												<button
-													type="button"
-													onClick={() => void removeEnrolment(enrollment)}
-													className="rounded-md p-1.5 text-red-600 hover:bg-red-50"
+												<Button
+													variant="ghost"
+													size="icon"
+													className="h-7 w-7 text-destructive"
 													aria-label="Remove enrolment"
+													data-testid={`academics-enrolment-remove-${enrollment.id}`}
+													onClick={() => void removeEnrolment(enrollment)}
 												>
-													<Trash2 className="h-4 w-4" />
-												</button>
+													<Trash2 className="h-3.5 w-3.5" />
+												</Button>
 											</li>
 										))}
 									</ul>
@@ -918,28 +980,32 @@ function AdminAcademics() {
 							</div>
 
 							<div>
-								<div className="mb-2 flex items-center justify-between gap-2">
-									<h3 className="text-sm font-semibold text-gray-900">
+								<div className="flex items-center justify-between gap-2">
+									<h3 className="text-xs font-semibold uppercase tracking-[0.05em] text-muted-foreground">
 										Select students
 									</h3>
-									<span className="text-xs text-gray-500">
+									<span
+										className="num text-xs text-muted-foreground"
+										data-testid="academics-selected-count"
+									>
 										{selectedStudentIds.length} selected
 									</span>
 								</div>
 
 								{selectedStudentIds.length > 0 ? (
-									<div className="mb-2 flex flex-wrap gap-1">
+									<div className="mt-2 mb-2 flex flex-wrap gap-1">
 										{selectedStudentIds.map((studentId) => (
 											<span
 												key={studentId}
-												className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700"
+												className="inline-flex items-center gap-1 rounded-full bg-primary/[0.06] px-2 py-0.5 text-xs font-medium text-primary"
 											>
 												{selectedStudents[studentId] ?? "Student"}
 												<button
 													type="button"
 													onClick={() => clearStudent(studentId)}
-													className="rounded-full p-0.5 hover:bg-red-100"
+													className="rounded-full p-0.5 transition-colors duration-150 hover:bg-primary/15 focus-ring"
 													aria-label="Remove student from selection"
+													data-testid={`academics-chip-remove-${studentId}`}
 												>
 													<X className="h-3 w-3" />
 												</button>
@@ -948,23 +1014,24 @@ function AdminAcademics() {
 									</div>
 								) : null}
 
-								<label className="relative mb-2 block">
-									<Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+								<label className="relative mb-2 mt-2 block">
+									<Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 									<input
 										value={studentQuery}
 										onChange={(event) => setStudentQuery(event.target.value)}
 										placeholder="Search by name, admission or email…"
-										className="w-full rounded-lg border border-gray-300 px-3 py-2 pl-9 text-sm"
+										data-testid="academics-student-search"
+										className="h-9 w-full rounded-md border border-hairline bg-surface-1 pr-3 pl-9 text-sm outline-none transition-colors duration-150 placeholder:text-muted-foreground focus-ring"
 									/>
 								</label>
 
-								<div className="max-h-80 overflow-y-auto rounded-lg border border-gray-200">
+								<div className="max-h-80 overflow-y-auto rounded-lg border border-hairline">
 									{isLoadingStudents ? (
-										<p className="flex items-center gap-2 p-4 text-sm text-gray-500">
-											<Loader2 className="h-4 w-4 animate-spin" /> Searching…
-										</p>
+										<div className="p-4">
+											<ListSkeleton rows={3} />
+										</div>
 									) : students.length === 0 ? (
-										<p className="p-4 text-sm text-gray-500">
+										<p className="p-4 text-sm text-muted-foreground">
 											No active students match that search.
 										</p>
 									) : (
@@ -974,7 +1041,7 @@ function AdminAcademics() {
 											return (
 												<label
 													key={student.id}
-													className="flex cursor-pointer items-center gap-3 border-b border-gray-100 px-3 py-2 last:border-0 hover:bg-gray-50"
+													className="flex cursor-pointer items-center gap-3 border-b border-hairline px-3 py-2 transition-colors duration-150 last:border-0 hover:bg-surface-2"
 												>
 													<input
 														type="checkbox"
@@ -982,12 +1049,14 @@ function AdminAcademics() {
 														onChange={(event) =>
 															toggleStudent(student, event.target.checked)
 														}
+														className="h-4 w-4 accent-primary focus-ring"
+														data-testid={`academics-student-option-${student.id}`}
 													/>
 													<span className="min-w-0">
-														<span className="block text-sm font-medium text-gray-900">
+														<span className="block text-sm font-medium text-foreground">
 															{student.name}
 														</span>
-														<span className="block text-xs text-gray-500">
+														<span className="block text-xs text-muted-foreground">
 															{[student.grade, student.section]
 																.filter(Boolean)
 																.join(" · ") ||
@@ -1000,40 +1069,70 @@ function AdminAcademics() {
 										})
 									)}
 								</div>
-								<button
+								<Button
 									type="button"
-									onClick={() => void saveEnrolments()}
+									size="sm"
+									className="mt-3 gap-1.5"
 									disabled={isSubmitting}
-									className="mt-3 inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+									data-testid="academics-save-enrolments"
+									onClick={() => void saveEnrolments()}
 								>
 									{isSubmitting ? (
-										<Loader2 className="h-4 w-4 animate-spin" />
+										<Loader2 className="h-3.5 w-3.5 animate-spin" />
 									) : (
-										<Users className="h-4 w-4" />
+										<Users className="h-3.5 w-3.5" />
 									)}
 									Save enrolments
-								</button>
+								</Button>
 							</div>
 						</div>
 					)}
-				</section>
+				</Panel>
 			)}
+
+			<ConfirmDialog
+				open={!!pendingCourse}
+				onOpenChange={(open) => !open && setPendingCourse(null)}
+				testId="academics-course-delete-dialog"
+				title="Delete course"
+				description={`Delete ${pendingCourse?.code} — ${pendingCourse?.name}? This action cannot be undone.`}
+				confirmLabel="Delete"
+				destructive
+				onConfirm={() => pendingCourse && void removeCourse(pendingCourse)}
+			/>
+
+			<ConfirmDialog
+				open={!!pendingClassroom}
+				onOpenChange={(open) => !open && setPendingClassroom(null)}
+				testId="academics-classroom-delete-dialog"
+				title="Delete classroom"
+				description={`Delete ${pendingClassroom?.name}? This action cannot be undone.`}
+				confirmLabel="Delete"
+				destructive
+				onConfirm={() =>
+					pendingClassroom && void removeClassroom(pendingClassroom)
+				}
+			/>
 		</div>
 	);
 }
 
+const fieldClasses =
+	"h-9 w-full rounded-md border border-hairline bg-surface-1 px-3 text-sm outline-none transition-colors duration-150 placeholder:text-muted-foreground focus-ring";
+
 function Input({
 	label,
 	className,
+	testId,
 	...props
-}: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+	label: string;
+	testId?: string;
+}) {
 	return (
-		<label className={cn("text-sm", className)}>
-			<span className="mb-1 block font-medium text-gray-700">{label}</span>
-			<input
-				{...props}
-				className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100"
-			/>
+		<label className={cn("block space-y-1.5", className)}>
+			<Label className="text-xs">{label}</Label>
+			<input {...props} data-testid={testId} className={fieldClasses} />
 		</label>
 	);
 }
@@ -1041,16 +1140,41 @@ function Input({
 function Textarea({
 	label,
 	className,
+	testId,
 	...props
-}: React.TextareaHTMLAttributes<HTMLTextAreaElement> & { label: string }) {
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+	label: string;
+	testId?: string;
+}) {
 	return (
-		<label className={cn("text-sm", className)}>
-			<span className="mb-1 block font-medium text-gray-700">{label}</span>
+		<label className={cn("block space-y-1.5", className)}>
+			<Label className="text-xs">{label}</Label>
 			<textarea
 				{...props}
 				rows={3}
-				className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100"
+				data-testid={testId}
+				className={cn(fieldClasses, "py-2")}
 			/>
+		</label>
+	);
+}
+
+function Select({
+	label,
+	className,
+	testId,
+	children,
+	...props
+}: React.SelectHTMLAttributes<HTMLSelectElement> & {
+	label: string;
+	testId?: string;
+}) {
+	return (
+		<label className={cn("block space-y-1.5", className)}>
+			<Label className="text-xs">{label}</Label>
+			<select {...props} data-testid={testId} className={fieldClasses}>
+				{children}
+			</select>
 		</label>
 	);
 }
@@ -1063,40 +1187,13 @@ function SubmitButton({
 	label: string;
 }) {
 	return (
-		<button
-			type="submit"
-			disabled={isSubmitting}
-			className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
-		>
+		<Button type="submit" disabled={isSubmitting} className="gap-1.5">
 			{isSubmitting ? (
-				<Loader2 className="h-4 w-4 animate-spin" />
+				<Loader2 className="h-3.5 w-3.5 animate-spin" />
 			) : (
-				<Plus className="h-4 w-4" />
+				<Plus className="h-3.5 w-3.5" />
 			)}
 			{isSubmitting ? "Saving…" : label}
-		</button>
-	);
-}
-
-function LoadingRow() {
-	return (
-		<p className="flex items-center gap-2 p-6 text-sm text-gray-500">
-			<Loader2 className="h-4 w-4 animate-spin" /> Loading…
-		</p>
-	);
-}
-
-function EmptyRow({
-	icon: Icon,
-	message,
-}: {
-	icon: React.ComponentType<{ className?: string }>;
-	message: string;
-}) {
-	return (
-		<div className="p-8 text-center">
-			<Icon className="mx-auto h-8 w-8 text-gray-300" />
-			<p className="mt-3 text-sm text-gray-500">{message}</p>
-		</div>
+		</Button>
 	);
 }

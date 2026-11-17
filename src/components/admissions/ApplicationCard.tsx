@@ -31,10 +31,10 @@ export function ApplicationCard({
 			style={{ transform: CSS.Translate.toString(transform) }}
 			data-testid={`admissions-card-${application.id}`}
 			className={cn(
-				"group rounded-lg border bg-surface-1 p-2.5 transition-colors duration-150",
+				"group rounded-lg border border-hairline bg-surface-1 p-2.5 transition-colors duration-150",
 				isDragging
 					? "z-20 border-primary/50 shadow-pop"
-					: "border-hairline hover:border-primary/35",
+					: "hover:border-primary/35",
 			)}
 		>
 			<div className="flex items-start gap-2">

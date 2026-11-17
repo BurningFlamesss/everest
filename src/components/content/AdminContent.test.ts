@@ -105,8 +105,11 @@ function deferred<T>() {
 
 async function openClubs() {
 	render(React.createElement(Route.options.component as React.ComponentType));
-	await waitFor(() => expect(screen.queryByText("Loading…")).toBeNull());
-	fireEvent.click(screen.getByRole("button", { name: "clubs" }));
+	await waitFor(() =>
+		expect(screen.queryByTestId("content-list-loading")).toBeNull(),
+	);
+	// Radix TabsTrigger switches tabs on mousedown, not click.
+	fireEvent.mouseDown(screen.getByRole("tab", { name: "clubs" }));
 }
 
 function clubRow(name = "Robotics Club") {
@@ -201,8 +204,7 @@ describe("admin club attachments", () => {
 				.disabled,
 		).toBe(true);
 		expect(
-			screen.getByRole<HTMLButtonElement>("button", { name: "notices" })
-				.disabled,
+			screen.getByRole<HTMLButtonElement>("tab", { name: "notices" }).disabled,
 		).toBe(true);
 		fireEvent.submit(form);
 		expect(mocks.createClubAction).not.toHaveBeenCalled();
@@ -392,6 +394,7 @@ describe("admin club attachments", () => {
 			clubRow().getByRole("button", { name: "Edit attachments" }),
 		);
 		fireEvent.click(clubRow().getByRole("button", { name: "Delete" }));
+		fireEvent.click(screen.getByTestId("content-delete-confirm-confirm"));
 
 		await waitFor(() =>
 			expect(mocks.getContentAdminDataFn).toHaveBeenCalledTimes(2),

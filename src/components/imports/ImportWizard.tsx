@@ -541,12 +541,15 @@ export function ImportWizard({
 						<span>
 							Email each person their activation link
 							{mailConfigured ? (
-								<span className="text-gray-500"> (uses your mail settings)</span>
+								<span className="text-gray-500">
+									{" "}
+									(uses your mail settings)
+								</span>
 							) : (
 								<span className="block text-xs text-amber-700">
-									Email is not configured yet. Invitations will still be
-									created — use the copy / CSV buttons on the next step to send
-									the activation links yourself.
+									Email is not configured yet. Invitations will still be created
+									— use the copy / CSV buttons on the next step to send the
+									activation links yourself.
 								</span>
 							)}
 						</span>

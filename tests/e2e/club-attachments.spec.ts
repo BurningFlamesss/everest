@@ -108,7 +108,8 @@ test("activates a manager, uploads, edits, downloads and cleans up club document
 		page.getByRole("heading", { name: "Role defaults", exact: true }),
 	).toBeVisible();
 	await page.goto("/admin/content");
-	await page.getByRole("button", { name: "clubs", exact: true }).click();
+	// The tab strip is rendered by ui Tabs, so the trigger carries role="tab".
+	await page.getByRole("tab", { name: "clubs", exact: true }).click();
 	const createForm = page.locator('form:has(input[name="name"])');
 	await createForm.getByLabel("Name", { exact: true }).fill(clubName);
 	await createForm.locator('input[type="file"][accept*=".pdf"]').setInputFiles({
@@ -188,8 +189,8 @@ test("activates a manager, uploads, edits, downloads and cleans up club document
 			where: { uploadedById: managerId },
 		});
 		expect(assets).toHaveLength(2);
-		page.once("dialog", (dialog) => dialog.accept());
 		await row.getByRole("button", { name: "Delete", exact: true }).click();
+		await page.getByTestId("content-delete-confirm-confirm").click();
 		await expect(row).toHaveCount(0);
 		await prisma.fileAsset.updateMany({
 			where: { uploadedById: managerId },

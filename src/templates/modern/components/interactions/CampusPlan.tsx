@@ -359,7 +359,9 @@ export function CampusPlan() {
 										<Picture image={activeFacility.images[0]} sizes="240px" />
 									</div>
 									<div className="flex flex-col gap-1 p-4">
-										<p className="u-label text-red-dark">{activeFacility.room}</p>
+										<p className="u-label text-red-dark">
+											{activeFacility.room}
+										</p>
 										<p className="text-body-m text-foreground">
 											{activeFacility.name}
 										</p>

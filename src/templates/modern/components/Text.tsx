@@ -14,14 +14,12 @@ export function Eyebrow({
 	/* Accent yellow is a brand mark, not body ink: as text on light surfaces it
 	   measures 1.75:1, so the default eyebrow ink is the readable red. */
 	const toneClass =
-		tone === "accent" ? "text-red-dark" : tone === "muted" ? "text-n-600" : "text-paper/80";
-	return (
-		<p
-			className={cn("u-label", toneClass, className)}
-		>
-			{children}
-		</p>
-	);
+		tone === "accent"
+			? "text-red-dark"
+			: tone === "muted"
+				? "text-n-600"
+				: "text-paper/80";
+	return <p className={cn("u-label", toneClass, className)}>{children}</p>;
 }
 
 /**

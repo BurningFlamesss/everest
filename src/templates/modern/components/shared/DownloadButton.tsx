@@ -59,8 +59,8 @@ export const DownloadButton = ({
 					className={[
 						"gap-2 rounded-field font-medium transition-colors duration-fast",
 						size === "sm"
-						? "min-h-11 px-3 text-[13px]"
-						: "min-h-11 px-4 text-sm",
+							? "min-h-11 px-3 text-[13px]"
+							: "min-h-11 px-4 text-sm",
 						variant === "outline"
 							? "border-border bg-background hover:bg-secondary"
 							: "",

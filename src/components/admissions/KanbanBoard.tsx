@@ -28,12 +28,10 @@ function KanbanColumn({
 			ref={setNodeRef}
 			data-testid={`admissions-column-${status}`}
 			className={cn(
-				"flex min-w-[248px] flex-1 flex-col rounded-xl border bg-surface-2/60 transition-colors duration-150",
+				"flex min-w-[248px] flex-1 flex-col rounded-xl border border-hairline bg-surface-2/60 transition-colors duration-150",
 				isOver
-					? "border-primary/60 bg-primary/6"
-					: highlighted
-						? "border-primary/40"
-						: "border-hairline",
+					? "border-primary/60 bg-primary/[0.06]"
+					: highlighted && "border-primary/40",
 			)}
 		>
 			<header className="flex items-center gap-2 border-b border-hairline px-3 py-2.5">

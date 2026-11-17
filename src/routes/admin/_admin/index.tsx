@@ -4,11 +4,16 @@ import {
 	CalendarDays,
 	FileText,
 	GraduationCap,
+	Megaphone,
 	UserCheck,
 	UserPlus,
 	Users,
 } from "lucide-react";
+import { ErrorState } from "#/components/common/ErrorState";
+import { PageHeader } from "#/components/common/PageHeader";
+import { Panel } from "#/components/common/Panel";
 import { AdminPageLinks } from "#/components/layout/AdminPageLinks";
+import { Button } from "#/components/ui/button";
 import { getAdminStatsFn } from "#/packages/admin/server.ts";
 
 export const Route = createFileRoute("/admin/_admin/")({
@@ -37,8 +42,12 @@ function AdminOverview() {
 
 	if (!response.success || !response.stats) {
 		return (
-			<div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-				{response.error ?? "Could not load the dashboard."}
+			<div className="panel">
+				<ErrorState
+					title="Could not load the dashboard"
+					description={response.error ?? "Could not load the dashboard."}
+					testId="admin-home-error"
+				/>
 			</div>
 		);
 	}
@@ -68,66 +77,69 @@ function AdminOverview() {
 	];
 
 	return (
-		<div className="space-y-8">
-			<div>
-				<h1 className="text-3xl font-bold text-gray-900">School overview</h1>
-				<p className="mt-1 text-sm text-gray-500">
-					Live counts from the database. Click a card to manage that area.
-				</p>
-			</div>
+		<div data-testid="admin-home-page">
+			<PageHeader
+				eyebrow="Dashboard"
+				title="School overview"
+				description="Live counts from the database. Click a card to manage that area."
+				testId="admin-home-page-header"
+			/>
 
-			<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-				{cards.map((card, index) => {
-					const Icon = icons[index] ?? FileText;
+			<div className="space-y-5">
+				<div
+					className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4"
+					data-testid="admin-home-stats-grid"
+				>
+					{cards.map((card, index) => {
+						const Icon = icons[index] ?? FileText;
 
-					return (
-						<Link
-							key={card.label}
-							to={card.to}
-							className="rounded-2xl border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md"
-						>
-							<Icon className="h-5 w-5 text-red-500" />
-							<p className="mt-4 text-3xl font-bold text-gray-900">
-								{card.value}
-							</p>
-							<p className="text-sm text-gray-500">{card.label}</p>
-						</Link>
-					);
-				})}
-			</div>
+						return (
+							<Link
+								key={card.label}
+								to={card.to}
+								className="rounded-lg border border-hairline bg-surface-1 px-4 py-3 transition-colors duration-150 hover:border-primary/35 hover:bg-surface-2 focus-ring"
+							>
+								<div className="flex items-center justify-between gap-2">
+									<p className="truncate text-[11px] font-medium text-muted-foreground">
+										{card.label}
+									</p>
+									<Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+								</div>
+								<p className="num mt-1.5 font-display text-lg font-semibold leading-none text-foreground">
+									{card.value}
+								</p>
+							</Link>
+						);
+					})}
+				</div>
 
-			<div className="rounded-2xl border border-gray-200 bg-white p-6">
-				<h2 className="text-lg font-semibold text-gray-900">Go to a page</h2>
-				<p className="mt-1 text-sm text-gray-500">
-					Jump straight into any part of the admin console.
-				</p>
-				<div className="mt-5">
+				<Panel
+					title="Go to a page"
+					description="Jump straight into any part of the admin console."
+					testId="admin-home-page-links"
+				>
 					<AdminPageLinks />
-				</div>
-			</div>
+				</Panel>
 
-			<div className="rounded-2xl border border-gray-200 bg-white p-6">
-				<h2 className="text-lg font-semibold text-gray-900">Get started</h2>
-				<div className="mt-4 flex flex-wrap gap-3">
-					<Link
-						to="/admin/invites"
-						className="rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600"
-					>
-						Create invitations
-					</Link>
-					<Link
-						to="/admin/directory"
-						className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50"
-					>
-						Browse directory
-					</Link>
-					<Link
-						to="/admin/content"
-						className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50"
-					>
-						Publish a notice
-					</Link>
-				</div>
+				<Panel title="Get started" testId="admin-home-get-started">
+					<div className="flex flex-wrap gap-2">
+						<Button size="sm" className="gap-1.5" asChild>
+							<Link to="/admin/invites">
+								<UserPlus className="h-3.5 w-3.5" /> Create invitations
+							</Link>
+						</Button>
+						<Button variant="outline" size="sm" className="gap-1.5" asChild>
+							<Link to="/admin/directory">
+								<Users className="h-3.5 w-3.5" /> Browse directory
+							</Link>
+						</Button>
+						<Button variant="outline" size="sm" className="gap-1.5" asChild>
+							<Link to="/admin/content">
+								<Megaphone className="h-3.5 w-3.5" /> Publish a notice
+							</Link>
+						</Button>
+					</div>
+				</Panel>
 			</div>
 		</div>
 	);

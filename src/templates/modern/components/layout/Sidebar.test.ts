@@ -313,7 +313,13 @@ describe("Sidebar pin & hero-section scroll behavior", () => {
 		unmount();
 
 		// 2. Admin logged in
-		mockUser = { id: "1", name: "Principal", role: "admin" };
+		mockUser = {
+			id: "1",
+			name: "Principal",
+			email: "principal@school.test",
+			role: "admin",
+			title: "Principal",
+		};
 		render(React.createElement(Sidebar));
 
 		const adminBtn = screen.getByTestId("sidebar-admin-panel-btn");
@@ -324,7 +330,13 @@ describe("Sidebar pin & hero-section scroll behavior", () => {
 	});
 
 	it("shows My Dashboard when student/guardian logs in", () => {
-		mockUser = { id: "2", name: "Student John", role: "student" };
+		mockUser = {
+			id: "2",
+			name: "Student John",
+			email: "john@school.test",
+			role: "student",
+			title: "Student",
+		};
 		render(React.createElement(Sidebar));
 
 		const dashboardBtn = screen.getByTestId("sidebar-dashboard-btn");

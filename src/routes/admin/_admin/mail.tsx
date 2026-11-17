@@ -1,5 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MailCheck, MailX } from "lucide-react";
+import { MailX } from "lucide-react";
+import { EmptyState } from "#/components/common/EmptyState";
+import { ErrorState } from "#/components/common/ErrorState";
+import { PageHeader } from "#/components/common/PageHeader";
+import { StatusBadge } from "#/components/common/StatusBadge";
 import { getMailLogFn } from "#/packages/notifications/mail-log-server.ts";
 
 export const Route = createFileRoute("/admin/_admin/mail")({
@@ -11,55 +15,57 @@ function AdminMail() {
 	const response = Route.useLoaderData();
 
 	return (
-		<div className="space-y-8">
-			<div>
-				<h1 className="text-3xl font-bold text-gray-900">Mail log</h1>
-				<p className="mt-1 text-sm text-gray-500">
-					Every transactional email attempt is recorded here, including failures
-					when SMTP is unconfigured or unreachable.
-				</p>
-			</div>
+		<div data-testid="mail-page">
+			<PageHeader
+				eyebrow="System"
+				title="Mail log"
+				description="Every transactional email attempt is recorded here, including failures when SMTP is unconfigured or unreachable."
+				testId="mail-page-header"
+			/>
 
 			{!response.success ? (
-				<div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-					{response.error}
+				<div className="panel">
+					<ErrorState description={response.error} testId="mail-error" />
 				</div>
 			) : response.entries.length === 0 ? (
-				<p className="rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-500">
-					No mail has been attempted yet.
-				</p>
+				<div className="panel">
+					<EmptyState
+						icon={MailX}
+						title="No mail yet"
+						description="No mail has been attempted yet. Invitation and notification emails will appear here."
+						testId="mail-empty"
+					/>
+				</div>
 			) : (
-				<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-					<ul className="divide-y divide-gray-100">
+				<section className="panel overflow-hidden" data-testid="mail-log">
+					<ul className="divide-y divide-hairline">
 						{response.entries.map((entry) => (
 							<li
 								key={entry.id}
 								className="flex flex-wrap items-start justify-between gap-3 px-5 py-4"
+								data-testid={`mail-entry-${entry.id}`}
 							>
 								<div className="min-w-0">
-									<p className="font-medium text-gray-900">{entry.subject}</p>
-									<p className="text-xs text-gray-500">
+									<p className="text-sm font-medium text-foreground">
+										{entry.subject}
+									</p>
+									<p className="mt-0.5 text-xs text-muted-foreground">
 										{entry.recipient} ·{" "}
-										{new Date(entry.createdAt).toLocaleString()}
+										<span className="num">
+											{new Date(entry.createdAt).toLocaleString()}
+										</span>
 									</p>
 									{entry.error ? (
-										<p className="mt-1 text-xs text-red-600">{entry.error}</p>
+										<p className="mt-1 text-xs text-destructive">
+											{entry.error}
+										</p>
 									) : null}
 								</div>
-								<span
-									className={
-										entry.ok
-											? "inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700"
-											: "inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-semibold text-red-700"
-									}
-								>
-									{entry.ok ? (
-										<MailCheck className="h-3 w-3" />
-									) : (
-										<MailX className="h-3 w-3" />
-									)}
-									{entry.ok ? "Sent" : "Failed"}
-								</span>
+								<StatusBadge
+									value={entry.ok ? "succeeded" : "failed"}
+									label={entry.ok ? "Sent" : "Failed"}
+									testId={`mail-status-${entry.id}`}
+								/>
 							</li>
 						))}
 					</ul>

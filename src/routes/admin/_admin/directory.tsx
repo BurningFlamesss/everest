@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-	ChevronLeft,
-	ChevronRight,
-	Loader2,
-	Search,
-	UploadCloud,
-} from "lucide-react";
+import { AlertTriangle, Loader2, UploadCloud, Users } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { cn } from "#/lib/utils.ts";
+import { type Column, DataTable } from "#/components/common/DataTable";
+import { EmptyState } from "#/components/common/EmptyState";
+import { FilterBar } from "#/components/common/FilterBar";
+import { PageHeader } from "#/components/common/PageHeader";
+import { PersonCell } from "#/components/common/PersonCell";
+import { StatusBadge } from "#/components/common/StatusBadge";
+import { Button } from "#/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "#/components/ui/tabs";
 import { listDirectoryAction } from "#/packages/invite/server.ts";
 import type {
 	DirectoryGuardianRow,
@@ -22,6 +23,12 @@ export const Route = createFileRoute("/admin/_admin/directory")({
 });
 
 const TABS: Array<DirectoryTab> = ["students", "staff", "guardians"];
+
+const TAB_LABELS: Record<DirectoryTab, string> = {
+	students: "Students",
+	staff: "Staff",
+	guardians: "Guardians",
+};
 
 function AdminDirectory() {
 	const [tab, setTab] = useState<DirectoryTab>("students");
@@ -85,240 +92,225 @@ function AdminDirectory() {
 	const guardians =
 		result?.tab === "guardians" ? (rows as Array<DirectoryGuardianRow>) : [];
 
-	return (
-		<div className="space-y-8">
-			<div className="flex flex-wrap items-end justify-between gap-4">
-				<div>
-					<h1 className="text-3xl font-bold text-gray-900">Directory</h1>
-					<p className="mt-1 text-sm text-gray-500">
-						Students, staff and guardians currently registered in the school.
-					</p>
-				</div>
-				<Link
-					to="/admin/invites"
-					className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600"
-				>
-					<UploadCloud className="h-4 w-4" /> Import or invite
-				</Link>
-			</div>
+	const studentColumns: Column<DirectoryStudentRow>[] = [
+		{
+			key: "student",
+			header: "Student",
+			render: (student) => (
+				<PersonCell name={student.name} subtitle={student.email} />
+			),
+		},
+		{
+			key: "admission",
+			header: "Admission",
+			render: (student) => student.admissionNo ?? "—",
+		},
+		{
+			key: "class",
+			header: "Class",
+			render: (student) =>
+				[student.grade, student.section].filter(Boolean).join(" · ") || "—",
+		},
+		{
+			key: "account",
+			header: "Account",
+			render: (student) => (
+				<StatusBadge
+					value={student.activatedAt ? "active" : "invited"}
+					testId={`directory-account-${student.id}`}
+				/>
+			),
+		},
+	];
 
-			<div className="flex flex-wrap items-center justify-between gap-3">
-				<div className="flex items-center gap-1 rounded-lg border border-gray-200 bg-white p-1">
-					{TABS.map((item) => (
-						<button
-							key={item}
-							type="button"
-							onClick={() => changeTab(item)}
-							className={cn(
-								"rounded-md px-3 py-1.5 text-sm font-medium capitalize",
-								tab === item
-									? "bg-red-500 text-white"
-									: "text-gray-600 hover:bg-gray-100",
-							)}
-						>
-							{item}
-						</button>
-					))}
+	const staffColumns: Column<DirectoryStaffRow>[] = [
+		{
+			key: "staff",
+			header: "Staff member",
+			render: (member) => (
+				<PersonCell name={member.name} subtitle={member.email} />
+			),
+		},
+		{
+			key: "employee",
+			header: "Employee",
+			render: (member) => member.employeeId ?? "—",
+		},
+		{
+			key: "role",
+			header: "Role",
+			render: (member) =>
+				[member.designation, member.department].filter(Boolean).join(" · ") ||
+				"—",
+		},
+		{
+			key: "account",
+			header: "Account",
+			render: (member) => (
+				<StatusBadge
+					value={member.activatedAt ? "active" : "invited"}
+					testId={`directory-account-${member.id}`}
+				/>
+			),
+		},
+	];
+
+	const guardianColumns: Column<DirectoryGuardianRow>[] = [
+		{
+			key: "guardian",
+			header: "Guardian",
+			render: (guardian) => (
+				<PersonCell name={guardian.name} subtitle={guardian.email} />
+			),
+		},
+		{
+			key: "students",
+			header: "Students",
+			render: (guardian) =>
+				guardian.students
+					.map((student) => `${student.name} (${student.relation})`)
+					.join(", ") || "—",
+		},
+		{
+			key: "account",
+			header: "Account",
+			render: (guardian) => (
+				<StatusBadge
+					value={guardian.activatedAt ? "active" : "invited"}
+					testId={`directory-account-${guardian.id}`}
+				/>
+			),
+		},
+	];
+
+	return (
+		<div data-testid="directory-page">
+			<PageHeader
+				eyebrow="People"
+				title="Directory"
+				description="Students, staff and guardians currently registered in the school."
+				testId="directory-page-header"
+				actions={
+					<Button asChild variant="outline" size="sm" className="gap-1.5">
+						<Link to="/admin/invites" data-testid="directory-invite-link">
+							<UploadCloud className="h-3.5 w-3.5" /> Import or invite
+						</Link>
+					</Button>
+				}
+			/>
+
+			<div className="space-y-5">
+				<div className="flex flex-wrap items-center justify-between gap-3">
+					<Tabs
+						value={tab}
+						onValueChange={(value: string) => changeTab(value as DirectoryTab)}
+					>
+						<TabsList className="h-9" data-testid="directory-tabs">
+							{TABS.map((item) => (
+								<TabsTrigger
+									key={item}
+									value={item}
+									className="text-xs"
+									data-testid={`directory-tab-${item}`}
+								>
+									{TAB_LABELS[item]}
+								</TabsTrigger>
+							))}
+						</TabsList>
+					</Tabs>
 					{isLoading ? (
-						<Loader2 className="mx-2 h-4 w-4 animate-spin text-gray-400" />
+						<Loader2
+							className="h-3.5 w-3.5 animate-spin text-muted-foreground"
+							data-testid="directory-loading-spinner"
+						/>
 					) : null}
 				</div>
 
-				<label className="relative block w-full max-w-xs">
-					<Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-					<input
-						value={search}
-						onChange={(event) => {
-							setSearch(event.target.value);
-							setPage(1);
-						}}
-						placeholder="Search name, email, ID…"
-						className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100"
-					/>
-				</label>
-			</div>
+				<FilterBar
+					search={search}
+					onSearchChange={(value) => {
+						setSearch(value);
+						setPage(1);
+					}}
+					placeholder="Search name, email, ID…"
+					testId="directory-filters"
+				/>
 
-			{error ? (
-				<div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-					{error}
-				</div>
-			) : null}
-
-			<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-				{isLoading && !result ? (
-					<p className="flex items-center gap-2 p-6 text-sm text-gray-500">
-						<Loader2 className="h-4 w-4 animate-spin" /> Loading…
-					</p>
-				) : tab === "students" ? (
-					<PeopleTable
-						headers={["Student", "Admission", "Class", "Account"]}
-						rows={students.map((student) => ({
-							id: student.id,
-							cells: [
-								<PersonCell
-									key={student.id}
-									name={student.name}
-									email={student.email}
-								/>,
-								student.admissionNo ?? "—",
-								[student.grade, student.section].filter(Boolean).join(" · ") ||
-									"—",
-								<AccountStatus
-									key={`${student.id}-status`}
-									activatedAt={student.activatedAt}
-								/>,
-							],
-						}))}
-						empty="No students found."
-					/>
-				) : tab === "staff" ? (
-					<PeopleTable
-						headers={["Staff member", "Employee", "Role", "Account"]}
-						rows={staff.map((member) => ({
-							id: member.id,
-							cells: [
-								<PersonCell
-									key={member.id}
-									name={member.name}
-									email={member.email}
-								/>,
-								member.employeeId ?? "—",
-								[member.designation, member.department]
-									.filter(Boolean)
-									.join(" · ") || "—",
-								<AccountStatus
-									key={`${member.id}-status`}
-									activatedAt={member.activatedAt}
-								/>,
-							],
-						}))}
-						empty="No staff found."
-					/>
-				) : (
-					<PeopleTable
-						headers={["Guardian", "Students", "Account"]}
-						rows={guardians.map((guardian) => ({
-							id: guardian.id,
-							cells: [
-								<PersonCell
-									key={guardian.id}
-									name={guardian.name}
-									email={guardian.email}
-								/>,
-								guardian.students
-									.map((student) => `${student.name} (${student.relation})`)
-									.join(", ") || "—",
-								<AccountStatus
-									key={`${guardian.id}-status`}
-									activatedAt={guardian.activatedAt}
-								/>,
-							],
-						}))}
-						empty="No guardians found."
-					/>
-				)}
-
-				{result && result.total > 0 ? (
-					<div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 px-5 py-3 text-xs text-gray-500">
-						<span>
-							Showing {(result.page - 1) * result.pageSize + 1}–
-							{Math.min(result.page * result.pageSize, result.total)} of{" "}
-							{result.total}
-						</span>
-						<div className="flex items-center gap-2">
-							<button
-								type="button"
-								onClick={() => setPage((current) => Math.max(current - 1, 1))}
-								disabled={result.page <= 1 || isLoading}
-								className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-2.5 py-1.5 font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-							>
-								<ChevronLeft className="h-3.5 w-3.5" /> Previous
-							</button>
-							<span>
-								Page {result.page} of {result.pageCount}
-							</span>
-							<button
-								type="button"
-								onClick={() =>
-									setPage((current) => Math.min(current + 1, result.pageCount))
-								}
-								disabled={result.page >= result.pageCount || isLoading}
-								className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-2.5 py-1.5 font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-							>
-								Next <ChevronRight className="h-3.5 w-3.5" />
-							</button>
-						</div>
+				{error ? (
+					<div
+						className="flex items-start gap-2.5 rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive"
+						data-testid="directory-error-banner"
+					>
+						<AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+						<p className="min-w-0 break-words">{error}</p>
 					</div>
 				) : null}
-			</section>
-		</div>
-	);
-}
 
-function PersonCell({ name, email }: { name: string; email: string }) {
-	return (
-		<div>
-			<p className="font-medium text-gray-900">{name}</p>
-			<p className="text-xs text-gray-500">{email}</p>
-		</div>
-	);
-}
-
-function AccountStatus({ activatedAt }: { activatedAt: string | Date | null }) {
-	return (
-		<span
-			className={cn(
-				"rounded-full px-2 py-0.5 text-xs font-semibold",
-				activatedAt
-					? "bg-green-100 text-green-700"
-					: "bg-amber-100 text-amber-700",
-			)}
-		>
-			{activatedAt ? "Active" : "Invited"}
-		</span>
-	);
-}
-
-function PeopleTable({
-	headers,
-	rows,
-	empty,
-}: {
-	headers: Array<string>;
-	rows: Array<{ id: string; cells: Array<React.ReactNode> }>;
-	empty: string;
-}) {
-	if (rows.length === 0) {
-		return <p className="p-8 text-center text-sm text-gray-500">{empty}</p>;
-	}
-
-	return (
-		<div className="overflow-x-auto">
-			<table className="min-w-full text-left text-sm">
-				<thead className="bg-gray-50 text-xs uppercase text-gray-500">
-					<tr>
-						{headers.map((header) => (
-							<th key={header} className="px-5 py-3 font-semibold">
-								{header}
-							</th>
-						))}
-					</tr>
-				</thead>
-				<tbody>
-					{rows.map((row) => (
-						<tr key={row.id} className="border-t border-gray-100">
-							{row.cells.map((cell, cellIndex) => (
-								<td
-									key={`${row.id}-${headers[cellIndex] ?? cellIndex}`}
-									className="px-5 py-3"
-								>
-									{cell}
-								</td>
-							))}
-						</tr>
-					))}
-				</tbody>
-			</table>
+				{tab === "students" ? (
+					<DataTable
+						columns={studentColumns}
+						rows={students}
+						rowId={(student) => student.id}
+						rowTestId={(student) => `directory-student-${student.id}`}
+						testId="directory-students-table"
+						loading={isLoading && !result}
+						page={result?.page ?? 1}
+						pageSize={result?.pageSize ?? 25}
+						total={result?.tab === "students" ? (result?.total ?? 0) : 0}
+						onPageChange={setPage}
+						empty={
+							<EmptyState
+								icon={Users}
+								title="No students found"
+								description="No students match this search. Try a different name, email or admission number."
+								testId="directory-students-empty"
+							/>
+						}
+					/>
+				) : tab === "staff" ? (
+					<DataTable
+						columns={staffColumns}
+						rows={staff}
+						rowId={(member) => member.id}
+						rowTestId={(member) => `directory-staff-${member.id}`}
+						testId="directory-staff-table"
+						loading={isLoading && !result}
+						page={result?.page ?? 1}
+						pageSize={result?.pageSize ?? 25}
+						total={result?.tab === "staff" ? (result?.total ?? 0) : 0}
+						onPageChange={setPage}
+						empty={
+							<EmptyState
+								icon={Users}
+								title="No staff found"
+								description="No staff members match this search. Try a different name, email or employee ID."
+								testId="directory-staff-empty"
+							/>
+						}
+					/>
+				) : (
+					<DataTable
+						columns={guardianColumns}
+						rows={guardians}
+						rowId={(guardian) => guardian.id}
+						rowTestId={(guardian) => `directory-guardian-${guardian.id}`}
+						testId="directory-guardians-table"
+						loading={isLoading && !result}
+						page={result?.page ?? 1}
+						pageSize={result?.pageSize ?? 25}
+						total={result?.tab === "guardians" ? (result?.total ?? 0) : 0}
+						onPageChange={setPage}
+						empty={
+							<EmptyState
+								icon={Users}
+								title="No guardians found"
+								description="No guardians match this search. Try a different name, email or student name."
+								testId="directory-guardians-empty"
+							/>
+						}
+					/>
+				)}
+			</div>
 		</div>
 	);
 }

@@ -88,6 +88,12 @@ const STATUS_MAP: Record<string, { label: string; tone: Tone }> = {
 	private: { label: "Private", tone: "neutral" },
 	planning: { label: "Planning", tone: "info" },
 	closed: { label: "Closed", tone: "neutral" },
+	// calendar event kinds
+	holiday: { label: "Holiday", tone: "danger" },
+	festival: { label: "Festival", tone: "warning" },
+	exam: { label: "Examination", tone: "info" },
+	admission: { label: "Admission", tone: "primary" },
+	event: { label: "School Event", tone: "success" },
 };
 
 interface StatusBadgeProps {

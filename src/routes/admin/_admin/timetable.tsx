@@ -1,6 +1,13 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { CalendarClock, Loader2, Plus, Trash2 } from "lucide-react";
+import { CalendarClock, Loader2, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { ConfirmDialog } from "#/components/common/ConfirmDialog";
+import { PageHeader } from "#/components/common/PageHeader";
+import { Panel } from "#/components/common/Panel";
+import { TableSkeleton } from "#/components/common/Skeletons";
+import { Button } from "#/components/ui/button";
+import { Label } from "#/components/ui/label";
+import { cn } from "#/lib/utils.ts";
 import {
 	createTimetableSlotAction,
 	deleteTimetableSlotAction,
@@ -74,6 +81,7 @@ function AdminTimetable() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
 	const [notice, setNotice] = useState("");
+	const [pendingSlot, setPendingSlot] = useState<SlotRow | null>(null);
 
 	const loadOptions = useCallback(async () => {
 		const response = await getTimetableOptionsFn();
@@ -158,8 +166,6 @@ function AdminTimetable() {
 	};
 
 	const remove = async (id: string) => {
-		if (!confirm("Remove this slot from the timetable?")) return;
-
 		const response = await deleteTimetableSlotAction({ data: { id } });
 
 		if (!response.success) {
@@ -183,200 +189,212 @@ function AdminTimetable() {
 	);
 
 	return (
-		<div className="space-y-8">
-			<div>
-				<h1 className="text-3xl font-bold text-gray-900">Timetable</h1>
-				<p className="mt-1 text-sm text-gray-500">
-					Assign courses to days and periods. A teacher or room cannot be in two
-					places at once.
-				</p>
-			</div>
+		<div data-testid="timetable-page" className="space-y-5">
+			<PageHeader
+				testId="timetable-page-header"
+				eyebrow="Academics"
+				title="Timetable"
+				description="Assign courses to days and periods. A teacher or room cannot be in two places at once."
+				meta={
+					!isLoading ? (
+						<span data-testid="timetable-meta-slots">
+							{slots.length} {slots.length === 1 ? "slot" : "slots"} scheduled
+						</span>
+					) : undefined
+				}
+			/>
 
 			{error ? (
-				<div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+				<div
+					role="alert"
+					data-testid="timetable-error"
+					className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+				>
 					{error}
 				</div>
 			) : null}
 			{notice ? (
-				<div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+				<div
+					data-testid="timetable-notice"
+					className="rounded-lg border border-success/30 bg-success/10 p-3 text-sm text-success"
+				>
 					{notice}
 				</div>
 			) : null}
 
-			<section className="rounded-2xl border border-gray-200 bg-white p-6">
-				<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-					<Plus className="h-5 w-5 text-red-500" /> Add a slot
-				</h2>
+			<Panel
+				title="Add a slot"
+				description="Place a course into a day and period."
+				testId="timetable-add-slot-panel"
+				bodyClassName="p-5"
+			>
 				<form
 					onSubmit={(event) => void submit(event)}
 					className="grid gap-4 md:grid-cols-4"
 				>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Year</span>
-						<select
-							value={yearId}
-							onChange={(event) => setYearId(event.target.value)}
-							required
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						>
-							<option value="">Select…</option>
-							{years.map((year) => (
-								<option key={year.id} value={year.id}>
-									{year.name}
-									{year.isActive ? " (active)" : ""}
-								</option>
-							))}
-						</select>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Course</span>
-						<select
-							value={courseId}
-							onChange={(event) => chooseCourse(event.target.value)}
-							required
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						>
-							<option value="">Select…</option>
-							{courses.map((course) => (
-								<option key={course.id} value={course.id}>
-									{course.code} · {course.name}
-								</option>
-							))}
-						</select>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">
-							Teacher
-						</span>
-						<select
-							value={staffId}
-							onChange={(event) => setStaffId(event.target.value)}
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						>
-							<option value="">Unassigned</option>
-							{staff.map((member) => (
-								<option key={member.id} value={member.id}>
-									{member.user.name}
-								</option>
-							))}
-						</select>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Room</span>
-						<select
-							value={classroomId}
-							onChange={(event) => setClassroomId(event.target.value)}
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						>
-							<option value="">Unassigned</option>
-							{classrooms.map((room) => (
-								<option key={room.id} value={room.id}>
-									{room.name}
-								</option>
-							))}
-						</select>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Day</span>
-						<select
-							value={weekday}
-							onChange={(event) => setWeekday(event.target.value)}
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						>
-							{DAYS.map((day, index) => (
-								<option key={day} value={index + 1}>
-									{day}
-								</option>
-							))}
-						</select>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Period</span>
-						<input
-							type="number"
-							min={1}
-							max={20}
-							value={periodIndex}
-							onChange={(event) => setPeriodIndex(event.target.value)}
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Starts</span>
-						<input
-							type="time"
-							value={startsAt}
-							onChange={(event) => setStartsAt(event.target.value)}
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Ends</span>
-						<input
-							type="time"
-							value={endsAt}
-							onChange={(event) => setEndsAt(event.target.value)}
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
+					<Select
+						label="Year"
+						value={yearId}
+						onChange={(event) => setYearId(event.target.value)}
+						required
+						testId="timetable-year-select"
+					>
+						<option value="">Select…</option>
+						{years.map((year) => (
+							<option key={year.id} value={year.id}>
+								{year.name}
+								{year.isActive ? " (active)" : ""}
+							</option>
+						))}
+					</Select>
+					<Select
+						label="Course"
+						value={courseId}
+						onChange={(event) => chooseCourse(event.target.value)}
+						required
+						testId="timetable-course-select"
+					>
+						<option value="">Select…</option>
+						{courses.map((course) => (
+							<option key={course.id} value={course.id}>
+								{course.code} · {course.name}
+							</option>
+						))}
+					</Select>
+					<Select
+						label="Teacher"
+						value={staffId}
+						onChange={(event) => setStaffId(event.target.value)}
+						testId="timetable-teacher-select"
+					>
+						<option value="">Unassigned</option>
+						{staff.map((member) => (
+							<option key={member.id} value={member.id}>
+								{member.user.name}
+							</option>
+						))}
+					</Select>
+					<Select
+						label="Room"
+						value={classroomId}
+						onChange={(event) => setClassroomId(event.target.value)}
+						testId="timetable-room-select"
+					>
+						<option value="">Unassigned</option>
+						{classrooms.map((room) => (
+							<option key={room.id} value={room.id}>
+								{room.name}
+							</option>
+						))}
+					</Select>
+					<Select
+						label="Day"
+						value={weekday}
+						onChange={(event) => setWeekday(event.target.value)}
+						testId="timetable-day-select"
+					>
+						{DAYS.map((day, index) => (
+							<option key={day} value={index + 1}>
+								{day}
+							</option>
+						))}
+					</Select>
+					<Input
+						label="Period"
+						type="number"
+						min={1}
+						max={20}
+						value={periodIndex}
+						onChange={(event) => setPeriodIndex(event.target.value)}
+						testId="timetable-period-input"
+					/>
+					<Input
+						label="Starts"
+						type="time"
+						value={startsAt}
+						onChange={(event) => setStartsAt(event.target.value)}
+						testId="timetable-starts-input"
+					/>
+					<Input
+						label="Ends"
+						type="time"
+						value={endsAt}
+						onChange={(event) => setEndsAt(event.target.value)}
+						testId="timetable-ends-input"
+					/>
 					<div className="md:col-span-4">
-						<button
+						<Button
 							type="submit"
 							disabled={isSubmitting || !yearId || !courseId}
-							className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+							className="gap-1.5"
+							data-testid="timetable-add-slot"
 						>
 							{isSubmitting ? (
-								<Loader2 className="h-4 w-4 animate-spin" />
+								<Loader2 className="h-3.5 w-3.5 animate-spin" />
 							) : (
-								<CalendarClock className="h-4 w-4" />
+								<CalendarClock className="h-3.5 w-3.5" />
 							)}
 							Add slot
-						</button>
+						</Button>
 					</div>
 				</form>
-			</section>
+			</Panel>
 
-			<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-				<header className="border-b border-gray-200 px-5 py-4">
-					<h2 className="font-semibold text-gray-900">Weekly grid</h2>
-				</header>
+			<Panel
+				title="Weekly grid"
+				description="The timetable for the selected academic year."
+				testId="timetable-grid-panel"
+				bodyClassName="p-0"
+			>
 				{isLoading ? (
-					<p className="flex items-center gap-2 p-6 text-sm text-gray-500">
-						<Loader2 className="h-4 w-4 animate-spin" /> Loading…
-					</p>
+					<div className="p-5">
+						<TableSkeleton rows={6} columns={5} />
+					</div>
 				) : (
 					<div className="overflow-x-auto">
-						<table className="w-full min-w-[900px] text-left text-sm">
-							<thead className="bg-gray-50 text-xs uppercase text-gray-500">
-								<tr>
-									<th className="px-3 py-3">Period</th>
+						<table
+							className="w-full min-w-[900px] border-collapse text-left text-sm"
+							data-testid="timetable-grid"
+						>
+							<thead className="bg-surface-2">
+								<tr className="border-b border-hairline">
+									<th className="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+										Period
+									</th>
 									{DAYS.map((day) => (
-										<th key={day} className="px-3 py-3">
+										<th
+											key={day}
+											className="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground"
+										>
 											{day}
 										</th>
 									))}
 								</tr>
 							</thead>
-							<tbody>
+							<tbody className="divide-y divide-hairline">
 								{periods.map((period) => (
-									<tr key={period} className="border-t border-gray-100">
-										<td className="px-3 py-3 font-semibold text-gray-600">
+									<tr key={period} className="transition-colors duration-150">
+										<td className="num px-3 py-2.5 font-semibold text-foreground">
 											{period}
 										</td>
 										{DAYS.map((day, index) => {
 											const slot = byCell.get(`${index + 1}-${period}`);
 
 											return (
-												<td key={day} className="px-2 py-2 align-top">
+												<td
+													key={day}
+													className="px-2 py-2 align-top"
+													data-testid={`timetable-cell-${index + 1}-${period}`}
+												>
 													{slot ? (
-														<div className="rounded-lg border border-red-100 bg-red-50/60 p-2">
-															<p className="text-xs font-semibold text-red-700">
+														<div className="group rounded-lg border border-primary/20 bg-primary/[0.06] p-2 transition-colors duration-150">
+															<p className="text-xs font-semibold text-primary">
 																{slot.course.code}
 															</p>
-															<p className="text-[11px] text-gray-600">
+															<p className="num text-[11px] text-foreground">
 																{slot.startsAt}–{slot.endsAt}
 															</p>
-															<p className="text-[11px] text-gray-500">
+															<p className="text-[11px] text-muted-foreground">
 																{slot.staff?.user.name ?? "Unassigned"}
 																{slot.classroom
 																	? ` · ${slot.classroom.name}`
@@ -384,14 +402,17 @@ function AdminTimetable() {
 															</p>
 															<button
 																type="button"
-																onClick={() => void remove(slot.id)}
-																className="mt-1 inline-flex items-center gap-1 text-[10px] font-medium text-red-600"
+																onClick={() => setPendingSlot(slot)}
+																className="mt-1 inline-flex items-center gap-1 rounded text-[11px] font-medium text-muted-foreground transition-colors duration-150 hover:text-destructive focus-ring"
+																data-testid={`timetable-slot-remove-${slot.id}`}
 															>
 																<Trash2 className="h-3 w-3" /> Remove
 															</button>
 														</div>
 													) : (
-														<span className="text-xs text-gray-300">—</span>
+														<span className="text-xs text-muted-foreground/60">
+															—
+														</span>
 													)}
 												</td>
 											);
@@ -402,7 +423,58 @@ function AdminTimetable() {
 						</table>
 					</div>
 				)}
-			</section>
+			</Panel>
+
+			<ConfirmDialog
+				open={!!pendingSlot}
+				onOpenChange={(open) => !open && setPendingSlot(null)}
+				testId="timetable-slot-delete-dialog"
+				title="Remove slot"
+				description="Remove this slot from the timetable?"
+				confirmLabel="Remove"
+				destructive
+				onConfirm={() => pendingSlot && void remove(pendingSlot.id)}
+			/>
 		</div>
+	);
+}
+
+const fieldClasses =
+	"h-9 w-full rounded-md border border-hairline bg-surface-1 px-3 text-sm outline-none transition-colors duration-150 placeholder:text-muted-foreground focus-ring";
+
+function Input({
+	label,
+	className,
+	testId,
+	...props
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+	label: string;
+	testId?: string;
+}) {
+	return (
+		<label className={cn("block space-y-1.5", className)}>
+			<Label className="text-xs">{label}</Label>
+			<input {...props} data-testid={testId} className={fieldClasses} />
+		</label>
+	);
+}
+
+function Select({
+	label,
+	className,
+	testId,
+	children,
+	...props
+}: React.SelectHTMLAttributes<HTMLSelectElement> & {
+	label: string;
+	testId?: string;
+}) {
+	return (
+		<label className={cn("block space-y-1.5", className)}>
+			<Label className="text-xs">{label}</Label>
+			<select {...props} data-testid={testId} className={fieldClasses}>
+				{children}
+			</select>
+		</label>
 	);
 }

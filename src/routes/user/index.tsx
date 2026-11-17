@@ -1,33 +1,31 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useSearch } from "@tanstack/react-router";
-import { Copy, Loader2, Users } from "lucide-react";
+import { Copy, Users } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Button } from "#/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "#/components/ui/dialog";
-import { Input } from "#/components/ui/input";
-import { Label } from "#/components/ui/label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "#/components/ui/select";
+import { STAGGER } from "#/lib/motion";
 import { getNoticesServer } from "#/packages/content/server/content.ts";
 import { createGuardianInvite } from "#/packages/invite/guardian-invite.ts";
 import { getMyPortalServer } from "#/packages/invite/portal.ts";
 import {
 	PageFrame,
 	PageHeader,
+	Reveal,
+	Section,
 } from "#/templates/modern/components/chrome/PageFrame";
+import {
+	Button,
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	Input,
+	Skeleton,
+} from "#/templates/modern/components/kit";
+import { Label } from "#/templates/modern/components/Label";
+import { Segmented } from "#/templates/modern/components/Segmented";
 
 export const Route = createFileRoute("/user/")({
 	component: PortalIndex,
@@ -93,25 +91,32 @@ function PortalIndex() {
 
 	if (portal.isLoading) {
 		return (
-			<div className="flex min-h-[50vh] items-center justify-center">
-				<Loader2 className="h-6 w-6 animate-spin text-primary" />
-			</div>
+			<PageFrame testId="portal-page">
+				<div className="pt-12">
+					<Skeleton className="h-5 w-40" />
+					<Skeleton className="mt-5 h-12 w-72" />
+					<Skeleton className="mt-10 h-48 w-full rounded-card" />
+				</div>
+			</PageFrame>
 		);
 	}
 
 	if (!user) {
 		return (
-			<div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
-				Unable to load your account.
-			</div>
+			<PageFrame testId="portal-page">
+				<p className="t-body pt-12 text-muted-foreground">
+					Unable to load your account.
+				</p>
+			</PageFrame>
 		);
 	}
 
 	const recentNotices = (notices.data ?? []).slice(0, 5);
 
 	return (
-		<PageFrame>
+		<PageFrame testId="portal-page">
 			<PageHeader
+				testId="portal-page-header"
 				eyebrow="My Portal"
 				title={`Hello, ${user.name.split(" ")[0]}`}
 				lead={
@@ -123,155 +128,166 @@ function PortalIndex() {
 				}
 			/>
 
-			<div className="mt-10 grid gap-6 md:grid-cols-2">
-				{/* Profile card */}
-				<section className="rounded-card border border-border p-6">
-					<h2 className="t-h2 text-foreground text-lg">My details</h2>
-					<dl className="mt-4 space-y-2 text-sm">
-						<div className="flex justify-between gap-4">
-							<dt className="text-muted-foreground">Name</dt>
-							<dd className="text-foreground font-medium">{user.name}</dd>
-						</div>
-						<div className="flex justify-between gap-4">
-							<dt className="text-muted-foreground">Email</dt>
-							<dd className="text-foreground font-medium break-all">
-								{user.email}
-							</dd>
-						</div>
-						{student?.admissionNo && (
-							<div className="flex justify-between gap-4">
-								<dt className="text-muted-foreground">Admission no.</dt>
-								<dd className="text-foreground font-medium">
-									{student.admissionNo}
-								</dd>
-							</div>
-						)}
-					</dl>
-				</section>
+			<Section className="!mt-10" testId="portal-grid">
+				<div className="grid gap-6 md:grid-cols-2">
+					{/* Profile card */}
+					<Reveal>
+						<section className="h-full rounded-card border border-border bg-card p-6 shadow-xs">
+							<h3 className="t-h3 text-foreground">My details</h3>
+							<dl className="mt-5 divide-y divide-rule-soft">
+								<div className="flex justify-between gap-4 py-2.5">
+									<dt className="t-eyebrow">Name</dt>
+									<dd className="text-[13.5px] font-medium text-foreground">
+										{user.name}
+									</dd>
+								</div>
+								<div className="flex justify-between gap-4 py-2.5">
+									<dt className="t-eyebrow">Email</dt>
+									<dd className="text-[13.5px] font-medium text-foreground break-all">
+										{user.email}
+									</dd>
+								</div>
+								{student?.admissionNo && (
+									<div className="flex justify-between gap-4 py-2.5">
+										<dt className="t-eyebrow">Admission no.</dt>
+										<dd className="text-[13.5px] font-medium text-foreground">
+											{student.admissionNo}
+										</dd>
+									</div>
+								)}
+							</dl>
+						</section>
+					</Reveal>
 
-				{/* Student: guardians + invite */}
-				{student && (
-					<section className="rounded-card border border-border p-6">
-						<div className="flex items-center justify-between gap-3">
-							<h2 className="t-h2 text-foreground text-lg">Guardians</h2>
-							<Button
-								size="sm"
-								className="gap-1.5"
-								onClick={() => setInviteOpen(true)}
-							>
-								<Users className="h-3.5 w-3.5" /> Invite a guardian
-							</Button>
-						</div>
-						{student.guardians.length > 0 ? (
-							<ul className="mt-4 space-y-2 text-sm">
-								{student.guardians.map((g) => (
-									<li key={g.email} className="flex justify-between gap-4">
-										<span className="text-foreground font-medium">
-											{g.name}
-										</span>
-										<span className="text-muted-foreground">{g.relation}</span>
-									</li>
-								))}
-							</ul>
-						) : (
-							<p className="mt-4 text-sm text-muted-foreground">
-								No guardian linked yet. Invite one so they can follow your
-								progress.
-							</p>
-						)}
-						{lastInvite && !lastInvite.emailed && (
-							<div className="mt-4 rounded-lg border border-hairline bg-surface-2 p-3">
-								<p className="text-xs font-medium text-foreground">
-									Share this invite link
-								</p>
-								<div className="mt-2 flex items-center gap-2">
-									<code className="min-w-0 flex-1 truncate rounded bg-surface-1 px-2 py-1 text-[11px] text-muted-foreground">
-										{lastInvite.url}
-									</code>
+					{/* Student: guardians + invite */}
+					{student && (
+						<Reveal delay={STAGGER}>
+							<section className="h-full rounded-card border border-border bg-card p-6 shadow-xs">
+								<div className="flex items-center justify-between gap-3">
+									<h3 className="t-h3 text-foreground">Guardians</h3>
 									<Button
-										variant="outline"
 										size="sm"
-										className="gap-1 shrink-0"
-										onClick={() => {
-											navigator.clipboard.writeText(lastInvite.url);
-											toast.success("Link copied");
-										}}
+										className="gap-1.5 rounded-field"
+										onClick={() => setInviteOpen(true)}
 									>
-										<Copy className="h-3.5 w-3.5" /> Copy
+										<Users className="h-3.5 w-3.5" /> Invite a guardian
 									</Button>
 								</div>
-							</div>
-						)}
-					</section>
-				)}
-
-				{/* Guardian: linked children */}
-				{guardian && (
-					<section className="rounded-card border border-border p-6 md:col-span-2">
-						<h2 className="t-h2 text-foreground text-lg">My children</h2>
-						{guardian.children.length > 0 ? (
-							<ul className="mt-4 grid gap-3 sm:grid-cols-2">
-								{guardian.children.map((c) => (
-									<li
-										key={c.email}
-										className="rounded-lg border border-hairline p-4"
-									>
-										<p className="text-foreground font-medium">{c.name}</p>
-										<p className="text-xs text-muted-foreground">
-											{c.relation} · Grade {c.grade ?? "—"}
-											{c.section ? ` ${c.section}` : ""}
+								{student.guardians.length > 0 ? (
+									<ul className="mt-4 divide-y divide-rule-soft">
+										{student.guardians.map((g) => (
+											<li
+												key={g.email}
+												className="flex items-baseline justify-between gap-4 py-2.5"
+											>
+												<span className="text-[13.5px] font-medium text-foreground">
+													{g.name}
+												</span>
+												<span className="t-caption">{g.relation}</span>
+											</li>
+										))}
+									</ul>
+								) : (
+									<p className="t-caption mt-4">
+										No guardian linked yet. Invite one so they can follow your
+										progress.
+									</p>
+								)}
+								{lastInvite && !lastInvite.emailed && (
+									<div className="mt-4 rounded-field border border-border bg-secondary/60 p-3">
+										<p className="t-caption font-medium text-foreground">
+											Share this invite link
 										</p>
-									</li>
-								))}
-							</ul>
-						) : (
-							<p className="mt-4 text-sm text-muted-foreground">
-								No linked students yet. Ask your child to send you a guardian
-								invite.
-							</p>
-						)}
-					</section>
-				)}
-
-				{/* Notices */}
-				<section className="rounded-card border border-border p-6 md:col-span-2">
-					<h2 className="t-h2 text-foreground text-lg">Latest notices</h2>
-					{recentNotices.length > 0 ? (
-						<ul className="mt-4 divide-y divide-hairline">
-							{recentNotices.map((n) => (
-								<li
-									key={n.id}
-									className="flex items-start justify-between gap-4 py-3"
-								>
-									<div className="min-w-0">
-										<p className="text-foreground font-medium truncate">
-											{n.title}
-										</p>
-										<p className="text-xs text-muted-foreground truncate">
-											{n.summary}
-										</p>
+										<div className="mt-2 flex items-center gap-2">
+											<code className="min-w-0 flex-1 truncate rounded-field bg-background px-2 py-1 font-mono text-[11px] text-muted-foreground">
+												{lastInvite.url}
+											</code>
+											<Button
+												variant="outline"
+												size="sm"
+												className="gap-1 shrink-0 rounded-field"
+												onClick={() => {
+													navigator.clipboard.writeText(lastInvite.url);
+													toast.success("Link copied");
+												}}
+											>
+												<Copy className="h-3.5 w-3.5" /> Copy
+											</Button>
+										</div>
 									</div>
-									<span className="shrink-0 text-xs text-muted-foreground">
-										{n.dateBs || n.dateAd}
-									</span>
-								</li>
-							))}
-						</ul>
-					) : (
-						<p className="mt-4 text-sm text-muted-foreground">
-							No notices right now.
-						</p>
+								)}
+							</section>
+						</Reveal>
 					)}
-				</section>
-			</div>
+
+					{/* Guardian: linked children */}
+					{guardian && (
+						<Reveal delay={STAGGER * 2} className="md:col-span-2">
+							<section className="rounded-card border border-border bg-card p-6 shadow-xs">
+								<h3 className="t-h3 text-foreground">My children</h3>
+								{guardian.children.length > 0 ? (
+									<ul className="mt-4 grid gap-3 sm:grid-cols-2">
+										{guardian.children.map((c) => (
+											<li
+												key={c.email}
+												className="rounded-field border border-border bg-card p-4"
+											>
+												<p className="text-[13.5px] font-medium text-foreground">
+													{c.name}
+												</p>
+												<p className="t-caption mt-1">
+													{c.relation} · Grade {c.grade ?? "—"}
+													{c.section ? ` ${c.section}` : ""}
+												</p>
+											</li>
+										))}
+									</ul>
+								) : (
+									<p className="t-caption mt-4">
+										No linked students yet. Ask your child to send you a
+										guardian invite.
+									</p>
+								)}
+							</section>
+						</Reveal>
+					)}
+
+					{/* Notices */}
+					<Reveal delay={STAGGER * 3} className="md:col-span-2">
+						<section className="rounded-card border border-border bg-card p-6 shadow-xs">
+							<h3 className="t-h3 text-foreground">Latest notices</h3>
+							{recentNotices.length > 0 ? (
+								<ul className="mt-4 divide-y divide-rule-soft">
+									{recentNotices.map((n) => (
+										<li
+											key={n.id}
+											className="flex items-start justify-between gap-4 py-3"
+										>
+											<div className="min-w-0">
+												<p className="truncate text-[13.5px] font-medium text-foreground">
+													{n.title}
+												</p>
+												<p className="t-caption truncate">{n.summary}</p>
+											</div>
+											<span className="t-meta shrink-0">
+												{n.dateBs || n.dateAd}
+											</span>
+										</li>
+									))}
+								</ul>
+							) : (
+								<p className="t-caption mt-4">No notices right now.</p>
+							)}
+						</section>
+					</Reveal>
+				</div>
+			</Section>
 
 			{/* Invite guardian dialog (students) */}
 			<Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
-				<DialogContent className="bg-popover sm:max-w-md">
+				<DialogContent className="border-border bg-card sm:max-w-md">
 					<DialogHeader>
-						<DialogTitle className="font-display">
-							Invite a guardian
-						</DialogTitle>
+						<DialogTitle className="t-h3">Invite a guardian</DialogTitle>
 						<DialogDescription>
 							We'll email them a link to set a password and link their account
 							to yours.
@@ -279,38 +295,29 @@ function PortalIndex() {
 					</DialogHeader>
 					<div className="grid gap-3">
 						<div className="space-y-1.5">
-							<Label className="text-xs">Guardian full name</Label>
+							<Label className="text-[13px]">Guardian full name</Label>
 							<Input
 								value={guardianName}
 								onChange={(e: any) => setGuardianName(e.target.value)}
+								className="rounded-field border-border bg-background"
 							/>
 						</div>
 						<div className="space-y-1.5">
-							<Label className="text-xs">Guardian email</Label>
+							<Label className="text-[13px]">Guardian email</Label>
 							<Input
 								type="email"
 								value={guardianEmail}
 								onChange={(e: any) => setGuardianEmail(e.target.value)}
+								className="rounded-field border-border bg-background"
 							/>
 						</div>
-						<div className="space-y-1.5">
-							<Label className="text-xs">Relationship</Label>
-							<Select
-								value={relation}
-								onValueChange={(v: string) => setRelation(v)}
-							>
-								<SelectTrigger>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent className="bg-popover">
-									{RELATIONS.map((r) => (
-										<SelectItem key={r} value={r}>
-											{r}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
+						<Segmented
+							label="Relationship"
+							options={RELATIONS.map((r) => ({ value: r, label: r }))}
+							value={relation}
+							onChange={setRelation}
+							testId="portal-relation-segmented"
+						/>
 					</div>
 					<DialogFooter>
 						<Button variant="outline" onClick={() => setInviteOpen(false)}>

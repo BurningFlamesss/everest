@@ -97,7 +97,7 @@ export function ConvertApplicantDialog({
 				</DialogHeader>
 
 				<div className="space-y-2">
-					<p className="text-xs font-medium text-foreground">Class placement</p>
+					<p className="eyebrow-label">Class placement</p>
 					<Select value={classId} onValueChange={setClassId}>
 						<SelectTrigger data-testid="convert-class-select">
 							<SelectValue placeholder="Choose a class" />

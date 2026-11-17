@@ -10,22 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as OnboardRouteImport } from './routes/_onboard'
+import { Route as PortalRouteImport } from './routes/_portal'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as MyClassesRouteImport } from './routes/my-classes'
-import { Route as MyFeesRouteImport } from './routes/my-fees'
-import { Route as MyHomeworkRouteImport } from './routes/my-homework'
-import { Route as MyRecordsRouteImport } from './routes/my-records'
-import { Route as MyResultsRouteImport } from './routes/my-results'
-import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as UserRouteImport } from './routes/user'
 import { Route as OnboardForgotPasswordRouteImport } from './routes/_onboard/forgot-password'
 import { Route as OnboardResetPasswordRouteImport } from './routes/_onboard/reset-password'
 import { Route as OnboardSignupRouteImport } from './routes/_onboard/signup'
+import { Route as PortalDashboardRouteImport } from './routes/_portal/dashboard'
+import { Route as PortalMyClassesRouteImport } from './routes/_portal/my-classes'
+import { Route as PortalMyFeesRouteImport } from './routes/_portal/my-fees'
+import { Route as PortalMyHomeworkRouteImport } from './routes/_portal/my-homework'
+import { Route as PortalMyRecordsRouteImport } from './routes/_portal/my-records'
+import { Route as PortalMyResultsRouteImport } from './routes/_portal/my-results'
+import { Route as PortalNotificationsRouteImport } from './routes/_portal/notifications'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as PublicAboutRouteImport } from './routes/_public/about'
 import { Route as PublicAdmissionsRouteImport } from './routes/_public/admissions'
@@ -61,6 +62,7 @@ import { Route as AdminAdminAdmissionsRouteImport } from './routes/admin/_admin/
 import { Route as AdminAdminAttendanceRouteImport } from './routes/admin/_admin/attendance'
 import { Route as AdminAdminCalendarRouteImport } from './routes/admin/_admin/calendar'
 import { Route as AdminAdminClassesRouteImport } from './routes/admin/_admin/classes'
+import { Route as AdminAdminClubsRouteImport } from './routes/admin/_admin/clubs'
 import { Route as AdminAdminContentRouteImport } from './routes/admin/_admin/content'
 import { Route as AdminAdminCoursesRouteImport } from './routes/admin/_admin/courses'
 import { Route as AdminAdminDirectoryRouteImport } from './routes/admin/_admin/directory'
@@ -125,6 +127,10 @@ const OnboardRoute = OnboardRouteImport.update({
   id: '/_onboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortalRoute = PortalRouteImport.update({
+  id: '/_portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
@@ -134,44 +140,9 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyClassesRoute = MyClassesRouteImport.update({
-  id: '/my-classes',
-  path: '/my-classes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyFeesRoute = MyFeesRouteImport.update({
-  id: '/my-fees',
-  path: '/my-fees',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyHomeworkRoute = MyHomeworkRouteImport.update({
-  id: '/my-homework',
-  path: '/my-homework',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyRecordsRoute = MyRecordsRouteImport.update({
-  id: '/my-records',
-  path: '/my-records',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyResultsRoute = MyResultsRouteImport.update({
-  id: '/my-results',
-  path: '/my-results',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
@@ -203,6 +174,41 @@ const OnboardSignupRoute = OnboardSignupRouteImport.update({
   id: '/signup',
   path: '/signup',
   getParentRoute: () => OnboardRoute,
+} as any)
+const PortalDashboardRoute = PortalDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalMyClassesRoute = PortalMyClassesRouteImport.update({
+  id: '/my-classes',
+  path: '/my-classes',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalMyFeesRoute = PortalMyFeesRouteImport.update({
+  id: '/my-fees',
+  path: '/my-fees',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalMyHomeworkRoute = PortalMyHomeworkRouteImport.update({
+  id: '/my-homework',
+  path: '/my-homework',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalMyRecordsRoute = PortalMyRecordsRouteImport.update({
+  id: '/my-records',
+  path: '/my-records',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalMyResultsRoute = PortalMyResultsRouteImport.update({
+  id: '/my-results',
+  path: '/my-results',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalNotificationsRoute = PortalNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => PortalRoute,
 } as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
@@ -377,6 +383,11 @@ const AdminAdminCalendarRoute = AdminAdminCalendarRouteImport.update({
 const AdminAdminClassesRoute = AdminAdminClassesRouteImport.update({
   id: '/_admin/classes',
   path: '/classes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminClubsRoute = AdminAdminClubsRouteImport.update({
+  id: '/_admin/clubs',
+  path: '/clubs',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAdminContentRoute = AdminAdminContentRouteImport.update({
@@ -687,20 +698,20 @@ const ApiWebsitePagesKeySectionsSectionTypeRoute =
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
-  '/my-classes': typeof MyClassesRoute
-  '/my-fees': typeof MyFeesRoute
-  '/my-homework': typeof MyHomeworkRoute
-  '/my-records': typeof MyRecordsRoute
-  '/my-results': typeof MyResultsRoute
-  '/notifications': typeof NotificationsRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/user': typeof UserRouteWithChildren
   '/forgot-password': typeof OnboardForgotPasswordRoute
   '/reset-password': typeof OnboardResetPasswordRoute
   '/signup': typeof OnboardSignupRoute
+  '/dashboard': typeof PortalDashboardRoute
+  '/my-classes': typeof PortalMyClassesRoute
+  '/my-fees': typeof PortalMyFeesRoute
+  '/my-homework': typeof PortalMyHomeworkRoute
+  '/my-records': typeof PortalMyRecordsRoute
+  '/my-results': typeof PortalMyResultsRoute
+  '/notifications': typeof PortalNotificationsRoute
   '/about': typeof PublicAboutRoute
   '/admissions': typeof PublicAdmissionsRoute
   '/calendar': typeof PublicCalendarRoute
@@ -731,6 +742,7 @@ export interface FileRoutesByFullPath {
   '/admin/attendance': typeof AdminAdminAttendanceRoute
   '/admin/calendar': typeof AdminAdminCalendarRoute
   '/admin/classes': typeof AdminAdminClassesRouteWithChildren
+  '/admin/clubs': typeof AdminAdminClubsRoute
   '/admin/content': typeof AdminAdminContentRoute
   '/admin/courses': typeof AdminAdminCoursesRouteWithChildren
   '/admin/directory': typeof AdminAdminDirectoryRoute
@@ -797,19 +809,19 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
-  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
-  '/my-classes': typeof MyClassesRoute
-  '/my-fees': typeof MyFeesRoute
-  '/my-homework': typeof MyHomeworkRoute
-  '/my-records': typeof MyRecordsRoute
-  '/my-results': typeof MyResultsRoute
-  '/notifications': typeof NotificationsRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/forgot-password': typeof OnboardForgotPasswordRoute
   '/reset-password': typeof OnboardResetPasswordRoute
   '/signup': typeof OnboardSignupRoute
+  '/dashboard': typeof PortalDashboardRoute
+  '/my-classes': typeof PortalMyClassesRoute
+  '/my-fees': typeof PortalMyFeesRoute
+  '/my-homework': typeof PortalMyHomeworkRoute
+  '/my-records': typeof PortalMyRecordsRoute
+  '/my-results': typeof PortalMyResultsRoute
+  '/notifications': typeof PortalNotificationsRoute
   '/about': typeof PublicAboutRoute
   '/admissions': typeof PublicAdmissionsRoute
   '/calendar': typeof PublicCalendarRoute
@@ -836,6 +848,7 @@ export interface FileRoutesByTo {
   '/admin/activity': typeof AdminAdminActivityRoute
   '/admin/attendance': typeof AdminAdminAttendanceRoute
   '/admin/calendar': typeof AdminAdminCalendarRoute
+  '/admin/clubs': typeof AdminAdminClubsRoute
   '/admin/content': typeof AdminAdminContentRoute
   '/admin/directory': typeof AdminAdminDirectoryRoute
   '/admin/exams': typeof AdminAdminExamsRoute
@@ -896,22 +909,23 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_onboard': typeof OnboardRouteWithChildren
+  '/_portal': typeof PortalRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
-  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
-  '/my-classes': typeof MyClassesRoute
-  '/my-fees': typeof MyFeesRoute
-  '/my-homework': typeof MyHomeworkRoute
-  '/my-records': typeof MyRecordsRoute
-  '/my-results': typeof MyResultsRoute
-  '/notifications': typeof NotificationsRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/user': typeof UserRouteWithChildren
   '/_onboard/forgot-password': typeof OnboardForgotPasswordRoute
   '/_onboard/reset-password': typeof OnboardResetPasswordRoute
   '/_onboard/signup': typeof OnboardSignupRoute
+  '/_portal/dashboard': typeof PortalDashboardRoute
+  '/_portal/my-classes': typeof PortalMyClassesRoute
+  '/_portal/my-fees': typeof PortalMyFeesRoute
+  '/_portal/my-homework': typeof PortalMyHomeworkRoute
+  '/_portal/my-records': typeof PortalMyRecordsRoute
+  '/_portal/my-results': typeof PortalMyResultsRoute
+  '/_portal/notifications': typeof PortalNotificationsRoute
   '/_public/about': typeof PublicAboutRoute
   '/_public/admissions': typeof PublicAdmissionsRoute
   '/_public/calendar': typeof PublicCalendarRoute
@@ -943,6 +957,7 @@ export interface FileRoutesById {
   '/admin/_admin/attendance': typeof AdminAdminAttendanceRoute
   '/admin/_admin/calendar': typeof AdminAdminCalendarRoute
   '/admin/_admin/classes': typeof AdminAdminClassesRouteWithChildren
+  '/admin/_admin/clubs': typeof AdminAdminClubsRoute
   '/admin/_admin/content': typeof AdminAdminContentRoute
   '/admin/_admin/courses': typeof AdminAdminCoursesRouteWithChildren
   '/admin/_admin/directory': typeof AdminAdminDirectoryRoute
@@ -1012,20 +1027,20 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/dashboard'
     | '/login'
-    | '/my-classes'
-    | '/my-fees'
-    | '/my-homework'
-    | '/my-records'
-    | '/my-results'
-    | '/notifications'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/user'
     | '/forgot-password'
     | '/reset-password'
     | '/signup'
+    | '/dashboard'
+    | '/my-classes'
+    | '/my-fees'
+    | '/my-homework'
+    | '/my-records'
+    | '/my-results'
+    | '/notifications'
     | '/about'
     | '/admissions'
     | '/calendar'
@@ -1056,6 +1071,7 @@ export interface FileRouteTypes {
     | '/admin/attendance'
     | '/admin/calendar'
     | '/admin/classes'
+    | '/admin/clubs'
     | '/admin/content'
     | '/admin/courses'
     | '/admin/directory'
@@ -1122,19 +1138,19 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/dashboard'
     | '/login'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/forgot-password'
+    | '/reset-password'
+    | '/signup'
+    | '/dashboard'
     | '/my-classes'
     | '/my-fees'
     | '/my-homework'
     | '/my-records'
     | '/my-results'
     | '/notifications'
-    | '/robots.txt'
-    | '/sitemap.xml'
-    | '/forgot-password'
-    | '/reset-password'
-    | '/signup'
     | '/about'
     | '/admissions'
     | '/calendar'
@@ -1161,6 +1177,7 @@ export interface FileRouteTypes {
     | '/admin/activity'
     | '/admin/attendance'
     | '/admin/calendar'
+    | '/admin/clubs'
     | '/admin/content'
     | '/admin/directory'
     | '/admin/exams'
@@ -1220,22 +1237,23 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_onboard'
+    | '/_portal'
     | '/_public'
     | '/admin'
-    | '/dashboard'
     | '/login'
-    | '/my-classes'
-    | '/my-fees'
-    | '/my-homework'
-    | '/my-records'
-    | '/my-results'
-    | '/notifications'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/user'
     | '/_onboard/forgot-password'
     | '/_onboard/reset-password'
     | '/_onboard/signup'
+    | '/_portal/dashboard'
+    | '/_portal/my-classes'
+    | '/_portal/my-fees'
+    | '/_portal/my-homework'
+    | '/_portal/my-records'
+    | '/_portal/my-results'
+    | '/_portal/notifications'
     | '/_public/about'
     | '/_public/admissions'
     | '/_public/calendar'
@@ -1267,6 +1285,7 @@ export interface FileRouteTypes {
     | '/admin/_admin/attendance'
     | '/admin/_admin/calendar'
     | '/admin/_admin/classes'
+    | '/admin/_admin/clubs'
     | '/admin/_admin/content'
     | '/admin/_admin/courses'
     | '/admin/_admin/directory'
@@ -1334,16 +1353,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   OnboardRoute: typeof OnboardRouteWithChildren
+  PortalRoute: typeof PortalRouteWithChildren
   PublicRoute: typeof PublicRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
-  DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
-  MyClassesRoute: typeof MyClassesRoute
-  MyFeesRoute: typeof MyFeesRoute
-  MyHomeworkRoute: typeof MyHomeworkRoute
-  MyRecordsRoute: typeof MyRecordsRoute
-  MyResultsRoute: typeof MyResultsRoute
-  NotificationsRoute: typeof NotificationsRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UserRoute: typeof UserRouteWithChildren
@@ -1364,6 +1377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_portal': {
+      id: '/_portal'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof PortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public': {
       id: '/_public'
       path: ''
@@ -1378,60 +1398,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-classes': {
-      id: '/my-classes'
-      path: '/my-classes'
-      fullPath: '/my-classes'
-      preLoaderRoute: typeof MyClassesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-fees': {
-      id: '/my-fees'
-      path: '/my-fees'
-      fullPath: '/my-fees'
-      preLoaderRoute: typeof MyFeesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-homework': {
-      id: '/my-homework'
-      path: '/my-homework'
-      fullPath: '/my-homework'
-      preLoaderRoute: typeof MyHomeworkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-records': {
-      id: '/my-records'
-      path: '/my-records'
-      fullPath: '/my-records'
-      preLoaderRoute: typeof MyRecordsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-results': {
-      id: '/my-results'
-      path: '/my-results'
-      fullPath: '/my-results'
-      preLoaderRoute: typeof MyResultsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/robots.txt': {
@@ -1475,6 +1446,55 @@ declare module '@tanstack/react-router' {
       fullPath: '/signup'
       preLoaderRoute: typeof OnboardSignupRouteImport
       parentRoute: typeof OnboardRoute
+    }
+    '/_portal/dashboard': {
+      id: '/_portal/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof PortalDashboardRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/_portal/my-classes': {
+      id: '/_portal/my-classes'
+      path: '/my-classes'
+      fullPath: '/my-classes'
+      preLoaderRoute: typeof PortalMyClassesRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/_portal/my-fees': {
+      id: '/_portal/my-fees'
+      path: '/my-fees'
+      fullPath: '/my-fees'
+      preLoaderRoute: typeof PortalMyFeesRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/_portal/my-homework': {
+      id: '/_portal/my-homework'
+      path: '/my-homework'
+      fullPath: '/my-homework'
+      preLoaderRoute: typeof PortalMyHomeworkRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/_portal/my-records': {
+      id: '/_portal/my-records'
+      path: '/my-records'
+      fullPath: '/my-records'
+      preLoaderRoute: typeof PortalMyRecordsRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/_portal/my-results': {
+      id: '/_portal/my-results'
+      path: '/my-results'
+      fullPath: '/my-results'
+      preLoaderRoute: typeof PortalMyResultsRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/_portal/notifications': {
+      id: '/_portal/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof PortalNotificationsRouteImport
+      parentRoute: typeof PortalRoute
     }
     '/_public/': {
       id: '/_public/'
@@ -1719,6 +1739,13 @@ declare module '@tanstack/react-router' {
       path: '/classes'
       fullPath: '/admin/classes'
       preLoaderRoute: typeof AdminAdminClassesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_admin/clubs': {
+      id: '/admin/_admin/clubs'
+      path: '/clubs'
+      fullPath: '/admin/clubs'
+      preLoaderRoute: typeof AdminAdminClubsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/_admin/content': {
@@ -2158,6 +2185,29 @@ const OnboardRouteChildren: OnboardRouteChildren = {
 const OnboardRouteWithChildren =
   OnboardRoute._addFileChildren(OnboardRouteChildren)
 
+interface PortalRouteChildren {
+  PortalDashboardRoute: typeof PortalDashboardRoute
+  PortalMyClassesRoute: typeof PortalMyClassesRoute
+  PortalMyFeesRoute: typeof PortalMyFeesRoute
+  PortalMyHomeworkRoute: typeof PortalMyHomeworkRoute
+  PortalMyRecordsRoute: typeof PortalMyRecordsRoute
+  PortalMyResultsRoute: typeof PortalMyResultsRoute
+  PortalNotificationsRoute: typeof PortalNotificationsRoute
+}
+
+const PortalRouteChildren: PortalRouteChildren = {
+  PortalDashboardRoute: PortalDashboardRoute,
+  PortalMyClassesRoute: PortalMyClassesRoute,
+  PortalMyFeesRoute: PortalMyFeesRoute,
+  PortalMyHomeworkRoute: PortalMyHomeworkRoute,
+  PortalMyRecordsRoute: PortalMyRecordsRoute,
+  PortalMyResultsRoute: PortalMyResultsRoute,
+  PortalNotificationsRoute: PortalNotificationsRoute,
+}
+
+const PortalRouteWithChildren =
+  PortalRoute._addFileChildren(PortalRouteChildren)
+
 interface PublicEventsRouteChildren {
   PublicEventsSlugRoute: typeof PublicEventsSlugRoute
   PublicEventsIndexRoute: typeof PublicEventsIndexRoute
@@ -2370,6 +2420,7 @@ interface AdminRouteChildren {
   AdminAdminAttendanceRoute: typeof AdminAdminAttendanceRoute
   AdminAdminCalendarRoute: typeof AdminAdminCalendarRoute
   AdminAdminClassesRoute: typeof AdminAdminClassesRouteWithChildren
+  AdminAdminClubsRoute: typeof AdminAdminClubsRoute
   AdminAdminContentRoute: typeof AdminAdminContentRoute
   AdminAdminCoursesRoute: typeof AdminAdminCoursesRouteWithChildren
   AdminAdminDirectoryRoute: typeof AdminAdminDirectoryRoute
@@ -2409,6 +2460,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAdminAttendanceRoute: AdminAdminAttendanceRoute,
   AdminAdminCalendarRoute: AdminAdminCalendarRoute,
   AdminAdminClassesRoute: AdminAdminClassesRouteWithChildren,
+  AdminAdminClubsRoute: AdminAdminClubsRoute,
   AdminAdminContentRoute: AdminAdminContentRoute,
   AdminAdminCoursesRoute: AdminAdminCoursesRouteWithChildren,
   AdminAdminDirectoryRoute: AdminAdminDirectoryRoute,
@@ -2498,16 +2550,10 @@ const ApiWebsitePagesRouteWithChildren = ApiWebsitePagesRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   OnboardRoute: OnboardRouteWithChildren,
+  PortalRoute: PortalRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
-  DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
-  MyClassesRoute: MyClassesRoute,
-  MyFeesRoute: MyFeesRoute,
-  MyHomeworkRoute: MyHomeworkRoute,
-  MyRecordsRoute: MyRecordsRoute,
-  MyResultsRoute: MyResultsRoute,
-  NotificationsRoute: NotificationsRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   UserRoute: UserRouteWithChildren,

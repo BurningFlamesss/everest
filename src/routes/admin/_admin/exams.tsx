@@ -1,6 +1,14 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Award, Loader2, Megaphone, Plus, Save, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { ConfirmDialog } from "#/components/common/ConfirmDialog";
+import { EmptyState } from "#/components/common/EmptyState";
+import { PageHeader } from "#/components/common/PageHeader";
+import { Panel } from "#/components/common/Panel";
+import { ListSkeleton } from "#/components/common/Skeletons";
+import { Button } from "#/components/ui/button";
+import { Label } from "#/components/ui/label";
+import { cn } from "#/lib/utils.ts";
 import {
 	addExamScheduleAction,
 	createExamAction,
@@ -78,6 +86,11 @@ function AdminExams() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
 	const [notice, setNotice] = useState("");
+	const [pendingPublish, setPendingPublish] = useState<ExamRow | null>(null);
+	const [pendingExam, setPendingExam] = useState<ExamRow | null>(null);
+	const [pendingSchedule, setPendingSchedule] = useState<ScheduleRow | null>(
+		null,
+	);
 
 	const load = useCallback(async () => {
 		const [options, data] = await Promise.all([
@@ -233,10 +246,6 @@ function AdminExams() {
 	};
 
 	const publish = async (id: string) => {
-		if (!confirm("Publish results? Students and guardians will be notified.")) {
-			return;
-		}
-
 		const response = await publishExamAction({ data: { id } });
 
 		if (!response.success) setError(response.error);
@@ -246,110 +255,106 @@ function AdminExams() {
 		}
 	};
 
+	const removeExam = async (id: string) => {
+		const response = await deleteExamAction({ data: { id } });
+		if (!response.success) setError(response.error);
+		else {
+			setSelectedExamId("");
+			await load();
+		}
+	};
+
+	const removeSchedule = async (id: string) => {
+		const response = await deleteExamScheduleAction({ data: { id } });
+		if (!response.success) setError(response.error);
+		else await load();
+	};
+
 	const selectedExam = exams.find((exam) => exam.id === selectedExamId);
 
 	return (
-		<div className="space-y-8">
-			<div>
-				<h1 className="text-3xl font-bold text-gray-900">Exams & marks</h1>
-				<p className="mt-1 text-sm text-gray-500">
-					Schedule papers, enter marks per course and publish results once every
-					paper is graded.
-				</p>
-			</div>
+		<div data-testid="exams-page" className="space-y-5">
+			<PageHeader
+				testId="exams-page-header"
+				eyebrow="Academics"
+				title="Exams & marks"
+				description="Schedule papers, enter marks per course and publish results once every paper is graded."
+				meta={
+					!isLoading ? (
+						<span data-testid="exams-meta-count">
+							{exams.length} {exams.length === 1 ? "exam" : "exams"}
+						</span>
+					) : undefined
+				}
+			/>
 
 			{error ? (
-				<div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+				<div
+					role="alert"
+					data-testid="exams-error"
+					className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+				>
 					{error}
 				</div>
 			) : null}
 			{notice ? (
-				<div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+				<div
+					data-testid="exams-notice"
+					className="rounded-lg border border-success/30 bg-success/10 p-3 text-sm text-success"
+				>
 					{notice}
 				</div>
 			) : null}
 
-			<section className="rounded-2xl border border-gray-200 bg-white p-6">
-				<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-					<Plus className="h-5 w-5 text-red-500" /> New exam
-				</h2>
+			<Panel
+				title="New exam"
+				description="Create an exam window for a term."
+				testId="exams-new-exam-panel"
+				bodyClassName="p-5"
+			>
 				<form
 					onSubmit={(event) => void createExam(event)}
 					className="grid gap-4 md:grid-cols-4"
 				>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Term</span>
-						<select
-							name="termId"
-							required
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						>
-							<option value="">Select…</option>
-							{terms.map((term) => (
-								<option key={term.id} value={term.id}>
-									{term.academicYear.name} · {term.name}
-								</option>
-							))}
-						</select>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Name</span>
-						<input
-							name="name"
-							required
-							placeholder="Mid-term"
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Starts</span>
-						<input
-							type="date"
-							name="startsOn"
-							required
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Ends</span>
-						<input
-							type="date"
-							name="endsOn"
-							required
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
+					<Select label="Term" name="termId" required>
+						<option value="">Select…</option>
+						{terms.map((term) => (
+							<option key={term.id} value={term.id}>
+								{term.academicYear.name} · {term.name}
+							</option>
+						))}
+					</Select>
+					<Input label="Name" name="name" required placeholder="Mid-term" />
+					<Input label="Starts" name="startsOn" type="date" required />
+					<Input label="Ends" name="endsOn" type="date" required />
 					<div className="md:col-span-4">
-						<button
-							type="submit"
-							disabled={isSubmitting}
-							className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
-						>
+						<Button type="submit" disabled={isSubmitting} className="gap-1.5">
 							{isSubmitting ? (
-								<Loader2 className="h-4 w-4 animate-spin" />
+								<Loader2 className="h-3.5 w-3.5 animate-spin" />
 							) : (
-								<Award className="h-4 w-4" />
+								<Award className="h-3.5 w-3.5" />
 							)}
 							Create exam
-						</button>
+						</Button>
 					</div>
 				</form>
-			</section>
+			</Panel>
 
-			<section className="rounded-2xl border border-gray-200 bg-white p-6">
-				<div className="flex flex-wrap items-end justify-between gap-3">
-					<h2 className="text-lg font-semibold text-gray-900">Exams</h2>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">
-							Selected exam
-						</span>
+			<Panel
+				title="Exams"
+				description="Select an exam to manage its papers and marks."
+				testId="exams-exams-panel"
+				actions={
+					<label className="space-y-1.5">
+						<Label className="text-xs">Selected exam</Label>
 						<select
 							value={selectedExamId}
 							onChange={(event) => {
 								setSelectedExamId(event.target.value);
 								setRoster(null);
 							}}
-							className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+							data-testid="exams-selected-exam"
+							className={fieldClasses}
 						>
 							<option value="">Select…</option>
 							{exams.map((exam) => (
@@ -359,140 +364,117 @@ function AdminExams() {
 							))}
 						</select>
 					</label>
-				</div>
-
+				}
+				bodyClassName="p-5"
+			>
 				{isLoading ? (
-					<p className="mt-4 flex items-center gap-2 text-sm text-gray-500">
-						<Loader2 className="h-4 w-4 animate-spin" /> Loading…
-					</p>
+					<ListSkeleton rows={3} />
 				) : exams.length === 0 ? (
-					<p className="mt-4 text-sm text-gray-500">No exams yet.</p>
+					<EmptyState
+						icon={Award}
+						title="No exams yet"
+						description="Create an exam above to start scheduling papers."
+						testId="exams-empty"
+						compact
+					/>
 				) : selectedExam ? (
-					<div className="mt-5 space-y-4">
-						<div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-gray-50 px-4 py-3">
-							<div>
-								<p className="font-semibold text-gray-900">
+					<div className="space-y-4">
+						<div
+							className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-hairline bg-surface-1 px-4 py-3"
+							data-testid={`exams-card-${selectedExam.id}`}
+						>
+							<div className="min-w-0">
+								<p className="flex flex-wrap items-center gap-2 font-semibold text-foreground">
 									{selectedExam.name}
 									{selectedExam.isPublished ? (
-										<span className="ml-2 rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700">
+										<span className="rounded-full bg-success/12 px-2 py-0.5 text-[11px] font-semibold text-success">
 											Published
 										</span>
 									) : null}
 								</p>
-								<p className="text-xs text-gray-500">
+								<p className="text-xs text-muted-foreground">
 									{selectedExam.term.academicYear.name} ·{" "}
 									{selectedExam.term.name}
 								</p>
 							</div>
 							<div className="flex gap-2">
 								{!selectedExam.isPublished ? (
-									<button
-										type="button"
-										onClick={() => void publish(selectedExam.id)}
-										className="inline-flex items-center gap-1.5 rounded-lg bg-red-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-600"
+									<Button
+										size="sm"
+										className="gap-1.5"
+										data-testid={`exams-publish-${selectedExam.id}`}
+										onClick={() => setPendingPublish(selectedExam)}
 									>
 										<Megaphone className="h-3.5 w-3.5" /> Publish results
-									</button>
+									</Button>
 								) : null}
-								<button
-									type="button"
-									onClick={async () => {
-										if (!confirm("Delete this exam and all its marks?")) return;
-										const response = await deleteExamAction({
-											data: { id: selectedExam.id },
-										});
-										if (!response.success) setError(response.error);
-										else {
-											setSelectedExamId("");
-											await load();
-										}
-									}}
-									className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+								<Button
+									variant="outline"
+									size="sm"
+									className="gap-1.5 text-destructive hover:bg-destructive/10"
+									data-testid={`exams-delete-${selectedExam.id}`}
+									onClick={() => setPendingExam(selectedExam)}
 								>
 									<Trash2 className="h-3.5 w-3.5" /> Delete
-								</button>
+								</Button>
 							</div>
 						</div>
 
 						<form
 							onSubmit={(event) => void addSchedule(event)}
-							className="grid gap-3 rounded-lg border border-gray-200 p-4 md:grid-cols-5"
+							className="grid gap-3 rounded-lg border border-hairline bg-surface-1 p-4 md:grid-cols-5"
+							data-testid="exams-add-paper-form"
 						>
-							<label className="text-sm md:col-span-2">
-								<span className="mb-1 block font-medium text-gray-700">
-									Course
-								</span>
-								<select
-									name="courseId"
-									required
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								>
-									<option value="">Select…</option>
-									{courses.map((course) => (
-										<option key={course.id} value={course.id}>
-											{course.code} · {course.name}
-										</option>
-									))}
-								</select>
-							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Date
-								</span>
-								<input
-									type="date"
-									name="date"
-									required
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								/>
-							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Max marks
-								</span>
-								<input
-									type="number"
-									name="maxMarks"
-									min={1}
-									max={1000}
-									defaultValue={100}
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								/>
-							</label>
-							<label className="text-sm">
-								<span className="mb-1 block font-medium text-gray-700">
-									Room
-								</span>
-								<input
-									name="room"
-									className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-								/>
-							</label>
+							<Select label="Course" name="courseId" required>
+								<option value="">Select…</option>
+								{courses.map((course) => (
+									<option key={course.id} value={course.id}>
+										{course.code} · {course.name}
+									</option>
+								))}
+							</Select>
+							<Input label="Date" name="date" type="date" required />
+							<Input
+								label="Max marks"
+								name="maxMarks"
+								type="number"
+								min={1}
+								max={1000}
+								defaultValue={100}
+							/>
+							<Input label="Room" name="room" className="md:col-span-2" />
 							<div className="md:col-span-5">
-								<button
+								<Button
 									type="submit"
+									variant="outline"
+									size="sm"
+									className="gap-1.5"
 									disabled={isSubmitting}
-									className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
 								>
-									Add paper
-								</button>
+									<Plus className="h-3.5 w-3.5" /> Add paper
+								</Button>
 							</div>
 						</form>
 
 						{selectedExam.schedules.length === 0 ? (
-							<p className="text-sm text-gray-500">No papers scheduled yet.</p>
+							<p
+								className="rounded-lg border border-dashed border-hairline bg-surface-1 p-4 text-sm text-muted-foreground"
+								data-testid="exams-schedules-empty"
+							>
+								No papers scheduled yet.
+							</p>
 						) : (
-							<ul className="divide-y divide-gray-100 rounded-lg border border-gray-200">
+							<ul className="divide-y divide-hairline rounded-lg border border-hairline">
 								{selectedExam.schedules.map((schedule) => (
 									<li
 										key={schedule.id}
-										className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
+										className="group flex flex-wrap items-center justify-between gap-3 px-4 py-3 transition-colors duration-150 hover:bg-surface-2"
 									>
-										<div>
-											<p className="text-sm font-medium text-gray-900">
+										<div className="min-w-0">
+											<p className="text-sm font-medium text-foreground">
 												{schedule.course.code} · {schedule.course.name}
 											</p>
-											<p className="text-xs text-gray-500">
+											<p className="num text-xs text-muted-foreground">
 												{new Date(schedule.date).toLocaleDateString()}
 												{schedule.startsAt ? ` · ${schedule.startsAt}` : ""} ·{" "}
 												{schedule._count.marks} mark
@@ -500,29 +482,25 @@ function AdminExams() {
 												{schedule.maxMarks}
 											</p>
 										</div>
-										<div className="flex gap-2">
-											<button
-												type="button"
+										<div className="flex items-center gap-2">
+											<Button
+												size="sm"
+												className="gap-1.5"
+												data-testid={`exams-enter-marks-${schedule.id}`}
 												onClick={() => void openRoster(schedule.id)}
-												className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-600"
 											>
 												Enter marks
-											</button>
-											<button
-												type="button"
-												onClick={async () => {
-													if (!confirm("Delete this paper and its marks?"))
-														return;
-													const response = await deleteExamScheduleAction({
-														data: { id: schedule.id },
-													});
-													if (!response.success) setError(response.error);
-													else await load();
-												}}
-												className="text-xs font-medium text-red-600"
+											</Button>
+											<Button
+												variant="ghost"
+												size="icon"
+												className="h-8 w-8 text-destructive"
+												aria-label="Delete paper"
+												data-testid={`exams-schedule-delete-${schedule.id}`}
+												onClick={() => setPendingSchedule(schedule)}
 											>
-												Delete
-											</button>
+												<Trash2 className="h-4 w-4" />
+											</Button>
 										</div>
 									</li>
 								))}
@@ -530,50 +508,52 @@ function AdminExams() {
 						)}
 					</div>
 				) : null}
-			</section>
+			</Panel>
 
 			{roster ? (
-				<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-					<header className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 px-5 py-4">
-						<div>
-							<h2 className="font-semibold text-gray-900">
-								{roster.course.code} · {roster.course.name}
-							</h2>
-							<p className="text-xs text-gray-500">
-								Marks out of {roster.schedule.maxMarks}. Leave blank to clear a
-								mark.
-							</p>
-						</div>
-						<button
-							type="button"
-							onClick={() => void save()}
+				<Panel
+					title={`${roster.course.code} · ${roster.course.name}`}
+					description={`Marks out of ${roster.schedule.maxMarks}. Leave blank to clear a mark.`}
+					testId="exams-roster-panel"
+					actions={
+						<Button
+							size="sm"
+							className="gap-1.5"
 							disabled={isSubmitting}
-							className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+							data-testid="exams-save-marks"
+							onClick={() => void save()}
 						>
 							{isSubmitting ? (
-								<Loader2 className="h-4 w-4 animate-spin" />
+								<Loader2 className="h-3.5 w-3.5 animate-spin" />
 							) : (
-								<Save className="h-4 w-4" />
+								<Save className="h-3.5 w-3.5" />
 							)}
 							Save marks
-						</button>
-					</header>
+						</Button>
+					}
+					bodyClassName="p-0"
+				>
 					{roster.students.length === 0 ? (
-						<p className="p-6 text-sm text-gray-500">
-							No active students are enrolled in this course.
-						</p>
+						<EmptyState
+							title="No students enrolled"
+							description="No active students are enrolled in this course."
+							testId="exams-roster-empty"
+							compact
+						/>
 					) : (
-						<ul className="divide-y divide-gray-100">
+						<ul className="divide-y divide-hairline">
 							{roster.students.map((student) => (
 								<li
 									key={student.id}
-									className="flex flex-wrap items-center justify-between gap-3 px-5 py-3"
+									className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 transition-colors duration-150 hover:bg-surface-2"
 								>
-									<div>
-										<p className="text-sm font-medium text-gray-900">
+									<div className="min-w-0">
+										<p className="text-sm font-medium text-foreground">
 											{student.name}
 										</p>
-										<p className="text-xs text-gray-500">{student.email}</p>
+										<p className="text-xs text-muted-foreground">
+											{student.email}
+										</p>
 									</div>
 									<input
 										type="number"
@@ -588,14 +568,89 @@ function AdminExams() {
 											}))
 										}
 										placeholder="—"
-										className="w-24 rounded-lg border border-gray-300 px-3 py-1.5 text-sm"
+										data-testid={`exams-score-${student.id}`}
+										className={cn(fieldClasses, "num w-24")}
 									/>
 								</li>
 							))}
 						</ul>
 					)}
-				</section>
+				</Panel>
 			) : null}
+
+			<ConfirmDialog
+				open={!!pendingPublish}
+				onOpenChange={(open) => !open && setPendingPublish(null)}
+				testId="exams-publish-dialog"
+				title="Publish results"
+				description="Publish results? Students and guardians will be notified."
+				confirmLabel="Publish"
+				onConfirm={() => pendingPublish && void publish(pendingPublish.id)}
+			/>
+
+			<ConfirmDialog
+				open={!!pendingExam}
+				onOpenChange={(open) => !open && setPendingExam(null)}
+				testId="exams-delete-dialog"
+				title="Delete exam"
+				description="Delete this exam and all its marks?"
+				confirmLabel="Delete"
+				destructive
+				onConfirm={() => pendingExam && void removeExam(pendingExam.id)}
+			/>
+
+			<ConfirmDialog
+				open={!!pendingSchedule}
+				onOpenChange={(open) => !open && setPendingSchedule(null)}
+				testId="exams-schedule-delete-dialog"
+				title="Delete paper"
+				description="Delete this paper and its marks?"
+				confirmLabel="Delete"
+				destructive
+				onConfirm={() =>
+					pendingSchedule && void removeSchedule(pendingSchedule.id)
+				}
+			/>
 		</div>
+	);
+}
+
+const fieldClasses =
+	"h-9 w-full rounded-md border border-hairline bg-surface-1 px-3 text-sm outline-none transition-colors duration-150 placeholder:text-muted-foreground focus-ring";
+
+function Input({
+	label,
+	className,
+	testId,
+	...props
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+	label: string;
+	testId?: string;
+}) {
+	return (
+		<label className={cn("block space-y-1.5", className)}>
+			<Label className="text-xs">{label}</Label>
+			<input {...props} data-testid={testId} className={fieldClasses} />
+		</label>
+	);
+}
+
+function Select({
+	label,
+	className,
+	testId,
+	children,
+	...props
+}: React.SelectHTMLAttributes<HTMLSelectElement> & {
+	label: string;
+	testId?: string;
+}) {
+	return (
+		<label className={cn("block space-y-1.5", className)}>
+			<Label className="text-xs">{label}</Label>
+			<select {...props} data-testid={testId} className={fieldClasses}>
+				{children}
+			</select>
+		</label>
 	);
 }

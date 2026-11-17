@@ -88,6 +88,8 @@ export default function ResourcesPage() {
 						variant="ghost"
 						size="icon"
 						className="h-8 w-8"
+						aria-label={`Edit ${row.title}`}
+						data-testid={`resource-edit-${row.id}`}
 						onClick={() => {
 							setEditing(row);
 							setOpen(true);
@@ -99,6 +101,8 @@ export default function ResourcesPage() {
 						variant="ghost"
 						size="icon"
 						className="h-8 w-8 text-destructive"
+						aria-label={`Delete ${row.title}`}
+						data-testid={`resource-delete-${row.id}`}
 						onClick={() => setPendingDelete(row)}
 					>
 						<Trash2 className="h-4 w-4" />
@@ -109,172 +113,171 @@ export default function ResourcesPage() {
 	];
 
 	return (
-		<main className="flex-1 overflow-y-auto bg-surface-base px-6 py-8">
-			<div className="mx-auto max-w-5xl space-y-6">
-				<PageHeader
-					eyebrow="Website"
-					title="Resources"
-					description="Downloadable files and links for students, guardians and staff."
-					actions={
-						<Button
-							onClick={() => {
-								setEditing({ kind: "PDF", audience: "All" });
-								setOpen(true);
-							}}
-						>
-							<Plus className="mr-2 h-4 w-4" /> Add Resource
-						</Button>
-					}
-				/>
+		<div data-testid="resources-page">
+			<PageHeader
+				eyebrow="Website"
+				title="Resources"
+				description="Downloadable files and links for students, guardians and staff."
+				actions={
+					<Button
+						size="sm"
+						className="gap-1.5"
+						onClick={() => {
+							setEditing({ kind: "PDF", audience: "All" });
+							setOpen(true);
+						}}
+					>
+						<Plus className="h-3.5 w-3.5" /> Add Resource
+					</Button>
+				}
+			/>
 
-				{resources.length > 0 ? (
-					<DataTable
-						columns={columns}
-						rows={resources}
-						rowId={(r) => r.id}
-						testId="resources-table"
+			<DataTable
+				columns={columns}
+				rows={resources}
+				rowId={(r) => r.id}
+				testId="resources-table"
+				loading={isLoading}
+				empty={
+					<EmptyState
+						icon={FolderDown}
+						title="No resources yet"
+						description="Add your first downloadable resource to get started."
+						primaryLabel="Add resource"
+						onPrimary={() => {
+							setEditing({ kind: "PDF", audience: "All" });
+							setOpen(true);
+						}}
 					/>
-				) : (
-					!isLoading && (
-						<EmptyState
-							icon={FolderDown}
-							title="No resources yet"
-							description="Add your first downloadable resource to get started."
-							primaryLabel="Add resource"
-							onPrimary={() => {
-								setEditing({ kind: "PDF", audience: "All" });
-								setOpen(true);
-							}}
-						/>
-					)
-				)}
+				}
+			/>
 
-				<Dialog open={open} onOpenChange={setOpen}>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle>
-								{editing?.id ? "Edit Resource" : "Add Resource"}
-							</DialogTitle>
-							<DialogDescription>
-								Provide a title, link and audience for this resource.
-							</DialogDescription>
-						</DialogHeader>
-						<div className="grid gap-4 py-4">
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent className="border-hairline bg-popover sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle>
+							{editing?.id ? "Edit Resource" : "Add Resource"}
+						</DialogTitle>
+						<DialogDescription>
+							Provide a title, link and audience for this resource.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="space-y-3.5">
+						<div className="space-y-2">
+							<Label className="text-xs">Title</Label>
+							<Input
+								value={editing?.title || ""}
+								onChange={(e: any) =>
+									setEditing((p) => ({ ...p, title: e.target.value }))
+								}
+							/>
+						</div>
+						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label>Title</Label>
+								<Label className="text-xs">Category</Label>
 								<Input
-									value={editing?.title || ""}
+									value={editing?.category || ""}
 									onChange={(e: any) =>
-										setEditing((p) => ({ ...p, title: e.target.value }))
+										setEditing((p) => ({ ...p, category: e.target.value }))
 									}
+									placeholder="e.g. Forms, Syllabus"
 								/>
 							</div>
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>Category</Label>
-									<Input
-										value={editing?.category || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, category: e.target.value }))
-										}
-										placeholder="e.g. Forms, Syllabus"
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>File URL</Label>
-									<Input
-										value={editing?.fileUrl || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, fileUrl: e.target.value }))
-										}
-										placeholder="https://…"
-									/>
-								</div>
-							</div>
-							<div className="grid grid-cols-3 gap-4">
-								<div className="space-y-2">
-									<Label>Type</Label>
-									<Select
-										value={editing?.kind || "PDF"}
-										onValueChange={(v: string) =>
-											setEditing((p) => ({ ...p, kind: v }))
-										}
-									>
-										<SelectTrigger>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent className="bg-popover">
-											{KIND_OPTIONS.map((k) => (
-												<SelectItem key={k} value={k}>
-													{k}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								</div>
-								<div className="space-y-2">
-									<Label>Audience</Label>
-									<Select
-										value={editing?.audience || "All"}
-										onValueChange={(v: string) =>
-											setEditing((p) => ({ ...p, audience: v }))
-										}
-									>
-										<SelectTrigger>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent className="bg-popover">
-											{AUDIENCE_OPTIONS.map((a) => (
-												<SelectItem key={a} value={a}>
-													{a}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								</div>
-								<div className="space-y-2">
-									<Label>File size</Label>
-									<Input
-										value={editing?.fileSize || ""}
-										onChange={(e: any) =>
-											setEditing((p) => ({ ...p, fileSize: e.target.value }))
-										}
-										placeholder="e.g. 1.2 MB"
-									/>
-								</div>
+							<div className="space-y-2">
+								<Label className="text-xs">File URL</Label>
+								<Input
+									value={editing?.fileUrl || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, fileUrl: e.target.value }))
+									}
+									placeholder="https://…"
+								/>
 							</div>
 						</div>
-						<DialogFooter>
-							<Button variant="outline" onClick={() => setOpen(false)}>
-								Cancel
-							</Button>
-							<Button
-								onClick={() => saveMutation.mutate(editing)}
-								disabled={
-									saveMutation.isPending ||
-									!editing?.title ||
-									!editing?.fileUrl ||
-									!editing?.category
-								}
-							>
-								Save Resource
-							</Button>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
+						<div className="grid grid-cols-3 gap-4">
+							<div className="space-y-2">
+								<Label className="text-xs">Type</Label>
+								<Select
+									value={editing?.kind || "PDF"}
+									onValueChange={(v: string) =>
+										setEditing((p) => ({ ...p, kind: v }))
+									}
+								>
+									<SelectTrigger>
+										<SelectValue />
+									</SelectTrigger>
+									<SelectContent className="bg-popover">
+										{KIND_OPTIONS.map((k) => (
+											<SelectItem key={k} value={k}>
+												{k}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">Audience</Label>
+								<Select
+									value={editing?.audience || "All"}
+									onValueChange={(v: string) =>
+										setEditing((p) => ({ ...p, audience: v }))
+									}
+								>
+									<SelectTrigger>
+										<SelectValue />
+									</SelectTrigger>
+									<SelectContent className="bg-popover">
+										{AUDIENCE_OPTIONS.map((a) => (
+											<SelectItem key={a} value={a}>
+												{a}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
+							<div className="space-y-2">
+								<Label className="text-xs">File size</Label>
+								<Input
+									value={editing?.fileSize || ""}
+									onChange={(e: any) =>
+										setEditing((p) => ({ ...p, fileSize: e.target.value }))
+									}
+									placeholder="e.g. 1.2 MB"
+								/>
+							</div>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setOpen(false)}>
+							Cancel
+						</Button>
+						<Button
+							onClick={() => saveMutation.mutate(editing)}
+							disabled={
+								saveMutation.isPending ||
+								!editing?.title ||
+								!editing?.fileUrl ||
+								!editing?.category
+							}
+						>
+							Save Resource
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
-				<ConfirmDialog
-					open={!!pendingDelete}
-					onOpenChange={(op) => !op && setPendingDelete(null)}
-					title="Delete Resource"
-					description={`Are you sure you want to delete "${pendingDelete?.title}"?`}
-					destructive
-					onConfirm={() =>
-						pendingDelete && deleteMutation.mutate(pendingDelete.id)
-					}
-					busy={deleteMutation.isPending}
-				/>
-			</div>
-		</main>
+			<ConfirmDialog
+				open={!!pendingDelete}
+				onOpenChange={(op) => !op && setPendingDelete(null)}
+				testId="resource-delete-confirm"
+				title="Delete Resource"
+				description={`Are you sure you want to delete "${pendingDelete?.title}"?`}
+				destructive
+				onConfirm={() =>
+					pendingDelete && deleteMutation.mutate(pendingDelete.id)
+				}
+				busy={deleteMutation.isPending}
+			/>
+		</div>
 	);
 }

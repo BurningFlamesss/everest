@@ -104,6 +104,8 @@ export default function TransportationPage() {
 						variant="ghost"
 						size="icon"
 						className="h-8 w-8"
+						aria-label={`Edit ${row.busNumber}`}
+						data-testid={`route-edit-${row.id}`}
 						onClick={() => {
 							setEditing(row);
 							setOpen(true);
@@ -115,6 +117,8 @@ export default function TransportationPage() {
 						variant="ghost"
 						size="icon"
 						className="h-8 w-8 text-destructive"
+						aria-label={`Delete ${row.busNumber}`}
+						data-testid={`route-delete-${row.id}`}
 						onClick={() => setPendingDelete(row)}
 					>
 						<Trash2 className="h-4 w-4" />
@@ -125,154 +129,151 @@ export default function TransportationPage() {
 	];
 
 	return (
-		<main className="flex-1 overflow-y-auto bg-surface-base px-6 py-8">
-			<div className="mx-auto max-w-5xl space-y-6">
-				<PageHeader
-					eyebrow="Operations"
-					title="Transportation"
-					description="Manage school bus routes and stops."
-					actions={
-						<Button
-							onClick={() => {
-								setEditing({ stops: [] });
-								setOpen(true);
-							}}
-						>
-							<Plus className="mr-2 h-4 w-4" /> Add Route
-						</Button>
-					}
-				/>
+		<div data-testid="transportation-page">
+			<PageHeader
+				eyebrow="Operations"
+				title="Transportation"
+				description="Manage school bus routes and stops."
+				actions={
+					<Button
+						size="sm"
+						className="gap-1.5"
+						onClick={() => {
+							setEditing({ stops: [] });
+							setOpen(true);
+						}}
+					>
+						<Plus className="h-3.5 w-3.5" /> Add Route
+					</Button>
+				}
+			/>
 
-				{routes.length > 0 ? (
-					<DataTable
-						columns={columns}
-						rows={routes}
-						rowId={(r) => r.id}
-						testId="transportation-table"
+			<DataTable
+				columns={columns}
+				rows={routes}
+				rowId={(r) => r.id}
+				testId="transportation-table"
+				loading={isLoading}
+				empty={
+					<EmptyState
+						icon={Bus}
+						title="No transportation routes"
+						description="Add your first bus route to begin managing transport."
+						primaryLabel="Add route"
+						onPrimary={() => {
+							setEditing({ stops: [] });
+							setOpen(true);
+						}}
 					/>
-				) : (
-					!isLoading && (
-						<EmptyState
-							icon={Bus}
-							title="No transportation routes"
-							description="Add your first bus route to begin managing transport."
-							primaryLabel="Add route"
-							onPrimary={() => {
-								setEditing({ stops: [] });
-								setOpen(true);
-							}}
-						/>
-					)
-				)}
+				}
+			/>
 
-				<Dialog open={open} onOpenChange={setOpen}>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle>
-								{editing?.id ? "Edit Route" : "Add Route"}
-							</DialogTitle>
-							<DialogDescription>
-								Configure bus number, driver info, and stops.
-							</DialogDescription>
-						</DialogHeader>
-						<div className="grid gap-4 py-4">
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent className="border-hairline bg-popover sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle>
+							{editing?.id ? "Edit Route" : "Add Route"}
+						</DialogTitle>
+						<DialogDescription>
+							Configure bus number, driver info, and stops.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="space-y-3.5">
+						<div className="space-y-2">
+							<Label className="text-xs">Bus Number / Plate</Label>
+							<Input
+								value={editing?.busNumber || ""}
+								onChange={(e: any) =>
+									setEditing((prev) => ({
+										...prev,
+										busNumber: e.target.value,
+									}))
+								}
+							/>
+						</div>
+						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label>Bus Number / Plate</Label>
+								<Label className="text-xs">Driver Name</Label>
 								<Input
-									value={editing?.busNumber || ""}
+									value={editing?.driverName || ""}
 									onChange={(e: any) =>
 										setEditing((prev) => ({
 											...prev,
-											busNumber: e.target.value,
-										}))
-									}
-								/>
-							</div>
-							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label>Driver Name</Label>
-									<Input
-										value={editing?.driverName || ""}
-										onChange={(e: any) =>
-											setEditing((prev) => ({
-												...prev,
-												driverName: e.target.value,
-											}))
-										}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label>Driver Phone</Label>
-									<Input
-										value={editing?.driverPhone || ""}
-										onChange={(e: any) =>
-											setEditing((prev) => ({
-												...prev,
-												driverPhone: e.target.value,
-											}))
-										}
-									/>
-								</div>
-							</div>
-							<div className="space-y-2">
-								<Label>Monthly Fee (NPR)</Label>
-								<Input
-									type="number"
-									value={editing?.feeMonthly || ""}
-									onChange={(e: any) =>
-										setEditing((prev) => ({
-											...prev,
-											feeMonthly: Number(e.target.value),
+											driverName: e.target.value,
 										}))
 									}
 								/>
 							</div>
 							<div className="space-y-2">
-								<Label>Stops (comma-separated)</Label>
+								<Label className="text-xs">Driver Phone</Label>
 								<Input
-									value={
-										Array.isArray(editing?.stops)
-											? editing?.stops.join(", ")
-											: ""
-									}
+									value={editing?.driverPhone || ""}
 									onChange={(e: any) =>
 										setEditing((prev) => ({
 											...prev,
-											stops: e.target.value
-												.split(",")
-												.map((s: string) => s.trim()),
+											driverPhone: e.target.value,
 										}))
 									}
-									placeholder="E.g. Bus Park, Hospital, Base Camp"
 								/>
 							</div>
 						</div>
-						<DialogFooter>
-							<Button variant="outline" onClick={() => setOpen(false)}>
-								Cancel
-							</Button>
-							<Button
-								onClick={() => saveMutation.mutate(editing)}
-								disabled={saveMutation.isPending || !editing?.busNumber}
-							>
-								Save Route
-							</Button>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
+						<div className="space-y-2">
+							<Label className="text-xs">Monthly Fee (NPR)</Label>
+							<Input
+								type="number"
+								value={editing?.feeMonthly || ""}
+								onChange={(e: any) =>
+									setEditing((prev) => ({
+										...prev,
+										feeMonthly: Number(e.target.value),
+									}))
+								}
+							/>
+						</div>
+						<div className="space-y-2">
+							<Label className="text-xs">Stops (comma-separated)</Label>
+							<Input
+								value={
+									Array.isArray(editing?.stops) ? editing?.stops.join(", ") : ""
+								}
+								onChange={(e: any) =>
+									setEditing((prev) => ({
+										...prev,
+										stops: e.target.value
+											.split(",")
+											.map((s: string) => s.trim()),
+									}))
+								}
+								placeholder="E.g. Bus Park, Hospital, Base Camp"
+							/>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setOpen(false)}>
+							Cancel
+						</Button>
+						<Button
+							onClick={() => saveMutation.mutate(editing)}
+							disabled={saveMutation.isPending || !editing?.busNumber}
+						>
+							Save Route
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
-				<ConfirmDialog
-					open={!!pendingDelete}
-					onOpenChange={(op) => !op && setPendingDelete(null)}
-					title="Delete Route"
-					description={`Are you sure you want to delete bus route ${pendingDelete?.busNumber}?`}
-					destructive
-					onConfirm={() =>
-						pendingDelete && deleteMutation.mutate(pendingDelete.id)
-					}
-					busy={deleteMutation.isPending}
-				/>
-			</div>
-		</main>
+			<ConfirmDialog
+				open={!!pendingDelete}
+				onOpenChange={(op) => !op && setPendingDelete(null)}
+				testId="transportation-delete-confirm"
+				title="Delete Route"
+				description={`Are you sure you want to delete bus route ${pendingDelete?.busNumber}?`}
+				destructive
+				onConfirm={() =>
+					pendingDelete && deleteMutation.mutate(pendingDelete.id)
+				}
+				busy={deleteMutation.isPending}
+			/>
+		</div>
 	);
 }

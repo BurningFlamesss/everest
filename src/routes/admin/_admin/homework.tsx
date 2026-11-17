@@ -1,7 +1,15 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Loader2, NotebookPen, Plus, Trash2 } from "lucide-react";
+import { Loader2, NotebookPen, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { ConfirmDialog } from "#/components/common/ConfirmDialog";
+import { EmptyState } from "#/components/common/EmptyState";
+import { PageHeader } from "#/components/common/PageHeader";
+import { Panel } from "#/components/common/Panel";
+import { ListSkeleton } from "#/components/common/Skeletons";
 import { AttachmentUploadField } from "#/components/content/AttachmentUploadField.tsx";
+import { Button } from "#/components/ui/button";
+import { Label } from "#/components/ui/label";
+import { cn } from "#/lib/utils.ts";
 import {
 	createAssignmentAction,
 	deleteAssignmentAction,
@@ -72,6 +80,8 @@ function AdminHomework() {
 	const [error, setError] = useState("");
 	const [notice, setNotice] = useState("");
 	const [formVersion, setFormVersion] = useState(0);
+	const [pendingAssignment, setPendingAssignment] =
+		useState<AssignmentRow | null>(null);
 
 	const load = useCallback(async () => {
 		const [academics, homework] = await Promise.all([
@@ -124,79 +134,86 @@ function AdminHomework() {
 		await load();
 	};
 
+	const remove = async (id: string) => {
+		const response = await deleteAssignmentAction({ data: { id } });
+
+		if (!response.success) {
+			setError(response.error);
+			return;
+		}
+
+		setPendingAssignment(null);
+		await load();
+	};
+
 	return (
-		<div className="space-y-8">
-			<div>
-				<h1 className="text-3xl font-bold text-gray-900">Homework</h1>
-				<p className="mt-1 text-sm text-gray-500">
-					Assignments are visible only to students enrolled in the course and
-					their guardians.
-				</p>
-			</div>
+		<div data-testid="homework-page" className="space-y-5">
+			<PageHeader
+				testId="homework-page-header"
+				eyebrow="Academics"
+				title="Homework"
+				description="Assignments are visible only to students enrolled in the course and their guardians."
+				meta={
+					!isLoading ? (
+						<span data-testid="homework-meta-count">
+							{assignments.length}{" "}
+							{assignments.length === 1 ? "assignment" : "assignments"}
+						</span>
+					) : undefined
+				}
+			/>
 
 			{error ? (
-				<div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+				<div
+					role="alert"
+					data-testid="homework-error"
+					className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+				>
 					{error}
 				</div>
 			) : null}
 			{notice ? (
-				<div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+				<div
+					data-testid="homework-notice"
+					className="rounded-lg border border-success/30 bg-success/10 p-3 text-sm text-success"
+				>
 					{notice}
 				</div>
 			) : null}
 
-			<section className="rounded-2xl border border-gray-200 bg-white p-6">
-				<h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
-					<Plus className="h-5 w-5 text-red-500" /> New assignment
-				</h2>
+			<Panel
+				title="New assignment"
+				description="Publish homework with instructions, a due date and optional attachments."
+				testId="homework-new-assignment-panel"
+				bodyClassName="p-5"
+			>
 				<form
 					key={formVersion}
 					onSubmit={(event) => void submit(event)}
 					className="grid gap-4 md:grid-cols-2"
 				>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Course</span>
-						<select
-							name="courseId"
-							required
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						>
-							<option value="">Select…</option>
-							{courses.map((course) => (
-								<option key={course.id} value={course.id}>
-									{course.code} · {course.name}
-								</option>
-							))}
-						</select>
-					</label>
-					<label className="text-sm">
-						<span className="mb-1 block font-medium text-gray-700">Due</span>
-						<input
-							type="datetime-local"
-							name="dueAt"
-							required
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
-					<label className="text-sm md:col-span-2">
-						<span className="mb-1 block font-medium text-gray-700">Title</span>
-						<input
-							name="title"
-							required
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
-					<label className="text-sm md:col-span-2">
-						<span className="mb-1 block font-medium text-gray-700">
-							Instructions
-						</span>
-						<textarea
-							name="instructions"
-							required
-							rows={4}
-							className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-						/>
-					</label>
+					<Select label="Course" name="courseId" required>
+						<option value="">Select…</option>
+						{courses.map((course) => (
+							<option key={course.id} value={course.id}>
+								{course.code} · {course.name}
+							</option>
+						))}
+					</Select>
+					<Input label="Due" name="dueAt" type="datetime-local" required />
+					<Input
+						label="Title"
+						name="title"
+						required
+						className="md:col-span-2"
+					/>
+					<Textarea
+						label="Instructions"
+						name="instructions"
+						required
+						rows={4}
+						className="md:col-span-2"
+					/>
 					<AttachmentUploadField
 						name="attachments"
 						prefix="homework"
@@ -205,48 +222,57 @@ function AdminHomework() {
 						className="md:col-span-2"
 					/>
 					<div className="md:col-span-2">
-						<button
+						<Button
 							type="submit"
 							disabled={isSubmitting || isUploading}
-							className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+							className="gap-1.5"
+							data-testid="homework-publish"
 						>
 							{isSubmitting ? (
-								<Loader2 className="h-4 w-4 animate-spin" />
+								<Loader2 className="h-3.5 w-3.5 animate-spin" />
 							) : (
-								<NotebookPen className="h-4 w-4" />
+								<NotebookPen className="h-3.5 w-3.5" />
 							)}
 							Publish assignment
-						</button>
+						</Button>
 					</div>
 				</form>
-			</section>
+			</Panel>
 
-			<section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-				<header className="border-b border-gray-200 px-5 py-4">
-					<h2 className="font-semibold text-gray-900">Assignments</h2>
-				</header>
+			<Panel
+				title="Assignments"
+				testId="homework-assignments-panel"
+				bodyClassName="p-0"
+			>
 				{isLoading ? (
-					<p className="flex items-center gap-2 p-6 text-sm text-gray-500">
-						<Loader2 className="h-4 w-4 animate-spin" /> Loading…
-					</p>
+					<div className="p-5">
+						<ListSkeleton rows={4} />
+					</div>
 				) : assignments.length === 0 ? (
-					<p className="p-8 text-center text-sm text-gray-500">
-						No assignments yet.
-					</p>
+					<EmptyState
+						icon={NotebookPen}
+						title="No assignments yet"
+						description="Publish the first assignment above to send homework to a class."
+						testId="homework-assignments-empty"
+					/>
 				) : (
-					<ul className="divide-y divide-gray-100">
+					<ul className="divide-y divide-hairline">
 						{assignments.map((assignment) => (
-							<li key={assignment.id} className="px-5 py-4">
+							<li
+								key={assignment.id}
+								className="group px-5 py-4 transition-colors duration-150 hover:bg-surface-2"
+								data-testid={`homework-assignment-${assignment.id}`}
+							>
 								<div className="flex flex-wrap items-start justify-between gap-3">
 									<div className="min-w-0">
-										<p className="font-medium text-gray-900">
+										<p className="font-medium text-foreground">
 											{assignment.title}
 										</p>
-										<p className="text-xs text-gray-500">
+										<p className="text-xs text-muted-foreground">
 											{assignment.course.code} · {assignment.course.name} · due{" "}
 											{new Date(assignment.dueAt).toLocaleString()}
 										</p>
-										<p className="mt-1 text-sm text-gray-600">
+										<p className="mt-1 text-sm text-foreground">
 											{assignment.instructions}
 										</p>
 										{assignment.attachments.length > 0 ? (
@@ -257,7 +283,8 @@ function AdminHomework() {
 															href={attachment.fileAsset.url}
 															target="_blank"
 															rel="noreferrer"
-															className="text-red-600 underline"
+															className="inline-flex items-center gap-1 rounded-full border border-hairline bg-surface-1 px-2 py-0.5 font-medium text-primary transition-colors duration-150 hover:border-primary/35 hover:text-primary focus-ring"
+															data-testid={`homework-attachment-${attachment.id}`}
 														>
 															{attachment.label ||
 																attachment.fileAsset.originalName}
@@ -267,26 +294,96 @@ function AdminHomework() {
 											</ul>
 										) : null}
 									</div>
-									<button
-										type="button"
-										onClick={async () => {
-											if (!confirm("Delete this assignment?")) return;
-											const response = await deleteAssignmentAction({
-												data: { id: assignment.id },
-											});
-											if (!response.success) setError(response.error);
-											else await load();
-										}}
-										className="inline-flex items-center gap-1 text-xs font-medium text-red-600"
-									>
-										<Trash2 className="h-3.5 w-3.5" /> Delete
-									</button>
+									<div className="row-actions">
+										<Button
+											variant="ghost"
+											size="icon"
+											className="h-8 w-8 text-destructive"
+											aria-label={`Delete ${assignment.title}`}
+											data-testid={`homework-assignment-delete-${assignment.id}`}
+											onClick={() => setPendingAssignment(assignment)}
+										>
+											<Trash2 className="h-4 w-4" />
+										</Button>
+									</div>
 								</div>
 							</li>
 						))}
 					</ul>
 				)}
-			</section>
+			</Panel>
+
+			<ConfirmDialog
+				open={!!pendingAssignment}
+				onOpenChange={(open) => !open && setPendingAssignment(null)}
+				testId="homework-assignment-delete-dialog"
+				title="Delete assignment"
+				description="Delete this assignment?"
+				confirmLabel="Delete"
+				destructive
+				onConfirm={() => pendingAssignment && void remove(pendingAssignment.id)}
+			/>
 		</div>
+	);
+}
+
+const fieldClasses =
+	"h-9 w-full rounded-md border border-hairline bg-surface-1 px-3 text-sm outline-none transition-colors duration-150 placeholder:text-muted-foreground focus-ring";
+
+function Input({
+	label,
+	className,
+	testId,
+	...props
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+	label: string;
+	testId?: string;
+}) {
+	return (
+		<label className={cn("block space-y-1.5", className)}>
+			<Label className="text-xs">{label}</Label>
+			<input {...props} data-testid={testId} className={fieldClasses} />
+		</label>
+	);
+}
+
+function Textarea({
+	label,
+	className,
+	testId,
+	...props
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+	label: string;
+	testId?: string;
+}) {
+	return (
+		<label className={cn("block space-y-1.5", className)}>
+			<Label className="text-xs">{label}</Label>
+			<textarea
+				{...props}
+				data-testid={testId}
+				className={cn(fieldClasses, "py-2")}
+			/>
+		</label>
+	);
+}
+
+function Select({
+	label,
+	className,
+	testId,
+	children,
+	...props
+}: React.SelectHTMLAttributes<HTMLSelectElement> & {
+	label: string;
+	testId?: string;
+}) {
+	return (
+		<label className={cn("block space-y-1.5", className)}>
+			<Label className="text-xs">{label}</Label>
+			<select {...props} data-testid={testId} className={fieldClasses}>
+				{children}
+			</select>
+		</label>
 	);
 }
