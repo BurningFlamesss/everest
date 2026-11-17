@@ -190,104 +190,135 @@ function RouteComponent() {
 	};
 	return (
 		<>
-			<section className="contact-layout content">
-				<aside>
-					<p className="devanagari">{school.nepali}</p>
-					<h2 className="t-page-title text-foreground">{school.name}</h2>
-					<p>{str(contactSection, "address", "") || school.address}</p>
+			<section className="content grid grid-cols-1 gap-10 border-t border-border py-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16 lg:py-16">
+				<aside className="flex min-w-0 flex-col items-start gap-3">
+					<h1 className="t-page-title text-foreground">{school.name}</h1>
+					<p className="max-w-prose text-sm leading-relaxed text-muted-foreground">
+						{str(contactSection, "address", "") || school.address}
+					</p>
 					<CmsSectionBox
 						preview={preview}
 						sectionType="office_hours"
 						onSelect={onSelectSection}
 						testId="cms-section-hit-office_hours"
 					>
-						<div className="time-card mt-8 rounded-card border border-border bg-transparent p-6">
-							<div className="flex items-center gap-2 mb-4">
-								<strong
+						<div className="mt-6 rounded-card border border-border bg-card p-5">
+							<div className="flex flex-wrap items-center gap-2">
+								<span
 									data-testid="contact-open-state"
-									className="font-display text-base tracking-wider uppercase text-foreground"
+									className="u-label inline-flex items-center rounded-pill bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-red-dark"
 								>
-									OPEN TODAY · {weekdayHours}
-								</strong>
+									Open today · {weekdayHours}
+								</span>
+								<span
+									data-testid="kathmandu-time"
+									className="u-label text-muted-foreground"
+								>
+									{time} · Asia/Kathmandu
+								</span>
 							</div>
-							<span
-								data-testid="kathmandu-time"
-								className="block text-base text-muted-foreground mb-6 pb-4 border-b border-rule-soft"
-							>
-								{time} · ASIA/KATHMANDU
-							</span>
-							<ul className="space-y-3 mb-6 pb-6 border-b border-rule-soft">
+							<div className="my-4 h-px bg-border" />
+							<ul className="space-y-1.5">
 								{weekHours.map(([day, hours]) => (
-									<li key={day} className="flex justify-between text-base">
-										<span className="font-medium text-muted-foreground">
-											{day}
+									<li key={day} className="flex justify-between text-sm">
+										<span className="u-label text-muted-foreground">{day}</span>
+										<span className="text-sm font-medium text-foreground">
+											{hours}
 										</span>
-										<span className="text-foreground">{hours}</span>
 									</li>
 								))}
 							</ul>
 							{hoursNote ? (
 								<p
 									data-testid="office-hours-note"
-									className="text-sm text-muted-foreground mb-6 pb-6 border-b border-rule-soft"
+									className="mt-4 text-xs leading-relaxed text-muted-foreground"
 								>
 									{hoursNote}
 								</p>
 							) : null}
+							<div className="my-4 h-px bg-border" />
 							<CmsSectionBox
 								preview={preview}
 								sectionType="contact_details"
 								onSelect={onSelectSection}
 								testId="cms-section-hit-contact_details"
 							>
-								<div className="flex flex-col gap-3">
-									<a
-										href={`tel:${phoneNtc}`}
-										data-testid="contact-ntc-link"
-										className="flex justify-between items-center text-base font-medium hover:text-accent transition-colors"
-									>
-										<span className="text-muted-foreground">NTC</span>
-										<span>{phoneNtc}</span>
-									</a>
-									<a
-										href={`tel:${phoneNcell}`}
-										data-testid="contact-ncell-link"
-										className="flex justify-between items-center text-base font-medium hover:text-accent transition-colors"
-									>
-										<span className="text-muted-foreground">NCELL</span>
-										<span>{phoneNcell}</span>
-									</a>
-									<a
-										href={`mailto:${contactEmail}`}
-										data-testid="contact-email-link"
-										className="flex justify-between items-center text-base font-medium hover:text-accent transition-colors"
-									>
-										<span className="text-muted-foreground">EMAIL</span>
-										<span>{contactEmail}</span>
-									</a>
-									<a
-										href={`mailto:${admissionsEmail}`}
-										data-testid="contact-admissions-email-link"
-										className="flex justify-between items-center text-base font-medium hover:text-accent transition-colors"
-									>
-										<span className="text-muted-foreground">ADMISSIONS</span>
-										<span>{admissionsEmail}</span>
-									</a>
-									<a
-										href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(str(contactSection, "address", "") || "Butwal-8, Sukkhanagar, Rupandehi, Nepal")}`}
-										data-testid="contact-directions-link"
-										className="inline-flex mt-2 items-center justify-center font-medium text-base text-red-dark hover:text-red-dark/80 transition-colors"
-									>
-										GET DIRECTIONS{" "}
-										<span className="ml-1 text-lg leading-none">↗</span>
-									</a>
-								</div>
+								<ul className="space-y-1">
+									<li>
+										<a
+											href={`tel:${phoneNtc}`}
+											data-testid="contact-ntc-link"
+											className="flex min-h-11 items-center justify-between text-sm hover:text-red-dark transition-colors"
+										>
+											<span className="u-label text-muted-foreground">NTC</span>
+											<span className="font-medium text-foreground">
+												{phoneNtc}
+											</span>
+										</a>
+									</li>
+									<li>
+										<a
+											href={`tel:${phoneNcell}`}
+											data-testid="contact-ncell-link"
+											className="flex min-h-11 items-center justify-between text-sm hover:text-red-dark transition-colors"
+										>
+											<span className="u-label text-muted-foreground">
+												Ncell
+											</span>
+											<span className="font-medium text-foreground">
+												{phoneNcell}
+											</span>
+										</a>
+									</li>
+									<li>
+										<a
+											href={`mailto:${contactEmail}`}
+											data-testid="contact-email-link"
+											className="flex min-h-11 items-center justify-between text-sm hover:text-red-dark transition-colors"
+										>
+											<span className="u-label text-muted-foreground">
+												Email
+											</span>
+											<span className="font-medium text-foreground">
+												{contactEmail}
+											</span>
+										</a>
+									</li>
+									<li>
+										<a
+											href={`mailto:${admissionsEmail}`}
+											data-testid="contact-admissions-email-link"
+											className="flex min-h-11 items-center justify-between text-sm hover:text-red-dark transition-colors"
+										>
+											<span className="u-label text-muted-foreground">
+												Admissions
+											</span>
+											<span className="font-medium text-foreground">
+												{admissionsEmail}
+											</span>
+										</a>
+									</li>
+									<li>
+										<a
+											href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(str(contactSection, "address", "") || "Butwal-8, Sukkhanagar, Rupandehi, Nepal")}`}
+											data-testid="contact-directions-link"
+											className="inline-flex min-h-11 mt-2 items-center font-medium text-sm text-red-dark hover:text-red-dark/80 transition-colors"
+										>
+											Get directions{" "}
+											<span className="ml-1 leading-none">↗</span>
+										</a>
+									</li>
+								</ul>
 							</CmsSectionBox>
 						</div>
 					</CmsSectionBox>
 				</aside>
-				<form onSubmit={(e) => e.preventDefault()} data-testid="contact-form">
-					<h2 className="t-h2 text-foreground">DIRECT YOUR ENQUIRY</h2>
+				<form
+					onSubmit={(e) => e.preventDefault()}
+					data-testid="contact-form"
+					className="flex min-w-0 flex-col gap-5"
+				>
+					<h2 className="t-h2 text-foreground">Direct your enquiry</h2>
 					<Segmented
 						label="Direct your enquiry"
 						options={[
@@ -299,10 +330,8 @@ function RouteComponent() {
 						value={route}
 						onChange={setRoute}
 					/>
-					<div
-						className={`form-control ${errors["contact-name"] ? "form-control--error" : ""}`}
-					>
-						<Label htmlFor="contact-name" style={{ color: "var(--c-ink)" }}>
+					<div className="flex flex-col gap-2">
+						<Label htmlFor="contact-name" className="text-foreground">
 							Full name
 						</Label>
 						<Input
@@ -311,7 +340,7 @@ function RouteComponent() {
 							name="name"
 							onBlur={validate}
 							aria-invalid={!!errors["contact-name"]}
-							className="editorial-input"
+							className="min-h-11 rounded-field border-border bg-background px-3 text-sm aria-invalid:border-destructive"
 						/>
 						{errors["contact-name"] && (
 							<p className="field-error">
@@ -320,10 +349,8 @@ function RouteComponent() {
 							</p>
 						)}
 					</div>
-					<div
-						className={`form-control ${errors["contact-email"] ? "form-control--error" : ""}`}
-					>
-						<Label htmlFor="contact-email" style={{ color: "var(--c-ink)" }}>
+					<div className="flex flex-col gap-2">
+						<Label htmlFor="contact-email" className="text-foreground">
 							Email address
 						</Label>
 						<Input
@@ -332,7 +359,7 @@ function RouteComponent() {
 							name="email"
 							onBlur={validate}
 							aria-invalid={!!errors["contact-email"]}
-							className="editorial-input"
+							className="min-h-11 rounded-field border-border bg-background px-3 text-sm aria-invalid:border-destructive"
 						/>
 						{errors["contact-email"] && (
 							<p className="field-error">
@@ -341,10 +368,8 @@ function RouteComponent() {
 							</p>
 						)}
 					</div>
-					<div
-						className={`form-control ${errors["contact-phone"] ? "form-control--error" : ""}`}
-					>
-						<Label htmlFor="contact-phone" style={{ color: "var(--c-ink)" }}>
+					<div className="flex flex-col gap-2">
+						<Label htmlFor="contact-phone" className="text-foreground">
 							Phone number
 						</Label>
 						<Input
@@ -353,7 +378,7 @@ function RouteComponent() {
 							name="phone"
 							onBlur={validate}
 							aria-invalid={!!errors["contact-phone"]}
-							className="editorial-input"
+							className="min-h-11 rounded-field border-border bg-background px-3 text-sm aria-invalid:border-destructive"
 						/>
 						{errors["contact-phone"] && (
 							<p className="field-error">
@@ -362,20 +387,15 @@ function RouteComponent() {
 							</p>
 						)}
 					</div>
-					<div
-						className={`form-control ${errors["contact-message"] ? "form-control--error" : ""}`}
-					>
-						<div className="label-line flex justify-between w-full">
-							<Label
-								htmlFor="contact-message"
-								style={{ color: "var(--c-ink)" }}
-							>
+					<div className="flex flex-col gap-2">
+						<div className="flex w-full items-center justify-between gap-3">
+							<Label htmlFor="contact-message" className="text-foreground">
 								Message
 							</Label>
 							<span
 								id="contact-message-count"
 								data-testid="contact-message-count"
-								style={{ color: "var(--c-n-600)", fontSize: "14px" }}
+								className="u-label text-muted-foreground"
 							>
 								{count} / 600
 							</span>
@@ -388,7 +408,7 @@ function RouteComponent() {
 							onChange={(e) => setCount(e.target.value.length)}
 							data-testid="contact-message-input"
 							aria-describedby="contact-message-count"
-							className="editorial-input"
+							className="min-h-[140px] w-full resize-y rounded-field border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-invalid:border-destructive"
 						/>
 						{errors["contact-message"] && (
 							<p className="field-error">
@@ -400,11 +420,11 @@ function RouteComponent() {
 					<Button
 						type="submit"
 						testId="contact-submit-button"
-						className="institution-button institution-button--full w-full py-3 mt-6"
+						className="mt-1 min-h-11 w-full rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
 					>
 						Send enquiry
 					</Button>
-					<p className="form-note">
+					<p className="text-xs leading-relaxed text-muted-foreground">
 						This preview validates the form but does not transmit messages.
 					</p>
 				</form>
@@ -416,7 +436,7 @@ function RouteComponent() {
 				testId="cms-section-hit-map"
 			>
 				<section
-					className="map-panel content"
+					className="content mt-12 rounded-2xl border border-border bg-card p-6 sm:p-8"
 					aria-label={mapLabel}
 					data-testid="school-map"
 				>
@@ -426,15 +446,18 @@ function RouteComponent() {
 							<p className="text-sm text-muted-foreground">{mapDirections}</p>
 						) : null}
 					</div>
-					<iframe
-						src={mapEmbed}
-						width="100%"
-						height="400"
-						style={{ border: 0 }}
-						allowFullScreen={true}
-						loading="lazy"
-						referrerPolicy="no-referrer-when-downgrade"
-					></iframe>
+					<div className="overflow-hidden rounded-field border border-border">
+						<iframe
+							title={`${mapLabel} location map`}
+							src={mapEmbed}
+							width="100%"
+							height="400"
+							style={{ border: 0 }}
+							allowFullScreen={true}
+							loading="lazy"
+							referrerPolicy="no-referrer-when-downgrade"
+						></iframe>
+					</div>
 					{mapLat && mapLng ? (
 						<p className="mt-3 text-sm text-muted-foreground">
 							<a
@@ -459,29 +482,37 @@ function RouteComponent() {
 				onSelect={onSelectSection}
 				testId="cms-section-hit-department_list"
 			>
-				<section className="departments content">
+				<section className="content mt-12 rounded-2xl border border-border bg-card p-6 sm:p-8">
 					{str(deptSection, "eyebrow") ? (
 						<p className="t-eyebrow mb-2">{str(deptSection, "eyebrow")}</p>
 					) : null}
 					<h2 className="t-h2 text-foreground">
-						{str(deptSection, "title", "") || "WHO TO ASK"}
+						{str(deptSection, "title", "") || "Who to ask"}
 					</h2>
-					<div>
+					<div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
 						{departments.map((d) => (
-							<article key={d.id} data-testid={`department-${d.id}`}>
-								<span>{d.name}</span>
-								<h3 className="font-display text-xl text-foreground font-semibold">
+							<article
+								key={d.id}
+								data-testid={`department-${d.id}`}
+								className="rounded-xl border border-border bg-background p-5"
+							>
+								<p className="u-label text-red-dark">{d.name}</p>
+								<h3 className="mt-1.5 text-lg font-semibold text-foreground">
 									{d.contact}
 								</h3>
 								{d.email ? (
 									<a
 										href={`mailto:${d.email}`}
-										className="inline-flex min-h-11 items-center"
+										className="inline-flex min-h-11 items-center text-sm text-red-dark hover:text-red-dark/80 transition-colors"
 									>
 										{d.email}
 									</a>
 								) : null}
-								{d.hours ? <p>{d.hours}</p> : null}
+								{d.hours ? (
+									<p className="text-xs leading-relaxed text-muted-foreground">
+										{d.hours}
+									</p>
+								) : null}
 							</article>
 						))}
 					</div>
@@ -493,11 +524,9 @@ function RouteComponent() {
 				onSelect={onSelectSection}
 				testId="cms-section-hit-contact-social_links"
 			>
-				<section className="contact-social strip mt-12 rounded-2xl border border-border bg-card p-6">
-					<h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground mb-3">
-						FOLLOW
-					</h3>
-					<h2 className="t-h2 text-foreground mb-4">Follow the school</h2>
+				<section className="content mt-12 rounded-2xl border border-border bg-card p-6 sm:p-8">
+					<p className="u-label mb-2 text-muted-foreground">Follow</p>
+					<h2 className="t-h2 text-foreground">Follow the school</h2>
 					{socialItems.length > 0 ? (
 						<div className="flex flex-wrap gap-4">
 							{socialItems.map((item) => (
@@ -506,7 +535,7 @@ function RouteComponent() {
 									href={item.href}
 									target="_blank"
 									rel="noreferrer"
-									className="flex min-h-11 items-center gap-2 rounded-lg bg-secondary px-3 py-2 text-sm text-foreground hover:bg-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
+									className="flex min-h-11 items-center gap-2 rounded-lg bg-secondary px-3 py-2 text-sm text-foreground hover:bg-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 								>
 									<item.icon className="h-4 w-4" />
 									<span className="font-medium">{item.label}</span>

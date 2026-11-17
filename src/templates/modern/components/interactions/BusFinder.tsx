@@ -316,10 +316,10 @@ export function BusFinder() {
 					</RevealUp>
 
 					{/* Confirmatory only: the list below carries identical information. */}
-					<div className="overflow-hidden -my-10">
+					<div>
 						<motion.svg
 							key={best!.route.id}
-							viewBox="0 0 720 200"
+							viewBox="-48 -32 816 264"
 							className="w-full"
 							aria-hidden="true"
 							initial={reduced ? { opacity: 0 } : { scaleX: 0 }}

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
 	autoplaySpeedFromSeconds,
 	isScrollKey,
+	isUpwardSeek,
 	MAX_FRAME_DELTA_MS,
 	nextScrollPosition,
 	overlayBodyStyle,
@@ -122,30 +123,30 @@ describe("nextScrollPosition", () => {
 });
 
 describe("shouldResumeAutoplay", () => {
-	it("resumes while incomplete, visible and inside the track", () => {
+	it("resumes while visible and inside the track", () => {
 		expect(
 			shouldResumeAutoplay({
-				completed: false,
 				progress: 0.4,
 				pageVisible: true,
 			}),
 		).toBe(true);
 	});
 
-	it("never restarts once the sequence has completed", () => {
+	it("has no completed latch — it resumes even after the end was reached", () => {
+		// The hero plays "when possible": once the visitor seeks back into the
+		// track, playback returns from wherever the scroll position is, even
+		// if the sequence already ran to its end once.
 		expect(
 			shouldResumeAutoplay({
-				completed: true,
 				progress: 0.1,
 				pageVisible: true,
 			}),
-		).toBe(false);
+		).toBe(true);
 	});
 
 	it("stays paused on a hidden tab", () => {
 		expect(
 			shouldResumeAutoplay({
-				completed: false,
 				progress: 0.4,
 				pageVisible: false,
 			}),
@@ -155,11 +156,35 @@ describe("shouldResumeAutoplay", () => {
 	it("does not resume once the visitor has scrolled past the hero", () => {
 		expect(
 			shouldResumeAutoplay({
-				completed: false,
 				progress: 1,
 				pageVisible: true,
 			}),
 		).toBe(false);
+	});
+});
+
+describe("isUpwardSeek", () => {
+	it("treats negative wheel deltas as upward", () => {
+		expect(isUpwardSeek({ deltaY: -120 })).toBe(true);
+		expect(isUpwardSeek({ deltaY: -1 })).toBe(true);
+	});
+
+	it("treats downward and zero wheel deltas as not upward", () => {
+		expect(isUpwardSeek({ deltaY: 120 })).toBe(false);
+		expect(isUpwardSeek({ deltaY: 0 })).toBe(false);
+	});
+
+	it("recognises upward scroll keys", () => {
+		expect(isUpwardSeek({ key: "ArrowUp" })).toBe(true);
+		expect(isUpwardSeek({ key: "PageUp" })).toBe(true);
+		expect(isUpwardSeek({ key: "Home" })).toBe(true);
+	});
+
+	it("treats downward keys and directionless input as not upward", () => {
+		expect(isUpwardSeek({ key: "ArrowDown" })).toBe(false);
+		expect(isUpwardSeek({ key: "PageDown" })).toBe(false);
+		expect(isUpwardSeek({ key: "End" })).toBe(false);
+		expect(isUpwardSeek({})).toBe(false);
 	});
 });
 

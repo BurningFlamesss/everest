@@ -9,6 +9,14 @@
 /** A paused trackpad/momentum burst should not resume playback instantly. */
 export const RESUME_DELAY_MS = 450;
 
+/**
+ * An upward scroll reads as "the visitor wants to be here / earlier", so the
+ * page waits this much longer before taking the scroll position back over.
+ * Every further upward movement re-arms the wait, so playback only returns
+ * once the upward motion has settled.
+ */
+export const RESUME_DELAY_UPWARD_MS = 2000;
+
 /** Beat the loading veil so the first frames settle before the page drifts. */
 export const START_DELAY_MS = 800;
 
@@ -279,22 +287,47 @@ export function nextScrollPosition({
 }
 
 /**
- * Whether auto-play may (re)start right now. The completed latch matters:
- * once the visitor — or auto-play itself — has reached the hero's end, the
- * sequence never restarts on its own, so scrubbing back up stays put instead
- * of dragging the visitor down the page again.
+ * Direction of a user input, as far as it can be known at the moment it
+ * arrives. Wheel events carry a signed delta; keys have inherent directions;
+ * a touch or pointer press gives no hint until the scroll actually moves.
+ */
+export type SeekDirection = "up" | "down" | "unknown";
+
+/** Wheel and trackpad deltas above this count as deliberate movement. */
+const WHEEL_UP_THRESHOLD = 0;
+
+/**
+ * Whether an interaction should wait the long upward delay before playback
+ * resumes. Upward wheel/trackpad movement and upward scroll keys do; a touch
+ * or pointer press knows no direction, so it gets the standard delay.
+ */
+export function isUpwardSeek(input: {
+	deltaY?: number;
+	key?: string;
+}): boolean {
+	if (typeof input.deltaY === "number" && input.deltaY < WHEEL_UP_THRESHOLD) {
+		return true;
+	}
+	return (
+		input.key === "ArrowUp" || input.key === "PageUp" || input.key === "Home"
+	);
+}
+
+/**
+ * Whether auto-play may (re)start right now. There is no completed latch:
+ * once the visitor goes idle the sequence plays again from wherever the
+ * scroll position currently is — that is what makes the hero behave like a
+ * video that is always running "when possible". The only genuine holds are
+ * the hero track bounds (progress must be inside 0..1) and tab visibility.
  */
 export function shouldResumeAutoplay({
-	completed,
 	progress,
 	pageVisible,
 }: {
-	/** The hero sequence has already run to its end once. */
-	completed: boolean;
 	/** ScrollTrigger progress, 0..1. */
 	progress: number;
 	/** The tab is the visible one. */
 	pageVisible: boolean;
 }): boolean {
-	return !completed && pageVisible && progress >= 0 && progress < 1;
+	return pageVisible && progress >= 0 && progress < 1;
 }

@@ -477,11 +477,11 @@ function HeroStage({
 			folder: str(footage, "footageBase", "/schools/everest/landing-footage/"),
 			prefix: str(footage, "footagePrefix", "frame_"),
 			extension: str(footage, "footageExtension", ".jpeg"),
-			frameCount: num(footage, "footageFrameCount", 216),
+			frameCount: num(footage, "footageFrameCount", 274),
 		},
 	);
 
-	const autoplaySeconds = num(footage, "autoplaySeconds", 36);
+	const autoplaySeconds = num(footage, "autoplaySeconds", 14);
 
 	// Fractional frame index — the single value both the canvas and the text
 	// read. Fractional (not floored) so the word animations move smoothly

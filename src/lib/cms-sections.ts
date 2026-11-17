@@ -208,10 +208,10 @@ export const SECTION_DEFAULTS: Partial<
 		footageBase: "/schools/everest/landing-footage/",
 		footagePrefix: "frame_",
 		footageExtension: ".jpeg",
-		footageFrameCount: 216,
+		footageFrameCount: 274,
 		// Auto-play: the hero plays like a video when the visitor is idle, and
 		// scrolling seeks. 0 disables auto-play.
-		autoplaySeconds: 36,
+		autoplaySeconds: 14,
 	},
 	landing_facts: {
 		title: "Established in purpose.\nContemporary in outlook.",

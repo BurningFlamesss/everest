@@ -126,7 +126,7 @@ export function NoticeTicker({
 
 			<Link
 				to="/notices"
-				className="u-label mr-4 hidden shrink-0 text-n-600 underline underline-offset-4 hover:text-ink lg:inline lg:h-[44px] lg:items-center"
+				className="u-label mr-4 hidden shrink-0 text-n-600 underline underline-offset-4 hover:text-ink lg:inline-flex lg:h-[44px] lg:items-center"
 				data-testid="ticker-view-all"
 			>
 				View all notices

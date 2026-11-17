@@ -21,9 +21,9 @@ export const DEFAULT_SOURCE: CanvasVideoSource = {
 	folder: `${PUBLIC_ADDRESS}/landing-footage/`,
 	prefix: "frame_",
 	extension: ".jpeg",
-	// The shipped footage is 216 frames; a cleared/invalid CMS count must
+	// The shipped footage is 274 frames; a cleared/invalid CMS count must
 	// restore the real default, not a stale historical value.
-	frameCount: 216,
+	frameCount: 274,
 };
 
 /**
