@@ -85,7 +85,7 @@ function NotificationsPage() {
 	};
 
 	return (
-		<PageFrame testId="notifications-page">
+		<PageFrame testId="notifications-page" dense>
 			<PageHeader
 				testId="notifications-page-header"
 				eyebrow="Notifications"
@@ -129,7 +129,7 @@ function NotificationsPage() {
 				/>
 
 				{notifications.length === 0 ? (
-					<div className="mt-9">
+					<div className="mt-5">
 						<EmptyState
 							eyebrow="Quiet for now"
 							title="No notifications yet"
@@ -138,7 +138,7 @@ function NotificationsPage() {
 						/>
 					</div>
 				) : (
-					<ul className="mt-8 divide-y divide-rule-soft">
+					<ul className="mt-5 divide-y divide-rule-soft">
 						{notifications.map((notification, index) => (
 							<li key={notification.id}>
 								<Reveal delay={Math.min(index, 6) * STAGGER}>

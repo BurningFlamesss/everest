@@ -299,8 +299,6 @@ export const BLOCK_LIBRARY: {
 			passwordLabel: "Password",
 			forgotLabel: "Forgot password?",
 			submitLabel: "Sign in",
-			disclosure:
-				"Frontend demonstration — no credentials are transmitted or stored.",
 		},
 	},
 	{

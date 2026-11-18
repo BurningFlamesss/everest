@@ -168,8 +168,6 @@ export const SECTION_DEFAULTS: Partial<
 		passwordLabel: "Password",
 		forgotLabel: "Forgot password?",
 		submitLabel: "Sign in",
-		disclosure:
-			"Frontend demonstration — no credentials are transmitted or stored.",
 	},
 	auth_contact: {
 		title: "Don't have access?",

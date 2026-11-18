@@ -59,14 +59,24 @@ describe("Admin Shell Public Website Links", () => {
 		cleanup();
 	});
 
-	it("renders a link to the public website in the admin sidebar", () => {
+	it("does not render a public-website link in the admin sidebar", () => {
 		render(React.createElement(Sidebar, { collapsed: false }));
-		const publicLink = screen.getByTestId("admin-goto-public");
-		expect(publicLink.getAttribute("href")).toBe("/");
-		expect(screen.getByText("Public Website")).toBeDefined();
+		expect(screen.queryByTestId("admin-goto-public")).toBeNull();
+		expect(screen.queryByText("Public Website")).toBeNull();
 
 		const logoLink = screen.getByTestId("admin-sidebar-logo").closest("a");
 		expect(logoLink?.getAttribute("href")).toBe("/");
+	});
+
+	it("does not render the sidebar collapse toggle", () => {
+		render(React.createElement(Sidebar, { collapsed: false }));
+		expect(screen.queryByTestId("sidebar-collapse-toggle")).toBeNull();
+	});
+
+	it("does not mark Overview active on non-root admin routes", () => {
+		render(React.createElement(Sidebar, { collapsed: false }));
+		const overview = screen.getByTestId("nav-overview");
+		expect(overview.className).not.toContain("before:absolute");
 	});
 
 	it("renders a link to the public website in the admin topbar", () => {

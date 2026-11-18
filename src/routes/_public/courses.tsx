@@ -301,6 +301,12 @@ const ProgramDetail = ({ program }: { program: Program }) => {
 import { getProgramsServer } from "#/packages/content/server/content.ts";
 
 export const Route = createFileRoute("/_public/courses")({
+	validateSearch: (
+		search: Record<string, unknown>,
+	): { cms?: string; level?: string } => ({
+		cms: search.cms as string | undefined,
+		level: search.level as string | undefined,
+	}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		let previewPage = null;
@@ -316,8 +322,10 @@ export const Route = createFileRoute("/_public/courses")({
 });
 
 function RouteComponent() {
-	const search =
-		(useSearch({ strict: false }) as Record<string, unknown>) || {};
+	const search = useSearch({ from: "/_public/courses" }) as {
+		cms?: string;
+		level?: string;
+	};
 	const cms = search.cms;
 	const { previewPage, dbPrograms } = Route.useLoaderData();
 	const publishedContent = useWebsitePageContent("courses");
@@ -349,7 +357,23 @@ function RouteComponent() {
 		);
 	};
 
-	const [levelId, setLevelId] = useState<LevelId>("plus2-science");
+	// Deep-linkable level: /courses?level=plus2-management lands straight on
+	// that stream (the course-finder quiz hands off here with the visitor's
+	// top-ranked stream). Unknown or missing values fall back to science.
+	const requestedLevel = levels.some((l) => l.id === search.level)
+		? (search.level as LevelId)
+		: undefined;
+	const [levelId, setLevelId] = useState<LevelId>(
+		requestedLevel ?? "plus2-science",
+	);
+	// The tab is local state once the visitor starts clicking, but a new URL
+	// (back/forward, or a shared link while already here) must win again — so
+	// re-seat the level whenever the requested one changes.
+	const [lastRequested, setLastRequested] = useState(requestedLevel);
+	if (requestedLevel !== lastRequested) {
+		setLastRequested(requestedLevel);
+		if (requestedLevel) setLevelId(requestedLevel);
+	}
 
 	const level = useMemo(
 		() => levels.find((l) => l.id === levelId) ?? levels[0],
@@ -388,7 +412,7 @@ function RouteComponent() {
 					meta={[
 						{ label: "Programmes", value: String(activePrograms.length) },
 						{ label: "Levels", value: "5" },
-						{ label: "+2 streams", value: "Science, Management" },
+						{ label: "+2 streams", value: "Science, Management, Humanities" },
 						{ label: "Session", value: "2083 BS" },
 					]}
 					actions={

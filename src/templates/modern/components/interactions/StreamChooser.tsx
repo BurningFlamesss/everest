@@ -20,7 +20,7 @@ export function StreamChooser({
 	onSeeAll,
 }: {
 	onHandoff: (top: [QuizStreamId, QuizStreamId]) => void;
-	onSeeAll: () => void;
+	onSeeAll: (top: [QuizStreamId, QuizStreamId]) => void;
 }) {
 	const reduced = Boolean(useReducedMotion());
 	const [step, setStep] = useState(0);
@@ -266,7 +266,12 @@ export function StreamChooser({
 						</Button>
 						<Button
 							variant="secondary"
-							onClick={onSeeAll}
+							onClick={() =>
+								onSeeAll([
+									result.ranked[0].streamId,
+									result.ranked[1].streamId,
+								])
+							}
 							testId="chooser-see-all"
 						>
 							See all three streams in full

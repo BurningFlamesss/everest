@@ -77,7 +77,7 @@ function Dashboard() {
 	const role = viewer.primaryRole ?? "USER";
 
 	return (
-		<PageFrame testId="dashboard-page">
+		<PageFrame testId="dashboard-page" dense>
 			<PageHeader
 				testId="dashboard-page-header"
 				eyebrow="Dashboard"
@@ -109,7 +109,7 @@ function Dashboard() {
 
 			<Section testId="dashboard-shortcuts">
 				<SectionHeading eyebrow="Quick links" title="Shortcuts" />
-				<ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+				<ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 					{shortcuts.map((shortcut, index) => (
 						<li key={shortcut.to} className="min-w-0">
 							<Reveal delay={index * STAGGER} className="h-full">
@@ -148,7 +148,7 @@ function Dashboard() {
 						}
 					/>
 					<Reveal>
-						<dl className="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-card border border-border bg-border sm:grid-cols-4">
+						<dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-card border border-border bg-border sm:grid-cols-4">
 							{[
 								["Pending invites", summary.admin.pendingInvites],
 								["New enquiries", summary.admin.newEnquiries],
@@ -177,7 +177,7 @@ function Dashboard() {
 						title={`${summary.student.name}: at a glance`}
 					/>
 					<Reveal>
-						<dl className="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-card border border-border bg-border sm:grid-cols-3">
+						<dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-card border border-border bg-border sm:grid-cols-3">
 							<div className="bg-card px-4 py-5">
 								<dt className="t-eyebrow">Attendance</dt>
 								<dd className="mt-2 font-display text-xl font-semibold leading-tight text-foreground">

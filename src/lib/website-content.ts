@@ -409,8 +409,6 @@ const BLOCK_LIBRARY_DEFAULTS: Record<BlockType, Record<string, unknown>> = {
 		passwordLabel: "Password",
 		forgotLabel: "Forgot password?",
 		submitLabel: "Sign in",
-		disclosure:
-			"Frontend demonstration — no credentials are transmitted or stored.",
 	},
 	auth_contact: {
 		title: "Don't have access?",

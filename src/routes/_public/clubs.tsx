@@ -111,7 +111,7 @@ function ClubsPage() {
 	};
 
 	return (
-		<PageFrame>
+		<PageFrame dense>
 			<CmsSectionBox
 				preview={preview}
 				sectionType="headline"
@@ -128,7 +128,7 @@ function ClubsPage() {
 				/>
 			</CmsSectionBox>
 
-			<Section className="mb-20">
+			<Section className="mb-10">
 				{clubs.length === 0 ? (
 					<div className="rounded-2xl border border-border bg-card p-10 text-center">
 						<Users className="mx-auto h-8 w-8 text-muted-foreground/40" />

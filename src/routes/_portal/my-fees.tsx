@@ -37,7 +37,7 @@ function MyFees() {
 	const data = Route.useLoaderData();
 
 	return (
-		<PageFrame testId="my-fees-page">
+		<PageFrame testId="my-fees-page" dense>
 			<PageHeader
 				testId="my-fees-page-header"
 				eyebrow="Fees"
@@ -100,11 +100,11 @@ function MyFees() {
 							/>
 
 							{entry.invoices.length === 0 ? (
-								<div className="mt-6 rounded-card border border-border bg-card">
+								<div className="mt-4 rounded-card border border-border bg-card">
 									<p className="t-caption p-6">No invoices yet.</p>
 								</div>
 							) : (
-								<div className="mt-6 overflow-hidden rounded-card border border-border bg-card">
+								<div className="mt-4 overflow-hidden rounded-card border border-border bg-card">
 									<div className="rail-scroll overflow-x-auto">
 										<table className="w-full min-w-[640px] border-collapse text-left">
 											<thead>

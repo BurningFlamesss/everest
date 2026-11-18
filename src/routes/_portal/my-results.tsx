@@ -28,7 +28,7 @@ function MyResults() {
 	const data = Route.useLoaderData();
 
 	return (
-		<PageFrame testId="my-results-page">
+		<PageFrame testId="my-results-page" dense>
 			<PageHeader
 				testId="my-results-page-header"
 				eyebrow="Results"
@@ -69,11 +69,11 @@ function MyResults() {
 							/>
 
 							{student.marks.length === 0 ? (
-								<div className="mt-6 overflow-hidden rounded-card border border-border bg-card">
+								<div className="mt-4 overflow-hidden rounded-card border border-border bg-card">
 									<p className="t-caption p-6">No published marks yet.</p>
 								</div>
 							) : (
-								<div className="mt-6 overflow-hidden rounded-card border border-border bg-card">
+								<div className="mt-4 overflow-hidden rounded-card border border-border bg-card">
 									<div className="rail-scroll overflow-x-auto">
 										<table className="w-full text-left">
 											<thead className="border-b border-border bg-secondary">

@@ -52,10 +52,7 @@ export function AppShell() {
 					<div
 						className={`fixed bottom-0 top-0 z-30 ${collapsed ? "w-[72px]" : "w-[272px]"} transition-[width] duration-240 ease-standard`}
 					>
-						<Sidebar
-							collapsed={collapsed}
-							onToggle={() => setCollapsed((v) => !v)}
-						/>
+						<Sidebar collapsed={collapsed} />
 					</div>
 				</div>
 
@@ -66,7 +63,6 @@ export function AppShell() {
 					>
 						<Sidebar
 							collapsed={false}
-							mobile
 							onNavigate={() => setMobileOpen(false)}
 						/>
 					</SheetContent>

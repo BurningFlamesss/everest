@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
-import { ChevronDown, ChevronsLeft, ChevronsRight, Globe } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ScrollArea } from "#/components/ui/scroll-area";
 import {
@@ -15,17 +15,10 @@ import { NAV_GROUPS, type NavItem } from "./nav-config";
 
 interface SidebarProps {
 	collapsed: boolean;
-	mobile?: boolean;
-	onToggle?: () => void;
 	onNavigate?: () => void;
 }
 
-export function Sidebar({
-	collapsed,
-	mobile = false,
-	onToggle,
-	onNavigate,
-}: SidebarProps) {
+export function Sidebar({ collapsed, onNavigate }: SidebarProps) {
 	const { user, can } = useAuth();
 	const location = useLocation();
 	const [openItem, setOpenItem] = useState<string | null>(null);
@@ -52,7 +45,9 @@ export function Sidebar({
 		items: group.items.filter((item) => can(item.permission)),
 	})).filter((group) => group.items.length > 0);
 
-	const isActive = (item: NavItem) => location.pathname.startsWith(item.to);
+	const isActive = (item: NavItem) =>
+		location.pathname === item.to ||
+		(item.to !== "/admin" && location.pathname.startsWith(`${item.to}/`));
 
 	return (
 		<aside
@@ -62,7 +57,7 @@ export function Sidebar({
 		>
 			<div
 				className={cn(
-					"flex h-14 items-center justify-center gap-2.5 px-4",
+					"flex h-16 items-center justify-center gap-2.5 px-4",
 					collapsed && "px-0",
 				)}
 			>
@@ -77,7 +72,7 @@ export function Sidebar({
 						data-testid="admin-sidebar-logo"
 						className={cn(
 							"shrink-0 object-contain",
-							collapsed ? "h-8 w-8" : "h-10 w-auto max-w-[210px]",
+							collapsed ? "h-8 w-8" : "h-16 w-auto max-w-[210px]",
 						)}
 					/>
 				</Link>
@@ -211,54 +206,6 @@ export function Sidebar({
 			</ScrollArea>
 
 			<div className="border-t border-white/10 p-3 space-y-2">
-				{collapsed ? (
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Link
-								to="/"
-								data-testid="admin-goto-public"
-								className="flex min-h-11 w-full items-center justify-center rounded bg-white/10 p-2 text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-								aria-label="View public website"
-							>
-								<Globe className="h-4 w-4" />
-							</Link>
-						</TooltipTrigger>
-						<TooltipContent side="right">View public website</TooltipContent>
-					</Tooltip>
-				) : (
-					<Link
-						to="/"
-						data-testid="admin-goto-public"
-						className="flex min-h-11 w-full items-center gap-2.5 rounded bg-white/10 px-2.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-					>
-						<Globe className="h-4 w-4 shrink-0" />
-						<span>Public Website</span>
-					</Link>
-				)}
-
-				{!mobile && (
-					<button
-						type="button"
-						onClick={onToggle}
-						data-testid="sidebar-collapse-toggle"
-						className={cn(
-							"flex min-h-11 w-full items-center gap-2 rounded border-none bg-transparent px-2.5 py-2 text-xs font-medium text-white/75 transition-colors hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
-							collapsed && "justify-center px-0",
-						)}
-					>
-						{collapsed ? (
-							<ChevronsRight className="h-4 w-4" />
-						) : (
-							<ChevronsLeft className="h-4 w-4" />
-						)}
-						{!collapsed && <span>Collapse sidebar</span>}
-						{!collapsed && (
-							<span className="ml-auto font-mono text-[10px] text-white/50">
-								⌘B
-							</span>
-						)}
-					</button>
-				)}
 				{!collapsed && user && (
 					<div className="mt-2 flex items-center gap-2.5 rounded-md bg-white/10 px-2.5 py-2">
 						<img

@@ -1085,13 +1085,18 @@ textarea.editorial-input {
 .institution-button--full {
 	width: 100%;
 }
+.contact-form__note {
+	margin: 16px 0 0;
+	color: var(--muted);
+	font-size: 12px;
+	line-height: 1.5;
+}
 .contact-form__actions {
 	display: flex;
 	align-items: center;
 	gap: 24px;
 }
-.contact-form__actions > p,
-.demo-disclosure {
+.contact-form__actions > p {
 	margin: 0;
 	color: var(--muted);
 	font-family: var(--font-mono);
@@ -1286,11 +1291,6 @@ textarea.editorial-input {
 	color: #5f5320;
 	font-size: 12px;
 	line-height: 1.55;
-}
-.auth-form .demo-disclosure {
-	margin-top: 14px;
-	text-align: center;
-	color: var(--muted);
 }
 .auth-contact {
 	display: flex;

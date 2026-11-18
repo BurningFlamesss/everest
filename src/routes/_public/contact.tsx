@@ -1,9 +1,11 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import {
 	AlertCircle,
+	CheckCircle2,
 	Facebook,
 	Instagram,
 	Linkedin,
+	Loader2,
 	Twitter,
 	Youtube,
 } from "lucide-react";
@@ -13,10 +15,11 @@ import { rows, str } from "#/components/cms/block-fields";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import { school, departments as staticDepartments } from "#/lib/site";
+import { submitContactMessageAction } from "#/packages/contact/server.ts";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { Button } from "#/templates/modern/components/Button";
 import { Input } from "#/templates/modern/components/Input";
-import { Button } from "#/templates/modern/components/kit";
 import { Label } from "#/templates/modern/components/Label";
 import { Segmented } from "#/templates/modern/components/Segmented";
 import type { BlockType } from "#/types";
@@ -28,6 +31,23 @@ const kathmandu = () =>
 		hour: "2-digit",
 		minute: "2-digit",
 	}).format(new Date());
+
+/** Weekday name in Kathmandu, uppercased to match the week-hours rows. */
+const kathmanduWeekday = () =>
+	new Intl.DateTimeFormat("en-GB", {
+		timeZone: "Asia/Kathmandu",
+		weekday: "long",
+	})
+		.format(new Date())
+		.toUpperCase();
+
+const ROUTES = [
+	"Admissions",
+	"Accounts",
+	"Principal's Office",
+	"General",
+] as const;
+type EnquiryRoute = (typeof ROUTES)[number];
 export const Route = createFileRoute("/_public/contact")({
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
@@ -171,22 +191,91 @@ function RouteComponent() {
 		);
 	};
 
-	const [route, setRoute] = useState("Admissions");
+	const [route, setRoute] = useState<EnquiryRoute>("Admissions");
 	const [time, setTime] = useState(kathmandu());
+	const [today, setToday] = useState(kathmanduWeekday);
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [count, setCount] = useState(0);
+	const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+	const [submitError, setSubmitError] = useState("");
+	const [openedAt, setOpenedAt] = useState(0);
 	useEffect(() => {
-		const id = setInterval(() => setTime(kathmandu()), 60000);
+		setOpenedAt(Date.now());
+		const id = setInterval(() => {
+			setTime(kathmandu());
+			setToday(kathmanduWeekday());
+		}, 60000);
 		return () => clearInterval(id);
 	}, []);
 	const validate = (
 		e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
 		const { id, value } = e.currentTarget;
-		setErrors((x) => ({
-			...x,
-			[id]: value.trim() ? "" : "This field is required.",
-		}));
+		const trimmed = value.trim();
+		let message = "";
+		if (!trimmed) {
+			// Phone is optional; the rest are required.
+			message = id === "contact-phone" ? "" : "This field is required.";
+		} else if (id === "contact-message" && trimmed.length < 10) {
+			message = "Tell us a little more — at least 10 characters.";
+		}
+		setErrors((x) => ({ ...x, [id]: message }));
+	};
+
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		setSubmitError("");
+
+		const form = event.currentTarget;
+		const data = new FormData(form);
+		const name = String(data.get("name") ?? "").trim();
+		const email = String(data.get("email") ?? "").trim();
+		const phone = String(data.get("phone") ?? "").trim();
+		const message = String(data.get("message") ?? "").trim();
+
+		const next: Record<string, string> = {};
+		if (name.length < 2) next["contact-name"] = "Enter your name.";
+		if (!email) next["contact-email"] = "This field is required.";
+		if (!message) next["contact-message"] = "This field is required.";
+		else if (message.length < 10)
+			next["contact-message"] =
+				"Tell us a little more — at least 10 characters.";
+
+		setErrors((current) => ({ ...current, ...next }));
+		if (Object.keys(next).length > 0) {
+			document.getElementById(Object.keys(next)[0])?.focus();
+			return;
+		}
+
+		setStatus("sending");
+
+		try {
+			const result = await submitContactMessageAction({
+				data: {
+					name,
+					email,
+					phone: phone || undefined,
+					subject: `Enquiry for ${route}`,
+					message,
+					website: String(data.get("website") ?? ""),
+					formOpenedAt: openedAt || undefined,
+				},
+			});
+
+			if (!result.success) {
+				setSubmitError(result.error);
+				setStatus("idle");
+				return;
+			}
+
+			form.reset();
+			setCount(0);
+			setErrors({});
+			setStatus("sent");
+		} catch {
+			setSubmitError("Could not send your message. Please try again.");
+			setStatus("idle");
+		}
 	};
 	return (
 		<>
@@ -203,30 +292,54 @@ function RouteComponent() {
 						testId="cms-section-hit-office_hours"
 					>
 						<div className="mt-6 rounded-card border border-border bg-card p-5">
-							<div className="flex flex-wrap items-center gap-2">
-								<span
-									data-testid="contact-open-state"
-									className="u-label inline-flex items-center rounded-pill bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-red-dark"
-								>
-									Open today · {weekdayHours}
-								</span>
-								<span
-									data-testid="kathmandu-time"
-									className="u-label text-muted-foreground"
-								>
-									{time} · Asia/Kathmandu
-								</span>
-							</div>
+							<span
+								data-testid="kathmandu-time"
+								className="u-label block text-muted-foreground"
+							>
+								{time} · Asia/Kathmandu
+							</span>
 							<div className="my-4 h-px bg-border" />
 							<ul className="space-y-1.5">
-								{weekHours.map(([day, hours]) => (
-									<li key={day} className="flex justify-between text-sm">
-										<span className="u-label text-muted-foreground">{day}</span>
-										<span className="text-sm font-medium text-foreground">
-											{hours}
-										</span>
-									</li>
-								))}
+								{weekHours.map(([day, hours]) => {
+									const isToday = day === today;
+									return (
+										<li
+											key={day}
+											data-testid={isToday ? "contact-open-state" : undefined}
+											aria-current={isToday ? "date" : undefined}
+											className={`flex items-center justify-between gap-3 text-sm ${
+												isToday ? "font-semibold text-red-dark" : ""
+											}`}
+										>
+											<span className="flex items-center gap-1.5">
+												<span
+													aria-hidden="true"
+													className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+														isToday ? "bg-red-dark" : "bg-transparent"
+													}`}
+												/>
+												<span
+													className={
+														isToday
+															? "u-label text-red-dark"
+															: "u-label text-muted-foreground"
+													}
+												>
+													{day}
+												</span>
+											</span>
+											<span
+												className={`text-sm ${
+													isToday
+														? "font-semibold text-red-dark"
+														: "font-medium text-foreground"
+												}`}
+											>
+												{hours}
+											</span>
+										</li>
+									);
+								})}
 							</ul>
 							{hoursNote ? (
 								<p
@@ -314,33 +427,44 @@ function RouteComponent() {
 					</CmsSectionBox>
 				</aside>
 				<form
-					onSubmit={(e) => e.preventDefault()}
+					onSubmit={handleSubmit}
+					noValidate
 					data-testid="contact-form"
-					className="flex min-w-0 flex-col gap-5"
+					className="contact-form min-w-0"
 				>
 					<h2 className="t-h2 text-foreground">Direct your enquiry</h2>
 					<Segmented
 						label="Direct your enquiry"
-						options={[
-							"Admissions",
-							"Accounts",
-							"Principal's Office",
-							"General",
-						].map((v) => ({ value: v, label: v }))}
+						options={ROUTES.map((v) => ({ value: v, label: v }))}
 						value={route}
 						onChange={setRoute}
+						className="mb-10"
 					/>
-					<div className="flex flex-col gap-2">
-						<Label htmlFor="contact-name" className="text-foreground">
+					{/* Honeypot: hidden from people, filled by naive bots. */}
+					<div className="hidden" aria-hidden="true">
+						<label htmlFor="contact-website">Website</label>
+						<input
+							id="contact-website"
+							name="website"
+							tabIndex={-1}
+							autoComplete="off"
+						/>
+					</div>
+					<div
+						className={`form-control ${errors["contact-name"] ? "form-control--error" : ""}`}
+					>
+						<Label htmlFor="contact-name" style={{ color: "var(--c-black)" }}>
 							Full name
 						</Label>
 						<Input
 							type="text"
 							id="contact-name"
 							name="name"
+							autoComplete="name"
+							maxLength={120}
 							onBlur={validate}
 							aria-invalid={!!errors["contact-name"]}
-							className="min-h-11 rounded-field border-border bg-background px-3 text-sm aria-invalid:border-destructive"
+							className="editorial-input"
 						/>
 						{errors["contact-name"] && (
 							<p className="field-error">
@@ -349,17 +473,21 @@ function RouteComponent() {
 							</p>
 						)}
 					</div>
-					<div className="flex flex-col gap-2">
-						<Label htmlFor="contact-email" className="text-foreground">
+					<div
+						className={`form-control ${errors["contact-email"] ? "form-control--error" : ""}`}
+					>
+						<Label htmlFor="contact-email" style={{ color: "var(--c-black)" }}>
 							Email address
 						</Label>
 						<Input
 							type="email"
 							id="contact-email"
 							name="email"
+							autoComplete="email"
+							maxLength={200}
 							onBlur={validate}
 							aria-invalid={!!errors["contact-email"]}
-							className="min-h-11 rounded-field border-border bg-background px-3 text-sm aria-invalid:border-destructive"
+							className="editorial-input"
 						/>
 						{errors["contact-email"] && (
 							<p className="field-error">
@@ -368,17 +496,21 @@ function RouteComponent() {
 							</p>
 						)}
 					</div>
-					<div className="flex flex-col gap-2">
-						<Label htmlFor="contact-phone" className="text-foreground">
+					<div
+						className={`form-control ${errors["contact-phone"] ? "form-control--error" : ""}`}
+					>
+						<Label htmlFor="contact-phone" style={{ color: "var(--c-black)" }}>
 							Phone number
 						</Label>
 						<Input
 							type="tel"
 							id="contact-phone"
 							name="phone"
+							autoComplete="tel"
+							maxLength={40}
 							onBlur={validate}
 							aria-invalid={!!errors["contact-phone"]}
-							className="min-h-11 rounded-field border-border bg-background px-3 text-sm aria-invalid:border-destructive"
+							className="editorial-input"
 						/>
 						{errors["contact-phone"] && (
 							<p className="field-error">
@@ -387,9 +519,14 @@ function RouteComponent() {
 							</p>
 						)}
 					</div>
-					<div className="flex flex-col gap-2">
-						<div className="flex w-full items-center justify-between gap-3">
-							<Label htmlFor="contact-message" className="text-foreground">
+					<div
+						className={`form-control ${errors["contact-message"] ? "form-control--error" : ""}`}
+					>
+						<div className="label-line">
+							<Label
+								htmlFor="contact-message"
+								style={{ color: "var(--c-black)" }}
+							>
 								Message
 							</Label>
 							<span
@@ -408,7 +545,8 @@ function RouteComponent() {
 							onChange={(e) => setCount(e.target.value.length)}
 							data-testid="contact-message-input"
 							aria-describedby="contact-message-count"
-							className="min-h-[140px] w-full resize-y rounded-field border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-invalid:border-destructive"
+							aria-invalid={!!errors["contact-message"]}
+							className="editorial-input w-full resize-y"
 						/>
 						{errors["contact-message"] && (
 							<p className="field-error">
@@ -417,16 +555,44 @@ function RouteComponent() {
 							</p>
 						)}
 					</div>
-					<Button
-						type="submit"
-						testId="contact-submit-button"
-						className="mt-1 min-h-11 w-full rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-					>
-						Send enquiry
-					</Button>
-					<p className="text-xs leading-relaxed text-muted-foreground">
-						This preview validates the form but does not transmit messages.
-					</p>
+					{submitError ? (
+						<p role="alert" className="form-status form-status--error">
+							<AlertCircle aria-hidden="true" />
+							{submitError}
+						</p>
+					) : null}
+					{status === "sent" ? (
+						<output className="form-status form-status--success">
+							<CheckCircle2 aria-hidden="true" />
+							Thank you — your message is on its way to the school office. We
+							reply within one working day.
+						</output>
+					) : (
+						<>
+							<Button
+								type="submit"
+								testId="contact-submit-button"
+								className="institution-button institution-button--full"
+								disabled={status === "sending"}
+							>
+								{status === "sending" ? (
+									<>
+										<Loader2
+											className="h-4 w-4 animate-spin"
+											aria-hidden="true"
+										/>
+										Sending…
+									</>
+								) : (
+									"Send enquiry"
+								)}
+							</Button>
+							<p className="contact-form__note">
+								Goes to the school office inbox. We reply within one working
+								day.
+							</p>
+						</>
+					)}
 				</form>
 			</section>
 			<CmsSectionBox
@@ -524,18 +690,18 @@ function RouteComponent() {
 				onSelect={onSelectSection}
 				testId="cms-section-hit-contact-social_links"
 			>
-				<section className="content mt-12 rounded-2xl border border-border bg-card p-6 sm:p-8">
+				<section className="content mt-12">
 					<p className="u-label mb-2 text-muted-foreground">Follow</p>
 					<h2 className="t-h2 text-foreground">Follow the school</h2>
 					{socialItems.length > 0 ? (
-						<div className="flex flex-wrap gap-4">
+						<div className="mt-4 flex flex-wrap gap-4">
 							{socialItems.map((item) => (
 								<a
 									key={item.key}
 									href={item.href}
 									target="_blank"
 									rel="noreferrer"
-									className="flex min-h-11 items-center gap-2 rounded-lg bg-secondary px-3 py-2 text-sm text-foreground hover:bg-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+									className="flex min-h-11 items-center gap-2 rounded-lg border border-border bg-secondary px-3 py-2 text-sm text-foreground hover:bg-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 								>
 									<item.icon className="h-4 w-4" />
 									<span className="font-medium">{item.label}</span>

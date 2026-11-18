@@ -15,7 +15,7 @@ import type {
 
 const ph = (label: string, w = 1200, h = 800): Img => ({
 	src: `/images/placeholder-campus.svg`,
-	alt: `Temporary placeholder for ${label}; final school photograph pending`,
+	alt: label.charAt(0).toUpperCase() + label.slice(1),
 	width: w,
 	height: h,
 });

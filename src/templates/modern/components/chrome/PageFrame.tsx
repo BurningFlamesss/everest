@@ -1,23 +1,35 @@
 import { motion, useReducedMotion } from "motion/react";
-import type { ReactNode } from "react";
+import { createContext, type ReactNode, useContext } from "react";
 import { DUR, EASE, STAGGER } from "#lib/motion";
+
+/**
+ * Portal pages opt into a tighter rhythm than editorial marketing pages: less
+ * air above the masthead and between sections, without changing the reading
+ * measure or the hairlines that separate subjects.
+ */
+const DenseContext = createContext(false);
+const useDense = () => useContext(DenseContext);
 
 /** Outer page container. Never centre-aligned; editorial gutters only. */
 export const PageFrame = ({
 	children,
 	className = "",
 	testId,
+	dense = false,
 }: {
 	children: ReactNode;
 	className?: string;
 	testId?: string;
+	dense?: boolean;
 }) => (
-	<div
-		data-testid={testId}
-		className={`mx-auto w-full max-w-frame px-4 pb-28 sm:px-6 lg:px-10 ${className}`}
-	>
-		{children}
-	</div>
+	<DenseContext.Provider value={dense}>
+		<div
+			data-testid={testId}
+			className={`mx-auto w-full max-w-frame px-4 ${dense ? "pb-14" : "pb-28"} sm:px-6 lg:px-10 ${className}`}
+		>
+			{children}
+		</div>
+	</DenseContext.Provider>
 );
 
 /** Fade + 8px rise. Used for page-level entrance and list staggering. */
@@ -74,21 +86,25 @@ export const PageHeader = ({
 	testId?: string;
 }) => {
 	const sub = subtitle || lead;
+	const dense = useDense();
 	return (
-		<header className="pt-12 sm:pt-16" data-testid={testId}>
+		<header
+			className={dense ? "pt-5 sm:pt-7" : "pt-12 sm:pt-16"}
+			data-testid={testId}
+		>
 			<Reveal>
 				<p className="t-eyebrow" data-testid={`${testId}-eyebrow`}>
 					{eyebrow}
 				</p>
 				<h1
-					className="t-page-title mt-4 max-w-[24ch] text-foreground"
+					className={`t-page-title ${dense ? "mt-2" : "mt-4"} max-w-[24ch] text-foreground`}
 					data-testid={`${testId}-title`}
 				>
 					{title}
 				</h1>
 				{sub && (
 					<p
-						className="mt-5 max-w-[58ch] font-sans text-[15px] leading-[1.65] text-muted-foreground sm:text-base"
+						className={`${dense ? "mt-2" : "mt-5"} max-w-[58ch] font-sans text-[15px] leading-[1.65] text-muted-foreground sm:text-base`}
 						data-testid={`${testId}-subtitle`}
 					>
 						{sub}
@@ -98,7 +114,9 @@ export const PageHeader = ({
 
 			{(meta && meta.length > 0) || actions ? (
 				<Reveal delay={STAGGER}>
-					<div className="mt-10 flex flex-wrap items-end justify-between gap-x-12 gap-y-6 border-t border-rule pt-6">
+					<div
+						className={`${dense ? "mt-5 pt-4" : "mt-10 pt-6"} flex flex-wrap items-end justify-between gap-x-12 gap-y-6 border-t border-rule`}
+					>
 						{meta && meta.length > 0 ? (
 							<dl
 								className="flex flex-wrap gap-x-12 gap-y-5"
@@ -124,7 +142,7 @@ export const PageHeader = ({
 					</div>
 				</Reveal>
 			) : (
-				<div className="mt-10 border-t border-rule" />
+				<div className={`${dense ? "mt-5" : "mt-10"} border-t border-rule`} />
 			)}
 		</header>
 	);
@@ -145,14 +163,17 @@ export const Section = ({
 	children: ReactNode;
 	className?: string;
 	testId?: string;
-}) => (
-	<section
-		className={`mt-section lg:mt-section-lg ${className}`}
-		data-testid={testId}
-	>
-		{children}
-	</section>
-);
+}) => {
+	const dense = useDense();
+	return (
+		<section
+			className={`${dense ? "mt-10 lg:mt-14" : "mt-section lg:mt-section-lg"} ${className}`}
+			data-testid={testId}
+		>
+			{children}
+		</section>
+	);
+};
 
 /** Section opener: hairline, quiet label, serif title, optional single line. */
 export const SectionHeading = ({

@@ -662,7 +662,6 @@ export function BlockPreview({
 								</span>
 							</div>
 						))}
-						<Body>{str(fields, "disclosure")}</Body>
 					</div>
 				);
 

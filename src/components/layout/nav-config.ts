@@ -133,13 +133,13 @@ export const NAV_GROUPS: NavGroup[] = [
 		items: [
 			{
 				label: "Classes & Sections",
-				to: "/admin/academics",
+				to: "/admin/classes",
 				icon: GalleryVerticalEnd,
 				permission: "classes.view",
 			},
 			{
 				label: "Courses & Subjects",
-				to: "/admin/academics",
+				to: "/admin/courses",
 				icon: Library,
 				permission: "courses.view",
 			},

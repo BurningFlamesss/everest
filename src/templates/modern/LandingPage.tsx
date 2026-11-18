@@ -124,7 +124,7 @@ export default function LandingPage({
 					ref={containerRef}
 					className="relative h-[600vh]"
 				>
-					<div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
+					<div className="sticky top-0 h-screen w-full overflow-hidden bg-[#16181d]">
 						<CmsSectionBox
 							preview={preview}
 							sectionType="landing_hero"
@@ -571,9 +571,9 @@ function HeroStage({
 
 	// --- render ------------------------------------------------------------
 	const overlayClasses = [
-		"absolute right-8 top-1/4 max-w-lg text-right text-white filter-[drop-shadow(0_0_6px_rgba(0,0,0,0.9))_drop-shadow(0_2px_4px_rgba(0,0,0,0.8))_drop-shadow(0_0_14px_rgba(0,0,0,0.55))] lg:right-24",
-		"absolute bottom-24 left-8 max-w-xl text-white filter-[drop-shadow(0_0_6px_rgba(0,0,0,0.9))_drop-shadow(0_2px_4px_rgba(0,0,0,0.8))_drop-shadow(0_0_14px_rgba(0,0,0,0.55))] lg:left-24",
-		"absolute inset-0 flex flex-col items-center justify-center text-center text-white filter-[drop-shadow(0_0_6px_rgba(0,0,0,0.9))_drop-shadow(0_2px_4px_rgba(0,0,0,0.8))_drop-shadow(0_0_14px_rgba(0,0,0,0.55))]",
+		"absolute right-8 top-1/4 max-w-lg text-right text-white filter-[drop-shadow(0_0_6px_rgba(0,0,0,0.45))_drop-shadow(0_2px_4px_rgba(0,0,0,0.35))_drop-shadow(0_0_14px_rgba(0,0,0,0.2))] lg:right-24",
+		"absolute bottom-24 left-8 max-w-xl text-white filter-[drop-shadow(0_0_6px_rgba(0,0,0,0.45))_drop-shadow(0_2px_4px_rgba(0,0,0,0.35))_drop-shadow(0_0_14px_rgba(0,0,0,0.2))] lg:left-24",
+		"absolute inset-0 flex flex-col items-center justify-center text-center text-white filter-[drop-shadow(0_0_6px_rgba(0,0,0,0.45))_drop-shadow(0_2px_4px_rgba(0,0,0,0.35))_drop-shadow(0_0_14px_rgba(0,0,0,0.2))]",
 	];
 
 	// Typography kept from the original markup: overlays 1–2 share a size and
@@ -613,7 +613,7 @@ function HeroStage({
 	];
 
 	return (
-		<div className="absolute inset-0 bg-black">
+		<div className="absolute inset-0 bg-[#16181d]">
 			{isLoading && (
 				<div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background">
 					<div className="text-center">
@@ -633,8 +633,8 @@ function HeroStage({
 				className="block h-full w-full object-cover filter contrast-[1.05] saturate-[1.05]"
 			/>
 
-			{/* Dark vignette keeps white copy legible over bright frames. */}
-			<div className="pointer-events-none absolute inset-0 z-[5] bg-gradient-to-b from-black/40 via-transparent to-black/60" />
+			{/* Soft vignette keeps white copy legible over bright frames without dimming the footage itself. */}
+			<div className="pointer-events-none absolute inset-0 z-[5] bg-gradient-to-b from-black/15 via-transparent to-black/25" />
 
 			<div className="pointer-events-none absolute inset-0 z-10 flex lg:pl-[var(--nav-w)]">
 				<div className="relative h-full w-full p-8 lg:p-16">

@@ -253,13 +253,6 @@ function LoginForm({ fields }: { fields: Record<string, unknown> }) {
 					? "Checking interface…"
 					: str(fields, "submitLabel", "Sign in")}
 			</Button>
-			<p className="demo-disclosure" style={{ color: "var(--c-yellow)" }}>
-				{str(
-					fields,
-					"disclosure",
-					"Frontend demonstration — no credentials are transmitted or stored.",
-				)}
-			</p>
 		</form>
 	);
 }

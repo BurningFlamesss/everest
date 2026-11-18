@@ -1,5 +1,4 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useMemo } from "react";
 import { plusTwoStreams } from "#/content/courses";
 import type { QuizStreamId } from "#/content/types";
 import { Segmented } from "../Segmented";
@@ -30,18 +29,19 @@ export function StreamCompare({
 }) {
 	const reduced = Boolean(useReducedMotion());
 
-	const a = plusTwoStreams.find((s) => s.id === left)!;
-	const b = plusTwoStreams.find((s) => s.id === right)!;
+	const a = plusTwoStreams.find((s) => s.id === left);
+	const b = plusTwoStreams.find((s) => s.id === right);
 
-	const { shared, onlyA, onlyB } = useMemo(() => {
-		const bIds = new Set(b.subjects.map((s) => s.id));
-		const aIds = new Set(a.subjects.map((s) => s.id));
-		return {
-			shared: a.subjects.filter((s) => bIds.has(s.id)),
-			onlyA: a.subjects.filter((s) => !bIds.has(s.id)),
-			onlyB: b.subjects.filter((s) => !aIds.has(s.id)),
-		};
-	}, [a, b]);
+	if (!a || !b) return null;
+
+	// Subject lists are a handful of rows, so this is cheaper to derive on each
+	// render than to memoise — and it keeps the early return above from making
+	// the hook order conditional.
+	const aIds = new Set(a.subjects.map((s) => s.id));
+	const bIds = new Set(b.subjects.map((s) => s.id));
+	const shared = a.subjects.filter((s) => bIds.has(s.id));
+	const onlyA = a.subjects.filter((s) => !bIds.has(s.id));
+	const onlyB = b.subjects.filter((s) => !aIds.has(s.id));
 
 	const same = left === right;
 	const key = left + "-" + right;
@@ -67,7 +67,7 @@ export function StreamCompare({
 				</WidgetCaption>
 			</div>
 
-			<div className="flex flex-wrap gap-8 border-y-hair border-n-200 py-6">
+			<div className="flex flex-wrap gap-8 border-y border-border py-6">
 				<Segmented
 					label="Left stream"
 					options={OPTIONS}
@@ -86,7 +86,7 @@ export function StreamCompare({
 
 			{same ? (
 				<p
-					className="border-y-hair border-n-300 py-8 text-body-l text-ink"
+					className="border-y border-border py-8 text-body-l text-foreground"
 					data-testid="compare-same"
 				>
 					Both sides are set to {a.name}. Choose a different stream on one side
@@ -104,7 +104,7 @@ export function StreamCompare({
 						className="grid gap-6 lg:grid-cols-12"
 					>
 						<div className="lg:col-span-4" data-testid="compare-only-left">
-							<h3 className="u-display mb-4 text-display-m text-ink">
+							<h3 className="u-display mb-4 text-display-m text-foreground">
 								{a.name}
 							</h3>
 							<p className="u-label mb-4 text-red-dark">Only in {a.name}</p>
@@ -112,26 +112,28 @@ export function StreamCompare({
 								{onlyA.map((s) => (
 									<li
 										key={s.id}
-										className="border-t-hair border-n-200 py-3 last:border-b-hair"
+										className="border-t border-border py-3 last:border-b"
 									>
-										<p className="text-body-m text-ink">{s.name}</p>
-										<p className="u-label tnum text-n-600">
+										<p className="text-body-m text-foreground">{s.name}</p>
+										<p className="u-label tnum text-muted-foreground">
 											{s.creditHours} credit hours · {s.theory} + {s.practical}
 										</p>
 									</li>
 								))}
 								{onlyA.length === 0 ? (
-									<li className="u-label border-y-hair border-n-200 py-3 text-n-600">
+									<li className="u-label border-y border-border py-3 text-muted-foreground">
 										Nothing unique to this side
 									</li>
 								) : null}
 							</ul>
-							<p className="u-label mt-6 mb-2 text-n-600">Career directions</p>
+							<p className="u-label mt-6 mb-2 text-muted-foreground">
+								Career directions
+							</p>
 							<ul className="flex flex-wrap gap-2">
 								{a.careers.map((c) => (
 									<li
 										key={c}
-										className="u-label rounded-pill border-hair border-n-300 px-3 py-1 text-n-600"
+										className="u-label rounded-pill border border-border px-3 py-1 text-muted-foreground"
 									>
 										{c}
 									</li>
@@ -140,16 +142,20 @@ export function StreamCompare({
 						</div>
 
 						<div className="lg:col-span-4" data-testid="compare-shared">
-							<h3 className="u-display mb-4 text-display-m text-ink">Shared</h3>
-							<p className="u-label mb-4 text-n-600">Taken by both streams</p>
-							<ul className="flex flex-col rounded-card border-hair border-n-300 px-4">
+							<h3 className="u-display mb-4 text-display-m text-foreground">
+								Shared
+							</h3>
+							<p className="u-label mb-4 text-muted-foreground">
+								Taken by both streams
+							</p>
+							<ul className="flex flex-col rounded-card border border-border px-4">
 								{shared.map((s) => (
 									<li
 										key={s.id}
-										className="border-t-hair border-n-200 py-3 first:border-t-0"
+										className="border-t border-border py-3 first:border-t-0"
 									>
-										<p className="text-body-m text-ink">{s.name}</p>
-										<p className="u-label tnum text-n-600">
+										<p className="text-body-m text-foreground">{s.name}</p>
+										<p className="u-label tnum text-muted-foreground">
 											{s.creditHours} credit hours · {s.theory} + {s.practical}
 										</p>
 									</li>
@@ -158,7 +164,7 @@ export function StreamCompare({
 						</div>
 
 						<div className="lg:col-span-4" data-testid="compare-only-right">
-							<h3 className="u-display mb-4 text-display-m text-ink">
+							<h3 className="u-display mb-4 text-display-m text-foreground">
 								{b.name}
 							</h3>
 							<p className="u-label mb-4 text-red-dark">Only in {b.name}</p>
@@ -166,26 +172,28 @@ export function StreamCompare({
 								{onlyB.map((s) => (
 									<li
 										key={s.id}
-										className="border-t-hair border-n-200 py-3 last:border-b-hair"
+										className="border-t border-border py-3 last:border-b"
 									>
-										<p className="text-body-m text-ink">{s.name}</p>
-										<p className="u-label tnum text-n-600">
+										<p className="text-body-m text-foreground">{s.name}</p>
+										<p className="u-label tnum text-muted-foreground">
 											{s.creditHours} credit hours · {s.theory} + {s.practical}
 										</p>
 									</li>
 								))}
 								{onlyB.length === 0 ? (
-									<li className="u-label border-y-hair border-n-200 py-3 text-n-600">
+									<li className="u-label border-y border-border py-3 text-muted-foreground">
 										Nothing unique to this side
 									</li>
 								) : null}
 							</ul>
-							<p className="u-label mt-6 mb-2 text-n-600">Career directions</p>
+							<p className="u-label mt-6 mb-2 text-muted-foreground">
+								Career directions
+							</p>
 							<ul className="flex flex-wrap gap-2">
 								{b.careers.map((c) => (
 									<li
 										key={c}
-										className="u-label rounded-pill border-hair border-n-300 px-3 py-1 text-n-600"
+										className="u-label rounded-pill border border-border px-3 py-1 text-muted-foreground"
 									>
 										{c}
 									</li>

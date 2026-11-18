@@ -29,7 +29,7 @@ function MyClasses() {
 	const data = Route.useLoaderData();
 
 	return (
-		<PageFrame testId="my-classes-page">
+		<PageFrame testId="my-classes-page" dense>
 			<PageHeader
 				testId="my-classes-page-header"
 				eyebrow="Staff workspace"
@@ -38,7 +38,7 @@ function MyClasses() {
 			/>
 
 			{!data ? (
-				<div className="mt-9">
+				<div className="mt-5">
 					<EmptyState
 						eyebrow="No staff record"
 						title="This account has no staff record"
@@ -55,12 +55,12 @@ function MyClasses() {
 							testId="my-classes-today-title"
 						/>
 						{data.todaySlots.length === 0 ? (
-							<p className="t-caption mt-5">
+							<p className="t-caption mt-4">
 								No timetable slots today. Use the time for planning and marking.
 							</p>
 						) : (
 							<Reveal delay={STAGGER}>
-								<ul className="mt-6 divide-y divide-rule-soft">
+								<ul className="mt-5 divide-y divide-rule-soft">
 									{data.todaySlots.map((slot) => (
 										<li
 											key={slot.id}
@@ -92,13 +92,13 @@ function MyClasses() {
 							testId="my-classes-courses-title"
 						/>
 						{data.courses.length === 0 ? (
-							<p className="t-caption mt-5">
+							<p className="t-caption mt-4">
 								No courses are assigned to you yet. An administrator can assign
 								you from Academics.
 							</p>
 						) : (
 							<Reveal delay={STAGGER}>
-								<ul className="mt-6 divide-y divide-rule-soft">
+								<ul className="mt-5 divide-y divide-rule-soft">
 									{data.courses.map((course) => (
 										<li
 											key={course.id}

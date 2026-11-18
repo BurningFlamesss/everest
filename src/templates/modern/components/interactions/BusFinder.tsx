@@ -1,8 +1,8 @@
+import { Link } from "@tanstack/react-router";
 import { ArrowRight, Search, X } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useMemo, useRef, useState } from "react";
 import { popularAreas } from "#/content/facilities";
-import { TRANSPORT_EMAIL } from "#/content/school";
 import { formatNpr } from "#/lib/fees";
 import { findPickup } from "#/lib/pickup";
 import { Chip } from "../Chip";
@@ -211,25 +211,14 @@ export function BusFinder() {
 						No bus currently stops in &ldquo;{q.trim()}&rdquo;. The school adds
 						stops when enough families ask from the same area.
 					</p>
-					<a
-						href={
-							"mailto:" +
-							TRANSPORT_EMAIL +
-							"?subject=" +
-							encodeURIComponent("Bus stop request — " + q.trim()) +
-							"&body=" +
-							encodeURIComponent(
-								"Area or landmark: " +
-									q.trim() +
-									"\nStudent name:\nGrade:\nGuardian mobile:\n\nPlease let us know whether a stop can be added near this area.",
-							)
-						}
+					<Link
+						to="/contact"
 						data-testid="bus-request-stop"
 						className="u-label inline-flex w-fit min-h-tap items-center gap-2 border-b border-foreground py-2 text-foreground"
 					>
-						Email the transport office about this area
+						Ask the transport office about this area
 						<ArrowRight aria-hidden="true" size={14} />
-					</a>
+					</Link>
 				</div>
 			) : (
 				<>

@@ -233,7 +233,6 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
 		{ key: "passwordLabel", label: "Password field label", kind: "text" },
 		{ key: "forgotLabel", label: "Forgot password label", kind: "text" },
 		{ key: "submitLabel", label: "Submit button label", kind: "text" },
-		{ key: "disclosure", label: "Disclosure text", kind: "textarea" },
 	],
 	auth_contact: [
 		{ key: "title", label: "Title", kind: "text" },
