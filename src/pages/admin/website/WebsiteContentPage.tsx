@@ -93,6 +93,12 @@ export const PUBLIC_PAGES: PublicPageMeta[] = [
 		group: "Core & Institutional",
 		description:
 			"School heritage, mission & vision, leadership, and institutional chapters",
+		dedicatedCms: {
+			label: "About Page Editor",
+			to: "/admin/about",
+			description:
+				"Edit the about header and every chapter, stat and gallery in a focused editor",
+		},
 	},
 	{
 		key: "contact",
@@ -136,9 +142,10 @@ export const PUBLIC_PAGES: PublicPageMeta[] = [
 		description:
 			"Academic levels, curriculum overviews, fee tables, and programme index",
 		dedicatedCms: {
-			label: "Academics Management",
-			to: "/admin/academics",
-			description: "Manage classes, academic programmes, subjects, and routine",
+			label: "Courses Page Editor",
+			to: "/admin/courses",
+			description:
+				"Edit level copy, headings and page notes; subject records live under Subjects & Programmes",
 		},
 	},
 	{
@@ -382,10 +389,18 @@ export default function WebsiteContentPage() {
 
 	const selectedBlock =
 		page?.blocks.find((block) => block.type === selectedType) ?? null;
-	const selectedFields = selectedType
-		? (selectedBlock?.fields ??
-			sectionDefaults(selectedType, pageKey as CmsPageKey))
-		: undefined;
+	// Merge defaults under saved values so sections saved before a field was
+	// added still expose (and can edit) the complete field set.
+	const selectedFields = useMemo(
+		() =>
+			selectedType
+				? {
+						...sectionDefaults(selectedType, pageKey as CmsPageKey),
+						...(selectedBlock?.fields ?? {}),
+					}
+				: undefined,
+		[selectedType, selectedBlock, pageKey],
+	);
 
 	const applyPage = (next: WebsitePage) => {
 		qc.setQueryData(["website-page", next.key], clone(next));

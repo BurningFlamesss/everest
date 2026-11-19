@@ -25,7 +25,7 @@ export default function CourseDetailPage() {
 					title="Subject not found"
 					description="This subject may have been removed from the catalogue."
 					primaryLabel="Back to catalogue"
-					onPrimary={() => navigate({ to: "/admin/courses" })}
+					onPrimary={() => navigate({ to: "/admin/subjects" })}
 				/>
 			</div>
 		);
@@ -41,8 +41,8 @@ export default function CourseDetailPage() {
 				className="mb-3 gap-1.5 text-xs"
 				asChild
 			>
-				<Link to="/admin/courses">
-					<ArrowLeft className="h-3.5 w-3.5" /> Courses & Subjects
+				<Link to="/admin/subjects">
+					<ArrowLeft className="h-3.5 w-3.5" /> Subjects & Programmes
 				</Link>
 			</Button>
 

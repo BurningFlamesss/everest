@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { Album, Img } from "#/content/types";
+import { facultyPhotos } from "#/lib/faculty";
 import { prisma } from "#/lib/prisma";
 import type {
 	ContentBlockFields,
@@ -278,6 +279,7 @@ function toPerson(row: FacultyMemberRow): Person {
 		joined: row.joined,
 		leadership: row.leadership || undefined,
 		rank: row.rank ?? undefined,
+		photo: facultyPhotos[row.slug],
 	};
 }
 
@@ -445,6 +447,7 @@ function toFacility(row: {
 	inCharge: string;
 	studentsLove: string;
 	since: string;
+	order: number;
 }): Facility {
 	return {
 		id: row.id,
@@ -460,6 +463,7 @@ function toFacility(row: {
 		inCharge: row.inCharge,
 		studentsLove: row.studentsLove,
 		since: row.since,
+		order: row.order,
 	};
 }
 
@@ -506,6 +510,7 @@ function toProgram(row: {
 	image: string;
 	routineKey: string;
 	spotlight: boolean;
+	order: number;
 }): Program {
 	return {
 		id: row.id,
@@ -531,6 +536,7 @@ function toProgram(row: {
 		image: row.image,
 		routineKey: row.routineKey as Program["routineKey"],
 		spotlight: row.spotlight || undefined,
+		order: row.order,
 	};
 }
 

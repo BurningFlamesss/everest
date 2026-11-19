@@ -27,8 +27,8 @@ const initialsOf = (name: string): string => {
 };
 
 /**
- * Department-toned monogram. Deliberately no stock photography:
- * initials on a tinted disc, tuned per department hue.
+ * Department-toned monogram with an optional portrait. Without a photo it
+ * falls back to initials on a tinted disc, tuned per department hue.
  */
 export const MonogramAvatar = ({
 	name,
@@ -36,12 +36,14 @@ export const MonogramAvatar = ({
 	size = "md",
 	className = "",
 	testId = "faculty-avatar",
+	src,
 }: {
 	name: string;
 	department: Department;
 	size?: keyof typeof SIZE;
 	className?: string;
 	testId?: string;
+	src?: string;
 }) => {
 	const hue = HUE[department] ?? 34;
 
@@ -51,14 +53,24 @@ export const MonogramAvatar = ({
 			aria-hidden="true"
 			style={{ "--tone": String(hue) } as React.CSSProperties}
 			className={[
-				"inline-flex shrink-0 select-none items-center justify-center rounded-full border border-border font-semibold tracking-[-0.02em] shadow-xs",
+				"inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full border border-border font-semibold tracking-[-0.02em] shadow-xs",
 				"bg-[hsl(var(--tone)_32%_92%)] text-[hsl(var(--tone)_42%_24%)]",
 				"dark:bg-[hsl(var(--tone)_24%_20%)] dark:text-[hsl(var(--tone)_38%_78%)]",
 				SIZE[size],
 				className,
 			].join(" ")}
 		>
-			<span data-testid={`${testId}-initials`}>{initialsOf(name)}</span>
+			{src ? (
+				<img
+					src={src}
+					alt=""
+					loading="lazy"
+					decoding="async"
+					className="h-full w-full object-cover"
+				/>
+			) : (
+				<span data-testid={`${testId}-initials`}>{initialsOf(name)}</span>
+			)}
 		</span>
 	);
 };

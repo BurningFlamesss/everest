@@ -436,6 +436,7 @@ export const ModelName = {
   Club: 'Club',
   ClubRole: 'ClubRole',
   ClubMember: 'ClubMember',
+  ClubJoinRequest: 'ClubJoinRequest',
   Post: 'Post',
   PostComment: 'PostComment',
   Event: 'Event',
@@ -473,7 +474,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "organization" | "branch" | "userRole" | "student" | "staff" | "guardian" | "guardianStudent" | "invite" | "guardianInvite" | "schoolClass" | "attendanceRecord" | "application" | "invoice" | "websitePage" | "contentBlock" | "facultyMember" | "notice" | "scholarship" | "album" | "facility" | "resource" | "boardResult" | "busRoute" | "program" | "calendarEvent" | "academicYear" | "term" | "exam" | "examSchedule" | "mark" | "assignment" | "attendanceSession" | "club" | "clubRole" | "clubMember" | "post" | "postComment" | "event" | "userPermission" | "rolePermission" | "inviteRequest" | "enrollment" | "classroom" | "course" | "fileAsset" | "attachment" | "contactMessage" | "transportRoute" | "transportStop" | "transportAssignment" | "feeStructure" | "payment" | "notification" | "mailLog" | "galleryImage" | "timetableSlot" | "scmsNotice"
+    modelProps: "user" | "session" | "account" | "verification" | "organization" | "branch" | "userRole" | "student" | "staff" | "guardian" | "guardianStudent" | "invite" | "guardianInvite" | "schoolClass" | "attendanceRecord" | "application" | "invoice" | "websitePage" | "contentBlock" | "facultyMember" | "notice" | "scholarship" | "album" | "facility" | "resource" | "boardResult" | "busRoute" | "program" | "calendarEvent" | "academicYear" | "term" | "exam" | "examSchedule" | "mark" | "assignment" | "attendanceSession" | "club" | "clubRole" | "clubMember" | "clubJoinRequest" | "post" | "postComment" | "event" | "userPermission" | "rolePermission" | "inviteRequest" | "enrollment" | "classroom" | "course" | "fileAsset" | "attachment" | "contactMessage" | "transportRoute" | "transportStop" | "transportAssignment" | "feeStructure" | "payment" | "notification" | "mailLog" | "galleryImage" | "timetableSlot" | "scmsNotice"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3363,6 +3364,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ClubJoinRequest: {
+      payload: Prisma.$ClubJoinRequestPayload<ExtArgs>
+      fields: Prisma.ClubJoinRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ClubJoinRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubJoinRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ClubJoinRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubJoinRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.ClubJoinRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubJoinRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ClubJoinRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubJoinRequestPayload>
+        }
+        findMany: {
+          args: Prisma.ClubJoinRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubJoinRequestPayload>[]
+        }
+        create: {
+          args: Prisma.ClubJoinRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubJoinRequestPayload>
+        }
+        createMany: {
+          args: Prisma.ClubJoinRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ClubJoinRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubJoinRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.ClubJoinRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubJoinRequestPayload>
+        }
+        update: {
+          args: Prisma.ClubJoinRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubJoinRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.ClubJoinRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ClubJoinRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ClubJoinRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubJoinRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.ClubJoinRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubJoinRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.ClubJoinRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClubJoinRequest>
+        }
+        groupBy: {
+          args: Prisma.ClubJoinRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClubJoinRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ClubJoinRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClubJoinRequestCountAggregateOutputType> | number
+        }
+      }
+    }
     Post: {
       payload: Prisma.$PostPayload<ExtArgs>
       fields: Prisma.PostFieldRefs
@@ -5678,6 +5753,7 @@ export const ClubScalarFieldEnum = {
   meetingSchedule: 'meetingSchedule',
   coverImage: 'coverImage',
   isActive: 'isActive',
+  joinPolicy: 'joinPolicy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -5709,6 +5785,19 @@ export const ClubMemberScalarFieldEnum = {
 } as const
 
 export type ClubMemberScalarFieldEnum = (typeof ClubMemberScalarFieldEnum)[keyof typeof ClubMemberScalarFieldEnum]
+
+
+export const ClubJoinRequestScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  studentId: 'studentId',
+  status: 'status',
+  message: 'message',
+  createdAt: 'createdAt',
+  reviewedAt: 'reviewedAt'
+} as const
+
+export type ClubJoinRequestScalarFieldEnum = (typeof ClubJoinRequestScalarFieldEnum)[keyof typeof ClubJoinRequestScalarFieldEnum]
 
 
 export const PostScalarFieldEnum = {
@@ -6344,6 +6433,34 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
+ * Reference to a field of type 'ClubJoinPolicy'
+ */
+export type EnumClubJoinPolicyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClubJoinPolicy'>
+    
+
+
+/**
+ * Reference to a field of type 'ClubJoinPolicy[]'
+ */
+export type ListEnumClubJoinPolicyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClubJoinPolicy[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ClubJoinRequestStatus'
+ */
+export type EnumClubJoinRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClubJoinRequestStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ClubJoinRequestStatus[]'
+ */
+export type ListEnumClubJoinRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClubJoinRequestStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'PermissionKey'
  */
 export type EnumPermissionKeyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PermissionKey'>
@@ -6616,6 +6733,7 @@ export type GlobalOmitConfig = {
   club?: Prisma.ClubOmit
   clubRole?: Prisma.ClubRoleOmit
   clubMember?: Prisma.ClubMemberOmit
+  clubJoinRequest?: Prisma.ClubJoinRequestOmit
   post?: Prisma.PostOmit
   postComment?: Prisma.PostCommentOmit
   event?: Prisma.EventOmit

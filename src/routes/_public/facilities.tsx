@@ -94,16 +94,19 @@ function RouteComponent() {
 	const filtered = useMemo(() => {
 		if (category === "all") return facilities;
 		return facilities.filter((f) => f.category === category);
-	}, [category]);
+	}, [category, facilities]);
 
 	const active: Facility | undefined = useMemo(
 		() => filtered.find((f) => f.id === activeId) ?? filtered[0],
 		[filtered, activeId],
 	);
 
+	const allSpacesLabel =
+		str(facilitiesSection, "allSpacesLabel") || "All spaces";
+
 	const chipOptions = useMemo(
 		() => [
-			{ value: "all", label: "All spaces", count: facilities.length },
+			{ value: "all", label: allSpacesLabel, count: facilities.length },
 			...CATEGORY_ORDER.filter((c) =>
 				facilities.some((f) => f.category === c),
 			).map((c) => ({
@@ -112,7 +115,7 @@ function RouteComponent() {
 				count: facilities.filter((f) => f.category === c).length,
 			})),
 		],
-		[],
+		[facilities, allSpacesLabel],
 	);
 
 	const handleCategory = (next: string) => {
@@ -175,9 +178,17 @@ function RouteComponent() {
 			{!active ? (
 				<div className="mt-10">
 					<EmptyState
-						title="No space matches that category"
-						description="Try a different category, or view every space on the campus index."
-						actionLabel="Show all spaces"
+						title={
+							str(facilitiesSection, "emptyTitle") ||
+							"No space matches that category"
+						}
+						description={
+							str(facilitiesSection, "emptyDescription") ||
+							"Try a different category, or view every space on the campus index."
+						}
+						actionLabel={
+							str(facilitiesSection, "showAllLabel") || "Show all spaces"
+						}
 						onAction={() => handleCategory("all")}
 						testId="facilities-empty-state"
 					/>
@@ -267,15 +278,20 @@ function RouteComponent() {
 									{active.studentsLove}
 								</p>
 								<footer className="t-meta mt-3">
-									What students say about this space
+									{str(facilitiesSection, "studentsLoveLabel") ||
+										"What students say about this space"}
 								</footer>
 							</blockquote>
 
 							{/* Gallery */}
 							<div className="mt-14">
 								<SectionHeading
-									eyebrow="Gallery"
-									title="Inside the space"
+									eyebrow={
+										str(facilitiesSection, "galleryEyebrow") || "Gallery"
+									}
+									title={
+										str(facilitiesSection, "galleryTitle") || "Inside the space"
+									}
 									testId="facility-gallery-title"
 								/>
 								<div className="mt-7 grid grid-cols-3 gap-4">
@@ -314,7 +330,9 @@ function RouteComponent() {
 					{/* Facility index rail */}
 					<aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
 						<div className="flex items-baseline justify-between gap-4">
-							<p className="t-eyebrow">Facility index</p>
+							<p className="t-eyebrow">
+								{str(facilitiesSection, "indexLabel") || "Facility index"}
+							</p>
 							<span className="t-meta">{filtered.length} spaces</span>
 						</div>
 
@@ -373,8 +391,9 @@ function RouteComponent() {
 
 						<p className="t-meta mt-4 leading-relaxed">
 							{`${school.address.line1}, ${school.address.line2}, ${school.address.country}`}
-							. Visiting hours for prospective families are Saturday, 10:00 to
-							16:00.
+							.{" "}
+							{str(facilitiesSection, "visitingNote") ||
+								"Visiting hours for prospective families are Saturday, 10:00 to 16:00."}
 						</p>
 					</aside>
 				</div>

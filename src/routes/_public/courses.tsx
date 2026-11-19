@@ -1,7 +1,7 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { ArrowUpRight, GraduationCap, Minus } from "lucide-react";
 import { useMemo, useState } from "react";
-import { str } from "#/components/cms/block-fields";
+import { rows, str } from "#/components/cms/block-fields";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import { school } from "#/content/school";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
@@ -11,7 +11,10 @@ import { STAGGER } from "#/lib/motion";
 import { downloadOfficialPdf } from "#/lib/pdf";
 import { levels, programs as staticPrograms } from "#/lib/programs";
 import { routineByKey } from "#/lib/routines";
-import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
+import {
+	getProgramsServer,
+	getWebsitePagePreviewServer,
+} from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
 import {
 	PageFrame,
@@ -34,9 +37,45 @@ import {
 import { DownloadButton } from "#/templates/modern/components/shared/DownloadButton";
 import { EditorialImage } from "#/templates/modern/components/shared/EditorialImage";
 import { RoutineTable } from "#/templates/modern/components/shared/RoutineTable";
-import type { BlockType, LevelId, Program } from "#/types";
+import type { BlockType, Level, LevelId, Program, Routine } from "#/types";
 
-const ProgramDetail = ({ program }: { program: Program }) => {
+interface ProgramDetailLabels {
+	tabOverview: string;
+	tabSubjects: string;
+	tabFees: string;
+	tabPathways: string;
+	eligibility: string;
+	medium: string;
+	duration: string;
+	board: string;
+	distinctive: string;
+	prospectusLabel: string;
+	prospectusMeta: string;
+	prospectusStamp: string;
+	subjectCode: string;
+	subjectName: string;
+	subjectCredit: string;
+	subjectType: string;
+	totalCredit: string;
+	feeParticular: string;
+	feeAmount: string;
+	feeFrequency: string;
+	annualCharges: string;
+	monthlyTuition: string;
+	learningOutcomes: string;
+}
+
+const ProgramDetail = ({
+	program,
+	feeNote,
+	pathwaysEmpty,
+	labels,
+}: {
+	program: Program;
+	feeNote: string;
+	pathwaysEmpty: string;
+	labels: ProgramDetailLabels;
+}) => {
 	const level = levels.find((l) => l.id === program.level) ?? levels[0];
 	const totalCredits = program.subjects.reduce((sum, s) => sum + s.credit, 0);
 	const annual = program.fees
@@ -53,10 +92,10 @@ const ProgramDetail = ({ program }: { program: Program }) => {
 				className="h-auto flex-wrap justify-start gap-1 rounded-full bg-transparent p-1"
 			>
 				{[
-					{ value: "overview", label: "Overview" },
-					{ value: "subjects", label: "Subjects" },
-					{ value: "fees", label: "Fees" },
-					{ value: "pathways", label: "Pathways" },
+					{ value: "overview", label: labels.tabOverview },
+					{ value: "subjects", label: labels.tabSubjects },
+					{ value: "fees", label: labels.tabFees },
+					{ value: "pathways", label: labels.tabPathways },
 				].map((tab) => (
 					<TabsTrigger
 						key={tab.value}
@@ -77,10 +116,10 @@ const ProgramDetail = ({ program }: { program: Program }) => {
 						</p>
 						<dl className="mt-7 grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2">
 							{[
-								{ label: "Eligibility", value: program.eligibility },
-								{ label: "Medium", value: program.medium },
-								{ label: "Duration", value: program.duration },
-								{ label: "Board", value: level.board },
+								{ label: labels.eligibility, value: program.eligibility },
+								{ label: labels.medium, value: program.medium },
+								{ label: labels.duration, value: program.duration },
+								{ label: labels.board, value: level.board },
 							].map((item) => (
 								<div key={item.label}>
 									<dt className="t-eyebrow">{item.label}</dt>
@@ -93,7 +132,7 @@ const ProgramDetail = ({ program }: { program: Program }) => {
 					</div>
 
 					<div className="min-w-0  bg-transparent p-5">
-						<p className="t-eyebrow">What makes it distinctive</p>
+						<p className="t-eyebrow">{labels.distinctive}</p>
 						<ul className="mt-4 space-y-3">
 							{program.highlights.map((item) => (
 								<li key={item} className="flex gap-3">
@@ -112,9 +151,9 @@ const ProgramDetail = ({ program }: { program: Program }) => {
 
 				<div className="mt-8  pt-6">
 					<DownloadButton
-						label="Programme prospectus"
-						meta={`PDF · ${program.code} · Session 2083 BS`}
-						stamp="Official"
+						label={labels.prospectusLabel}
+						meta={labels.prospectusMeta.replace("{code}", program.code)}
+						stamp={labels.prospectusStamp}
 						size="sm"
 						testId={`program-download-prospectus-${program.id}`}
 						onDownload={() =>
@@ -134,16 +173,16 @@ const ProgramDetail = ({ program }: { program: Program }) => {
 							<thead>
 								<tr className=" bg-transparent">
 									<th className="px-4 py-3 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-										Code
+										{labels.subjectCode}
 									</th>
 									<th className="px-4 py-3 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-										Subject
+										{labels.subjectName}
 									</th>
 									<th className="px-4 py-3 text-right text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-										Credit
+										{labels.subjectCredit}
 									</th>
 									<th className="px-4 py-3 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-										Type
+										{labels.subjectType}
 									</th>
 								</tr>
 							</thead>
@@ -174,7 +213,7 @@ const ProgramDetail = ({ program }: { program: Program }) => {
 								<tr className=" bg-transparent">
 									<td className="px-4 py-3" />
 									<td className="px-4 py-3 text-[12px] uppercase tracking-[0.12em] text-muted-foreground">
-										Total credit hours
+										{labels.totalCredit}
 									</td>
 									<td className="px-4 py-3 text-right font-mono text-[13px] font-semibold tabular-nums text-foreground">
 										{totalCredits}
@@ -197,13 +236,13 @@ const ProgramDetail = ({ program }: { program: Program }) => {
 							<thead>
 								<tr className=" bg-transparent">
 									<th className="px-4 py-3 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-										Particular
+										{labels.feeParticular}
 									</th>
 									<th className="px-4 py-3 text-right text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-										Amount
+										{labels.feeAmount}
 									</th>
 									<th className="px-4 py-3 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-										Frequency
+										{labels.feeFrequency}
 									</th>
 								</tr>
 							</thead>
@@ -233,21 +272,21 @@ const ProgramDetail = ({ program }: { program: Program }) => {
 				</div>
 				<dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3">
 					<div>
-						<dt className="t-eyebrow">Annual charges</dt>
+						<dt className="t-eyebrow">{labels.annualCharges}</dt>
 						<dd className="mt-1 font-mono text-sm tabular-nums text-foreground">
 							{formatNpr(annual)}
 						</dd>
 					</div>
 					<div>
-						<dt className="t-eyebrow">Monthly tuition</dt>
+						<dt className="t-eyebrow">{labels.monthlyTuition}</dt>
 						<dd className="mt-1 font-mono text-sm tabular-nums text-foreground">
 							{formatNpr(monthly)}
 						</dd>
 					</div>
 				</dl>
 				<p className="t-meta mt-4 max-w-measure leading-relaxed">
-					Figures are indicative for session 2083 BS. Any approved scholarship
-					is applied at the accounts desk before the term invoice is issued.
+					{feeNote ||
+						"Figures are indicative for session 2083 BS. Any approved scholarship is applied at the accounts desk before the term invoice is issued."}
 				</p>
 			</TabsContent>
 
@@ -271,14 +310,13 @@ const ProgramDetail = ({ program }: { program: Program }) => {
 					</ul>
 				) : (
 					<p className="t-body max-w-measure text-muted-foreground">
-						This programme feeds directly into the next level within the school
-						rather than into external pathways. Progression is automatic on
-						completion, and no separate application is required.
+						{pathwaysEmpty ||
+							"This programme feeds directly into the next level within the school rather than into external pathways. Progression is automatic on completion, and no separate application is required."}
 					</p>
 				)}
 
 				<div className="mt-8  pt-6">
-					<p className="t-eyebrow">Learning outcomes</p>
+					<p className="t-eyebrow">{labels.learningOutcomes}</p>
 					<ul className="mt-4 space-y-3">
 						{program.outcomes.map((outcome) => (
 							<li key={outcome} className="flex gap-3">
@@ -298,7 +336,33 @@ const ProgramDetail = ({ program }: { program: Program }) => {
 	);
 };
 
-import { getProgramsServer } from "#/packages/content/server/content.ts";
+/** Convert a CMS routine row (schema stores booleans/tags as JSON) to a Routine. */
+function routineFromCms(
+	raw: Record<string, unknown> | undefined,
+): Routine | undefined {
+	if (!raw) return undefined;
+	const key = str(raw, "key");
+	if (!key) return undefined;
+	return {
+		key: key as Routine["key"],
+		label: str(raw, "label"),
+		shift: str(raw, "shift"),
+		room: str(raw, "room"),
+		effectiveFrom: str(raw, "effectiveFrom"),
+		periods: rows(raw, "periods").map((period) => ({
+			label: str(period, "label"),
+			start: str(period, "start"),
+			end: str(period, "end"),
+			isBreak: period.isBreak === true || period.isBreak === "true",
+		})),
+		rows: rows(raw, "rows").map((row) => ({
+			day: str(row, "day") as Routine["rows"][number]["day"],
+			slots: Array.isArray(row.slots)
+				? row.slots.filter((slot): slot is string => typeof slot === "string")
+				: [],
+		})),
+	};
+}
 
 export const Route = createFileRoute("/_public/courses")({
 	validateSearch: (
@@ -336,7 +400,7 @@ function RouteComponent() {
 		dbPrograms && dbPrograms.length > 0 ? dbPrograms : staticPrograms;
 
 	const headerSection = {
-		...sectionDefaults("headline"),
+		...sectionDefaults("headline", "courses"),
 		...getSectionFields(cmsData?.blocks, "headline"),
 	};
 
@@ -344,6 +408,61 @@ function RouteComponent() {
 		...sectionDefaults("academics"),
 		...getSectionFields(cmsData?.blocks, "academics"),
 	};
+
+	const txt = (key: string, fallback = "") =>
+		str(academicsSection, key) || fallback;
+
+	const programLabels: ProgramDetailLabels = {
+		tabOverview: txt("tabOverview", "Overview"),
+		tabSubjects: txt("tabSubjects", "Subjects"),
+		tabFees: txt("tabFees", "Fees"),
+		tabPathways: txt("tabPathways", "Pathways"),
+		eligibility: txt("eligibilityLabel", "Eligibility"),
+		medium: txt("mediumLabel", "Medium"),
+		duration: txt("durationLabel", "Duration"),
+		board: txt("boardLabel", "Board"),
+		distinctive: txt("distinctiveLabel", "What makes it distinctive"),
+		prospectusLabel: txt("programmeProspectusLabel", "Programme prospectus"),
+		prospectusMeta: txt(
+			"programmeProspectusMeta",
+			"PDF · {code} · Session 2083 BS",
+		),
+		prospectusStamp: txt("prospectusStamp", "Official"),
+		subjectCode: txt("subjectCodeLabel", "Code"),
+		subjectName: txt("subjectNameLabel", "Subject"),
+		subjectCredit: txt("subjectCreditLabel", "Credit"),
+		subjectType: txt("subjectTypeLabel", "Type"),
+		totalCredit: txt("totalCreditLabel", "Total credit hours"),
+		feeParticular: txt("feeParticularLabel", "Particular"),
+		feeAmount: txt("feeAmountLabel", "Amount"),
+		feeFrequency: txt("feeFrequencyLabel", "Frequency"),
+		annualCharges: txt("annualChargesLabel", "Annual charges"),
+		monthlyTuition: txt("monthlyTuitionLabel", "Monthly tuition"),
+		learningOutcomes: txt("learningOutcomesLabel", "Learning outcomes"),
+	};
+
+	// Level copy is editable per page; saved rows override the built-in level
+	// data field by field, and an empty image keeps the bundled photograph.
+	const levelOverrides = rows(academicsSection, "levels");
+	const displayLevels: Level[] =
+		levelOverrides.length > 0
+			? levels.map((base, index) => {
+					const item =
+						levelOverrides.find((row) => str(row, "id") === base.id) ??
+						levelOverrides[index];
+					if (!item) return base;
+					return {
+						...base,
+						label: str(item, "label") || base.label,
+						short: str(item, "short") || base.short,
+						grades: str(item, "grades") || base.grades,
+						board: str(item, "board") || base.board,
+						tagline: str(item, "tagline") || base.tagline,
+						description: str(item, "description") || base.description,
+						image: str(item, "image") || base.image,
+					};
+				})
+			: levels;
 
 	const onSelectSection = (sectionType: BlockType) => {
 		window.parent?.postMessage(
@@ -360,7 +479,7 @@ function RouteComponent() {
 	// Deep-linkable level: /courses?level=plus2-management lands straight on
 	// that stream (the course-finder quiz hands off here with the visitor's
 	// top-ranked stream). Unknown or missing values fall back to science.
-	const requestedLevel = levels.some((l) => l.id === search.level)
+	const requestedLevel = displayLevels.some((l) => l.id === search.level)
 		? (search.level as LevelId)
 		: undefined;
 	const [levelId, setLevelId] = useState<LevelId>(
@@ -376,8 +495,8 @@ function RouteComponent() {
 	}
 
 	const level = useMemo(
-		() => levels.find((l) => l.id === levelId) ?? levels[0],
-		[levelId],
+		() => displayLevels.find((l) => l.id === levelId) ?? displayLevels[0],
+		[levelId, displayLevels],
 	);
 
 	const levelPrograms = useMemo(
@@ -390,7 +509,11 @@ function RouteComponent() {
 		[levelPrograms],
 	);
 
-	const routine = routineByKey(spotlight.routineKey);
+	const cmsRoutine = rows(academicsSection, "routines").find(
+		(row) => str(row, "key") === spotlight.routineKey,
+	);
+	const routine =
+		routineFromCms(cmsRoutine) ?? routineByKey(spotlight.routineKey);
 	const totalSeats = levelPrograms.reduce((sum, p) => sum + p.seats, 0);
 
 	return (
@@ -410,16 +533,32 @@ function RouteComponent() {
 						"Subject lists, credit hours, fee structures and weekly routines for every programme from Nursery to Grade 12."
 					}
 					meta={[
-						{ label: "Programmes", value: String(activePrograms.length) },
-						{ label: "Levels", value: "5" },
-						{ label: "+2 streams", value: "Science, Management, Humanities" },
-						{ label: "Session", value: "2083 BS" },
+						{
+							label: txt("metaProgrammesLabel", "Programmes"),
+							value:
+								txt("metaProgrammesValue") || String(activePrograms.length),
+						},
+						{
+							label: txt("metaLevelsLabel", "Levels"),
+							value: txt("metaLevelsValue") || String(displayLevels.length),
+						},
+						{
+							label: txt("metaStreamsLabel", "+2 streams"),
+							value: txt("metaStreamsValue", "Science, Management, Humanities"),
+						},
+						{
+							label: txt("metaSessionLabel", "Session"),
+							value: txt("metaSessionValue", "2083 BS"),
+						},
 					]}
 					actions={
 						<DownloadButton
-							label="Full academic prospectus"
-							meta={`PDF · ${activePrograms.length} programmes · 2083 BS`}
-							stamp="Official"
+							label={txt("prospectusLabel", "Full academic prospectus")}
+							meta={txt(
+								"prospectusMeta",
+								"PDF · {count} programmes · 2083 BS",
+							).replace("{count}", String(activePrograms.length))}
+							stamp={txt("prospectusStamp", "Official")}
 							testId="courses-download-prospectus-button"
 							onDownload={() =>
 								downloadOfficialPdf(
@@ -434,14 +573,16 @@ function RouteComponent() {
 			<div className="mt-16 grid gap-12 lg:grid-cols-[236px_1fr] lg:gap-16">
 				{/* Level rail — vertical index on desktop, snap rail on mobile */}
 				<aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
-					<p className="t-eyebrow">Choose a level</p>
+					<p className="t-eyebrow">
+						{str(academicsSection, "chooseLevelLabel") || "Choose a level"}
+					</p>
 					<div
 						role="group"
-						aria-label="Academic level"
+						aria-label={txt("levelAriaLabel", "Academic level")}
 						data-testid="program-level-switcher"
 						className="no-scrollbar -mx-4 mt-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:mt-5 lg:flex-col lg:gap-0 lg:overflow-visible lg:px-0"
 					>
-						{levels.map((item) => {
+						{displayLevels.map((item) => {
 							const active = item.id === level.id;
 							return (
 								<button
@@ -482,10 +623,25 @@ function RouteComponent() {
 
 					<dl className="hidden gap-y-5 lg:grid">
 						{[
-							{ label: "Grades", value: level.grades },
-							{ label: "Board", value: level.board },
-							{ label: "Programmes", value: String(levelPrograms.length) },
-							{ label: "Seats this session", value: String(totalSeats) },
+							{
+								label: str(academicsSection, "levelGradesLabel") || "Grades",
+								value: level.grades,
+							},
+							{
+								label: str(academicsSection, "levelBoardLabel") || "Board",
+								value: level.board,
+							},
+							{
+								label:
+									str(academicsSection, "levelProgrammesLabel") || "Programmes",
+								value: String(levelPrograms.length),
+							},
+							{
+								label:
+									str(academicsSection, "levelSeatsLabel") ||
+									"Seats this session",
+								value: String(totalSeats),
+							},
 						].map((item) => (
 							<div key={item.label}>
 								<dt className="t-eyebrow">{item.label}</dt>
@@ -524,7 +680,7 @@ function RouteComponent() {
 								src={level.image}
 								alt={`${level.label} at ${school.nameEn}`}
 								ratio="feature"
-								caption={`${level.short} · ${school.address}`}
+								caption={`${level.short} · ${school.address.line1}`}
 								testId="level-image"
 							/>
 						</section>
@@ -539,7 +695,8 @@ function RouteComponent() {
 							<div className="grid lg:grid-cols-[1fr_0.8fr]">
 								<div className="border-y border-transparent p-6 sm:p-8">
 									<p className="t-eyebrow">
-										Most-chosen programme at this level
+										{str(academicsSection, "featuredEyebrow") ||
+											"Most-chosen programme at this level"}
 									</p>
 									<h3
 										className="t-h2 mt-2.5 text-foreground"
@@ -556,9 +713,18 @@ function RouteComponent() {
 									</p>
 									<dl className="mt-7 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
 										{[
-											{ label: "Duration", value: spotlight.duration },
-											{ label: "Seats", value: String(spotlight.seats) },
-											{ label: "Medium", value: spotlight.medium },
+											{
+												label: txt("spotlightDurationLabel", "Duration"),
+												value: spotlight.duration,
+											},
+											{
+												label: txt("spotlightSeatsLabel", "Seats"),
+												value: String(spotlight.seats),
+											},
+											{
+												label: txt("spotlightMediumLabel", "Medium"),
+												value: spotlight.medium,
+											},
 										].map((item) => (
 											<div key={item.label}>
 												<dt className="t-eyebrow">{item.label}</dt>
@@ -570,9 +736,15 @@ function RouteComponent() {
 									</dl>
 									<div className="mt-8">
 										<DownloadButton
-											label="Prospectus for this programme"
-											meta={`PDF · ${spotlight.code} · signed by the Principal`}
-											stamp="Official"
+											label={txt(
+												"spotlightProspectusLabel",
+												"Prospectus for this programme",
+											)}
+											meta={txt(
+												"spotlightProspectusMeta",
+												"PDF · {code} · signed by the Principal",
+											).replace("{code}", spotlight.code)}
+											stamp={txt("prospectusStamp", "Official")}
 											testId="featured-block-download-button"
 											onDownload={() =>
 												downloadOfficialPdf(
@@ -617,7 +789,10 @@ function RouteComponent() {
 							testId="cms-section-hit-courses-academics"
 						>
 							<SectionHeading
-								eyebrow="Programme index"
+								eyebrow={
+									str(academicsSection, "programmeIndexEyebrow") ||
+									"Programme index"
+								}
 								title={
 									str(academicsSection, "title") ||
 									`${levelPrograms.length} programmes at ${level.short}`
@@ -658,11 +833,18 @@ function RouteComponent() {
 										</div>
 										<div className="hidden shrink-0 items-center gap-7 pr-3 lg:flex">
 											<span className="t-meta">{program.duration}</span>
-											<span className="t-meta">{program.seats} seats</span>
+											<span className="t-meta">
+												{program.seats} {txt("seatsSuffix", "seats")}
+											</span>
 										</div>
 									</AccordionTrigger>
 									<AccordionContent className="bg-transparent pb-10 pt-1">
-										<ProgramDetail program={program} />
+										<ProgramDetail
+											program={program}
+											feeNote={str(academicsSection, "feeNote")}
+											pathwaysEmpty={str(academicsSection, "pathwaysEmpty")}
+											labels={programLabels}
+										/>
 									</AccordionContent>
 								</AccordionItem>
 							))}
@@ -673,13 +855,49 @@ function RouteComponent() {
 					{routine ? (
 						<Section>
 							<SectionHeading
-								eyebrow="Timetable"
-								title={`Weekly routine · ${routine.label}`}
-								description="The published timetable for this level, as it runs from Sunday to Friday."
+								eyebrow={str(academicsSection, "routineEyebrow") || "Timetable"}
+								title={`${str(academicsSection, "routineTitlePrefix") || "Weekly routine"} · ${routine.label}`}
+								description={
+									str(academicsSection, "routineDescription") ||
+									"The published timetable for this level, as it runs from Sunday to Friday."
+								}
 								testId="routine-section-title"
 							/>
 							<div className="mt-8">
-								<RoutineTable routine={routine} />
+								<RoutineTable
+									routine={routine}
+									labels={{
+										shift: txt("routineShiftLabel", "Shift"),
+										rooms: txt("routineRoomsLabel", "Rooms"),
+										effectiveFrom: txt(
+											"routineEffectiveFromLabel",
+											"Effective from",
+										),
+										showOnlyPrefix: txt("routineShowOnlyPrefix", "Show only"),
+										showFullWeek: txt("routineShowFullWeek", "Show full week"),
+										pdfLabel: txt("routinePdfLabel", "Routine PDF"),
+										nowLabel: txt("routineNowLabel", "Right now"),
+										periodPrefix: txt("routinePeriodPrefix", "Period"),
+										noPeriodText: txt(
+											"routineNoPeriodText",
+											"No period is running at this moment.",
+										),
+										holidayText: txt(
+											"routineHolidayText",
+											"Saturday is the weekly holiday — no classes today.",
+										),
+										dayLabel: txt("routineDayLabel", "Day"),
+										todayLabel: txt("routineTodayLabel", "Today"),
+										captionSuffix: txt(
+											"routineCaptionSuffix",
+											"weekly class routine",
+										),
+										footer: txt(
+											"routineFooter",
+											"Saturday is the weekly holiday. Practical and studio periods run in the final slot without interruption.",
+										),
+									}}
+								/>
 							</div>
 						</Section>
 					) : null}

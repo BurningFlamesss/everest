@@ -235,6 +235,7 @@ function RouteComponent() {
 									<MonogramAvatar
 										name={person.name}
 										department={person.department}
+										src={person.photo}
 										size="lg"
 									/>
 
@@ -336,6 +337,7 @@ function RouteComponent() {
 									<MonogramAvatar
 										name={person.name}
 										department={person.department}
+										src={person.photo}
 										size="md"
 									/>
 
@@ -400,6 +402,7 @@ function RouteComponent() {
 									<MonogramAvatar
 										name={selected.name}
 										department={selected.department}
+										src={selected.photo}
 										size="lg"
 										testId="faculty-detail-avatar"
 									/>

@@ -1,4 +1,5 @@
 import type { BlockType, ContentBlock } from "@/types";
+import { routines as builtInRoutines } from "./routines";
 
 // ---------------------------------------------------------------------------
 // Fixed-section model for the two live-preview pages.
@@ -63,6 +64,7 @@ export function pageSectionTypes(pageKey: CmsPageKey): BlockType[] {
 		case "home":
 			return [
 				"landing_hero",
+				"hero",
 				"landing_facts",
 				"discover_cards",
 				"landing_section_headings",
@@ -254,6 +256,15 @@ export const SECTION_DEFAULTS: Partial<
 		eyebrow: "About Everest",
 		title: "Purpose held over time.",
 		body: "An institution is not only what it has built. It is what it continues to protect, improve and pass forward.",
+		filterLabel: "Chapter category",
+		contentsLabel: "Contents",
+		galleryEyebrow: "Glimpses",
+		galleryTitle: "In Context",
+		visitingNote:
+			"Visiting hours for prospective families are Sunday to Friday, 10:00 to 16:00.",
+		emptyTitle: "No chapters matches that category",
+		emptyDescription: "Try a different category, or view all chapters.",
+		showAllLabel: "Show all chapters",
 		chapters: [
 			{
 				name: "Our Story",
@@ -435,14 +446,164 @@ export const SECTION_DEFAULTS: Partial<
 	},
 	// Courses page (/courses): mirrors the route copy.
 	academics: {
+		// Header meta strip
+		metaProgrammesLabel: "Programmes",
+		metaProgrammesValue: "",
+		metaLevelsLabel: "Levels",
+		metaLevelsValue: "",
+		metaStreamsLabel: "+2 streams",
+		metaStreamsValue: "Science, Management, Humanities",
+		metaSessionLabel: "Session",
+		metaSessionValue: "2083 BS",
+		prospectusLabel: "Full academic prospectus",
+		prospectusMeta: "PDF · {count} programmes · 2083 BS",
+		prospectusStamp: "Official",
+
+		chooseLevelLabel: "Choose a level",
+		levelAriaLabel: "Academic level",
+		levelGradesLabel: "Grades",
+		levelBoardLabel: "Board",
+		levelProgrammesLabel: "Programmes",
+		levelSeatsLabel: "Seats this session",
+
+		featuredEyebrow: "Most-chosen programme at this level",
+		spotlightDurationLabel: "Duration",
+		spotlightSeatsLabel: "Seats",
+		spotlightMediumLabel: "Medium",
+		spotlightProspectusLabel: "Prospectus for this programme",
+		spotlightProspectusMeta: "PDF · {code} · signed by the Principal",
+
 		title: "Programme index",
 		body: "Each row opens into the full subject list, credit hours, fee table and progression routes for that programme.",
+		programmeIndexEyebrow: "Programme index",
+		seatsSuffix: "seats",
+
+		tabOverview: "Overview",
+		tabSubjects: "Subjects",
+		tabFees: "Fees",
+		tabPathways: "Pathways",
+
+		eligibilityLabel: "Eligibility",
+		mediumLabel: "Medium",
+		durationLabel: "Duration",
+		boardLabel: "Board",
+		distinctiveLabel: "What makes it distinctive",
+		programmeProspectusLabel: "Programme prospectus",
+		programmeProspectusMeta: "PDF · {code} · Session 2083 BS",
+
+		subjectCodeLabel: "Code",
+		subjectNameLabel: "Subject",
+		subjectCreditLabel: "Credit",
+		subjectTypeLabel: "Type",
+		totalCreditLabel: "Total credit hours",
+
+		feeParticularLabel: "Particular",
+		feeAmountLabel: "Amount",
+		feeFrequencyLabel: "Frequency",
+		annualChargesLabel: "Annual charges",
+		monthlyTuitionLabel: "Monthly tuition",
+		feeNote:
+			"Figures are indicative for session 2083 BS. Any approved scholarship is applied at the accounts desk before the term invoice is issued.",
+
+		pathwaysEmpty:
+			"This programme feeds directly into the next level within the school rather than into external pathways. Progression is automatic on completion, and no separate application is required.",
+		learningOutcomesLabel: "Learning outcomes",
+
+		routineEyebrow: "Timetable",
+		routineTitlePrefix: "Weekly routine",
+		routineDescription:
+			"The published timetable for this level, as it runs from Sunday to Friday.",
+		routineShiftLabel: "Shift",
+		routineRoomsLabel: "Rooms",
+		routineEffectiveFromLabel: "Effective from",
+		routineShowOnlyPrefix: "Show only",
+		routineShowFullWeek: "Show full week",
+		routinePdfLabel: "Routine PDF",
+		routineNowLabel: "Right now",
+		routinePeriodPrefix: "Period",
+		routineNoPeriodText: "No period is running at this moment.",
+		routineHolidayText: "Saturday is the weekly holiday — no classes today.",
+		routineDayLabel: "Day",
+		routineTodayLabel: "Today",
+		routineCaptionSuffix: "weekly class routine",
+		routineFooter:
+			"Saturday is the weekly holiday. Practical and studio periods run in the final slot without interruption.",
+
+		routines: builtInRoutines,
+		levels: [
+			{
+				id: "basic",
+				label: "Early Years & Primary",
+				short: "Primary",
+				grades: "Nursery – Grade 5",
+				board: "CDC Basic Level Curriculum",
+				tagline: "Where curiosity is given room to breathe.",
+				description:
+					"Our foundation years follow the Curriculum Development Centre basic-level framework, delivered through activity-first English medium teaching. Class sizes are capped at 28 so that every child is known by name, and reading fluency is tracked termly rather than annually.",
+				image: "",
+			},
+			{
+				id: "lower-secondary",
+				label: "Lower Secondary",
+				short: "Grade 6–8",
+				grades: "Grade 6 – Grade 8",
+				board: "CDC Basic Level Curriculum",
+				tagline: "The years that decide how a student thinks.",
+				description:
+					"Grades six to eight are where habits harden. Students move into subject-specialist teaching, begin laboratory work, and choose an exploratory track so that the Grade 9 decision is made from experience rather than guesswork.",
+				image: "",
+			},
+			{
+				id: "secondary",
+				label: "Secondary · SEE",
+				short: "Grade 9–10",
+				grades: "Grade 9 – Grade 10",
+				board: "National Examinations Board · SEE",
+				tagline: "Two years of deliberate preparation for the SEE.",
+				description:
+					"The secondary programme prepares candidates for the Secondary Education Examination with a concentration chosen in Grade 9. Optional Mathematics, Computer Science and Accountancy concentrations run in parallel, all sharing the same compulsory core.",
+				image: "",
+			},
+			{
+				id: "plus2-science",
+				label: "+2 Science",
+				short: "+2 Science",
+				grades: "Grade 11 – Grade 12",
+				board: "National Examinations Board · Science Stream",
+				tagline: "Laboratory hours, not just lecture hours.",
+				description:
+					"The Science stream runs on a morning shift with mandatory weekly practical sessions in Physics, Chemistry and Biology. Students select either the Physical group or the Biology group at the point of admission, and both prepare candidates for national entrance examinations.",
+				image: "",
+			},
+			{
+				id: "plus2-management",
+				label: "+2 Management",
+				short: "+2 Management",
+				grades: "Grade 11 – Grade 12",
+				board: "National Examinations Board · Management Stream",
+				tagline: "Commerce taught with real ledgers and real cases.",
+				description:
+					"Management students work through the NEB syllabus alongside a case-based practicum: quarterly business simulations, a compulsory bookkeeping portfolio, and an internship week with Butwal-based enterprises in Grade 12.",
+				image: "",
+			},
+		],
 	},
 	// Facilities page (/facilities): mirrors the route copy.
 	facilities: {
 		eyebrow: "Campus",
 		title: "Facilities & Infrastructure",
 		body: "Capacity, opening hours and the member of staff who holds the key, for every space on the Butwal-8 campus.",
+		allSpacesLabel: "All spaces",
+		indexLabel: "Facility index",
+		galleryEyebrow: "Gallery",
+		galleryTitle: "Inside the space",
+		studentsLoveLabel: "What students say about this space",
+		visitingNote:
+			"Visiting hours for prospective families are Saturday, 10:00 to 16:00.",
+		emptyTitle: "No space matches that category",
+		emptyDescription:
+			"Try a different category, or view every space on the campus index.",
+		showAllLabel: "Show all spaces",
 	},
 	// Gallery page (/gallery): mirrors the route copy.
 	gallery_grid: {
@@ -548,6 +709,35 @@ export const SECTION_PAGE_HEADLINE_DEFAULTS: Partial<
 	},
 };
 
+/** Default hero copy tailored specifically per public page. */
+export const SECTION_PAGE_HERO_DEFAULTS: Partial<
+	Record<
+		CmsPageKey,
+		{
+			eyebrow: string;
+			headline: string;
+			subheadline: string;
+			primaryCtaLabel: string;
+			primaryCtaHref: string;
+			secondaryCtaLabel: string;
+			secondaryCtaHref: string;
+		}
+	>
+> = {
+	// Home (/): the closing panel that rises over the scroll footage. It is the
+	// landing page's front door, so it carries the page's calls to action.
+	home: {
+		eyebrow: "Everest English Boarding · Butwal-8",
+		headline: "Educated for\nthe climb ahead.",
+		subheadline:
+			"Three decades of Science and Management teaching in Rupandehi — small classes, working laboratories, and a faculty that knows every name in the room.",
+		primaryCtaLabel: "Start an application",
+		primaryCtaHref: "/admissions",
+		secondaryCtaLabel: "Visit the campus",
+		secondaryCtaHref: "/contact",
+	},
+};
+
 export function sectionLabel(type: BlockType): string {
 	return SECTION_LABELS[type] ?? type.replace(/_/g, " ");
 }
@@ -557,6 +747,9 @@ export function sectionDefaults(
 	type: BlockType,
 	pageKey?: CmsPageKey,
 ): Record<string, unknown> {
+	if (type === "hero" && pageKey && SECTION_PAGE_HERO_DEFAULTS[pageKey]) {
+		return SECTION_PAGE_HERO_DEFAULTS[pageKey];
+	}
 	if (
 		type === "headline" &&
 		pageKey &&

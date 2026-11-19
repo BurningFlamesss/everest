@@ -76,7 +76,7 @@ export default function CoursesPage() {
 			render: (course) => (
 				<div className="min-w-0">
 					<Link
-						to="/admin/courses/$id"
+						to="/admin/subjects/$id"
 						params={{ id: course.id }}
 						className="block truncate text-sm font-medium text-foreground hover:text-primary"
 						data-testid={`course-link-${course.id}`}
@@ -142,7 +142,7 @@ export default function CoursesPage() {
 		<div data-testid="courses-page">
 			<PageHeader
 				eyebrow="Academics"
-				title="Courses & Subjects"
+				title="Subjects & Programmes"
 				description="The academic catalogue with teaching allocations, weekly load and syllabus outlines."
 				meta={
 					<span data-testid="courses-count">{courses.length} subjects</span>

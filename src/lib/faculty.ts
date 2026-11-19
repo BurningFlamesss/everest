@@ -10,6 +10,18 @@ import type { Person } from "../types";
 // and administrators can fill them in from the admin panel.
 // ---------------------------------------------------------------------------
 
+/**
+ * Portraits in /public/schools/everest/faculty, keyed by staff slug. A lookup
+ * (rather than a DB column) keeps photos out of the schema; `toPerson` applies
+ * the same map to seeded rows.
+ */
+export const facultyPhotos: Record<string, string> = {
+	"krishna-neupane": "/schools/everest/faculty/krishna-neupane.jpg",
+	"umesh-regmi": "/schools/everest/faculty/umesh-regmi.jpg",
+	"bhimsen-gautam": "/schools/everest/faculty/bhimsen-gautam.jpg",
+	"gam-prasad-reshmi": "/schools/everest/faculty/gam-prasad-reshmi.jpg",
+};
+
 export const people: Person[] = [
 	/* ---------------------------- Leadership ---------------------------- */
 	{
@@ -25,8 +37,9 @@ export const people: Person[] = [
 		officeHours: "",
 		bio: "",
 		joined: "",
+		photo: facultyPhotos["krishna-neupane"],
 		leadership: true,
-		rank: 1,
+		rank: 2,
 	},
 	{
 		id: "umesh-regmi",
@@ -41,8 +54,9 @@ export const people: Person[] = [
 		officeHours: "",
 		bio: "",
 		joined: "",
+		photo: facultyPhotos["umesh-regmi"],
 		leadership: true,
-		rank: 2,
+		rank: 4,
 	},
 	{
 		id: "bhimsen-gautam",
@@ -57,8 +71,26 @@ export const people: Person[] = [
 		officeHours: "",
 		bio: "",
 		joined: "",
+		photo: facultyPhotos["bhimsen-gautam"],
 		leadership: true,
 		rank: 3,
+	},
+	{
+		id: "gam-prasad-reshmi",
+		name: "Gam Prasad Reshmi",
+		role: "Administrator",
+		department: "Administration",
+		qualification: "",
+		experience: "",
+		subjects: [],
+		email: "",
+		extension: "",
+		officeHours: "",
+		bio: "",
+		joined: "",
+		photo: facultyPhotos["gam-prasad-reshmi"],
+		leadership: true,
+		rank: 1,
 	},
 	{
 		id: "narayan-dhakal",
@@ -74,7 +106,7 @@ export const people: Person[] = [
 		bio: "",
 		joined: "",
 		leadership: true,
-		rank: 4,
+		rank: 5,
 	},
 
 	/* ---------------------------- Teaching faculty ---------------------------- */

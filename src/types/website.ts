@@ -65,6 +65,7 @@ export interface Program {
 	image: string;
 	routineKey: RoutineKey;
 	spotlight?: boolean;
+	order?: number;
 }
 
 /* ---------------------------- Routines ---------------------------- */
@@ -137,6 +138,7 @@ export interface Facility {
 	inCharge: string;
 	studentsLove: string;
 	since: string;
+	order?: number;
 }
 
 /* ----------------------------- People ----------------------------- */
@@ -167,6 +169,8 @@ export interface Person {
 	joined: string;
 	leadership?: boolean;
 	rank?: number;
+	/** Optional portrait path, e.g. "/schools/everest/faculty/name.jpg". */
+	photo?: string;
 }
 
 /* ----------------------------- Notices ---------------------------- */

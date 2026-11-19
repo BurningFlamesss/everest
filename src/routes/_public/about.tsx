@@ -211,27 +211,52 @@ function RouteComponent() {
 		...sectionDefaults("chapters"),
 		...getSectionFields(cmsData?.blocks, "chapters"),
 	} as Record<string, unknown>;
-	const cmsChapters = rows(chaptersSection, "chapters").map((c, i) => ({
-		id: `chapter-${i}`,
-		name: str(c, "name"),
-		category: str(c, "category", "Foundation"),
-		description: str(c, "description"),
-		image: str(c, "image") || photo("schoolBuilding"),
-		stats: [
-			{ label: "Established", value: school.establishedAd },
-			{ label: "Category", value: str(c, "category", "Foundation") },
-			{ label: "Since", value: str(c, "since", "1995") },
-		],
-		inCharge: str(c, "inCharge"),
-		since: str(c, "since"),
-		block: str(c, "block"),
-		studentsLove: str(c, "studentsLove"),
-		gallery: [
-			str(c, "image") || photo("assemblyCrowd"),
-			photo("youngLearners"),
-			photo("studyPair"),
-		],
-	})) as Chapter[];
+	const cmsChapters = rows(chaptersSection, "chapters").map((c, i) => {
+		// Stats and gallery are edited as line-based text so a chapter stays a
+		// single repeatable row; blank values keep the built-in fallbacks.
+		const customStats = str(c, "stats")
+			.split("\n")
+			.map((line) => {
+				const [label, ...rest] = line.split("|");
+				return { label: label.trim(), value: rest.join("|").trim() };
+			})
+			.filter((stat) => stat.label && stat.value);
+		const customGallery = str(c, "gallery")
+			.split("\n")
+			.map((line) => line.trim())
+			.filter(Boolean);
+
+		return {
+			id: `chapter-${i}`,
+			name: str(c, "name"),
+			category: str(c, "category", "Foundation"),
+			description: str(c, "description"),
+			image: str(c, "image") || photo("schoolBuilding"),
+			stats:
+				customStats.length > 0
+					? customStats
+					: [
+							{ label: "Established", value: school.establishedAd },
+							{
+								label: "Category",
+								value: str(c, "category", "Foundation"),
+							},
+							{ label: "Since", value: str(c, "since", "1995") },
+						],
+			inCharge: str(c, "inCharge"),
+			since: str(c, "since"),
+			block: str(c, "block"),
+			studentsLove: str(c, "studentsLove"),
+			gallery:
+				customGallery.length > 0
+					? customGallery
+					: [
+							str(c, "image") || photo("assemblyCrowd"),
+							photo("youngLearners"),
+							photo("studyPair"),
+						],
+		};
+	}) as Chapter[];
 	const allChapters = cmsChapters.length > 0 ? cmsChapters : chapters;
 
 	const onSelectSection = (sectionType: BlockType) => {
@@ -308,7 +333,7 @@ function RouteComponent() {
 
 				<div className="mt-14">
 					<FilterChips
-						label="Chapter category"
+						label={str(chaptersSection, "filterLabel") || "Chapter category"}
 						testId="chapter-category-filter"
 						options={chipOptions}
 						value={category}
@@ -320,9 +345,17 @@ function RouteComponent() {
 			{!active ? (
 				<div className="mt-10">
 					<EmptyState
-						title="No chapters matches that category"
-						description="Try a different category, or view all chapters."
-						actionLabel="Show all chapters"
+						title={
+							str(chaptersSection, "emptyTitle") ||
+							"No chapters matches that category"
+						}
+						description={
+							str(chaptersSection, "emptyDescription") ||
+							"Try a different category, or view all chapters."
+						}
+						actionLabel={
+							str(chaptersSection, "showAllLabel") || "Show all chapters"
+						}
 						onAction={() => handleCategory("all")}
 						testId="about-empty-state"
 					/>
@@ -330,7 +363,9 @@ function RouteComponent() {
 			) : (
 				<div className="mt-10 grid gap-12 lg:grid-cols-[236px_1fr] lg:gap-16">
 					<aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
-						<p className="t-eyebrow">Contents</p>
+						<p className="t-eyebrow">
+							{str(chaptersSection, "contentsLabel") || "Contents"}
+						</p>
 						<div
 							role="group"
 							aria-label="Chapters"
@@ -392,8 +427,9 @@ function RouteComponent() {
 							))}
 						</dl>
 						<p className="t-meta mt-7 leading-relaxed hidden lg:block">
-							{school.address.line1}, {school.address.line2}. Visiting hours for
-							prospective families are Sunday to Friday, 10:00 to 16:00.
+							{school.address.line1}, {school.address.line2}.{" "}
+							{str(chaptersSection, "visitingNote") ||
+								"Visiting hours for prospective families are Sunday to Friday, 10:00 to 16:00."}
 						</p>
 					</aside>
 
@@ -481,8 +517,8 @@ function RouteComponent() {
 
 							<div className="mt-14">
 								<SectionHeading
-									eyebrow="Glimpses"
-									title="In Context"
+									eyebrow={str(chaptersSection, "galleryEyebrow") || "Glimpses"}
+									title={str(chaptersSection, "galleryTitle") || "In Context"}
 									testId="chapter-gallery-title"
 								/>
 								<div className="mt-7 grid grid-cols-3 gap-4">

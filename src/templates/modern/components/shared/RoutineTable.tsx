@@ -7,11 +7,54 @@ import type { Routine } from "#/types";
 import { Button } from "../kit";
 import { DownloadButton } from "./DownloadButton";
 
+export interface RoutineTableLabels {
+	shift?: string;
+	rooms?: string;
+	effectiveFrom?: string;
+	showOnlyPrefix?: string;
+	showFullWeek?: string;
+	pdfLabel?: string;
+	nowLabel?: string;
+	periodPrefix?: string;
+	noPeriodText?: string;
+	holidayText?: string;
+	dayLabel?: string;
+	todayLabel?: string;
+	captionSuffix?: string;
+	footer?: string;
+}
+
 /**
  * Printed-timetable aesthetic: hairline rules, tabular monospaced times,
  * sticky day column, today's row tinted, and a live current-period marker.
  */
-export const RoutineTable = ({ routine }: { routine: Routine }) => {
+export const RoutineTable = ({
+	routine,
+	labels = {},
+}: {
+	routine: Routine;
+	labels?: RoutineTableLabels;
+}) => {
+	const copy = {
+		shift: labels.shift ?? "Shift",
+		rooms: labels.rooms ?? "Rooms",
+		effectiveFrom: labels.effectiveFrom ?? "Effective from",
+		showOnlyPrefix: labels.showOnlyPrefix ?? "Show only",
+		showFullWeek: labels.showFullWeek ?? "Show full week",
+		pdfLabel: labels.pdfLabel ?? "Routine PDF",
+		nowLabel: labels.nowLabel ?? "Right now",
+		periodPrefix: labels.periodPrefix ?? "Period",
+		noPeriodText: labels.noPeriodText ?? "No period is running at this moment.",
+		holidayText:
+			labels.holidayText ??
+			"Saturday is the weekly holiday — no classes today.",
+		dayLabel: labels.dayLabel ?? "Day",
+		todayLabel: labels.todayLabel ?? "Today",
+		captionSuffix: labels.captionSuffix ?? "weekly class routine",
+		footer:
+			labels.footer ??
+			"Saturday is the weekly holiday. Practical and studio periods run in the final slot without interruption.",
+	};
 	const today = todaySchoolWeekday();
 	const [clock, setClock] = useState<number>(() => nowMinutes());
 	const [focusToday, setFocusToday] = useState(false);
@@ -40,15 +83,15 @@ export const RoutineTable = ({ routine }: { routine: Routine }) => {
 			<div className="flex flex-wrap items-end justify-between gap-4">
 				<dl className="flex flex-wrap gap-x-8 gap-y-2">
 					<div>
-						<dt className="t-eyebrow">Shift</dt>
+						<dt className="t-eyebrow">{copy.shift}</dt>
 						<dd className="mt-1 text-sm text-foreground">{routine.shift}</dd>
 					</div>
 					<div>
-						<dt className="t-eyebrow">Rooms</dt>
+						<dt className="t-eyebrow">{copy.rooms}</dt>
 						<dd className="mt-1 text-sm text-foreground">{routine.room}</dd>
 					</div>
 					<div>
-						<dt className="t-eyebrow">Effective from</dt>
+						<dt className="t-eyebrow">{copy.effectiveFrom}</dt>
 						<dd className="mt-1 font-mono text-sm tabular-nums text-foreground">
 							{routine.effectiveFrom}
 						</dd>
@@ -65,11 +108,13 @@ export const RoutineTable = ({ routine }: { routine: Routine }) => {
 							className="h-9 gap-2 rounded-field px-3 text-[13px] text-muted-foreground transition-colors duration-fast hover:bg-secondary hover:text-foreground"
 						>
 							<CalendarClock className="h-4 w-4" aria-hidden="true" />
-							{focusToday ? "Show full week" : `Show only ${today}`}
+							{focusToday
+								? copy.showFullWeek
+								: `${copy.showOnlyPrefix} ${today}`}
 						</Button>
 					) : null}
 					<DownloadButton
-						label="Routine PDF"
+						label={copy.pdfLabel}
 						size="sm"
 						testId="routine-download-pdf-button"
 						onDownload={() => downloadOfficialPdf(routineDoc(routine))}
@@ -84,10 +129,10 @@ export const RoutineTable = ({ routine }: { routine: Routine }) => {
 				>
 					<CircleDot className="h-3.5 w-3.5 text-red-dark" aria-hidden="true" />
 					<span className="font-mono text-[11px] uppercase tracking-[0.14em] text-red-dark">
-						Right now
+						{copy.nowLabel}
 					</span>
 					<span className="text-[13px] text-foreground">
-						Period {activePeriod.label} · {activeSubject}
+						{copy.periodPrefix} {activePeriod.label} · {activeSubject}
 					</span>
 					<span className="t-meta">
 						{activePeriod.start}–{activePeriod.end}
@@ -95,9 +140,7 @@ export const RoutineTable = ({ routine }: { routine: Routine }) => {
 				</p>
 			) : (
 				<p data-testid="routine-now-indicator" className="t-meta mt-5">
-					{today
-						? "No period is running at this moment."
-						: "Saturday is the weekly holiday — no classes today."}
+					{today ? copy.noPeriodText : copy.holidayText}
 				</p>
 			)}
 
@@ -108,7 +151,7 @@ export const RoutineTable = ({ routine }: { routine: Routine }) => {
 						className="w-full min-w-[760px] border-collapse text-left"
 					>
 						<caption className="sr-only">
-							{routine.label} weekly class routine
+							{routine.label} {copy.captionSuffix}
 						</caption>
 						<thead>
 							<tr className="border-b border-border bg-secondary">
@@ -118,7 +161,7 @@ export const RoutineTable = ({ routine }: { routine: Routine }) => {
 								>
 									<div className="absolute inset-0 -z-20 bg-card border-r border-border" />
 									<div className="absolute inset-0 -z-10 bg-secondary" />
-									Day
+									{copy.dayLabel}
 								</th>
 								{routine.periods.map((period, index) => (
 									<th
@@ -180,7 +223,7 @@ export const RoutineTable = ({ routine }: { routine: Routine }) => {
 												</span>
 												{isToday ? (
 													<span className="mt-1 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-red-dark">
-														Today
+														{copy.todayLabel}
 													</span>
 												) : null}
 											</th>
@@ -211,10 +254,7 @@ export const RoutineTable = ({ routine }: { routine: Routine }) => {
 				</div>
 			</div>
 
-			<p className="t-meta mt-3">
-				Saturday is the weekly holiday. Practical and studio periods run in the
-				final slot without interruption.
-			</p>
+			<p className="t-meta mt-3">{copy.footer}</p>
 		</section>
 	);
 };

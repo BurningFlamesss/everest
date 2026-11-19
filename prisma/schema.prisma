@@ -254,6 +254,7 @@ model Student {
 
   clubRoles            ClubRole[]   @relation("ClubRoleStudent")
   clubMemberships      ClubMember[]
+  clubJoinRequests     ClubJoinRequest[]
   authoredPosts        Post[]
 
   @@index([branchId, status])
@@ -1076,7 +1077,10 @@ model Club {
   members     ClubMember[]
   posts       Post[]
 
-  isActive Boolean @default(true)
+  isActive   Boolean        @default(true)
+  joinPolicy ClubJoinPolicy @default(REQUEST)
+
+  joinRequests ClubJoinRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1130,6 +1134,39 @@ model ClubMember {
   @@unique([clubId, studentId])
   @@index([studentId])
   @@index([roleId])
+}
+
+enum ClubJoinPolicy {
+  OPEN
+  REQUEST
+  CLOSED
+}
+
+enum ClubJoinRequestStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
+/** A student's pending or reviewed request to join a club. */
+model ClubJoinRequest {
+  id String @id @default(cuid())
+
+  clubId String
+  club   Club   @relation(fields: [clubId], references: [id], onDelete: Cascade)
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  status  ClubJoinRequestStatus @default(PENDING)
+  message String?
+
+  createdAt  DateTime  @default(now())
+  reviewedAt DateTime?
+
+  @@unique([clubId, studentId])
+  @@index([clubId, status])
+  @@index([studentId])
 }
 
 /** A post published inside a club feed. */

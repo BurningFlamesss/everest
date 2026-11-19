@@ -173,6 +173,24 @@ export const AttendanceStatus = {
 export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
 
 
+export const ClubJoinPolicy = {
+  OPEN: 'OPEN',
+  REQUEST: 'REQUEST',
+  CLOSED: 'CLOSED'
+} as const
+
+export type ClubJoinPolicy = (typeof ClubJoinPolicy)[keyof typeof ClubJoinPolicy]
+
+
+export const ClubJoinRequestStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  DECLINED: 'DECLINED'
+} as const
+
+export type ClubJoinRequestStatus = (typeof ClubJoinRequestStatus)[keyof typeof ClubJoinRequestStatus]
+
+
 export const NoticeAudience = {
   ALL: 'ALL',
   STUDENTS: 'STUDENTS',

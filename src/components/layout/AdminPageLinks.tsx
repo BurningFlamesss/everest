@@ -32,7 +32,7 @@ const MORE_LINKS = [
 	{ label: "Fees", to: "/admin/fees", icon: Wallet },
 	{ label: "Homework", to: "/admin/homework", icon: BookOpen },
 	{ label: "Classes", to: "/admin/classes", icon: GraduationCap },
-	{ label: "Courses", to: "/admin/courses", icon: Library },
+	{ label: "Subjects", to: "/admin/subjects", icon: Library },
 	{ label: "Transport", to: "/admin/transport", icon: Bus },
 	{ label: "Mail", to: "/admin/mail", icon: Mail },
 	{ label: "Inbox", to: "/admin/inbox", icon: Inbox },

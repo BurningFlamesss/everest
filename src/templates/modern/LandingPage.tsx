@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
 	ArrowRight,
+	ArrowUpRight,
 	BookOpen,
 	Building2,
 	ExternalLink,
@@ -24,9 +25,10 @@ import {
 import { albums } from "#/content/gallery";
 import { useCanvasVideo } from "#/hooks/useCanvasVideo.ts";
 import { useHeroAutoplay } from "#/hooks/useHeroAutoplay.ts";
+import type { CmsPageKey } from "#/lib/cms-sections";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import { FACEBOOK_PAGE_URL } from "#/lib/facebook-feed.ts";
-import { people } from "#/lib/faculty";
+import { leadership } from "#/lib/faculty";
 import type { OverlaySegment } from "#/lib/hero-autoplay.ts";
 import {
 	overlayBodyStyle,
@@ -51,9 +53,13 @@ interface LandingCmsContent {
 }
 
 /** Merge a section's defaults with any saved CMS overrides. */
-function useSection(page: WebsitePageContent | null, type: BlockType) {
+function useSection(
+	page: WebsitePageContent | null,
+	type: BlockType,
+	pageKey?: CmsPageKey,
+) {
 	return {
-		...sectionDefaults(type),
+		...sectionDefaults(type, pageKey),
 		...getSectionFields(page?.blocks as never, type),
 	} as Record<string, unknown>;
 }
@@ -71,6 +77,7 @@ export default function LandingPage({
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	const hero = useSection(page, "landing_hero");
+	const closing = useSection(page, "hero", "home");
 	const facts = useSection(page, "landing_facts");
 	const discover = useSection(page, "discover_cards");
 	const headings = useSection(page, "landing_section_headings");
@@ -105,7 +112,7 @@ export default function LandingPage({
 					scrollTrigger: {
 						trigger: containerRef.current,
 						start: "20% top",
-						end: "bottom top",
+						end: "bottom bottom",
 						scrub: true,
 					},
 				},
@@ -140,42 +147,14 @@ export default function LandingPage({
 						</CmsSectionBox>
 					</div>
 
-					<section className="hero-next-section absolute bottom-0 left-0 z-10 w-full overflow-y-auto overflow-x-hidden bg-[#FEF2F2] rounded-t-3xl min-h-[70vh] lg:h-[80vh]">
+					<section className="hero-next-section absolute inset-x-0 bottom-0 z-10 mx-auto w-8/9 overflow-y-auto overflow-x-hidden bg-[#FEF2F2] rounded-t-3xl min-h-[70vh] lg:h-[80vh]">
 						<CmsSectionBox
 							preview={preview}
-							sectionType="landing_facts"
+							sectionType="hero"
 							onSelect={onSelectSection}
-							testId="cms-section-hit-landing_facts"
+							className="h-full"
 						>
-							<div className="grid grid-cols-1 lg:grid-cols-[6fr_5fr] mx-6 md:mx-12 lg:mx-20 pt-10 pb-16 lg:pt-20 lg:pb-0 gap-10 lg:gap-[8%]">
-								<h2 className="text-5xl md:text-6xl lg:text-8xl font-bold text-foreground whitespace-pre-line">
-									{str(
-										facts,
-										"title",
-										"Established in purpose.\nContemporary in outlook.",
-									)}
-								</h2>
-								<div>
-									<p className="text-base md:text-lg leading-normal mb-8 text-n-600 text-muted-foreground">
-										{str(facts, "body", "")}
-									</p>
-									<dl className="border-t border-rule-soft">
-										{rows(facts, "facts").map((fact, i) => (
-											<div
-												key={String(fact.label ?? i)}
-												className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-2 sm:gap-5 py-4 lg:py-5 border-b border-rule-soft"
-											>
-												<dt className="text-[11px] sm:text-xs uppercase text-n-600 text-muted-foreground tracking-wider">
-													{String(fact.label ?? "")}
-												</dt>
-												<dd className="text-sm sm:text-md font-medium text-foreground">
-													{String(fact.value ?? "")}
-												</dd>
-											</div>
-										))}
-									</dl>
-								</div>
-							</div>
+							<ClosingHero closing={closing} />
 						</CmsSectionBox>
 					</section>
 				</div>
@@ -270,6 +249,54 @@ export default function LandingPage({
 							</CmsSectionBox>
 						</div>
 
+						{/* Institution facts */}
+						<div className="mb-32">
+							<CmsSectionBox
+								preview={preview}
+								sectionType="landing_facts"
+								onSelect={onSelectSection}
+								testId="cms-section-hit-landing_facts"
+							>
+								<div className="border-t border-rule-strong pt-6">
+									<div className="grid gap-10 lg:grid-cols-[6fr_5fr] lg:gap-[8%]">
+										<div>
+											<p className="t-eyebrow">At a glance</p>
+											<h2
+												className="mt-3 font-display text-[clamp(2rem,4.2vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.02em] text-foreground whitespace-pre-line"
+												data-testid="landing-facts-title"
+											>
+												{str(
+													facts,
+													"title",
+													"Established in purpose.\nContemporary in outlook.",
+												)}
+											</h2>
+										</div>
+										<div className="lg:pt-1">
+											<p className="max-w-[52ch] text-[15px] leading-[1.75] text-muted-foreground">
+												{str(facts, "body", "")}
+											</p>
+											<dl className="mt-8 border-t border-rule-soft">
+												{rows(facts, "facts").map((fact, i) => (
+													<div
+														key={String(fact.label ?? i)}
+														className="grid gap-1.5 border-b border-rule-soft py-4 sm:grid-cols-[150px_1fr] sm:gap-5"
+													>
+														<dt className="t-eyebrow text-n-600">
+															{String(fact.label ?? "")}
+														</dt>
+														<dd className="text-[14px] font-medium leading-relaxed text-foreground">
+															{String(fact.value ?? "")}
+														</dd>
+													</div>
+												))}
+											</dl>
+										</div>
+									</div>
+								</div>
+							</CmsSectionBox>
+						</div>
+
 						{/* Gallery */}
 						<div className="mb-32">
 							<SectionHeading
@@ -348,48 +375,41 @@ export default function LandingPage({
 								)}
 							/>
 							<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-								{people
-									.filter((p) => p.leadership)
-									.slice(0, 3)
-									.map((person) => (
-										<Link
-											key={person.id}
-											to="/faculty"
-											className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
-										>
-											<MonogramAvatar
-												name={person.name}
-												department={person.department}
-												size="lg"
-											/>
-											<p className="t-eyebrow mt-6">{person.role}</p>
-											<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
-												{person.name}
-											</h3>
-											{person.qualification ? (
-												<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
-													{person.qualification}
-												</p>
-											) : null}
-											<div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-rule-soft pt-4">
-												<span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[11.5px] leading-normal text-muted-foreground">
-													{person.department}
-												</span>
-												{person.extension ? (
-													<span className="t-meta">
-														Ext. {person.extension}
-													</span>
-												) : null}
-											</div>
-											<span className="mt-4 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
-												View directory
-												<ArrowRight
-													className="h-3.5 w-3.5"
-													aria-hidden="true"
-												/>
+								{leadership.slice(0, 3).map((person) => (
+									<Link
+										key={person.id}
+										to="/faculty"
+										className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
+									>
+										<MonogramAvatar
+											name={person.name}
+											department={person.department}
+											src={person.photo}
+											size="lg"
+										/>
+										<p className="t-eyebrow mt-6">{person.role}</p>
+										<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
+											{person.name}
+										</h3>
+										{person.qualification ? (
+											<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
+												{person.qualification}
+											</p>
+										) : null}
+										<div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-rule-soft pt-4">
+											<span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[11.5px] leading-normal text-muted-foreground">
+												{person.department}
 											</span>
-										</Link>
-									))}
+											{person.extension ? (
+												<span className="t-meta">Ext. {person.extension}</span>
+											) : null}
+										</div>
+										<span className="mt-4 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
+											View directory
+											<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+										</span>
+									</Link>
+								))}
 							</div>
 						</div>
 					</div>
@@ -397,6 +417,160 @@ export default function LandingPage({
 			</div>
 			<NoticeDialog />
 		</>
+	);
+} /**
+ * The closing panel's single campus plate: a frame already served for the
+ * scroll hero, so the shaped image adds no new assets.
+ */
+const CLOSING_IMAGE = "/schools/everest/landing-footage/frame_0139.jpeg";
+
+/**
+ * The landing page's closing hero.
+ *
+ * It is the panel that rides up over the footage at the end of the scroll
+ * track, so it is the first thing a visitor can actually read and act on: the
+ * institution's statement, one sentence of evidence, and the calls to action
+ * the page previously lacked. The campus appears once, as a single plate
+ * clipped into an arch — the shape of the school's own gateways — held by a
+ * hairline frame and a cream mat. Copy comes from the `hero` section of the
+ * home page, so every line here is editable in the CMS.
+ */
+function ClosingHero({ closing }: { closing: Record<string, unknown> }) {
+	const headline = str(closing, "headline", "Educated for\nthe climb ahead.");
+	const lines = headline.split("\n").filter((line) => line.trim() !== "");
+	const primaryHref = str(closing, "primaryCtaHref", "/admissions");
+	const secondaryHref = str(closing, "secondaryCtaHref", "/contact");
+
+	const quickLinks = [
+		{ index: "01", label: "Academics", href: "/courses" },
+		{ index: "02", label: "Campus", href: "/facilities" },
+		{ index: "03", label: "The institution", href: "/about" },
+	];
+
+	return (
+		<div className="flex h-full min-h-[70vh] w-full flex-col bg-[#FEF2F2] text-black lg:min-h-0">
+			<div className="mx-auto flex w-full max-w-[1200px] flex-col px-6 pb-6 sm:px-10 lg:min-h-0 lg:flex-1 lg:px-12 lg:pb-20">
+				{/* Masthead — who the school is on the left, the live admissions state on the right. */}
+				<div className="flex shrink-0 items-center justify-between gap-6 border-b border-black/10 py-4">
+					<p className="flex min-w-0 items-center gap-3 font-mono text-[10px] uppercase leading-none tracking-[0.16em] text-black/60">
+						<span
+							aria-hidden="true"
+							className="h-1.5 w-1.5 shrink-0 bg-[var(--c-red)]"
+						/>
+						<span className="truncate">
+							{str(closing, "eyebrow", "Everest English Boarding · Butwal-8")}
+						</span>
+					</p>
+					<p className="hidden shrink-0 items-center gap-2 font-mono text-[10px] uppercase leading-none tracking-[0.16em] text-black/60 sm:flex">
+						<span
+							aria-hidden="true"
+							className="h-1.5 w-1.5 rounded-full bg-[var(--c-red)]"
+						/>
+						Admissions open · 2083 B.S.
+					</p>
+				</div>
+
+				{/* The statement and the single campus plate. */}
+				<div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(280px,30%)] lg:grid-rows-[minmax(0,1fr)_auto] xl:grid-cols-[minmax(0,1fr)_minmax(300px,33%)]">
+					<div className="flex min-h-0 flex-col justify-center pb-8 pt-8 sm:pt-10 lg:col-start-1 lg:row-start-1 lg:justify-start lg:pr-12 lg:pt-6">
+						<h2 className="font-display text-[clamp(2.4rem,4.2vw,4.4rem)] font-medium leading-[0.98] tracking-[-0.03em]">
+							{lines.map((line, index) => (
+								<span
+									// biome-ignore lint/suspicious/noArrayIndexKey: headline lines are static copy reordered only by CMS edits
+									key={`${line}-${index}`}
+									className={`block ${index === 0 ? "text-black" : "text-[var(--c-red)]"}`}
+								>
+									{line}
+								</span>
+							))}
+						</h2>
+
+						<p className="mt-6 max-w-[56ch] text-[15px] leading-[1.7] text-black/70 sm:text-[16px]">
+							{str(
+								closing,
+								"subheadline",
+								"Three decades of Science and Management teaching in Rupandehi — small classes, working laboratories, and a faculty that knows every name in the room.",
+							)}
+						</p>
+
+						<div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-7">
+							<Link
+								to={primaryHref as never}
+								data-testid="landing-hero-primary-cta"
+								className="institution-button group inline-flex items-center justify-center gap-2.5"
+							>
+								{str(closing, "primaryCtaLabel", "Start an application")}
+								<ArrowUpRight
+									className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+									aria-hidden="true"
+								/>
+							</Link>
+							<Link
+								to={secondaryHref as never}
+								data-testid="landing-hero-secondary-cta"
+								className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-medium text-black transition-colors duration-200 hover:text-[var(--c-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FEF2F2]"
+							>
+								<span className="border-b border-black/30 pb-1 transition-colors duration-200 group-hover:border-[var(--c-red)]">
+									{str(closing, "secondaryCtaLabel", "Visit the campus")}
+								</span>
+								<ArrowRight
+									className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+									aria-hidden="true"
+								/>
+							</Link>
+						</div>
+					</div>
+
+					{/* One campus plate, clipped into an arch and held by a hairline frame. */}
+					<figure className="m-0 mb-6 min-h-0 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mb-0 lg:pt-6 lg:pr-10">
+						<div className="relative h-[220px] sm:h-[280px] lg:h-full">
+							<div
+								aria-hidden="true"
+								className="pointer-events-none absolute inset-0 rounded-t-full border border-black/15"
+							/>
+							<div className="absolute inset-x-[10px] bottom-0 top-[10px] overflow-hidden rounded-t-full bg-[#16181d]">
+								<img
+									src={CLOSING_IMAGE}
+									alt="The brick façade of Everest English Boarding, its flags flying above the roofline in Butwal."
+									className="h-full w-full object-cover object-[50%_60%] transition-transform duration-700 ease-out hover:scale-[1.03]"
+								/>
+							</div>
+						</div>
+					</figure>
+
+					{/* Index strip: the three destinations the school is mostly asked about. */}
+					<nav
+						aria-label="Explore Everest"
+						className="border-t border-black/10 lg:col-start-1 lg:row-start-2"
+					>
+						<ul className="grid grid-cols-3">
+							{quickLinks.map((link, index) => (
+								<li
+									key={link.href}
+									className={index > 0 ? "border-l border-black/10" : ""}
+								>
+									<Link
+										to={link.href as never}
+										className="group flex min-h-[52px] items-center gap-3 px-4 py-3.5 transition-colors duration-200 hover:bg-black hover:text-[#FEF2F2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--c-red)] sm:px-6"
+									>
+										<span className="font-mono text-[9px] tracking-[0.16em] text-black/60 transition-colors duration-200 group-hover:text-white">
+											{link.index}
+										</span>
+										<span className="truncate text-[13px] font-medium">
+											{link.label}
+										</span>
+										<ArrowUpRight
+											className="ml-auto h-3.5 w-3.5 shrink-0 -translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100"
+											aria-hidden="true"
+										/>
+									</Link>
+								</li>
+							))}
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
 	);
 }
 

@@ -50,6 +50,7 @@ export interface ClubInput {
 	coverImage?: string;
 	attachments?: Array<AttachmentInput>;
 	isActive?: boolean;
+	joinPolicy?: "OPEN" | "REQUEST" | "CLOSED";
 	organizationId?: string | null;
 	branchId?: string | null;
 }
@@ -465,6 +466,7 @@ export async function createClub(input: ClubInput) {
 				? { create: attachmentCreates(input.attachments) }
 				: undefined,
 			isActive: input.isActive ?? true,
+			...(input.joinPolicy ? { joinPolicy: input.joinPolicy } : {}),
 			organizationId: input.organizationId ?? null,
 			branchId: input.branchId ?? null,
 		},
@@ -503,6 +505,9 @@ export async function updateClub(id: string, input: Partial<ClubInput>) {
 					}
 				: {}),
 			...(input.isActive !== undefined ? { isActive: input.isActive } : {}),
+			...(input.joinPolicy !== undefined
+				? { joinPolicy: input.joinPolicy }
+				: {}),
 		},
 	});
 }

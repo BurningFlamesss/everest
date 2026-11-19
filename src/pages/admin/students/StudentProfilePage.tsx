@@ -543,7 +543,7 @@ export default function StudentProfilePage() {
 												</span>
 												<div className="min-w-0 flex-1">
 													<Link
-														to="/admin/courses/$id"
+														to="/admin/subjects/$id"
 														params={{ id: course.id }}
 														className="block truncate text-sm text-foreground hover:text-primary"
 													>

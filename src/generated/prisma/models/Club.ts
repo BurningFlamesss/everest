@@ -34,6 +34,7 @@ export type ClubMinAggregateOutputType = {
   meetingSchedule: string | null
   coverImage: string | null
   isActive: boolean | null
+  joinPolicy: $Enums.ClubJoinPolicy | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,6 +49,7 @@ export type ClubMaxAggregateOutputType = {
   meetingSchedule: string | null
   coverImage: string | null
   isActive: boolean | null
+  joinPolicy: $Enums.ClubJoinPolicy | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +64,7 @@ export type ClubCountAggregateOutputType = {
   meetingSchedule: number
   coverImage: number
   isActive: number
+  joinPolicy: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -78,6 +81,7 @@ export type ClubMinAggregateInputType = {
   meetingSchedule?: true
   coverImage?: true
   isActive?: true
+  joinPolicy?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -92,6 +96,7 @@ export type ClubMaxAggregateInputType = {
   meetingSchedule?: true
   coverImage?: true
   isActive?: true
+  joinPolicy?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -106,6 +111,7 @@ export type ClubCountAggregateInputType = {
   meetingSchedule?: true
   coverImage?: true
   isActive?: true
+  joinPolicy?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -193,6 +199,7 @@ export type ClubGroupByOutputType = {
   meetingSchedule: string | null
   coverImage: string | null
   isActive: boolean
+  joinPolicy: $Enums.ClubJoinPolicy
   createdAt: Date
   updatedAt: Date
   _count: ClubCountAggregateOutputType | null
@@ -228,12 +235,14 @@ export type ClubWhereInput = {
   meetingSchedule?: Prisma.StringNullableFilter<"Club"> | string | null
   coverImage?: Prisma.StringNullableFilter<"Club"> | string | null
   isActive?: Prisma.BoolFilter<"Club"> | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFilter<"Club"> | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFilter<"Club"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Club"> | Date | string
   attachments?: Prisma.AttachmentListRelationFilter
   roles?: Prisma.ClubRoleListRelationFilter
   members?: Prisma.ClubMemberListRelationFilter
   posts?: Prisma.PostListRelationFilter
+  joinRequests?: Prisma.ClubJoinRequestListRelationFilter
 }
 
 export type ClubOrderByWithRelationInput = {
@@ -246,12 +255,14 @@ export type ClubOrderByWithRelationInput = {
   meetingSchedule?: Prisma.SortOrderInput | Prisma.SortOrder
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  joinPolicy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   attachments?: Prisma.AttachmentOrderByRelationAggregateInput
   roles?: Prisma.ClubRoleOrderByRelationAggregateInput
   members?: Prisma.ClubMemberOrderByRelationAggregateInput
   posts?: Prisma.PostOrderByRelationAggregateInput
+  joinRequests?: Prisma.ClubJoinRequestOrderByRelationAggregateInput
 }
 
 export type ClubWhereUniqueInput = Prisma.AtLeast<{
@@ -267,12 +278,14 @@ export type ClubWhereUniqueInput = Prisma.AtLeast<{
   meetingSchedule?: Prisma.StringNullableFilter<"Club"> | string | null
   coverImage?: Prisma.StringNullableFilter<"Club"> | string | null
   isActive?: Prisma.BoolFilter<"Club"> | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFilter<"Club"> | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFilter<"Club"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Club"> | Date | string
   attachments?: Prisma.AttachmentListRelationFilter
   roles?: Prisma.ClubRoleListRelationFilter
   members?: Prisma.ClubMemberListRelationFilter
   posts?: Prisma.PostListRelationFilter
+  joinRequests?: Prisma.ClubJoinRequestListRelationFilter
 }, "id" | "slug">
 
 export type ClubOrderByWithAggregationInput = {
@@ -285,6 +298,7 @@ export type ClubOrderByWithAggregationInput = {
   meetingSchedule?: Prisma.SortOrderInput | Prisma.SortOrder
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  joinPolicy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClubCountOrderByAggregateInput
@@ -305,6 +319,7 @@ export type ClubScalarWhereWithAggregatesInput = {
   meetingSchedule?: Prisma.StringNullableWithAggregatesFilter<"Club"> | string | null
   coverImage?: Prisma.StringNullableWithAggregatesFilter<"Club"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"Club"> | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyWithAggregatesFilter<"Club"> | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Club"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Club"> | Date | string
 }
@@ -319,12 +334,14 @@ export type ClubCreateInput = {
   meetingSchedule?: string | null
   coverImage?: string | null
   isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
   createdAt?: Date | string
   updatedAt?: Date | string
   attachments?: Prisma.AttachmentCreateNestedManyWithoutClubInput
   roles?: Prisma.ClubRoleCreateNestedManyWithoutClubInput
   members?: Prisma.ClubMemberCreateNestedManyWithoutClubInput
   posts?: Prisma.PostCreateNestedManyWithoutClubInput
+  joinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutClubInput
 }
 
 export type ClubUncheckedCreateInput = {
@@ -337,12 +354,14 @@ export type ClubUncheckedCreateInput = {
   meetingSchedule?: string | null
   coverImage?: string | null
   isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
   createdAt?: Date | string
   updatedAt?: Date | string
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutClubInput
   roles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutClubInput
   members?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutClubInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutClubInput
+  joinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutClubInput
 }
 
 export type ClubUpdateInput = {
@@ -355,12 +374,14 @@ export type ClubUpdateInput = {
   meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attachments?: Prisma.AttachmentUpdateManyWithoutClubNestedInput
   roles?: Prisma.ClubRoleUpdateManyWithoutClubNestedInput
   members?: Prisma.ClubMemberUpdateManyWithoutClubNestedInput
   posts?: Prisma.PostUpdateManyWithoutClubNestedInput
+  joinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutClubNestedInput
 }
 
 export type ClubUncheckedUpdateInput = {
@@ -373,12 +394,14 @@ export type ClubUncheckedUpdateInput = {
   meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutClubNestedInput
   roles?: Prisma.ClubRoleUncheckedUpdateManyWithoutClubNestedInput
   members?: Prisma.ClubMemberUncheckedUpdateManyWithoutClubNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutClubNestedInput
+  joinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutClubNestedInput
 }
 
 export type ClubCreateManyInput = {
@@ -391,6 +414,7 @@ export type ClubCreateManyInput = {
   meetingSchedule?: string | null
   coverImage?: string | null
   isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -405,6 +429,7 @@ export type ClubUpdateManyMutationInput = {
   meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -419,6 +444,7 @@ export type ClubUncheckedUpdateManyInput = {
   meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -433,6 +459,7 @@ export type ClubCountOrderByAggregateInput = {
   meetingSchedule?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  joinPolicy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -447,6 +474,7 @@ export type ClubMaxOrderByAggregateInput = {
   meetingSchedule?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  joinPolicy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -461,6 +489,7 @@ export type ClubMinOrderByAggregateInput = {
   meetingSchedule?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  joinPolicy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -473,6 +502,10 @@ export type ClubScalarRelationFilter = {
 export type ClubNullableScalarRelationFilter = {
   is?: Prisma.ClubWhereInput | null
   isNot?: Prisma.ClubWhereInput | null
+}
+
+export type EnumClubJoinPolicyFieldUpdateOperationsInput = {
+  set?: $Enums.ClubJoinPolicy
 }
 
 export type ClubCreateNestedOneWithoutRolesInput = {
@@ -501,6 +534,20 @@ export type ClubUpdateOneRequiredWithoutMembersNestedInput = {
   upsert?: Prisma.ClubUpsertWithoutMembersInput
   connect?: Prisma.ClubWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClubUpdateToOneWithWhereWithoutMembersInput, Prisma.ClubUpdateWithoutMembersInput>, Prisma.ClubUncheckedUpdateWithoutMembersInput>
+}
+
+export type ClubCreateNestedOneWithoutJoinRequestsInput = {
+  create?: Prisma.XOR<Prisma.ClubCreateWithoutJoinRequestsInput, Prisma.ClubUncheckedCreateWithoutJoinRequestsInput>
+  connectOrCreate?: Prisma.ClubCreateOrConnectWithoutJoinRequestsInput
+  connect?: Prisma.ClubWhereUniqueInput
+}
+
+export type ClubUpdateOneRequiredWithoutJoinRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClubCreateWithoutJoinRequestsInput, Prisma.ClubUncheckedCreateWithoutJoinRequestsInput>
+  connectOrCreate?: Prisma.ClubCreateOrConnectWithoutJoinRequestsInput
+  upsert?: Prisma.ClubUpsertWithoutJoinRequestsInput
+  connect?: Prisma.ClubWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClubUpdateToOneWithWhereWithoutJoinRequestsInput, Prisma.ClubUpdateWithoutJoinRequestsInput>, Prisma.ClubUncheckedUpdateWithoutJoinRequestsInput>
 }
 
 export type ClubCreateNestedOneWithoutPostsInput = {
@@ -543,11 +590,13 @@ export type ClubCreateWithoutRolesInput = {
   meetingSchedule?: string | null
   coverImage?: string | null
   isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
   createdAt?: Date | string
   updatedAt?: Date | string
   attachments?: Prisma.AttachmentCreateNestedManyWithoutClubInput
   members?: Prisma.ClubMemberCreateNestedManyWithoutClubInput
   posts?: Prisma.PostCreateNestedManyWithoutClubInput
+  joinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutClubInput
 }
 
 export type ClubUncheckedCreateWithoutRolesInput = {
@@ -560,11 +609,13 @@ export type ClubUncheckedCreateWithoutRolesInput = {
   meetingSchedule?: string | null
   coverImage?: string | null
   isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
   createdAt?: Date | string
   updatedAt?: Date | string
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutClubInput
   members?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutClubInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutClubInput
+  joinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutClubInput
 }
 
 export type ClubCreateOrConnectWithoutRolesInput = {
@@ -593,11 +644,13 @@ export type ClubUpdateWithoutRolesInput = {
   meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attachments?: Prisma.AttachmentUpdateManyWithoutClubNestedInput
   members?: Prisma.ClubMemberUpdateManyWithoutClubNestedInput
   posts?: Prisma.PostUpdateManyWithoutClubNestedInput
+  joinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutClubNestedInput
 }
 
 export type ClubUncheckedUpdateWithoutRolesInput = {
@@ -610,11 +663,13 @@ export type ClubUncheckedUpdateWithoutRolesInput = {
   meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutClubNestedInput
   members?: Prisma.ClubMemberUncheckedUpdateManyWithoutClubNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutClubNestedInput
+  joinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutClubNestedInput
 }
 
 export type ClubCreateWithoutMembersInput = {
@@ -627,11 +682,13 @@ export type ClubCreateWithoutMembersInput = {
   meetingSchedule?: string | null
   coverImage?: string | null
   isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
   createdAt?: Date | string
   updatedAt?: Date | string
   attachments?: Prisma.AttachmentCreateNestedManyWithoutClubInput
   roles?: Prisma.ClubRoleCreateNestedManyWithoutClubInput
   posts?: Prisma.PostCreateNestedManyWithoutClubInput
+  joinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutClubInput
 }
 
 export type ClubUncheckedCreateWithoutMembersInput = {
@@ -644,11 +701,13 @@ export type ClubUncheckedCreateWithoutMembersInput = {
   meetingSchedule?: string | null
   coverImage?: string | null
   isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
   createdAt?: Date | string
   updatedAt?: Date | string
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutClubInput
   roles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutClubInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutClubInput
+  joinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutClubInput
 }
 
 export type ClubCreateOrConnectWithoutMembersInput = {
@@ -677,11 +736,13 @@ export type ClubUpdateWithoutMembersInput = {
   meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attachments?: Prisma.AttachmentUpdateManyWithoutClubNestedInput
   roles?: Prisma.ClubRoleUpdateManyWithoutClubNestedInput
   posts?: Prisma.PostUpdateManyWithoutClubNestedInput
+  joinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutClubNestedInput
 }
 
 export type ClubUncheckedUpdateWithoutMembersInput = {
@@ -694,10 +755,104 @@ export type ClubUncheckedUpdateWithoutMembersInput = {
   meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutClubNestedInput
   roles?: Prisma.ClubRoleUncheckedUpdateManyWithoutClubNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutClubNestedInput
+  joinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutClubNestedInput
+}
+
+export type ClubCreateWithoutJoinRequestsInput = {
+  id?: string
+  organizationId?: string | null
+  branchId?: string | null
+  name: string
+  slug: string
+  description?: string | null
+  meetingSchedule?: string | null
+  coverImage?: string | null
+  isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutClubInput
+  roles?: Prisma.ClubRoleCreateNestedManyWithoutClubInput
+  members?: Prisma.ClubMemberCreateNestedManyWithoutClubInput
+  posts?: Prisma.PostCreateNestedManyWithoutClubInput
+}
+
+export type ClubUncheckedCreateWithoutJoinRequestsInput = {
+  id?: string
+  organizationId?: string | null
+  branchId?: string | null
+  name: string
+  slug: string
+  description?: string | null
+  meetingSchedule?: string | null
+  coverImage?: string | null
+  isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutClubInput
+  roles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutClubInput
+  members?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutClubInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutClubInput
+}
+
+export type ClubCreateOrConnectWithoutJoinRequestsInput = {
+  where: Prisma.ClubWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClubCreateWithoutJoinRequestsInput, Prisma.ClubUncheckedCreateWithoutJoinRequestsInput>
+}
+
+export type ClubUpsertWithoutJoinRequestsInput = {
+  update: Prisma.XOR<Prisma.ClubUpdateWithoutJoinRequestsInput, Prisma.ClubUncheckedUpdateWithoutJoinRequestsInput>
+  create: Prisma.XOR<Prisma.ClubCreateWithoutJoinRequestsInput, Prisma.ClubUncheckedCreateWithoutJoinRequestsInput>
+  where?: Prisma.ClubWhereInput
+}
+
+export type ClubUpdateToOneWithWhereWithoutJoinRequestsInput = {
+  where?: Prisma.ClubWhereInput
+  data: Prisma.XOR<Prisma.ClubUpdateWithoutJoinRequestsInput, Prisma.ClubUncheckedUpdateWithoutJoinRequestsInput>
+}
+
+export type ClubUpdateWithoutJoinRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attachments?: Prisma.AttachmentUpdateManyWithoutClubNestedInput
+  roles?: Prisma.ClubRoleUpdateManyWithoutClubNestedInput
+  members?: Prisma.ClubMemberUpdateManyWithoutClubNestedInput
+  posts?: Prisma.PostUpdateManyWithoutClubNestedInput
+}
+
+export type ClubUncheckedUpdateWithoutJoinRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutClubNestedInput
+  roles?: Prisma.ClubRoleUncheckedUpdateManyWithoutClubNestedInput
+  members?: Prisma.ClubMemberUncheckedUpdateManyWithoutClubNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutClubNestedInput
 }
 
@@ -711,11 +866,13 @@ export type ClubCreateWithoutPostsInput = {
   meetingSchedule?: string | null
   coverImage?: string | null
   isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
   createdAt?: Date | string
   updatedAt?: Date | string
   attachments?: Prisma.AttachmentCreateNestedManyWithoutClubInput
   roles?: Prisma.ClubRoleCreateNestedManyWithoutClubInput
   members?: Prisma.ClubMemberCreateNestedManyWithoutClubInput
+  joinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutClubInput
 }
 
 export type ClubUncheckedCreateWithoutPostsInput = {
@@ -728,11 +885,13 @@ export type ClubUncheckedCreateWithoutPostsInput = {
   meetingSchedule?: string | null
   coverImage?: string | null
   isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
   createdAt?: Date | string
   updatedAt?: Date | string
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutClubInput
   roles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutClubInput
   members?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutClubInput
+  joinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutClubInput
 }
 
 export type ClubCreateOrConnectWithoutPostsInput = {
@@ -761,11 +920,13 @@ export type ClubUpdateWithoutPostsInput = {
   meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attachments?: Prisma.AttachmentUpdateManyWithoutClubNestedInput
   roles?: Prisma.ClubRoleUpdateManyWithoutClubNestedInput
   members?: Prisma.ClubMemberUpdateManyWithoutClubNestedInput
+  joinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutClubNestedInput
 }
 
 export type ClubUncheckedUpdateWithoutPostsInput = {
@@ -778,11 +939,13 @@ export type ClubUncheckedUpdateWithoutPostsInput = {
   meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutClubNestedInput
   roles?: Prisma.ClubRoleUncheckedUpdateManyWithoutClubNestedInput
   members?: Prisma.ClubMemberUncheckedUpdateManyWithoutClubNestedInput
+  joinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutClubNestedInput
 }
 
 export type ClubCreateWithoutAttachmentsInput = {
@@ -795,11 +958,13 @@ export type ClubCreateWithoutAttachmentsInput = {
   meetingSchedule?: string | null
   coverImage?: string | null
   isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
   createdAt?: Date | string
   updatedAt?: Date | string
   roles?: Prisma.ClubRoleCreateNestedManyWithoutClubInput
   members?: Prisma.ClubMemberCreateNestedManyWithoutClubInput
   posts?: Prisma.PostCreateNestedManyWithoutClubInput
+  joinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutClubInput
 }
 
 export type ClubUncheckedCreateWithoutAttachmentsInput = {
@@ -812,11 +977,13 @@ export type ClubUncheckedCreateWithoutAttachmentsInput = {
   meetingSchedule?: string | null
   coverImage?: string | null
   isActive?: boolean
+  joinPolicy?: $Enums.ClubJoinPolicy
   createdAt?: Date | string
   updatedAt?: Date | string
   roles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutClubInput
   members?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutClubInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutClubInput
+  joinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutClubInput
 }
 
 export type ClubCreateOrConnectWithoutAttachmentsInput = {
@@ -845,11 +1012,13 @@ export type ClubUpdateWithoutAttachmentsInput = {
   meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roles?: Prisma.ClubRoleUpdateManyWithoutClubNestedInput
   members?: Prisma.ClubMemberUpdateManyWithoutClubNestedInput
   posts?: Prisma.PostUpdateManyWithoutClubNestedInput
+  joinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutClubNestedInput
 }
 
 export type ClubUncheckedUpdateWithoutAttachmentsInput = {
@@ -862,11 +1031,13 @@ export type ClubUncheckedUpdateWithoutAttachmentsInput = {
   meetingSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinPolicy?: Prisma.EnumClubJoinPolicyFieldUpdateOperationsInput | $Enums.ClubJoinPolicy
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roles?: Prisma.ClubRoleUncheckedUpdateManyWithoutClubNestedInput
   members?: Prisma.ClubMemberUncheckedUpdateManyWithoutClubNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutClubNestedInput
+  joinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutClubNestedInput
 }
 
 
@@ -879,6 +1050,7 @@ export type ClubCountOutputType = {
   roles: number
   members: number
   posts: number
+  joinRequests: number
 }
 
 export type ClubCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -886,6 +1058,7 @@ export type ClubCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   roles?: boolean | ClubCountOutputTypeCountRolesArgs
   members?: boolean | ClubCountOutputTypeCountMembersArgs
   posts?: boolean | ClubCountOutputTypeCountPostsArgs
+  joinRequests?: boolean | ClubCountOutputTypeCountJoinRequestsArgs
 }
 
 /**
@@ -926,6 +1099,13 @@ export type ClubCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types.Exte
   where?: Prisma.PostWhereInput
 }
 
+/**
+ * ClubCountOutputType without action
+ */
+export type ClubCountOutputTypeCountJoinRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClubJoinRequestWhereInput
+}
+
 
 export type ClubSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -937,12 +1117,14 @@ export type ClubSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   meetingSchedule?: boolean
   coverImage?: boolean
   isActive?: boolean
+  joinPolicy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   attachments?: boolean | Prisma.Club$attachmentsArgs<ExtArgs>
   roles?: boolean | Prisma.Club$rolesArgs<ExtArgs>
   members?: boolean | Prisma.Club$membersArgs<ExtArgs>
   posts?: boolean | Prisma.Club$postsArgs<ExtArgs>
+  joinRequests?: boolean | Prisma.Club$joinRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.ClubCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["club"]>
 
@@ -956,6 +1138,7 @@ export type ClubSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   meetingSchedule?: boolean
   coverImage?: boolean
   isActive?: boolean
+  joinPolicy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["club"]>
@@ -970,6 +1153,7 @@ export type ClubSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   meetingSchedule?: boolean
   coverImage?: boolean
   isActive?: boolean
+  joinPolicy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["club"]>
@@ -984,16 +1168,18 @@ export type ClubSelectScalar = {
   meetingSchedule?: boolean
   coverImage?: boolean
   isActive?: boolean
+  joinPolicy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClubOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "branchId" | "name" | "slug" | "description" | "meetingSchedule" | "coverImage" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["club"]>
+export type ClubOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "branchId" | "name" | "slug" | "description" | "meetingSchedule" | "coverImage" | "isActive" | "joinPolicy" | "createdAt" | "updatedAt", ExtArgs["result"]["club"]>
 export type ClubInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   attachments?: boolean | Prisma.Club$attachmentsArgs<ExtArgs>
   roles?: boolean | Prisma.Club$rolesArgs<ExtArgs>
   members?: boolean | Prisma.Club$membersArgs<ExtArgs>
   posts?: boolean | Prisma.Club$postsArgs<ExtArgs>
+  joinRequests?: boolean | Prisma.Club$joinRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.ClubCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClubIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1006,6 +1192,7 @@ export type $ClubPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     roles: Prisma.$ClubRolePayload<ExtArgs>[]
     members: Prisma.$ClubMemberPayload<ExtArgs>[]
     posts: Prisma.$PostPayload<ExtArgs>[]
+    joinRequests: Prisma.$ClubJoinRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1017,6 +1204,7 @@ export type $ClubPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     meetingSchedule: string | null
     coverImage: string | null
     isActive: boolean
+    joinPolicy: $Enums.ClubJoinPolicy
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["club"]>
@@ -1417,6 +1605,7 @@ export interface Prisma__ClubClient<T, Null = never, ExtArgs extends runtime.Typ
   roles<T extends Prisma.Club$rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Club$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClubRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   members<T extends Prisma.Club$membersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Club$membersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClubMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   posts<T extends Prisma.Club$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Club$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  joinRequests<T extends Prisma.Club$joinRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Club$joinRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClubJoinRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1455,6 +1644,7 @@ export interface ClubFieldRefs {
   readonly meetingSchedule: Prisma.FieldRef<"Club", 'String'>
   readonly coverImage: Prisma.FieldRef<"Club", 'String'>
   readonly isActive: Prisma.FieldRef<"Club", 'Boolean'>
+  readonly joinPolicy: Prisma.FieldRef<"Club", 'ClubJoinPolicy'>
   readonly createdAt: Prisma.FieldRef<"Club", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Club", 'DateTime'>
 }
@@ -1943,6 +2133,30 @@ export type Club$postsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
+}
+
+/**
+ * Club.joinRequests
+ */
+export type Club$joinRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClubJoinRequest
+   */
+  select?: Prisma.ClubJoinRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ClubJoinRequest
+   */
+  omit?: Prisma.ClubJoinRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClubJoinRequestInclude<ExtArgs> | null
+  where?: Prisma.ClubJoinRequestWhereInput
+  orderBy?: Prisma.ClubJoinRequestOrderByWithRelationInput | Prisma.ClubJoinRequestOrderByWithRelationInput[]
+  cursor?: Prisma.ClubJoinRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClubJoinRequestScalarFieldEnum | Prisma.ClubJoinRequestScalarFieldEnum[]
 }
 
 /**

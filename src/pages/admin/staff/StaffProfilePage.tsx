@@ -272,7 +272,7 @@ export default function StaffProfilePage() {
 													className="flex items-center gap-3 px-2 py-2.5"
 												>
 													<Link
-														to="/admin/courses/$id"
+														to="/admin/subjects/$id"
 														params={{ id: course.id }}
 														className="text-sm text-foreground hover:text-primary"
 													>

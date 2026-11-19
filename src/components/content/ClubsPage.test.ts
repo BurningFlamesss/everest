@@ -29,6 +29,17 @@ const clubServer = vi.hoisted(() => ({
 }));
 
 vi.mock("@tanstack/react-router", () => ({
+	Link: ({
+		children,
+		to,
+		params: _params,
+		...props
+	}: {
+		children?: React.ReactNode;
+		to?: string;
+		params?: Record<string, string>;
+		[key: string]: unknown;
+	}) => React.createElement("a", { href: to, ...props }, children),
 	createFileRoute: () => (options: { component: React.ComponentType }) => {
 		route.component = options.component;
 		return { useLoaderData: route.useLoaderData };
@@ -44,6 +55,7 @@ vi.mock("#/packages/content/server.ts", () => ({
 vi.mock("#/packages/clubs/server.ts", () => ({
 	getAllMyClubAccessFn: clubServer.getAllMyClubAccessFn,
 	getClubBoardFn: clubServer.getClubBoardFn,
+	getClubPostsFn: clubServer.getClubBoardFn,
 	createClubPostAction: clubServer.createClubPostAction,
 	updateClubPostAction: clubServer.updateClubPostAction,
 	deleteClubPostAction: clubServer.deleteClubPostAction,
@@ -192,7 +204,8 @@ describe("ClubsPage", () => {
 		expect(screen.getByText(club.description)).toBeTruthy();
 		expect(screen.getByText(club.meetingSchedule)).toBeTruthy();
 		expect(screen.getByRole("heading", { name: "Attachments" })).toBeTruthy();
-		expect(screen.getAllByRole("link")).toHaveLength(2);
+		// One card link plus the two attachment links.
+		expect(screen.getAllByRole("link")).toHaveLength(3);
 
 		const links = [
 			screen.getByRole("link", { name: /^Club handbook\s*4 KB$/ }),
@@ -242,7 +255,7 @@ describe("ClubsPage", () => {
 		expect(screen.getByRole("heading", { name: club.name })).toBeTruthy();
 		expect(screen.getByText(club.description)).toBeTruthy();
 		expect(screen.queryByRole("heading", { name: "Attachments" })).toBeNull();
-		expect(screen.queryByRole("link")).toBeNull();
+		expect(screen.getByTestId("club-card-link")).toBeTruthy();
 		expect(
 			screen.queryByText("Club information will be published soon."),
 		).toBeNull();

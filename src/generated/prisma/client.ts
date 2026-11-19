@@ -240,6 +240,11 @@ export type ClubRole = Prisma.ClubRoleModel
  */
 export type ClubMember = Prisma.ClubMemberModel
 /**
+ * Model ClubJoinRequest
+ * * A student's pending or reviewed request to join a club.
+ */
+export type ClubJoinRequest = Prisma.ClubJoinRequestModel
+/**
  * Model Post
  * * A post published inside a club feed.
  */

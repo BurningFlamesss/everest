@@ -12,10 +12,7 @@ import { str } from "#/components/cms/block-fields";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import { authClient } from "#/packages/auth/auth-client.ts";
 import { Button } from "#/templates/modern/components/Button.tsx";
-import {
-	ImageReveal,
-	SectionLabel,
-} from "#/templates/modern/components/Editorial.tsx";
+import { ImageReveal } from "#/templates/modern/components/Editorial.tsx";
 import { Input } from "#/templates/modern/components/Input.tsx";
 import { Label } from "#/templates/modern/components/Label.tsx";
 import type { BlockType, ContentBlock } from "#/types";
@@ -32,9 +29,6 @@ function AuthVisual({ fields }: { fields: Record<string, unknown> }) {
 				testId="login-visual-image"
 			/>
 			<div className="auth-visual__overlay">
-				<SectionLabel number="04" inverse>
-					{str(fields, "eyebrow", "Everest entrance")}
-				</SectionLabel>
 				<p>{str(fields, "headline", "The digital entrance to the school.")}</p>
 				<span>
 					{str(fields, "subheadline", "One community / connected responsibly")}
@@ -53,9 +47,6 @@ function AuthIntro({
 }) {
 	return (
 		<>
-			<span className="auth-kicker">
-				{str(fields, "kicker", "SCHOOL MANAGEMENT SYSTEM")}
-			</span>
 			<h1 id="login-title" className="t-page-title text-foreground">
 				{str(fields, "title", "Welcome back.")}
 			</h1>
@@ -79,7 +70,6 @@ function LoginForm({ fields }: { fields: Record<string, unknown> }) {
 	const [status, setStatus] = useState<
 		"idle" | "loading" | "success" | "error"
 	>("idle");
-	const [recoveryOpen, setRecoveryOpen] = useState(false);
 
 	const update = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
@@ -181,14 +171,13 @@ function LoginForm({ fields }: { fields: Record<string, unknown> }) {
 					<Label htmlFor="login-password" style={{ color: "var(--c-black)" }}>
 						{str(fields, "passwordLabel", "Password")}
 					</Label>
-					<button
-						type="button"
-						onClick={() => setRecoveryOpen((value) => !value)}
-						data-testid="forgot-password-button"
+					<Link
+						to="/forgot-password"
+						data-testid="forgot-password-link"
 						style={{ color: "var(--c-yellow)", fontWeight: 500 }}
 					>
 						{str(fields, "forgotLabel", "Forgot password?")}
-					</button>
+					</Link>
 				</div>
 				<div className="password-field">
 					<Input
@@ -228,17 +217,6 @@ function LoginForm({ fields }: { fields: Record<string, unknown> }) {
 					</p>
 				) : null}
 			</div>
-
-			{recoveryOpen ? (
-				<div
-					className="auth-note"
-					role="status"
-					data-testid="password-recovery-note"
-				>
-					Password recovery requires the connected Everest service. Contact the
-					school office for account assistance.
-				</div>
-			) : null}
 
 			<Button
 				type="submit"

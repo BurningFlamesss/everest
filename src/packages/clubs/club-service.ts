@@ -322,6 +322,155 @@ export async function listClubPosts(clubId: string) {
 
 export class ClubAccessError extends Error {}
 
+/* ------------------------------------------------------------------ */
+/* Joining                                                             */
+/* ------------------------------------------------------------------ */
+
+export interface ClubJoinState {
+	/** Whether the signed-in account has a Student record (only students join). */
+	isStudent: boolean;
+	isMember: boolean;
+	requestStatus: "PENDING" | "APPROVED" | "DECLINED" | null;
+}
+
+export async function getClubJoinState(
+	clubId: string,
+	userId: string,
+): Promise<ClubJoinState> {
+	const student = await prisma.student.findUnique({
+		where: { userId },
+		select: { id: true },
+	});
+
+	if (!student) {
+		return { isStudent: false, isMember: false, requestStatus: null };
+	}
+
+	const [member, request] = await Promise.all([
+		prisma.clubMember.findUnique({
+			where: { clubId_studentId: { clubId, studentId: student.id } },
+			select: { id: true },
+		}),
+		prisma.clubJoinRequest.findUnique({
+			where: { clubId_studentId: { clubId, studentId: student.id } },
+			select: { status: true },
+		}),
+	]);
+
+	return {
+		isStudent: true,
+		isMember: Boolean(member),
+		requestStatus: request?.status ?? null,
+	};
+}
+
+/**
+ * Join (OPEN) or request to join (REQUEST) a club. CLOSED clubs refuse.
+ * Returns whether the viewer is now a member or has a pending request.
+ */
+export async function joinClub(
+	clubId: string,
+	userId: string,
+): Promise<{ status: "member" | "pending" }> {
+	const [student, club] = await Promise.all([
+		prisma.student.findUnique({
+			where: { userId },
+			select: { id: true },
+		}),
+		prisma.club.findUnique({
+			where: { id: clubId },
+			select: { joinPolicy: true, isActive: true },
+		}),
+	]);
+
+	if (!club || !club.isActive) throw new ClubAccessError("Club not found");
+	if (!student) {
+		throw new ClubAccessError(
+			"Only students can join clubs. Ask a club officer to add your staff role.",
+		);
+	}
+
+	const existing = await prisma.clubMember.findUnique({
+		where: { clubId_studentId: { clubId, studentId: student.id } },
+		select: { id: true },
+	});
+	if (existing) return { status: "member" };
+
+	if (club.joinPolicy === "CLOSED") {
+		throw new ClubAccessError("This club is not accepting new members.");
+	}
+
+	if (club.joinPolicy === "OPEN") {
+		await prisma.clubMember.create({
+			data: { clubId, studentId: student.id },
+		});
+		return { status: "member" };
+	}
+
+	await prisma.clubJoinRequest.upsert({
+		where: { clubId_studentId: { clubId, studentId: student.id } },
+		create: { clubId, studentId: student.id },
+		update: { status: "PENDING", reviewedAt: null },
+	});
+	return { status: "pending" };
+}
+
+/** Pending requests for club managers, oldest first. */
+export async function listPendingJoinRequests(clubId: string) {
+	return prisma.clubJoinRequest.findMany({
+		where: { clubId, status: "PENDING" },
+		orderBy: { createdAt: "asc" },
+		select: {
+			id: true,
+			createdAt: true,
+			student: {
+				select: {
+					id: true,
+					grade: true,
+					section: true,
+					user: { select: { name: true } },
+				},
+			},
+		},
+	});
+}
+
+/** Approve (creating membership) or decline one join request. */
+export async function decideJoinRequest(requestId: string, approve: boolean) {
+	const request = await prisma.clubJoinRequest.findUnique({
+		where: { id: requestId },
+		select: { clubId: true, studentId: true, status: true },
+	});
+
+	if (!request) throw new ClubAccessError("This request no longer exists.");
+	if (request.status !== "PENDING") {
+		throw new ClubAccessError("This request has already been reviewed.");
+	}
+
+	await prisma.$transaction(async (tx) => {
+		if (approve) {
+			await tx.clubMember.upsert({
+				where: {
+					clubId_studentId: {
+						clubId: request.clubId,
+						studentId: request.studentId,
+					},
+				},
+				create: { clubId: request.clubId, studentId: request.studentId },
+				update: {},
+			});
+		}
+
+		await tx.clubJoinRequest.update({
+			where: { id: requestId },
+			data: {
+				status: approve ? "APPROVED" : "DECLINED",
+				reviewedAt: new Date(),
+			},
+		});
+	});
+}
+
 /** Create a post; enforces `posts.create` for the acting user. */
 export async function createClubPost(
 	clubId: string,

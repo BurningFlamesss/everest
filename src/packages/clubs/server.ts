@@ -5,10 +5,14 @@ import {
 	ClubAccessError,
 	createClubPost,
 	createPostComment,
+	decideJoinRequest,
 	deleteClubPost,
 	EMPTY_ACCESS,
+	getClubJoinState,
+	joinClub,
 	listClubPosts,
 	listClubRoles,
+	listPendingJoinRequests,
 	resolveClubAccess,
 	setClubRoles,
 	updateClubPost,
@@ -47,6 +51,13 @@ function toActionError(error: unknown) {
 export const getClubBoardFn = createServerFn()
 	.validator(z.object({ slug: z.string().min(1) }))
 	.handler(async ({ data }) => {
+		// Roles and member assignments are officer-only data. The public club
+		// page shows the feed and profile, never the board roster.
+		const guard = await requireClubManager(data.slug);
+		if (!guard.ok) {
+			return { success: false as const, error: guard.error };
+		}
+
 		const club = await prisma.club.findUnique({
 			where: { slug: data.slug },
 			select: { id: true, isActive: true },
@@ -103,6 +114,21 @@ export const getClubBoardFn = createServerFn()
 			})),
 			posts,
 		};
+	});
+
+export const getClubPostsFn = createServerFn()
+	.validator(z.object({ slug: z.string().min(1) }))
+	.handler(async ({ data }) => {
+		const club = await prisma.club.findUnique({
+			where: { slug: data.slug },
+			select: { id: true, isActive: true },
+		});
+
+		if (!club || !club.isActive) {
+			return { success: false as const, error: "Club not found" };
+		}
+
+		return { success: true as const, posts: await listClubPosts(club.id) };
 	});
 
 export const getAllMyClubAccessFn = createServerFn().handler(async () => {
@@ -232,6 +258,140 @@ export const getMyClubAccessFn = createServerFn()
 				isMember: access.isMember,
 			},
 		};
+	});
+
+/* ------------------------------------------------------------------ */
+/* Public club detail & joining                                        */
+/* ------------------------------------------------------------------ */
+
+export const getClubDetailFn = createServerFn()
+	.validator(z.object({ slug: z.string().min(1) }))
+	.handler(async ({ data }) => {
+		const club = await prisma.club.findUnique({
+			where: { slug: data.slug },
+			select: {
+				id: true,
+				name: true,
+				slug: true,
+				description: true,
+				meetingSchedule: true,
+				coverImage: true,
+				joinPolicy: true,
+				isActive: true,
+				_count: { select: { members: true } },
+				attachments: {
+					select: {
+						id: true,
+						label: true,
+						fileAsset: {
+							select: {
+								url: true,
+								originalName: true,
+								size: true,
+							},
+						},
+					},
+					orderBy: { createdAt: "asc" },
+				},
+			},
+		});
+
+		if (!club || !club.isActive) {
+			return { success: false as const, error: "Club not found" };
+		}
+
+		const user = await getSessionUser();
+		const [posts, access, joinState] = await Promise.all([
+			listClubPosts(club.id),
+			user?.id
+				? resolveClubAccess(club.id, user.id)
+				: Promise.resolve(EMPTY_ACCESS),
+			user?.id
+				? getClubJoinState(club.id, user.id)
+				: Promise.resolve({
+						isStudent: false,
+						isMember: false,
+						requestStatus: null,
+					}),
+		]);
+
+		return {
+			success: true as const,
+			club,
+			posts,
+			userId: user?.id ?? null,
+			access: {
+				canCreatePosts: access.canCreatePosts,
+				canEditAnyPost: access.canEditAnyPost,
+				canPinPosts: access.canPinPosts,
+				canManageMembers: access.canManageMembers,
+				roleName: access.roleName,
+				isMember: access.isMember,
+			},
+			joinState,
+		};
+	});
+
+export const joinClubAction = createServerFn({ method: "POST" })
+	.validator(z.object({ slug: z.string().min(1) }))
+	.handler(async ({ data }) => {
+		const user = await getSessionUser();
+		if (!user?.id) {
+			return {
+				success: false as const,
+				error: "Please sign in to join a club",
+			};
+		}
+
+		const club = await prisma.club.findUnique({
+			where: { slug: data.slug },
+			select: { id: true },
+		});
+		if (!club) return { success: false as const, error: "Club not found" };
+
+		try {
+			const result = await joinClub(club.id, user.id);
+			return { success: true as const, status: result.status };
+		} catch (error) {
+			return toActionError(error);
+		}
+	});
+
+export const getClubJoinRequestsFn = createServerFn()
+	.validator(z.object({ slug: z.string().min(1) }))
+	.handler(async ({ data }) => {
+		const guard = await requireClubManager(data.slug);
+		if (!guard.ok) return { success: false as const, error: guard.error };
+
+		return {
+			success: true as const,
+			requests: await listPendingJoinRequests(guard.clubId),
+		};
+	});
+
+export const decideClubJoinRequestAction = createServerFn({ method: "POST" })
+	.validator(z.object({ requestId: z.string().min(1), approve: z.boolean() }))
+	.handler(async ({ data }) => {
+		const request = await prisma.clubJoinRequest.findUnique({
+			where: { id: data.requestId },
+			select: { club: { select: { slug: true } } },
+		});
+		if (!request) {
+			return {
+				success: false as const,
+				error: "This request no longer exists.",
+			};
+		}
+
+		const guard = await requireClubManager(request.club.slug);
+		if (!guard.ok) return { success: false as const, error: guard.error };
+
+		try {
+			await decideJoinRequest(data.requestId, data.approve);
+			return { success: true as const };
+		} catch (error) {
+			return toActionError(error);
+		}
 	});
 
 /* ------------------------------------------------------------------ */

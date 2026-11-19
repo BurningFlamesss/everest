@@ -395,6 +395,7 @@ const clubInputSchema = z.object({
 	coverImage: z.string().trim().optional(),
 	attachments: z.array(attachmentSchema).max(10).optional(),
 	isActive: z.boolean().optional(),
+	joinPolicy: z.enum(["OPEN", "REQUEST", "CLOSED"]).optional(),
 });
 
 export const createClubAction = createServerFn()

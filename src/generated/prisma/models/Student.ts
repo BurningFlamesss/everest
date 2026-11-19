@@ -355,6 +355,7 @@ export type StudentWhereInput = {
   marks?: Prisma.MarkListRelationFilter
   clubRoles?: Prisma.ClubRoleListRelationFilter
   clubMemberships?: Prisma.ClubMemberListRelationFilter
+  clubJoinRequests?: Prisma.ClubJoinRequestListRelationFilter
   authoredPosts?: Prisma.PostListRelationFilter
 }
 
@@ -397,6 +398,7 @@ export type StudentOrderByWithRelationInput = {
   marks?: Prisma.MarkOrderByRelationAggregateInput
   clubRoles?: Prisma.ClubRoleOrderByRelationAggregateInput
   clubMemberships?: Prisma.ClubMemberOrderByRelationAggregateInput
+  clubJoinRequests?: Prisma.ClubJoinRequestOrderByRelationAggregateInput
   authoredPosts?: Prisma.PostOrderByRelationAggregateInput
 }
 
@@ -442,6 +444,7 @@ export type StudentWhereUniqueInput = Prisma.AtLeast<{
   marks?: Prisma.MarkListRelationFilter
   clubRoles?: Prisma.ClubRoleListRelationFilter
   clubMemberships?: Prisma.ClubMemberListRelationFilter
+  clubJoinRequests?: Prisma.ClubJoinRequestListRelationFilter
   authoredPosts?: Prisma.PostListRelationFilter
 }, "id" | "userId">
 
@@ -542,6 +545,7 @@ export type StudentCreateInput = {
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -580,6 +584,7 @@ export type StudentUncheckedCreateInput = {
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -618,6 +623,7 @@ export type StudentUpdateInput = {
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -656,6 +662,7 @@ export type StudentUncheckedUpdateInput = {
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -1131,6 +1138,20 @@ export type StudentUpdateOneRequiredWithoutClubMembershipsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutClubMembershipsInput, Prisma.StudentUpdateWithoutClubMembershipsInput>, Prisma.StudentUncheckedUpdateWithoutClubMembershipsInput>
 }
 
+export type StudentCreateNestedOneWithoutClubJoinRequestsInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutClubJoinRequestsInput, Prisma.StudentUncheckedCreateWithoutClubJoinRequestsInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutClubJoinRequestsInput
+  connect?: Prisma.StudentWhereUniqueInput
+}
+
+export type StudentUpdateOneRequiredWithoutClubJoinRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutClubJoinRequestsInput, Prisma.StudentUncheckedCreateWithoutClubJoinRequestsInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutClubJoinRequestsInput
+  upsert?: Prisma.StudentUpsertWithoutClubJoinRequestsInput
+  connect?: Prisma.StudentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutClubJoinRequestsInput, Prisma.StudentUpdateWithoutClubJoinRequestsInput>, Prisma.StudentUncheckedUpdateWithoutClubJoinRequestsInput>
+}
+
 export type StudentCreateNestedOneWithoutAuthoredPostsInput = {
   create?: Prisma.XOR<Prisma.StudentCreateWithoutAuthoredPostsInput, Prisma.StudentUncheckedCreateWithoutAuthoredPostsInput>
   connectOrCreate?: Prisma.StudentCreateOrConnectWithoutAuthoredPostsInput
@@ -1209,6 +1230,7 @@ export type StudentCreateWithoutUserInput = {
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -1246,6 +1268,7 @@ export type StudentUncheckedCreateWithoutUserInput = {
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -1299,6 +1322,7 @@ export type StudentUpdateWithoutUserInput = {
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -1336,6 +1360,7 @@ export type StudentUncheckedUpdateWithoutUserInput = {
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -1373,6 +1398,7 @@ export type StudentCreateWithoutOrganizationInput = {
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -1410,6 +1436,7 @@ export type StudentUncheckedCreateWithoutOrganizationInput = {
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -1504,6 +1531,7 @@ export type StudentCreateWithoutBranchInput = {
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -1541,6 +1569,7 @@ export type StudentUncheckedCreateWithoutBranchInput = {
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -1604,6 +1633,7 @@ export type StudentCreateWithoutGuardianStudentsInput = {
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -1641,6 +1671,7 @@ export type StudentUncheckedCreateWithoutGuardianStudentsInput = {
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -1694,6 +1725,7 @@ export type StudentUpdateWithoutGuardianStudentsInput = {
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -1731,6 +1763,7 @@ export type StudentUncheckedUpdateWithoutGuardianStudentsInput = {
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -1768,6 +1801,7 @@ export type StudentCreateWithoutGuardianInvitesInput = {
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -1805,6 +1839,7 @@ export type StudentUncheckedCreateWithoutGuardianInvitesInput = {
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -1858,6 +1893,7 @@ export type StudentUpdateWithoutGuardianInvitesInput = {
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -1895,6 +1931,7 @@ export type StudentUncheckedUpdateWithoutGuardianInvitesInput = {
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -1932,6 +1969,7 @@ export type StudentCreateWithoutClassInput = {
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -1969,6 +2007,7 @@ export type StudentUncheckedCreateWithoutClassInput = {
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -2032,6 +2071,7 @@ export type StudentCreateWithoutAttendanceInput = {
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -2069,6 +2109,7 @@ export type StudentUncheckedCreateWithoutAttendanceInput = {
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -2122,6 +2163,7 @@ export type StudentUpdateWithoutAttendanceInput = {
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -2159,6 +2201,7 @@ export type StudentUncheckedUpdateWithoutAttendanceInput = {
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -2196,6 +2239,7 @@ export type StudentCreateWithoutInvoicesInput = {
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -2233,6 +2277,7 @@ export type StudentUncheckedCreateWithoutInvoicesInput = {
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -2286,6 +2331,7 @@ export type StudentUpdateWithoutInvoicesInput = {
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -2323,6 +2369,7 @@ export type StudentUncheckedUpdateWithoutInvoicesInput = {
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -2360,6 +2407,7 @@ export type StudentCreateWithoutMarksInput = {
   transportAssignments?: Prisma.TransportAssignmentCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -2397,6 +2445,7 @@ export type StudentUncheckedCreateWithoutMarksInput = {
   transportAssignments?: Prisma.TransportAssignmentUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -2450,6 +2499,7 @@ export type StudentUpdateWithoutMarksInput = {
   transportAssignments?: Prisma.TransportAssignmentUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -2487,6 +2537,7 @@ export type StudentUncheckedUpdateWithoutMarksInput = {
   transportAssignments?: Prisma.TransportAssignmentUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -2524,6 +2575,7 @@ export type StudentCreateWithoutClubRolesInput = {
   transportAssignments?: Prisma.TransportAssignmentCreateNestedManyWithoutStudentInput
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -2561,6 +2613,7 @@ export type StudentUncheckedCreateWithoutClubRolesInput = {
   transportAssignments?: Prisma.TransportAssignmentUncheckedCreateNestedManyWithoutStudentInput
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -2619,6 +2672,7 @@ export type StudentCreateWithoutClubMembershipsInput = {
   transportAssignments?: Prisma.TransportAssignmentCreateNestedManyWithoutStudentInput
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -2656,6 +2710,7 @@ export type StudentUncheckedCreateWithoutClubMembershipsInput = {
   transportAssignments?: Prisma.TransportAssignmentUncheckedCreateNestedManyWithoutStudentInput
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -2709,6 +2764,7 @@ export type StudentUpdateWithoutClubMembershipsInput = {
   transportAssignments?: Prisma.TransportAssignmentUpdateManyWithoutStudentNestedInput
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -2746,6 +2802,175 @@ export type StudentUncheckedUpdateWithoutClubMembershipsInput = {
   transportAssignments?: Prisma.TransportAssignmentUncheckedUpdateManyWithoutStudentNestedInput
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
+}
+
+export type StudentCreateWithoutClubJoinRequestsInput = {
+  id?: string
+  admissionNo?: string | null
+  rollNo?: string | null
+  grade?: string | null
+  section?: string | null
+  joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
+  status?: $Enums.StudentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutStudentInput
+  branch: Prisma.BranchCreateNestedOneWithoutStudentsInput
+  organization: Prisma.OrganizationCreateNestedOneWithoutStudentsInput
+  guardianStudents?: Prisma.GuardianStudentCreateNestedManyWithoutStudentInput
+  guardianInvites?: Prisma.GuardianInviteCreateNestedManyWithoutStudentInput
+  class?: Prisma.SchoolClassCreateNestedOneWithoutStudentsInput
+  attendance?: Prisma.AttendanceRecordCreateNestedManyWithoutStudentInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutStudentInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  transportAssignments?: Prisma.TransportAssignmentCreateNestedManyWithoutStudentInput
+  marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
+}
+
+export type StudentUncheckedCreateWithoutClubJoinRequestsInput = {
+  id?: string
+  userId: string
+  branchId: string
+  organizationId: string
+  admissionNo?: string | null
+  rollNo?: string | null
+  grade?: string | null
+  section?: string | null
+  joinedAt?: Date | string | null
+  gender?: string | null
+  dateOfBirth?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  bloodGroup?: string | null
+  nationality?: string | null
+  guardianName?: string | null
+  guardianPhone?: string | null
+  guardianEmail?: string | null
+  guardianRelation?: string | null
+  houseName?: string | null
+  status?: $Enums.StudentStatus
+  classId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  guardianStudents?: Prisma.GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedCreateNestedManyWithoutStudentInput
+  attendance?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutStudentInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutStudentInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  transportAssignments?: Prisma.TransportAssignmentUncheckedCreateNestedManyWithoutStudentInput
+  marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
+}
+
+export type StudentCreateOrConnectWithoutClubJoinRequestsInput = {
+  where: Prisma.StudentWhereUniqueInput
+  create: Prisma.XOR<Prisma.StudentCreateWithoutClubJoinRequestsInput, Prisma.StudentUncheckedCreateWithoutClubJoinRequestsInput>
+}
+
+export type StudentUpsertWithoutClubJoinRequestsInput = {
+  update: Prisma.XOR<Prisma.StudentUpdateWithoutClubJoinRequestsInput, Prisma.StudentUncheckedUpdateWithoutClubJoinRequestsInput>
+  create: Prisma.XOR<Prisma.StudentCreateWithoutClubJoinRequestsInput, Prisma.StudentUncheckedCreateWithoutClubJoinRequestsInput>
+  where?: Prisma.StudentWhereInput
+}
+
+export type StudentUpdateToOneWithWhereWithoutClubJoinRequestsInput = {
+  where?: Prisma.StudentWhereInput
+  data: Prisma.XOR<Prisma.StudentUpdateWithoutClubJoinRequestsInput, Prisma.StudentUncheckedUpdateWithoutClubJoinRequestsInput>
+}
+
+export type StudentUpdateWithoutClubJoinRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  admissionNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rollNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutStudentNestedInput
+  branch?: Prisma.BranchUpdateOneRequiredWithoutStudentsNestedInput
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutStudentsNestedInput
+  guardianStudents?: Prisma.GuardianStudentUpdateManyWithoutStudentNestedInput
+  guardianInvites?: Prisma.GuardianInviteUpdateManyWithoutStudentNestedInput
+  class?: Prisma.SchoolClassUpdateOneWithoutStudentsNestedInput
+  attendance?: Prisma.AttendanceRecordUpdateManyWithoutStudentNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutStudentNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  transportAssignments?: Prisma.TransportAssignmentUpdateManyWithoutStudentNestedInput
+  marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
+}
+
+export type StudentUncheckedUpdateWithoutClubJoinRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  admissionNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rollNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bloodGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guardianRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guardianStudents?: Prisma.GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
+  guardianInvites?: Prisma.GuardianInviteUncheckedUpdateManyWithoutStudentNestedInput
+  attendance?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutStudentNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutStudentNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  transportAssignments?: Prisma.TransportAssignmentUncheckedUpdateManyWithoutStudentNestedInput
+  marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -2784,6 +3009,7 @@ export type StudentCreateWithoutAuthoredPostsInput = {
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutAuthoredPostsInput = {
@@ -2821,6 +3047,7 @@ export type StudentUncheckedCreateWithoutAuthoredPostsInput = {
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutAuthoredPostsInput = {
@@ -2874,6 +3101,7 @@ export type StudentUpdateWithoutAuthoredPostsInput = {
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutAuthoredPostsInput = {
@@ -2911,6 +3139,7 @@ export type StudentUncheckedUpdateWithoutAuthoredPostsInput = {
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentCreateWithoutEnrollmentsInput = {
@@ -2947,6 +3176,7 @@ export type StudentCreateWithoutEnrollmentsInput = {
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -2984,6 +3214,7 @@ export type StudentUncheckedCreateWithoutEnrollmentsInput = {
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -3037,6 +3268,7 @@ export type StudentUpdateWithoutEnrollmentsInput = {
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -3074,6 +3306,7 @@ export type StudentUncheckedUpdateWithoutEnrollmentsInput = {
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -3111,6 +3344,7 @@ export type StudentCreateWithoutTransportAssignmentsInput = {
   marks?: Prisma.MarkCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -3148,6 +3382,7 @@ export type StudentUncheckedCreateWithoutTransportAssignmentsInput = {
   marks?: Prisma.MarkUncheckedCreateNestedManyWithoutStudentInput
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutAssignedStudentsInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutStudentInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedCreateNestedManyWithoutStudentInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorStudentInput
 }
 
@@ -3201,6 +3436,7 @@ export type StudentUpdateWithoutTransportAssignmentsInput = {
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -3238,6 +3474,7 @@ export type StudentUncheckedUpdateWithoutTransportAssignmentsInput = {
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -3302,6 +3539,7 @@ export type StudentUpdateWithoutOrganizationInput = {
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -3339,6 +3577,7 @@ export type StudentUncheckedUpdateWithoutOrganizationInput = {
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -3430,6 +3669,7 @@ export type StudentUpdateWithoutBranchInput = {
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -3467,6 +3707,7 @@ export type StudentUncheckedUpdateWithoutBranchInput = {
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -3558,6 +3799,7 @@ export type StudentUpdateWithoutClassInput = {
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -3595,6 +3837,7 @@ export type StudentUncheckedUpdateWithoutClassInput = {
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutAssignedStudentsNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -3659,6 +3902,7 @@ export type StudentUpdateWithoutClubRolesInput = {
   transportAssignments?: Prisma.TransportAssignmentUpdateManyWithoutStudentNestedInput
   marks?: Prisma.MarkUpdateManyWithoutStudentNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -3696,6 +3940,7 @@ export type StudentUncheckedUpdateWithoutClubRolesInput = {
   transportAssignments?: Prisma.TransportAssignmentUncheckedUpdateManyWithoutStudentNestedInput
   marks?: Prisma.MarkUncheckedUpdateManyWithoutStudentNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutStudentNestedInput
+  clubJoinRequests?: Prisma.ClubJoinRequestUncheckedUpdateManyWithoutStudentNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorStudentNestedInput
 }
 
@@ -3742,6 +3987,7 @@ export type StudentCountOutputType = {
   marks: number
   clubRoles: number
   clubMemberships: number
+  clubJoinRequests: number
   authoredPosts: number
 }
 
@@ -3755,6 +4001,7 @@ export type StudentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   marks?: boolean | StudentCountOutputTypeCountMarksArgs
   clubRoles?: boolean | StudentCountOutputTypeCountClubRolesArgs
   clubMemberships?: boolean | StudentCountOutputTypeCountClubMembershipsArgs
+  clubJoinRequests?: boolean | StudentCountOutputTypeCountClubJoinRequestsArgs
   authoredPosts?: boolean | StudentCountOutputTypeCountAuthoredPostsArgs
 }
 
@@ -3834,6 +4081,13 @@ export type StudentCountOutputTypeCountClubMembershipsArgs<ExtArgs extends runti
 /**
  * StudentCountOutputType without action
  */
+export type StudentCountOutputTypeCountClubJoinRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClubJoinRequestWhereInput
+}
+
+/**
+ * StudentCountOutputType without action
+ */
 export type StudentCountOutputTypeCountAuthoredPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PostWhereInput
 }
@@ -3878,6 +4132,7 @@ export type StudentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   marks?: boolean | Prisma.Student$marksArgs<ExtArgs>
   clubRoles?: boolean | Prisma.Student$clubRolesArgs<ExtArgs>
   clubMemberships?: boolean | Prisma.Student$clubMembershipsArgs<ExtArgs>
+  clubJoinRequests?: boolean | Prisma.Student$clubJoinRequestsArgs<ExtArgs>
   authoredPosts?: boolean | Prisma.Student$authoredPostsArgs<ExtArgs>
   _count?: boolean | Prisma.StudentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["student"]>
@@ -3989,6 +4244,7 @@ export type StudentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   marks?: boolean | Prisma.Student$marksArgs<ExtArgs>
   clubRoles?: boolean | Prisma.Student$clubRolesArgs<ExtArgs>
   clubMemberships?: boolean | Prisma.Student$clubMembershipsArgs<ExtArgs>
+  clubJoinRequests?: boolean | Prisma.Student$clubJoinRequestsArgs<ExtArgs>
   authoredPosts?: boolean | Prisma.Student$authoredPostsArgs<ExtArgs>
   _count?: boolean | Prisma.StudentCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -4021,6 +4277,7 @@ export type $StudentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     marks: Prisma.$MarkPayload<ExtArgs>[]
     clubRoles: Prisma.$ClubRolePayload<ExtArgs>[]
     clubMemberships: Prisma.$ClubMemberPayload<ExtArgs>[]
+    clubJoinRequests: Prisma.$ClubJoinRequestPayload<ExtArgs>[]
     authoredPosts: Prisma.$PostPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -4456,6 +4713,7 @@ export interface Prisma__StudentClient<T, Null = never, ExtArgs extends runtime.
   marks<T extends Prisma.Student$marksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$marksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MarkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   clubRoles<T extends Prisma.Student$clubRolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$clubRolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClubRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   clubMemberships<T extends Prisma.Student$clubMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$clubMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClubMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  clubJoinRequests<T extends Prisma.Student$clubJoinRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$clubJoinRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClubJoinRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   authoredPosts<T extends Prisma.Student$authoredPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$authoredPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -5144,6 +5402,30 @@ export type Student$clubMembershipsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.ClubMemberScalarFieldEnum | Prisma.ClubMemberScalarFieldEnum[]
+}
+
+/**
+ * Student.clubJoinRequests
+ */
+export type Student$clubJoinRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClubJoinRequest
+   */
+  select?: Prisma.ClubJoinRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ClubJoinRequest
+   */
+  omit?: Prisma.ClubJoinRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClubJoinRequestInclude<ExtArgs> | null
+  where?: Prisma.ClubJoinRequestWhereInput
+  orderBy?: Prisma.ClubJoinRequestOrderByWithRelationInput | Prisma.ClubJoinRequestOrderByWithRelationInput[]
+  cursor?: Prisma.ClubJoinRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClubJoinRequestScalarFieldEnum | Prisma.ClubJoinRequestScalarFieldEnum[]
 }
 
 /**

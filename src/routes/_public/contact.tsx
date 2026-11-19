@@ -690,7 +690,7 @@ function RouteComponent() {
 				onSelect={onSelectSection}
 				testId="cms-section-hit-contact-social_links"
 			>
-				<section className="content mt-12">
+				<section className="content my-12">
 					<p className="u-label mb-2 text-muted-foreground">Follow</p>
 					<h2 className="t-h2 text-foreground">Follow the school</h2>
 					{socialItems.length > 0 ? (

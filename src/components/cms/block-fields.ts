@@ -20,7 +20,14 @@ export type FieldKind =
 export interface ItemFieldDef {
 	key: string;
 	label: string;
-	kind: "text" | "textarea" | "image";
+	kind: "text" | "textarea" | "image" | "tags" | "boolean" | "list";
+	placeholder?: string;
+	help?: string;
+	/** list-only */
+	addLabel?: string;
+	itemLabel?: string;
+	itemFields?: ItemFieldDef[];
+	collapsible?: boolean;
 }
 
 export type FieldDef =
@@ -46,6 +53,7 @@ export type FieldDef =
 			itemLabel: string;
 			itemFields: ItemFieldDef[];
 			help?: string;
+			collapsible?: boolean;
 	  };
 
 export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
@@ -140,6 +148,28 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
 		{ key: "eyebrow", label: "Eyebrow", kind: "text" },
 		{ key: "title", label: "Title", kind: "text" },
 		{ key: "body", label: "Body", kind: "textarea" },
+		{ key: "allSpacesLabel", label: "“All spaces” filter label", kind: "text" },
+		{ key: "indexLabel", label: "Facility index heading", kind: "text" },
+		{ key: "galleryEyebrow", label: "Gallery eyebrow", kind: "text" },
+		{ key: "galleryTitle", label: "Gallery heading", kind: "text" },
+		{
+			key: "studentsLoveLabel",
+			label: "Student quote caption",
+			kind: "text",
+		},
+		{
+			key: "visitingNote",
+			label: "Visiting note",
+			kind: "textarea",
+			help: "Address is prepended automatically.",
+		},
+		{ key: "emptyTitle", label: "Empty state title", kind: "text" },
+		{
+			key: "emptyDescription",
+			label: "Empty state description",
+			kind: "textarea",
+		},
+		{ key: "showAllLabel", label: "Empty state button", kind: "text" },
 	],
 	achievements: [
 		{ key: "eyebrow", label: "Eyebrow", kind: "text" },
@@ -194,8 +224,363 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
 		{ key: "body", label: "Body", kind: "textarea" },
 	],
 	academics: [
-		{ key: "title", label: "Section title", kind: "text" },
-		{ key: "body", label: "Body", kind: "textarea" },
+		// Header meta strip
+		{
+			key: "metaProgrammesLabel",
+			label: "Header meta · programmes label",
+			kind: "text",
+		},
+		{
+			key: "metaProgrammesValue",
+			label: "Header meta · programmes value",
+			kind: "text",
+			help: "Leave empty to use the live programme count.",
+		},
+		{
+			key: "metaLevelsLabel",
+			label: "Header meta · levels label",
+			kind: "text",
+		},
+		{
+			key: "metaLevelsValue",
+			label: "Header meta · levels value",
+			kind: "text",
+			help: "Leave empty to use the live level count.",
+		},
+		{
+			key: "metaStreamsLabel",
+			label: "Header meta · streams label",
+			kind: "text",
+		},
+		{
+			key: "metaStreamsValue",
+			label: "Header meta · streams value",
+			kind: "text",
+		},
+		{
+			key: "metaSessionLabel",
+			label: "Header meta · session label",
+			kind: "text",
+		},
+		{
+			key: "metaSessionValue",
+			label: "Header meta · session value",
+			kind: "text",
+		},
+		{
+			key: "prospectusLabel",
+			label: "Full prospectus · button label",
+			kind: "text",
+		},
+		{
+			key: "prospectusMeta",
+			label: "Full prospectus · meta line",
+			kind: "text",
+			help: "Use {count} for the live programme count.",
+		},
+		{ key: "prospectusStamp", label: "Prospectus stamp", kind: "text" },
+
+		// Level rail
+		{ key: "chooseLevelLabel", label: "Level rail label", kind: "text" },
+		{
+			key: "levelAriaLabel",
+			label: "Level switcher accessible label",
+			kind: "text",
+		},
+		{ key: "levelGradesLabel", label: "Level meta: grades", kind: "text" },
+		{ key: "levelBoardLabel", label: "Level meta: board", kind: "text" },
+		{
+			key: "levelProgrammesLabel",
+			label: "Level meta: programmes",
+			kind: "text",
+		},
+		{
+			key: "levelSeatsLabel",
+			label: "Level meta: seats",
+			kind: "text",
+		},
+
+		// Featured programme
+		{
+			key: "featuredEyebrow",
+			label: "Featured programme eyebrow",
+			kind: "text",
+		},
+		{
+			key: "spotlightDurationLabel",
+			label: "Featured programme · duration label",
+			kind: "text",
+		},
+		{
+			key: "spotlightSeatsLabel",
+			label: "Featured programme · seats label",
+			kind: "text",
+		},
+		{
+			key: "spotlightMediumLabel",
+			label: "Featured programme · medium label",
+			kind: "text",
+		},
+		{
+			key: "spotlightProspectusLabel",
+			label: "Featured programme · prospectus button",
+			kind: "text",
+		},
+		{
+			key: "spotlightProspectusMeta",
+			label: "Featured programme · prospectus meta",
+			kind: "text",
+			help: "Use {code} for the programme code.",
+		},
+
+		// Programme index
+		{ key: "title", label: "Programme index title", kind: "text" },
+		{ key: "body", label: "Programme index intro", kind: "textarea" },
+		{
+			key: "programmeIndexEyebrow",
+			label: "Programme index eyebrow",
+			kind: "text",
+		},
+		{ key: "seatsSuffix", label: "Programme row · seats suffix", kind: "text" },
+
+		// Programme detail tabs
+		{ key: "tabOverview", label: "Programme tab · overview", kind: "text" },
+		{ key: "tabSubjects", label: "Programme tab · subjects", kind: "text" },
+		{ key: "tabFees", label: "Programme tab · fees", kind: "text" },
+		{ key: "tabPathways", label: "Programme tab · pathways", kind: "text" },
+
+		// Programme detail copy
+		{
+			key: "eligibilityLabel",
+			label: "Programme detail · eligibility",
+			kind: "text",
+		},
+		{ key: "mediumLabel", label: "Programme detail · medium", kind: "text" },
+		{
+			key: "durationLabel",
+			label: "Programme detail · duration",
+			kind: "text",
+		},
+		{ key: "boardLabel", label: "Programme detail · board", kind: "text" },
+		{
+			key: "distinctiveLabel",
+			label: "Programme detail · distinctive heading",
+			kind: "text",
+		},
+		{
+			key: "programmeProspectusLabel",
+			label: "Programme detail · prospectus button",
+			kind: "text",
+		},
+		{
+			key: "programmeProspectusMeta",
+			label: "Programme detail · prospectus meta",
+			kind: "text",
+			help: "Use {code} for the programme code.",
+		},
+
+		// Subjects table
+		{
+			key: "subjectCodeLabel",
+			label: "Subjects table · code header",
+			kind: "text",
+		},
+		{
+			key: "subjectNameLabel",
+			label: "Subjects table · subject header",
+			kind: "text",
+		},
+		{
+			key: "subjectCreditLabel",
+			label: "Subjects table · credit header",
+			kind: "text",
+		},
+		{
+			key: "subjectTypeLabel",
+			label: "Subjects table · type header",
+			kind: "text",
+		},
+		{
+			key: "totalCreditLabel",
+			label: "Subjects table · total row",
+			kind: "text",
+		},
+
+		// Fees table
+		{
+			key: "feeParticularLabel",
+			label: "Fees table · particular header",
+			kind: "text",
+		},
+		{
+			key: "feeAmountLabel",
+			label: "Fees table · amount header",
+			kind: "text",
+		},
+		{
+			key: "feeFrequencyLabel",
+			label: "Fees table · frequency header",
+			kind: "text",
+		},
+		{
+			key: "annualChargesLabel",
+			label: "Fees · annual total label",
+			kind: "text",
+		},
+		{
+			key: "monthlyTuitionLabel",
+			label: "Fees · monthly total label",
+			kind: "text",
+		},
+		{ key: "feeNote", label: "Fee disclaimer", kind: "textarea" },
+
+		// Pathways
+		{
+			key: "pathwaysEmpty",
+			label: "Pathways fallback copy",
+			kind: "textarea",
+			help: "Shown when a programme has no external career pathways.",
+		},
+		{
+			key: "learningOutcomesLabel",
+			label: "Pathways · learning outcomes heading",
+			kind: "text",
+		},
+
+		// Routine
+		{ key: "routineEyebrow", label: "Routine eyebrow", kind: "text" },
+		{
+			key: "routineTitlePrefix",
+			label: "Routine title prefix",
+			kind: "text",
+			help: "The level name is appended after a middle dot.",
+		},
+		{
+			key: "routineDescription",
+			label: "Routine description",
+			kind: "textarea",
+		},
+		{ key: "routineShiftLabel", label: "Routine · shift label", kind: "text" },
+		{ key: "routineRoomsLabel", label: "Routine · rooms label", kind: "text" },
+		{
+			key: "routineEffectiveFromLabel",
+			label: "Routine · effective-from label",
+			kind: "text",
+		},
+		{
+			key: "routineShowOnlyPrefix",
+			label: "Routine · focus-today prefix",
+			kind: "text",
+		},
+		{
+			key: "routineShowFullWeek",
+			label: "Routine · show full week label",
+			kind: "text",
+		},
+		{
+			key: "routinePdfLabel",
+			label: "Routine · PDF button label",
+			kind: "text",
+		},
+		{
+			key: "routineNowLabel",
+			label: "Routine · live period label",
+			kind: "text",
+		},
+		{
+			key: "routinePeriodPrefix",
+			label: "Routine · live period prefix",
+			kind: "text",
+		},
+		{
+			key: "routineNoPeriodText",
+			label: "Routine · no live period text",
+			kind: "textarea",
+		},
+		{
+			key: "routineHolidayText",
+			label: "Routine · holiday text",
+			kind: "textarea",
+		},
+		{
+			key: "routineDayLabel",
+			label: "Routine · day column header",
+			kind: "text",
+		},
+		{ key: "routineTodayLabel", label: "Routine · today marker", kind: "text" },
+		{
+			key: "routineCaptionSuffix",
+			label: "Routine · table caption suffix",
+			kind: "text",
+		},
+		{ key: "routineFooter", label: "Routine · footer note", kind: "textarea" },
+
+		// Academic level tabs
+		{
+			key: "levels",
+			label: "Academic levels",
+			kind: "list",
+			addLabel: "Add level",
+			itemLabel: "Level",
+			help: "Label, copy and image for each level tab. Leave an image empty to keep the built-in photo.",
+			itemFields: [
+				{ key: "id", label: "Level id (basic, secondary…)", kind: "text" },
+				{ key: "label", label: "Label", kind: "text" },
+				{ key: "short", label: "Short label", kind: "text" },
+				{ key: "grades", label: "Grades", kind: "text" },
+				{ key: "board", label: "Board", kind: "text" },
+				{ key: "tagline", label: "Tagline", kind: "text" },
+				{ key: "description", label: "Description", kind: "textarea" },
+				{ key: "image", label: "Image", kind: "image" },
+			],
+		},
+
+		// Timetables shown on the page
+		{
+			key: "routines",
+			label: "Weekly routines",
+			kind: "list",
+			addLabel: "Add routine",
+			itemLabel: "Routine",
+			collapsible: true,
+			help: "The routine whose key matches the featured programme's routine key is shown on the page.",
+			itemFields: [
+				{ key: "key", label: "Routine key", kind: "text" },
+				{ key: "label", label: "Routine label", kind: "text" },
+				{ key: "shift", label: "Shift", kind: "text" },
+				{ key: "room", label: "Rooms", kind: "text" },
+				{ key: "effectiveFrom", label: "Effective from", kind: "text" },
+				{
+					key: "periods",
+					label: "Periods",
+					kind: "list",
+					addLabel: "Add period",
+					itemLabel: "Period",
+					itemFields: [
+						{ key: "label", label: "Label", kind: "text" },
+						{ key: "start", label: "Start (HH:MM)", kind: "text" },
+						{ key: "end", label: "End (HH:MM)", kind: "text" },
+						{ key: "isBreak", label: "Break period", kind: "boolean" },
+					],
+				},
+				{
+					key: "rows",
+					label: "Days",
+					kind: "list",
+					addLabel: "Add day",
+					itemLabel: "Day",
+					itemFields: [
+						{ key: "day", label: "Day name", kind: "text" },
+						{
+							key: "slots",
+							label: "Subjects (one per period)",
+							kind: "tags",
+							placeholder: "Subject or activity",
+						},
+					],
+				},
+			],
+		},
 	],
 	admissions_info: [
 		{ key: "title", label: "Section title", kind: "text" },
@@ -353,6 +738,23 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
 		{ key: "eyebrow", label: "Eyebrow", kind: "text" },
 		{ key: "title", label: "Title", kind: "text" },
 		{ key: "body", label: "Intro copy", kind: "textarea" },
+		{ key: "filterLabel", label: "Category filter label", kind: "text" },
+		{ key: "contentsLabel", label: "Contents rail heading", kind: "text" },
+		{ key: "galleryEyebrow", label: "Gallery eyebrow", kind: "text" },
+		{ key: "galleryTitle", label: "Gallery heading", kind: "text" },
+		{
+			key: "visitingNote",
+			label: "Visiting note",
+			kind: "textarea",
+			help: "Address is prepended automatically.",
+		},
+		{ key: "emptyTitle", label: "Empty state title", kind: "text" },
+		{
+			key: "emptyDescription",
+			label: "Empty state description",
+			kind: "textarea",
+		},
+		{ key: "showAllLabel", label: "Empty state button", kind: "text" },
 		{
 			key: "chapters",
 			label: "Chapters",
@@ -370,6 +772,16 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
 				{
 					key: "studentsLove",
 					label: "Why students love it",
+					kind: "textarea",
+				},
+				{
+					key: "stats",
+					label: "Stats strip (Label | Value per line)",
+					kind: "textarea",
+				},
+				{
+					key: "gallery",
+					label: "Gallery image URLs (one per line)",
 					kind: "textarea",
 				},
 			],

@@ -43,7 +43,9 @@ import { Textarea } from "#/components/ui/textarea";
 import { pluralize } from "#/lib/format.ts";
 import { CLUB_PERMISSIONS } from "#/packages/clubs/permissions.ts";
 import {
+	decideClubJoinRequestAction,
 	getClubBoardFn,
+	getClubJoinRequestsFn,
 	saveClubMembersAction,
 	saveClubRolesAction,
 } from "#/packages/clubs/server.ts";
@@ -64,6 +66,8 @@ interface ContentAttachment {
 	};
 }
 
+type ClubJoinPolicy = "OPEN" | "REQUEST" | "CLOSED";
+
 interface ClubRow {
 	id: string;
 	slug: string;
@@ -72,7 +76,19 @@ interface ClubRow {
 	meetingSchedule: string | null;
 	coverImage: string | null;
 	isActive: boolean;
+	joinPolicy: ClubJoinPolicy;
 	attachments: Array<ContentAttachment>;
+}
+
+interface JoinRequestRow {
+	id: string;
+	createdAt: Date | string;
+	student: {
+		id: string;
+		grade: string | null;
+		section: string | null;
+		user: { name: string };
+	};
 }
 
 interface AttachmentPayload {
@@ -169,8 +185,12 @@ export default function ClubsPage() {
 	const [boardClub, setBoardClub] = useState<ClubRow | null>(null);
 	const [boardRoles, setBoardRoles] = useState<Array<BoardRole>>([]);
 	const [boardMembers, setBoardMembers] = useState<Array<BoardMember>>([]);
+	const [joinRequests, setJoinRequests] = useState<Array<JoinRequestRow>>([]);
 	const [isLoadingBoard, setIsLoadingBoard] = useState(false);
 	const [isSavingBoard, setIsSavingBoard] = useState(false);
+	const [reviewingRequestId, setReviewingRequestId] = useState<string | null>(
+		null,
+	);
 	// Stable key source for unsaved board roles (see addBoardRole).
 	const roleKeyCounter = useRef(0);
 
@@ -218,6 +238,9 @@ export default function ClubsPage() {
 					coverImage: String(data.get("coverImage") ?? ""),
 					attachments: parseAttachments(data.get("attachments")),
 					isActive: data.get("isActive") === "on",
+					joinPolicy: String(
+						data.get("joinPolicy") ?? "REQUEST",
+					) as ClubJoinPolicy,
 				},
 			});
 
@@ -260,6 +283,9 @@ export default function ClubsPage() {
 					coverImage: String(data.get("coverImage") ?? ""),
 					attachments: parseAttachments(data.get("attachments")),
 					isActive: data.get("isActive") === "on",
+					joinPolicy: String(
+						data.get("joinPolicy") ?? editingClubDetails.joinPolicy,
+					) as ClubJoinPolicy,
 				},
 			});
 
@@ -378,10 +404,15 @@ export default function ClubsPage() {
 		setBoardClub(club);
 		setBoardRoles([]);
 		setBoardMembers([]);
+		setJoinRequests([]);
 		setIsLoadingBoard(true);
 
 		try {
-			const result = await getClubBoardFn({ data: { slug: club.slug } });
+			const [result, requestsResult] = await Promise.all([
+				getClubBoardFn({ data: { slug: club.slug } }),
+				getClubJoinRequestsFn({ data: { slug: club.slug } }),
+			]);
+			setJoinRequests(requestsResult.success ? requestsResult.requests : []);
 			if (!result.success) {
 				setError(result.error);
 				return;
@@ -507,6 +538,32 @@ export default function ClubsPage() {
 			);
 		} finally {
 			setIsSavingBoard(false);
+		}
+	};
+
+	const reviewJoinRequest = async (requestId: string, approve: boolean) => {
+		setError("");
+		setNoticeMessage("");
+		setReviewingRequestId(requestId);
+
+		try {
+			const response = await decideClubJoinRequestAction({
+				data: { requestId, approve },
+			});
+			if (!response.success) {
+				setError(response.error);
+				return;
+			}
+
+			setJoinRequests((current) =>
+				current.filter((request) => request.id !== requestId),
+			);
+			setNoticeMessage(
+				approve ? "Student added to the club." : "Join request declined.",
+			);
+			if (approve) await load();
+		} finally {
+			setReviewingRequestId(null);
 		}
 	};
 
@@ -876,6 +933,21 @@ export default function ClubsPage() {
 							/>
 							Active
 						</label>
+						<div className="space-y-2 sm:col-span-2">
+							<Label htmlFor="club-create-join-policy" className="text-xs">
+								Joining
+							</Label>
+							<select
+								id="club-create-join-policy"
+								name="joinPolicy"
+								defaultValue="REQUEST"
+								className="h-9 w-full rounded-lg border border-hairline bg-surface-1 px-2.5 text-sm text-foreground focus-ring"
+							>
+								<option value="OPEN">Open — students join instantly</option>
+								<option value="REQUEST">Request — officers approve</option>
+								<option value="CLOSED">Closed — no new members</option>
+							</select>
+						</div>
 						<DialogFooter className="sm:col-span-2">
 							<Button
 								variant="outline"
@@ -985,6 +1057,21 @@ export default function ClubsPage() {
 								/>
 								Active
 							</label>
+							<div className="space-y-2 sm:col-span-2">
+								<Label htmlFor="club-details-join-policy" className="text-xs">
+									Joining
+								</Label>
+								<select
+									id="club-details-join-policy"
+									name="joinPolicy"
+									defaultValue={editingClubDetails.joinPolicy}
+									className="h-9 w-full rounded-lg border border-hairline bg-surface-1 px-2.5 text-sm text-foreground focus-ring"
+								>
+									<option value="OPEN">Open — students join instantly</option>
+									<option value="REQUEST">Request — officers approve</option>
+									<option value="CLOSED">Closed — no new members</option>
+								</select>
+							</div>
 							<DialogFooter className="sm:col-span-2">
 								<Button
 									variant="outline"
@@ -1207,6 +1294,61 @@ export default function ClubsPage() {
 						>
 							<Plus className="h-3.5 w-3.5" /> Add role
 						</Button>
+
+						{joinRequests.length > 0 ? (
+							<div className="border-t border-hairline pt-4">
+								<h3 className="text-sm font-semibold text-foreground">
+									Join requests
+								</h3>
+								<p className="mb-3 text-xs text-muted-foreground">
+									Students waiting for approval ({joinRequests.length}).
+								</p>
+								<ul className="space-y-2">
+									{joinRequests.map((request) => (
+										<li
+											key={request.id}
+											data-testid={`club-join-request-${request.id}`}
+											className="flex flex-wrap items-center gap-3 rounded-lg border border-hairline bg-surface-1 px-3 py-2"
+										>
+											<span className="min-w-0 flex-1 text-sm font-medium text-foreground">
+												{request.student.user.name}
+												{request.student.grade ? (
+													<span className="ml-2 text-xs font-normal text-muted-foreground">
+														Grade {request.student.grade}
+														{request.student.section
+															? ` · ${request.student.section}`
+															: ""}
+													</span>
+												) : null}
+											</span>
+											<div className="flex items-center gap-2">
+												<Button
+													type="button"
+													size="sm"
+													variant="outline"
+													disabled={reviewingRequestId === request.id}
+													onClick={() =>
+														void reviewJoinRequest(request.id, false)
+													}
+												>
+													Decline
+												</Button>
+												<Button
+													type="button"
+													size="sm"
+													disabled={reviewingRequestId === request.id}
+													onClick={() =>
+														void reviewJoinRequest(request.id, true)
+													}
+												>
+													Approve
+												</Button>
+											</div>
+										</li>
+									))}
+								</ul>
+							</div>
+						) : null}
 
 						<div className="border-t border-hairline pt-4">
 							<h3 className="text-sm font-semibold text-foreground">
