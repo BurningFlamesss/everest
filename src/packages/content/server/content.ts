@@ -9,6 +9,7 @@ import type {
 } from "#/lib/website-content-loader";
 import { requirePermission } from "#/packages/auth/server/guard.ts";
 import { setPublicCacheHeaders } from "#/packages/content/server/cache-headers";
+import { getSchoolConfig, getSchoolContent } from "#/packages/school/loader.ts";
 import type {
 	BlockType,
 	Facility,
@@ -141,27 +142,25 @@ export const getSchoolConfigServer = createServerFn({ method: "GET" })
 		if (!org) return null;
 
 		const mainBranch = org.branches[0];
+		// Start from the bundled config so every theme token (accent, background,
+		// sidebar) survives database-backed reads, then overlay the live record.
+		const base = getSchoolConfig(identifier);
 		const config: SchoolConfig = {
+			...base,
 			organization: {
+				...base.organization,
 				name: org.name,
 				slug: org.slug,
 			},
-			theme: {
-				template: "modern",
-				primary: "#DC2626",
-			},
-			features: {
-				clubs: true,
-				events: true,
-				notices: true,
-			},
 			contact: {
-				phone: mainBranch?.phone ?? "",
-				email: mainBranch?.email ?? "",
+				...base.contact,
+				phone: mainBranch?.phone || base.contact.phone,
+				email: mainBranch?.email || base.contact.email,
 			},
 			seo: {
+				...base.seo,
 				title: org.name,
-				description: org.description ?? "",
+				description: org.description || base.seo.description,
 			},
 		};
 		return config;
@@ -179,44 +178,15 @@ export const getSchoolContentServer = createServerFn({ method: "GET" })
 		});
 		if (!org) return null;
 
+		// The navigation itself is not database data: use the same static
+		// definition the root loader falls back to when the database is down, and
+		// only overlay the organisation's logo and tagline. Keeping one source
+		// means the public sidebar never changes shape with database availability.
+		const baseSidebar = getSchoolContent(identifier).sidebar;
 		const sidebarContent: SidebarContent = {
-			logo: org.logo ?? "",
-			tagline: org.description ?? "",
-			collapsible: {
-				home: { id: "home", label: "HOME", href: "/" },
-				about: { id: "about", label: "ABOUT", href: "/about" },
-				courses: { id: "courses", label: "COURSES", href: "/courses" },
-				facilities: {
-					id: "facilities",
-					label: "FACILITIES",
-					href: "/facilities",
-				},
-				gallery: { id: "gallery", label: "GALLERY", href: "/gallery" },
-				clubs: { id: "clubs", label: "CLUBS", href: "/clubs" },
-				moreInfo: {
-					id: "moreInfo",
-					label: "More Info",
-					children: [
-						{ id: "faculty", label: "Faculty", href: "/faculty" },
-						{ id: "notices", label: "Notices", href: "/notices" },
-						{ id: "scholarship", label: "Scholarships", href: "/scholarship" },
-						{ id: "calendar", label: "Calendar", href: "/calendar" },
-						{
-							id: "transportation",
-							label: "Transportation",
-							href: "/transportation",
-						},
-						{ id: "result", label: "Result", href: "/result" },
-						{
-							id: "course-finder",
-							label: "Course Finder",
-							href: "/course-finder",
-						},
-						{ id: "resources", label: "Resources", href: "/resources" },
-					],
-				},
-				contact: { id: "contact", label: "CONTACT", href: "/contact" },
-			},
+			...baseSidebar,
+			logo: org.logo || baseSidebar.logo,
+			tagline: org.description || baseSidebar.tagline,
 		};
 
 		const content: SchoolContent = {
@@ -258,6 +228,7 @@ interface FacultyMemberRow {
 	extension: string;
 	officeHours: string;
 	bio: string;
+	image: string | null;
 	joined: string;
 	leadership: boolean;
 	rank: number | null;
@@ -279,7 +250,7 @@ function toPerson(row: FacultyMemberRow): Person {
 		joined: row.joined,
 		leadership: row.leadership || undefined,
 		rank: row.rank ?? undefined,
-		photo: facultyPhotos[row.slug],
+		photo: row.image || facultyPhotos[row.slug],
 	};
 }
 

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
-import { useSchoolContent } from "#/packages/school/hook.tsx";
+import { useSchoolConfig, useSchoolContent } from "#/packages/school/hook.tsx";
 
 const exploreLinks: Array<[string, string]> = [
 	["Home", "/"],
@@ -15,6 +15,7 @@ const exploreLinks: Array<[string, string]> = [
  * created-year attribution.
  */
 export function Footer() {
+	const config = useSchoolConfig();
 	const { sidebar } = useSchoolContent();
 	if (!sidebar) return null;
 	return (
@@ -63,16 +64,45 @@ export function Footer() {
 
 					<div className="flex flex-col gap-2.5 text-xs">
 						<span className="mb-2 text-[11px] uppercase tracking-[0.12em] text-yellow">
-							Institution
+							Contact
 						</span>
-						<p className="m-0 leading-normal text-white/70">Nepal</p>
 						<p className="m-0 leading-normal text-white/70">
-							School Administrator
+							{config.organization.name}
 						</p>
+						<p className="m-0 leading-normal text-white/70">
+							{config.contact.address ?? config.organization.address}
+						</p>
+						<a
+							href={`tel:${config.contact.phone.replace(/\s+/g, "")}`}
+							className="inline-flex min-h-[32px] w-fit items-center text-white no-underline transition-colors hover:text-yellow focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow"
+						>
+							{config.contact.phone}
+						</a>
+						<a
+							href={`mailto:${config.contact.email}`}
+							className="inline-flex min-h-[32px] w-fit items-center text-white no-underline transition-colors hover:text-yellow focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow"
+						>
+							{config.contact.email}
+						</a>
+						{config.socials?.length ? (
+							<div className="mt-1 flex flex-wrap gap-3">
+								{config.socials.map((social) => (
+									<a
+										key={social.href}
+										href={social.href}
+										target="_blank"
+										rel="noreferrer"
+										className="text-white/70 no-underline transition-colors hover:text-yellow focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow"
+									>
+										{social.label}
+									</a>
+								))}
+							</div>
+						) : null}
 					</div>
 
 					<div className="flex flex-col items-start justify-between gap-2 text-[9px] text-white/70 md:items-end">
-						<span>Everest School</span>
+						<span>© {config.organization.shortName ?? "Everest"} School</span>
 						<span data-testid="footer-year">{new Date().getFullYear()}</span>
 					</div>
 				</div>

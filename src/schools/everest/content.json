@@ -77,16 +77,41 @@
 		}
 	},
 	"pages": {
-		"homepage": {
+		"home": {
 			"key": "home",
-			"title": "Homepage",
+			"title": "Home",
 			"path": "/",
 			"status": "published",
 			"hasUnpublishedChanges": false,
 			"seoTitle": "Everest English Boarding Secondary School",
 			"seoDescription": "A complete school journey in Butwal, built on close teaching, clear standards and care for every learner.",
 			"seoKeywords": "school, everest, butwal, education, admissions",
-			"blocks": []
+			"blocks": [
+				{
+					"type": "landing_facts",
+					"label": "Landing facts",
+					"visible": true,
+					"order": 0,
+					"fields": {
+						"body": "Everest English Boarding Higher Secondary School is a learning institution in Nepal built around a simple conviction: students thrive when expectations are clear, relationships are strong, and curiosity has room to become practice.",
+						"facts": [
+							{
+								"label": "Institution",
+								"value": "Everest English Boarding Higher Secondary School"
+							},
+							{
+								"label": "Learning Spaces",
+								"value": "Everest Building + Canon Building"
+							},
+							{
+								"label": "Streams",
+								"value": "Science (Computer/Biology), Management"
+							}
+						],
+						"title": "Established in purpose.\nContemporary in outlook."
+					}
+				}
+			]
 		},
 		"about": {
 			"key": "about",
@@ -101,7 +126,7 @@
 		},
 		"contact": {
 			"key": "contact",
-			"title": "Contact",
+			"title": "Contact Us",
 			"path": "/contact",
 			"status": "published",
 			"hasUnpublishedChanges": false,
@@ -115,11 +140,11 @@
 					"visible": true,
 					"order": 1,
 					"fields": {
-						"phone": "+977 71 535962",
-						"secondaryPhone": "+977 71 531342",
 						"email": "everestbutwal@gmail.com",
-						"admissionsEmail": "admissions@everestbutwal.edu.np",
-						"address": "Butwal-8, Sukkhanagar, Rupandehi, Lumbini Province, Nepal"
+						"phone": "+977 71 535962",
+						"address": "Butwal-8, Sukkhanagar, Rupandehi, Lumbini Province, Nepal",
+						"secondaryPhone": "+977 71 531342",
+						"admissionsEmail": "admissions@everestbutwal.edu.np"
 					}
 				},
 				{
@@ -128,10 +153,10 @@
 					"visible": true,
 					"order": 2,
 					"fields": {
-						"weekdays": "09:00–16:00",
-						"saturday": "CLOSED",
+						"note": "Office hours follow the academic calendar.",
 						"sunday": "09:00–16:00",
-						"note": "Office hours follow the academic calendar."
+						"saturday": "CLOSED",
+						"weekdays": "09:00–16:00"
 					}
 				},
 				{
@@ -152,11 +177,11 @@
 					"visible": true,
 					"order": 4,
 					"fields": {
-						"facebook": "https://www.facebook.com/eebssbutwal",
-						"instagram": "https://instagram.com/everestbutwal",
 						"x": "",
 						"youtube": "https://youtube.com/@everestbutwal",
-						"linkedin": ""
+						"facebook": "https://facebook.com/everestbutwal",
+						"linkedin": "",
+						"instagram": "https://instagram.com/everestbutwal"
 					}
 				}
 			]
@@ -172,9 +197,42 @@
 			"seoKeywords": "",
 			"blocks": []
 		},
+		"faculty": {
+			"key": "faculty",
+			"title": "Faculty & Administration",
+			"path": "/faculty",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Faculty & Administration",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"login": {
+			"key": "login",
+			"title": "Sign In",
+			"path": "/login",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Sign In",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
+		"activate": {
+			"key": "activate",
+			"title": "Account Activation",
+			"path": "/activate",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Activate Account",
+			"seoDescription": "",
+			"seoKeywords": "",
+			"blocks": []
+		},
 		"courses": {
 			"key": "courses",
-			"title": "Courses & Academic Programmes",
+			"title": "Courses & Programmes",
 			"path": "/courses",
 			"status": "published",
 			"hasUnpublishedChanges": false,
@@ -185,7 +243,7 @@
 		},
 		"facilities": {
 			"key": "facilities",
-			"title": "Facilities & Infrastructure",
+			"title": "Facilities",
 			"path": "/facilities",
 			"status": "published",
 			"hasUnpublishedChanges": false,
@@ -196,7 +254,7 @@
 		},
 		"gallery": {
 			"key": "gallery",
-			"title": "Gallery",
+			"title": "Photo Gallery",
 			"path": "/gallery",
 			"status": "published",
 			"hasUnpublishedChanges": false,
@@ -218,7 +276,7 @@
 		},
 		"resources": {
 			"key": "resources",
-			"title": "Resources & Downloads",
+			"title": "Downloads & Resources",
 			"path": "/resources",
 			"status": "published",
 			"hasUnpublishedChanges": false,
@@ -251,7 +309,7 @@
 		},
 		"notices": {
 			"key": "notices",
-			"title": "Notice Board",
+			"title": "Notices & Circulars",
 			"path": "/notices",
 			"status": "published",
 			"hasUnpublishedChanges": false,
@@ -271,39 +329,6 @@
 			"seoKeywords": "",
 			"blocks": []
 		},
-		"faculty": {
-			"key": "faculty",
-			"title": "Faculty & Administration",
-			"path": "/faculty",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Faculty & Administration",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"login": {
-			"key": "login",
-			"title": "Sign In",
-			"path": "/login",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Sign In",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"activate": {
-			"key": "activate",
-			"title": "Activate Account",
-			"path": "/activate",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Activate Account",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
 		"posts": {
 			"key": "posts",
 			"title": "Latest Posts",
@@ -313,6 +338,17 @@
 			"seoTitle": "Latest Posts",
 			"seoDescription": "Updates & News from our Facebook Page",
 			"seoKeywords": "posts, facebook, news",
+			"blocks": []
+		},
+		"course_finder": {
+			"key": "course_finder",
+			"title": "Course Finder",
+			"path": "/course-finder",
+			"status": "published",
+			"hasUnpublishedChanges": false,
+			"seoTitle": "Course Finder",
+			"seoDescription": "Six questions. Find out which stream of study fits you best at Everest English Boarding Secondary School.",
+			"seoKeywords": "course finder, stream finder, science, management, humanities, everest",
 			"blocks": []
 		},
 		"admissions": {
@@ -328,7 +364,7 @@
 		},
 		"clubs": {
 			"key": "clubs",
-			"title": "Clubs",
+			"title": "Clubs & Activities",
 			"path": "/clubs",
 			"status": "published",
 			"hasUnpublishedChanges": false,
@@ -337,20 +373,9 @@
 			"seoKeywords": "clubs, student life, extracurricular, everest",
 			"blocks": []
 		},
-		"course_finder": {
-			"key": "course_finder",
-			"title": "Course Finder",
-			"path": "/course-finder",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Course Finder",
-			"seoDescription": "Six questions. Find out which stream of study fits you best at Everest English Boarding Secondary School.",
-			"seoKeywords": "course finder, stream finder, science, management, humanities, everest",
-			"blocks": []
-		},
 		"events": {
 			"key": "events",
-			"title": "Events",
+			"title": "School Events",
 			"path": "/events",
 			"status": "published",
 			"hasUnpublishedChanges": false,

@@ -1,7 +1,7 @@
-import { createFileRoute, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { ArrowUpRight, GraduationCap, Minus } from "lucide-react";
 import { useMemo, useState } from "react";
-import { rows, str } from "#/components/cms/block-fields";
+import { str } from "#/components/cms/block-fields";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import { school } from "#/content/school";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
@@ -9,7 +9,11 @@ import { academicProspectusDoc, programProspectusDoc } from "#/lib/documents";
 import { formatNpr } from "#/lib/fees";
 import { STAGGER } from "#/lib/motion";
 import { downloadOfficialPdf } from "#/lib/pdf";
-import { levels, programs as staticPrograms } from "#/lib/programs";
+import {
+	levels,
+	levelsFromFields,
+	programs as staticPrograms,
+} from "#/lib/programs";
 import { routineByKey } from "#/lib/routines";
 import {
 	getProgramsServer,
@@ -36,8 +40,7 @@ import {
 } from "#/templates/modern/components/kit";
 import { DownloadButton } from "#/templates/modern/components/shared/DownloadButton";
 import { EditorialImage } from "#/templates/modern/components/shared/EditorialImage";
-import { RoutineTable } from "#/templates/modern/components/shared/RoutineTable";
-import type { BlockType, Level, LevelId, Program, Routine } from "#/types";
+import type { BlockType, Level, LevelId, Program } from "#/types";
 
 interface ProgramDetailLabels {
 	tabOverview: string;
@@ -336,34 +339,6 @@ const ProgramDetail = ({
 	);
 };
 
-/** Convert a CMS routine row (schema stores booleans/tags as JSON) to a Routine. */
-function routineFromCms(
-	raw: Record<string, unknown> | undefined,
-): Routine | undefined {
-	if (!raw) return undefined;
-	const key = str(raw, "key");
-	if (!key) return undefined;
-	return {
-		key: key as Routine["key"],
-		label: str(raw, "label"),
-		shift: str(raw, "shift"),
-		room: str(raw, "room"),
-		effectiveFrom: str(raw, "effectiveFrom"),
-		periods: rows(raw, "periods").map((period) => ({
-			label: str(period, "label"),
-			start: str(period, "start"),
-			end: str(period, "end"),
-			isBreak: period.isBreak === true || period.isBreak === "true",
-		})),
-		rows: rows(raw, "rows").map((row) => ({
-			day: str(row, "day") as Routine["rows"][number]["day"],
-			slots: Array.isArray(row.slots)
-				? row.slots.filter((slot): slot is string => typeof slot === "string")
-				: [],
-		})),
-	};
-}
-
 export const Route = createFileRoute("/_public/courses")({
 	validateSearch: (
 		search: Record<string, unknown>,
@@ -394,7 +369,9 @@ function RouteComponent() {
 	const { previewPage, dbPrograms } = Route.useLoaderData();
 	const publishedContent = useWebsitePageContent("courses");
 	const preview = String(cms ?? "") === "1";
-	const cmsData = (preview ? previewPage : publishedContent) as any;
+	const cmsData = (preview ? previewPage : publishedContent) as {
+		blocks?: NonNullable<Parameters<typeof getSectionFields>[0]>;
+	} | null;
 
 	const activePrograms =
 		dbPrograms && dbPrograms.length > 0 ? dbPrograms : staticPrograms;
@@ -443,26 +420,7 @@ function RouteComponent() {
 
 	// Level copy is editable per page; saved rows override the built-in level
 	// data field by field, and an empty image keeps the bundled photograph.
-	const levelOverrides = rows(academicsSection, "levels");
-	const displayLevels: Level[] =
-		levelOverrides.length > 0
-			? levels.map((base, index) => {
-					const item =
-						levelOverrides.find((row) => str(row, "id") === base.id) ??
-						levelOverrides[index];
-					if (!item) return base;
-					return {
-						...base,
-						label: str(item, "label") || base.label,
-						short: str(item, "short") || base.short,
-						grades: str(item, "grades") || base.grades,
-						board: str(item, "board") || base.board,
-						tagline: str(item, "tagline") || base.tagline,
-						description: str(item, "description") || base.description,
-						image: str(item, "image") || base.image,
-					};
-				})
-			: levels;
+	const displayLevels: Level[] = levelsFromFields(academicsSection);
 
 	const onSelectSection = (sectionType: BlockType) => {
 		window.parent?.postMessage(
@@ -509,11 +467,6 @@ function RouteComponent() {
 		[levelPrograms],
 	);
 
-	const cmsRoutine = rows(academicsSection, "routines").find(
-		(row) => str(row, "key") === spotlight.routineKey,
-	);
-	const routine =
-		routineFromCms(cmsRoutine) ?? routineByKey(spotlight.routineKey);
 	const totalSeats = levelPrograms.reduce((sum, p) => sum + p.seats, 0);
 
 	return (
@@ -851,56 +804,33 @@ function RouteComponent() {
 						</Accordion>
 					</Section>
 
-					{/* Weekly routine */}
-					{routine ? (
-						<Section>
-							<SectionHeading
-								eyebrow={str(academicsSection, "routineEyebrow") || "Timetable"}
-								title={`${str(academicsSection, "routineTitlePrefix") || "Weekly routine"} · ${routine.label}`}
-								description={
-									str(academicsSection, "routineDescription") ||
-									"The published timetable for this level, as it runs from Sunday to Friday."
-								}
-								testId="routine-section-title"
-							/>
-							<div className="mt-8">
-								<RoutineTable
-									routine={routine}
-									labels={{
-										shift: txt("routineShiftLabel", "Shift"),
-										rooms: txt("routineRoomsLabel", "Rooms"),
-										effectiveFrom: txt(
-											"routineEffectiveFromLabel",
-											"Effective from",
-										),
-										showOnlyPrefix: txt("routineShowOnlyPrefix", "Show only"),
-										showFullWeek: txt("routineShowFullWeek", "Show full week"),
-										pdfLabel: txt("routinePdfLabel", "Routine PDF"),
-										nowLabel: txt("routineNowLabel", "Right now"),
-										periodPrefix: txt("routinePeriodPrefix", "Period"),
-										noPeriodText: txt(
-											"routineNoPeriodText",
-											"No period is running at this moment.",
-										),
-										holidayText: txt(
-											"routineHolidayText",
-											"Saturday is the weekly holiday — no classes today.",
-										),
-										dayLabel: txt("routineDayLabel", "Day"),
-										todayLabel: txt("routineTodayLabel", "Today"),
-										captionSuffix: txt(
-											"routineCaptionSuffix",
-											"weekly class routine",
-										),
-										footer: txt(
-											"routineFooter",
-											"Saturday is the weekly holiday. Practical and studio periods run in the final slot without interruption.",
-										),
-									}}
-								/>
-							</div>
-						</Section>
-					) : null}
+					{/* Weekly routine lives on the calendar; this page only links to it. */}
+					<Section>
+						<SectionHeading
+							eyebrow={str(academicsSection, "routineEyebrow") || "Timetable"}
+							title={
+								str(academicsSection, "routineTitlePrefix") ||
+								"Weekly timetable"
+							}
+							description={
+								str(academicsSection, "routineDescription") ||
+								"The published section timetable, as it runs from Sunday to Friday."
+							}
+							testId="routine-section-title"
+						/>
+						<div className="mt-8">
+							<Link
+								to="/calendar"
+								search={{ routine: spotlight.routineKey }}
+								data-testid="courses-see-timetable"
+								className="inline-flex min-h-11 items-center gap-2 rounded-field border border-border px-5 py-3 text-[13px] font-medium text-foreground transition-colors hover:border-accent hover:text-accent"
+							>
+								See the {routineByKey(spotlight.routineKey)?.label ?? "section"}{" "}
+								timetable
+								<ArrowUpRight className="h-3.5 w-3.5" />
+							</Link>
+						</div>
+					</Section>
 				</div>
 			</div>
 		</PageFrame>

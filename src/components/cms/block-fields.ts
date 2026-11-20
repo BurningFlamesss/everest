@@ -66,6 +66,11 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
 		},
 		{ key: "headline", label: "Headline", kind: "text" },
 		{ key: "subheadline", label: "Supporting text", kind: "textarea" },
+		{
+			key: "image",
+			label: "Closing hero image",
+			kind: "image",
+		},
 		{ key: "primaryCtaLabel", label: "Primary button label", kind: "text" },
 		{
 			key: "primaryCtaHref",

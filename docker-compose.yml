@@ -17,6 +17,67 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-# Optional MinIO storage is defined in docker-compose.minio.yml.
+  # S3-compatible object storage for uploaded images and documents. The
+  # minio-init service below creates the bucket named by S3_BUCKET; the app's
+  # storage driver also creates it on first upload if it is missing.
+  minio:
+    image: ${MINIO_IMAGE:-bitnamilegacy/minio:2025.7.23-debian-12-r5}
+
+    container_name: scms-minio
+
+    restart: unless-stopped
+
+    # Override MINIO_ENTRYPOINT only if you switch to an image whose binary is
+    # not at the Bitnami path (e.g. "minio" for an official MinIO image).
+    entrypoint: ["${MINIO_ENTRYPOINT:-/opt/bitnami/minio/bin/minio}"]
+
+    # The named volume is root-owned and the Bitnami image defaults to a
+    # non-root user; MinIO must be able to create /data/.minio.sys.
+    user: "0:0"
+
+    command: server /data --console-address ":9001"
+
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-scms}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-scms-secret}
+      MINIO_DEFAULT_BUCKETS: ${S3_BUCKET:-scms}
+      MC_HOST_local: http://${S3_ACCESS_KEY:-scms}:${S3_SECRET_KEY:-scms-secret}@127.0.0.1:9000
+
+    healthcheck:
+      test: ["CMD", "/opt/bitnami/minio-client/bin/mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+
+    ports:
+      - "${S3_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+
+    volumes:
+      - minio_data:/data
+
+  # One-shot: creates the application bucket and exits. Safe to re-run.
+  minio-init:
+    image: ${MINIO_IMAGE:-bitnamilegacy/minio:2025.7.23-debian-12-r5}
+
+    container_name: scms-minio-init
+
+    user: "0:0"
+
+    entrypoint: ["/opt/bitnami/minio-client/bin/mc"]
+
+    environment:
+      MC_HOST_scms: http://${S3_ACCESS_KEY:-scms}:${S3_SECRET_KEY:-scms-secret}@minio:9000
+
+    command: ["mb", "--ignore-existing", "scms/${S3_BUCKET:-scms}"]
+
+    depends_on:
+      minio:
+        condition: service_healthy
+
+    restart: "no"
+
 volumes:
   postgres_data:
+  minio_data:

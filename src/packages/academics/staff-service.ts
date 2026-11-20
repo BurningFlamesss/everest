@@ -43,6 +43,7 @@ export async function getStaffWorkspace(userId: string) {
 		prisma.timetableSlot.findMany({
 			where: { staffId: staff.id, weekday },
 			include: {
+				class: { select: { id: true, name: true } },
 				course: { select: { id: true, code: true, name: true } },
 				classroom: { select: { name: true } },
 			},

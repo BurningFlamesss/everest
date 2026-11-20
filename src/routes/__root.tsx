@@ -149,15 +149,17 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			r.status === "fulfilled" ? r.value : null;
 
 		const config = settled(configResult) ?? getSchoolConfig("everest");
-		const sidebarContent =
-			settled(sidebarContentResult) ?? getSchoolContent("everest");
+		const fallbackContent = getSchoolContent("everest");
+		const sidebarContent = settled(sidebarContentResult) ?? fallbackContent;
 
 		// Key published pages by their WebsitePageKey so useWebsitePageContent(key)
 		// resolves for every managed page, not just a hardcoded few.
 		const pages = settled(pagesResult) ?? [];
 
 		const content: Record<string, unknown> = {
-			sidebar: sidebarContent?.sidebar,
+			// Always ship a sidebar: when the database is unreachable (or not yet
+			// seeded) the bundled navigation is used instead of an empty menu.
+			sidebar: sidebarContent?.sidebar ?? fallbackContent.sidebar,
 		};
 		for (const page of pages) {
 			if (page && page.key) content[page.key] = page;

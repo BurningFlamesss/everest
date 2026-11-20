@@ -12,8 +12,10 @@ export const WEEKDAYS = [
 
 export interface TimetableSlotInput {
 	academicYearId: string;
-	courseId: string;
+	classId?: string | null;
+	courseId?: string | null;
 	staffId?: string | null;
+	facultyMemberId?: string | null;
 	classroomId?: string | null;
 	weekday: number;
 	periodIndex: number;
@@ -27,6 +29,10 @@ function toMinutes(value: string) {
 }
 
 function assertSlot(input: TimetableSlotInput) {
+	if (!input.classId && !input.courseId) {
+		throw new Error("Choose a class for the timetable slot.");
+	}
+
 	if (input.weekday < 1 || input.weekday > 7) {
 		throw new Error("Choose a day between Monday and Sunday.");
 	}
@@ -46,10 +52,16 @@ function assertSlot(input: TimetableSlotInput) {
 	}
 }
 
-export async function listTimetable(academicYearId?: string) {
+export async function listTimetable(academicYearId?: string, classId?: string) {
 	return prisma.timetableSlot.findMany({
-		where: academicYearId ? { academicYearId } : undefined,
+		where: {
+			...(academicYearId ? { academicYearId } : {}),
+			...(classId ? { classId } : {}),
+		},
 		include: {
+			class: {
+				select: { id: true, name: true, grade: true, section: true },
+			},
 			course: {
 				select: {
 					id: true,
@@ -60,6 +72,7 @@ export async function listTimetable(academicYearId?: string) {
 				},
 			},
 			staff: { select: { id: true, user: { select: { name: true } } } },
+			facultyMember: { select: { id: true, name: true, role: true } },
 			classroom: { select: { id: true, name: true } },
 		},
 		orderBy: [{ weekday: "asc" }, { periodIndex: "asc" }],
@@ -81,13 +94,19 @@ async function assertNoConflict(input: TimetableSlotInput, ignoreId?: string) {
 			weekday: input.weekday,
 			...(ignoreId ? { id: { not: ignoreId } } : {}),
 			OR: [
+				...(input.classId ? [{ classId: input.classId }] : []),
 				...(input.staffId ? [{ staffId: input.staffId }] : []),
+				...(input.facultyMemberId
+					? [{ facultyMemberId: input.facultyMemberId }]
+					: []),
 				...(input.classroomId ? [{ classroomId: input.classroomId }] : []),
 			],
 		},
 		include: {
+			class: { select: { name: true } },
 			course: { select: { code: true, name: true } },
 			staff: { select: { user: { select: { name: true } } } },
+			facultyMember: { select: { name: true } },
 			classroom: { select: { name: true } },
 		},
 	});
@@ -102,15 +121,30 @@ async function assertNoConflict(input: TimetableSlotInput, ignoreId?: string) {
 		const otherEnd = Math.min(toMinutes(slot.endsAt), dayEnd);
 
 		if (start < otherEnd && otherStart < end) {
+			if (input.classId && slot.classId === input.classId) {
+				throw new Error(
+					`CLASS_TIMETABLE_CONFLICT: this class already has a period at that time.`,
+				);
+			}
+
+			if (
+				input.facultyMemberId &&
+				slot.facultyMemberId === input.facultyMemberId
+			) {
+				throw new Error(
+					`FACULTY_TIMETABLE_CONFLICT: ${slot.facultyMember?.name ?? "This teacher"} already teaches ${slot.course?.code ?? slot.class?.name ?? "a class"} at that time.`,
+				);
+			}
+
 			if (input.staffId && slot.staffId === input.staffId) {
 				throw new Error(
-					`STAFF_TIMETABLE_CONFLICT: ${slot.staff?.user.name ?? "This teacher"} already teaches ${slot.course.code} at that time.`,
+					`STAFF_TIMETABLE_CONFLICT: ${slot.staff?.user.name ?? "This teacher"} already teaches ${slot.course?.code ?? slot.class?.name ?? "a class"} at that time.`,
 				);
 			}
 
 			if (input.classroomId && slot.classroomId === input.classroomId) {
 				throw new Error(
-					`ROOM_TIMETABLE_CONFLICT: ${slot.classroom?.name ?? "This room"} is already booked for ${slot.course.code} at that time.`,
+					`ROOM_TIMETABLE_CONFLICT: ${slot.classroom?.name ?? "This room"} is already booked for ${slot.course?.code ?? slot.class?.name ?? "a class"} at that time.`,
 				);
 			}
 		}
@@ -124,8 +158,10 @@ export async function createTimetableSlot(input: TimetableSlotInput) {
 	return prisma.timetableSlot.create({
 		data: {
 			academicYearId: input.academicYearId,
-			courseId: input.courseId,
+			classId: input.classId || null,
+			courseId: input.courseId || null,
 			staffId: input.staffId || null,
+			facultyMemberId: input.facultyMemberId || null,
 			classroomId: input.classroomId || null,
 			weekday: input.weekday,
 			periodIndex: input.periodIndex,
@@ -145,8 +181,13 @@ export async function updateTimetableSlot(
 
 	const merged: TimetableSlotInput = {
 		academicYearId: input.academicYearId ?? existing.academicYearId,
-		courseId: input.courseId ?? existing.courseId,
+		classId: input.classId !== undefined ? input.classId : existing.classId,
+		courseId: input.courseId !== undefined ? input.courseId : existing.courseId,
 		staffId: input.staffId !== undefined ? input.staffId : existing.staffId,
+		facultyMemberId:
+			input.facultyMemberId !== undefined
+				? input.facultyMemberId
+				: existing.facultyMemberId,
 		classroomId:
 			input.classroomId !== undefined
 				? input.classroomId
@@ -163,8 +204,10 @@ export async function updateTimetableSlot(
 	return prisma.timetableSlot.update({
 		where: { id },
 		data: {
-			courseId: merged.courseId,
+			classId: merged.classId || null,
+			courseId: merged.courseId || null,
 			staffId: merged.staffId || null,
+			facultyMemberId: merged.facultyMemberId || null,
 			classroomId: merged.classroomId || null,
 			weekday: merged.weekday,
 			periodIndex: merged.periodIndex,
@@ -179,36 +222,55 @@ export async function deleteTimetableSlot(id: string) {
 }
 
 export async function listTimetableOptions() {
-	const [years, courses, staff, classrooms] = await Promise.all([
-		prisma.academicYear.findMany({
-			orderBy: [{ isActive: "desc" }, { startsOn: "desc" }],
-			select: { id: true, name: true, isActive: true },
-		}),
-		prisma.course.findMany({
-			where: { isActive: true },
-			select: {
-				id: true,
-				code: true,
-				name: true,
-				grade: true,
-				section: true,
-				teacherId: true,
-			},
-			orderBy: [{ grade: "asc" }, { name: "asc" }],
-		}),
-		prisma.staff.findMany({
-			where: { status: "ACTIVE" },
-			select: { id: true, designation: true, user: { select: { name: true } } },
-			orderBy: { user: { name: "asc" } },
-		}),
-		prisma.classroom.findMany({
-			where: { isActive: true },
-			select: { id: true, name: true, building: true },
-			orderBy: { name: "asc" },
-		}),
-	]);
+	const [years, classes, courses, faculty, staff, classrooms] =
+		await Promise.all([
+			prisma.academicYear.findMany({
+				orderBy: [{ isActive: "desc" }, { startsOn: "desc" }],
+				select: { id: true, name: true, isActive: true },
+			}),
+			prisma.schoolClass.findMany({
+				select: {
+					id: true,
+					name: true,
+					grade: true,
+					section: true,
+					roomNo: true,
+				},
+				orderBy: [{ grade: "asc" }, { section: "asc" }],
+			}),
+			prisma.course.findMany({
+				where: { isActive: true },
+				select: {
+					id: true,
+					code: true,
+					name: true,
+					grade: true,
+					section: true,
+					teacherId: true,
+				},
+				orderBy: [{ grade: "asc" }, { name: "asc" }],
+			}),
+			prisma.facultyMember.findMany({
+				select: { id: true, name: true, role: true, department: true },
+				orderBy: { name: "asc" },
+			}),
+			prisma.staff.findMany({
+				where: { status: "ACTIVE" },
+				select: {
+					id: true,
+					designation: true,
+					user: { select: { name: true } },
+				},
+				orderBy: { user: { name: "asc" } },
+			}),
+			prisma.classroom.findMany({
+				where: { isActive: true },
+				select: { id: true, name: true, building: true },
+				orderBy: { name: "asc" },
+			}),
+		]);
 
-	return { years, courses, staff, classrooms };
+	return { years, classes, courses, faculty, staff, classrooms };
 }
 
 export async function getMyTimetable(userId: string) {
@@ -230,6 +292,7 @@ export async function getMyTimetable(userId: string) {
 			...(year ? { academicYearId: year.id } : {}),
 		},
 		include: {
+			class: { select: { name: true } },
 			course: {
 				select: { code: true, name: true, grade: true, section: true },
 			},

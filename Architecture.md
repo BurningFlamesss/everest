@@ -69,10 +69,7 @@ Conventions: composite `@@unique` for idempotency & upsert safety; FKs cascade o
 `src/schools/<slug>/{config,content}.json` + `src/templates/modern/*` + zustand `activeSchoolId` were built for multi-tenant theming; the running app pins `"everest"`. Any multi-tenant work should convert JSON configs into DB-backed `Organization` settings, keep `src/templates/*` as the theme layer, and drive `useSchoolConfig()` from a server loader with org scope (see Tasks M5).
 
 ## 7. Testing strategy
-- **Unit** (`npm test`): pure logic and server actions with stubbed prisma — storage drivers, csv, mail, permissions, content services, request queue, upload/cleanup.
-- **Integration** (`npm run test:integration`): real Postgres + real storage; requires `SCMS_TEST_DATABASE_URL` ending `_test`/`_verification`; never falls back to app `DATABASE_URL`.
-- **E2E** (`npm run test:e2e`): Playwright against a separately built app instance (`SCMS_E2E_DATABASE_URL`, `SCMS_E2E_BASE_URL`); run twice for local and S3 storage.
-- CI runs `tsc` `biome lint` unit `build`, plus a Postgres-service job that applies migrations from scratch, seeds and runs integration tests on local storage. E2E still needs a separately started app and stays out of CI.
+Automated test suites (unit, integration, e2e) were removed by request. CI is now `npm ci → prisma generate → tsc --noEmit → biome lint src → build`. Verification of new work is manual (typecheck, lint on changed files, production build, and exercising the affected routes against a real database).
 
 ## 8. Architectural Record (do not regress these)
 1. **No in-process timers** — cleanup and scheduled work is external-scheduler driven (`/api/cron/cleanup`) to stay multi-instance safe.

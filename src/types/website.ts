@@ -5,12 +5,11 @@
 
 /* ---------------------------- Academics --------------------------- */
 
-export type LevelId =
-	| "basic"
-	| "lower-secondary"
-	| "secondary"
-	| "plus2-science"
-	| "plus2-management";
+/**
+ * Programme levels are admin-managed (CMS), so the id is any stable slug —
+ * e.g. "basic", "montessori", "class-1-8".
+ */
+export type LevelId = string;
 
 export interface Level {
 	id: LevelId;

@@ -46,11 +46,12 @@ Signed-in area:
 3. Invitations (`/admin/invites`) — staff, student, and guardian invitations, CSV bulk import, and the invitation-request review queue.
 4. Directory (`/admin/directory`) — students, staff, and guardians.
 5. Content management (`/admin/content`) — create and edit notices, events, and clubs, including cover images and document attachments. Existing club attachments can also be managed on their own with **Edit attachments**.
-6. Academics (`/admin/academics`) — classrooms, courses, teachers, and student enrolments, with editing for courses and classrooms.
-7. Attendance (`/admin/attendance`) — open a daily register per course, mark students, and review per-student summaries.
-8. Transport (`/admin/transport`) — bus routes, stops, drivers, and student route assignments, with editing for routes and stops (including stop order).
-9. Permissions (`/admin/permissions`) — edit role-level defaults and grant or revoke individual permissions; returning a role permission to its built-in default removes the stored override.
-10. My records (`/my-records`) — students and guardians see their own courses, attendance, and transport; staff see an empty state.
+6. Website page editors (`/admin/courses`, `/admin/about`) — a skeleton of the public page; double-click a block (header, level rail, most-chosen programme, overview/subjects/fees/pathways tabs, routine, chapters) to edit exactly that block. The courses editor also pins one programme per level as the featured card, and about chapters open in their own dialog.
+7. Academics (`/admin/academics`) — classrooms, courses, teachers, and student enrolments, with editing for courses and classrooms.
+8. Attendance (`/admin/attendance`) — open a daily register per course, mark students, and review per-student summaries.
+9. Transport (`/admin/transport`) — bus routes, stops, drivers, and student route assignments, with editing for routes and stops (including stop order).
+10. Permissions (`/admin/permissions`) — edit role-level defaults and grant or revoke individual permissions; returning a role permission to its built-in default removes the stored override.
+11. My records (`/my-records`) — students and guardians see their own courses, attendance, and transport; staff see an empty state.
 
 Operations:
 
@@ -85,7 +86,8 @@ ScMS started as a highly ambitious project, due to the time constraint, and my a
 - SQL-side attendance summaries, diffed attendance saves, and set-based enrolment writes
 - Token-protected `/api/cron/cleanup` endpoint for scheduled orphan-upload removal
 - A single upload policy module shared by the upload API and the admin upload fields
-- Unit and UI regression tests for CSV imports and document attachments (`npm test`)
+- Page-skeleton editors for the public courses and about pages, with per-block double-click editing and one pinned “most-chosen” programme per level
+- A database-independent public sidebar: the DB-backed and bundled navigation share one definition, and the content column no longer reserves a sidebar offset when the sidebar is absent
 
 ## What is Incomplete? (or, What is left?)
 
@@ -115,9 +117,8 @@ The dependency security upgrades include TanStack, Better Auth 1.7.15, Prisma 7.
 
 Final verification completed on **2026-11-03–04**:
 
-- **194 unit/UI tests** across 13 files, including 59 S3-driver tests; TypeScript and scoped Biome checks passed.
-- **8 local-storage and 8 real MinIO integration tests** passed. The MinIO run used an explicitly configured `eu-west-1` region for the driver and bucket cleanup.
-- **5 Chromium tests with local storage and 5 with S3 storage** passed against the rebuilt production Docker image. The S3 browser run used an existing `eu-west-1` bucket with the app's `S3_REGION` unset, exercising region discovery.
+- TypeScript and scoped Biome checks passed.
+- The application and storage configuration used for the checks was rebuilt and exercised manually.
 - A signed session cookie issued by **Better Auth 1.6.19** remained valid with **1.7.15**, and logout revoked it on both versions. The verification request sent a JSON body (`data: {}`).
 - The host production build and a **no-cache production Docker build** passed without build warnings; the Docker image is tagged `scms:security-verification`.
 - All three versioned migrations applied successfully from scratch to three disposable PostgreSQL 17 databases.
@@ -164,7 +165,7 @@ Optional variables and defaults:
 | Variable | Default / behavior |
 | --- | --- |
 | `VITE_APP_TITLE` | Optional public client title. |
-| `MAIL_APP_USER`, `MAIL_APP_PASSWORD` | Optional mail credentials; configure both for email delivery. Leave both unset for isolated browser tests. |
+| `MAIL_APP_USER`, `MAIL_APP_PASSWORD` | Optional mail credentials; configure both for email delivery. Leave both unset to disable sending. |
 | `MAIL_SMTP_HOST`, `MAIL_SMTP_PORT`, `MAIL_SMTP_SECURE` | SMTP transport; defaults `smtp.gmail.com`, `587`, `false`. Point these at any provider (SES/Mailgun/Postmark/school mail server). |
 | `MAIL_FROM` | Optional From header; falls back to `MAIL_APP_USER`. |
 | `STORAGE_DRIVER` | `local`; set to `s3` for MinIO or another compatible S3 service. |
@@ -184,27 +185,17 @@ For `STORAGE_DRIVER=s3`, configure the endpoint, port, TLS setting, credentials,
 
 **S3 region discovery:** an explicit `S3_REGION` is authoritative and is not overwritten by discovery. If absent, the client initially uses `us-east-1` and discovers an existing bucket's region through `HeadBucket`. A compatible server's `AuthorizationHeaderMalformed` region hint can trigger one additional `HeadBucket` attempt; this fallback is bounded, not an infinite retry loop. A new bucket defaults to `us-east-1` unless a region was explicitly configured. Set `S3_REGION` to the actual region when your provider requires it; it is not a mandatory new variable for existing deployments.
 
-Step 4: Start local PostgreSQL using Docker (optional if you already have a database). The default Compose file starts **only PostgreSQL**, matching the app's default `STORAGE_DRIVER=local`. It does not pull or require MinIO, an AWS account, or any S3 service.
+Step 4: Start PostgreSQL and MinIO using Docker (optional if you already have a database and object store). The Compose file starts **both services**, so a self-hosted S3-compatible setup needs no second compose file:
+
 ```bash
 docker compose --env-file .env.local up -d
 ```
 
-With local storage, uploads live in `STORAGE_LOCAL_DIR`; persist that directory when running the app in Docker (see the production image instructions below). Keep backups of both uploads and the database.
+The app still defaults to `STORAGE_DRIVER=local`; set `STORAGE_DRIVER=s3` to keep uploads in MinIO. The default `S3_*` values already match the Compose service (`S3_ENDPOINT=localhost`, `S3_PORT=9000`, `S3_ACCESS_KEY=scms`, `S3_SECRET_KEY=scms-secret`, `S3_BUCKET=scms`). When the app itself runs inside the Compose network, set `S3_ENDPOINT=minio` instead of `localhost`.
 
-**Optional self-hosted MinIO:** set `STORAGE_DRIVER=s3`, configure `S3_*`, and explicitly set **`MINIO_IMAGE`** to a vetted, compatible MinIO image pinned to a release or digest. Then include the optional Compose file:
+The Compose default is the legacy Bitnami build (`bitnamilegacy/minio:2025.7.23-debian-12-r5`) because the upstream `minio/minio` images are no longer anonymously pullable. It is a self-hosted convenience, not a maintained release: for production, point `MINIO_IMAGE` at a vetted image in your own registry, remove or adapt `MINIO_ENTRYPOINT` to that image's binary, and keep the `minio-init` bucket step. `MINIO_CONSOLE_PORT` changes the console port (default `9001`). None of these Compose-only variables are read by the application. The console is at `http://localhost:9001` using the configured access key and secret.
 
-```bash
-docker compose --env-file .env.local \
-  -f docker-compose.yml -f docker-compose.minio.yml up -d
-```
-
-There is deliberately **no default MinIO image**: this opt-in command fails with an actionable message if `MINIO_IMAGE` is missing, rather than pulling the unavailable `minio/minio:latest` image. Supply the variable in the shell environment or `.env.local` (via `--env-file`); Compose does not automatically read `.env.local`. `MINIO_IMAGE` is Compose-only, not an application environment variable. Keep the MinIO command, credentials, ports, and `/data` volume compatible; images with different entrypoints, licensing requirements, or data-directory ownership need an explicit additional Compose override. External S3 providers do not need the optional Compose file.
-
-**Existing MinIO installations:** include both `-f` files for MinIO lifecycle commands. The service/container names and `minio_data` volume key are unchanged, so using the same Compose project preserves the existing volume. Neither this split nor changing `STORAGE_DRIVER` copies, moves, or deletes existing uploads. Back up data and plan a migration before changing providers or pointing an incompatible server at an existing volume; do not use `down -v` unless you intend to delete its volumes.
-
-The upstream [MinIO community repository](https://github.com/minio/minio) is no longer maintained; a different tag or mirror does not fix that support/security issue. The vendor's maintained [AIStor container](https://docs.min.io/aistor/installation/container/install/) requires a license (including for its free tier) and different startup configuration; it is **not** selected automatically or offered here as a drop-in replacement.
-
-For the isolated release tests, the explicitly selected image was `bitnamilegacy/minio:2025.7.23-debian-12-r5` (digest `sha256:6dabb4a2088c9a79908de3bc05f4586c23ad2182c8908e7e3acbf61c1467fb20`), launched with its MinIO binary entrypoint (`/opt/bitnami/minio/bin/minio`) and disposable storage. This unmaintained legacy image is **test-only, not a production recommendation or a drop-in Compose replacement**. No production provider or default image was automatically replaced.
+A one-shot `minio-init` container waits for MinIO's healthcheck and creates `S3_BUCKET` with `mc mb --ignore-existing`, so the bucket exists before the first upload. The storage driver also creates it if missing. Credentials must permit bucket checks, object operations and, when the bucket is absent, bucket creation. **Use real production credentials**; the Compose values are local defaults. The MinIO container runs as root so it can write the root-owned `minio_data` volume. With local storage, uploads live in `STORAGE_LOCAL_DIR`, so persist that directory when running the app in Docker (see the production image instructions below). Back up the `postgres_data` and `minio_data` volumes. External S3 providers can skip MinIO entirely and set `S3_*` to their own endpoint.
 
 Step 5: Generate the Prisma client, apply the migrations, then seed the superadmin account and starter content
 ```bash
@@ -223,11 +214,6 @@ npm run dev
 # Or build and run the standalone production server:
 npm run build
 npx dotenv -e .env.local -- node .output/server/index.mjs
-```
-
-Step 7: Run the unit and UI regression suite (no database required)
-```bash
-npm test
 ```
 
 ### Scheduled upload cleanup
@@ -261,91 +247,3 @@ docker run --rm --name scms-app --network scms_default \
 `scms_default` is the default Compose network for this repository; adjust it if using a different Compose project name. The PostgreSQL credentials above are the local Compose defaults, not production credentials. `VITE_APP_URL` is embedded at build time and must match the runtime `APP_URL`. Server secrets are supplied at runtime and excluded from the build context. The server runs as UID 1000; bind-mounted upload directories must be writable by that user. The named volume keeps local uploads across container replacements; S3 uploads instead use the configured bucket.
 
 Behind a reverse proxy, forward the actual client IP using a trusted header and configure Better Auth's IP-header handling to match the deployment. Direct container requests without such a header can log a shared rate-limit-bucket warning. Do not suppress it by blindly trusting client-supplied forwarding headers; restrict direct access to the app when relying on a proxy.
-
-### PostgreSQL and storage integration tests
-
-Use only a **dedicated disposable database**. `tests/integration/club-attachments.test.ts` requires `SCMS_TEST_DATABASE_URL` explicitly, refuses database names not ending in `_test` or `_verification`, and never falls back to the application's `DATABASE_URL`. It deletes **all** attachment, club, notice, event, and file-asset rows in that database, not just fixture-owned rows. Do not share it with a running app or browser tests.
-
-With the default Compose PostgreSQL service running, create and migrate the integration database, then run against local storage (the default). The suite creates and removes its own temporary local upload directory.
-
-```bash
-docker compose exec postgres createdb -U postgres scms_test
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/scms_test npm run db:migrate:deploy
-SCMS_TEST_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/scms_test SCMS_TEST_STORAGE_DRIVER=local npm run test:integration
-```
-
-Run the same suite separately against S3/MinIO:
-
-```bash
-SCMS_TEST_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/scms_test \
-SCMS_TEST_STORAGE_DRIVER=s3 \
-SCMS_TEST_S3_ENDPOINT=localhost \
-SCMS_TEST_S3_PORT=9000 \
-SCMS_TEST_S3_ACCESS_KEY=scms \
-SCMS_TEST_S3_SECRET_KEY=scms-secret \
-SCMS_TEST_S3_USE_SSL=false \
-npm run test:integration
-```
-
-For S3 integration tests, **all four** `SCMS_TEST_S3_ENDPOINT`, `SCMS_TEST_S3_PORT`, `SCMS_TEST_S3_ACCESS_KEY`, and `SCMS_TEST_S3_SECRET_KEY` are mandatory; they do not fall back to the app's `S3_*` values. `SCMS_TEST_S3_USE_SSL` is optional and defaults to `false`. Optional `SCMS_TEST_S3_REGION` configures the same region for the driver and bucket cleanup; when omitted, the driver uses discovery and newly created test buckets/cleanup default to `us-east-1`. The suite does not inherit the app's `S3_REGION`. `SCMS_TEST_STORAGE_DRIVER` accepts only `local` or `s3` and defaults to `local`.
-
-Use a dedicated disposable S3 test service/account with permissions to check, create, and delete buckets and read/write/delete objects. The suite chooses a unique `scms-test-<UUID>` bucket, tracks uploaded keys, and attempts object/bucket teardown; it does not use an app bucket or accept a `SCMS_TEST_S3_BUCKET` override. Check for leftovers after failed runs. Configure `SCMS_TEST_S3_REGION` when the test service requires a non-default region; real MinIO tests are not a substitute for validation against your production provider.
-
-These tests exercise binary round-trips, missing-key/idempotent deletion, real attachment foreign keys, atomic replacement rollback, partial updates, club cascades, shared notice/event assets, grace periods, and physical-object cleanup. For the completed release-verification results, see the security notes above.
-
-### Chromium end-to-end tests: local AND S3
-
-Run the browser suite **twice**, against separately started app instances: once with local storage and once with S3 storage. Playwright does **not** start/configure the app. Each app needs all required server/client variables listed above, a **dedicated disposable migrated database**, and isolated storage. Never use a live installation: the administrator cleanup action scans all old, unreferenced uploads, not just this run's fixtures.
-
-Create separate, uncommitted environment files (for example, `.env.e2e.local` and `.env.e2e.s3.local`) with all required variables, plus the settings below. Keep both `MAIL_APP_USER` and `MAIL_APP_PASSWORD` **unset in the app and test runner**; auth-security tests reject configured runner mail credentials, and the separately started app must also avoid sending real email. Check inherited environment variables and any automatically loaded `.env.local` so production mail/database/storage settings cannot leak into the test app.
-
-| Setting | Local run | S3 run |
-| --- | --- | --- |
-| App `DATABASE_URL` | `postgresql://postgres:postgres@localhost:5432/scms_browser_local_test` | `postgresql://postgres:postgres@localhost:5432/scms_browser_s3_test` |
-| App `STORAGE_DRIVER` | `local` | `s3` |
-| App `STORAGE_LOCAL_DIR` | `.data/e2e-local-uploads` (disposable, not normal uploads) | Not used for S3 objects. |
-| App `S3_BUCKET` | Not used. | `scms-browser-s3-test`, a dedicated disposable bucket, not an integration or real app bucket. |
-| App S3 connection | Not used. | Configure `S3_ENDPOINT`, `S3_PORT`, `S3_USE_SSL`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, and optional `S3_REGION` for the test service. |
-| App `APP_URL` and build-time `VITE_APP_URL` | Both `http://localhost:3000` | Both `http://localhost:3000` (or another matching loopback origin). |
-
-Create the two databases and apply migrations before starting either app (example local Compose credentials only):
-
-```bash
-docker compose exec postgres createdb -U postgres scms_browser_local_test
-docker compose exec postgres createdb -U postgres scms_browser_s3_test
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/scms_browser_local_test npm run db:migrate:deploy
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/scms_browser_s3_test npm run db:migrate:deploy
-npx playwright install chromium
-```
-
-Build and start the local-storage app with its dedicated configuration:
-
-```bash
-npx dotenv -e .env.e2e.local -- npm run build
-npx dotenv -e .env.e2e.local -- node .output/server/index.mjs
-```
-
-In another terminal, point Playwright at **that same app database and origin**:
-
-```bash
-SCMS_E2E_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/scms_browser_local_test \
-SCMS_E2E_BASE_URL=http://localhost:3000 npm run test:e2e
-```
-
-Stop the local app before rebuilding/starting the S3 app on the same port. Ensure the dedicated S3 service is available and the app has bucket-check/object-operation permissions (plus bucket creation if the bucket is absent):
-
-```bash
-npx dotenv -e .env.e2e.s3.local -- npm run build
-npx dotenv -e .env.e2e.s3.local -- node .output/server/index.mjs
-```
-
-Then, from another terminal:
-
-```bash
-SCMS_E2E_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/scms_browser_s3_test \
-SCMS_E2E_BASE_URL=http://localhost:3000 npm run test:e2e
-```
-
-`SCMS_E2E_DATABASE_URL` is mandatory, must name a database ending in `_test` or `_verification`, and must identify the running app's database. The default `SCMS_E2E_BASE_URL` is `http://localhost:3000`; the auth-security tests require a loopback host (`localhost`, `127.0.0.1`, or `[::1]`). For another origin, set **all three** of `APP_URL`, build-time `VITE_APP_URL`, and `SCMS_E2E_BASE_URL` identically and rebuild. Browser tests use the app's ordinary `STORAGE_DRIVER`/`S3_*` settings, **not** the integration suite's `SCMS_TEST_*` variables; setting runner storage variables alone does not reconfigure the app.
-
-If Chromium is already installed, set `SCMS_CHROMIUM_EXECUTABLE` to its executable path instead of downloading another copy. The suite covers legacy auth credentials, login persistence/logout revocation, invitation activation, 20-minute single-use password resets/session revocation, expired-reset rejection, the permissions screen, club document upload/edit/download, active/inactive visibility, deletion/cleanup, and anonymous/unauthorized upload denial. Failed traces are stored under `.data/playwright-results`. Inspect and remove only the dedicated test databases, local upload directory, and S3 bucket/objects when finished; browser tests do not tear down the S3 bucket. Both storage modes passed in the final release verification. The tracked auth browser test covers legacy password hashes; a separate, successfully completed check verified a session cookie issued by the old server. To repeat that cross-version check, use the same disposable database and auth secret in old/new app instances; the logout request must send JSON (`data: {}` in Playwright) to avoid HTTP 415. After verification, remove only the dedicated security-verification resources—not normal development resources.

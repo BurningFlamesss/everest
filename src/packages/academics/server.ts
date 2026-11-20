@@ -7,16 +7,20 @@ import {
 	requirePermission,
 } from "#/packages/auth/permissions.ts";
 import {
+	createClass,
 	createClassroom,
 	createCourse,
+	deleteClass,
 	deleteClassroom,
 	deleteCourse,
 	enrollStudents,
 	getCourse,
+	listClasses,
 	listClassrooms,
 	listCourses,
 	listStaffForCourses,
 	removeEnrollment,
+	updateClass,
 	updateClassroom,
 	updateCourse,
 } from "./courses-service.ts";
@@ -62,13 +66,14 @@ export const getAcademicsDataFn = createServerFn().handler(async () => {
 	try {
 		await requireManager();
 
-		const [courses, classrooms, staff] = await Promise.all([
+		const [courses, classrooms, classes, staff] = await Promise.all([
 			listCourses({ includeInactive: true }),
 			listClassrooms({ includeInactive: true }),
+			listClasses(),
 			listStaffForCourses(),
 		]);
 
-		return { success: true as const, courses, classrooms, staff };
+		return { success: true as const, courses, classrooms, classes, staff };
 	} catch (error) {
 		return failure(error);
 	}
@@ -133,6 +138,55 @@ export const deleteClassroomAction = createServerFn()
 		try {
 			await requireManager();
 			await deleteClassroom(data.id);
+
+			return { success: true as const };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+const classSchema = z.object({
+	grade: z.string().trim().min(1, "Grade is required").max(80),
+	section: z.string().trim().min(1, "Section is required").max(20),
+	roomNo: z.string().trim().optional(),
+	capacity: z.number().int().positive().max(1000).optional(),
+	classTeacherId: z.string().trim().nullable().optional(),
+	academicYear: z.string().trim().optional(),
+});
+
+export const createClassAction = createServerFn()
+	.validator(classSchema)
+	.handler(async ({ data }) => {
+		try {
+			await requireManager();
+			const classroom = await createClass(data);
+
+			return { success: true as const, classroom };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+export const updateClassAction = createServerFn()
+	.validator(classSchema.partial().extend({ id: z.string().min(1) }))
+	.handler(async ({ data }) => {
+		try {
+			const { id, ...input } = data;
+			await requireManager();
+			const classroom = await updateClass(id, input);
+
+			return { success: true as const, classroom };
+		} catch (error) {
+			return failure(error);
+		}
+	});
+
+export const deleteClassAction = createServerFn()
+	.validator(z.object({ id: z.string().min(1) }))
+	.handler(async ({ data }) => {
+		try {
+			await requireManager();
+			await deleteClass(data.id);
 
 			return { success: true as const };
 		} catch (error) {

@@ -84,9 +84,9 @@ Sources: full codebase audit 2026-11-06. Cross-refs: [PRD.md](./PRD.md), [Tasks.
 - ✅ TanStack Start (SSR) + React 19 + React Compiler + Tailwind v4; `#/*` alias
 - ✅ Zod validation on every server function (`.validator`); env validated via t3-env (exit-on-invalid)
 - ✅ Prisma 7 + pg adapter; 4 versioned migrations; idempotent seed (org, branch, superadmin, activation link, starter content); `db:migrate:status` tooling
-- ✅ Docker 3-stage non-root image; compose (postgres17) + optional MinIO overlay (requires pinned `MINIO_IMAGE`)
-- ✅ CI: `verify` (npm ci → prisma generate → tsc → biome → unit tests → build) plus an `integration` job with a Postgres 17 service that applies migrations from scratch, seeds and runs `npm run test:integration` against local storage
-- ✅ Tests: 220 unit/UI (17 files) including academics/transport/admin server actions, contact persistence/flood limits and notice audience scoping; 8 integration (club-attachments, local+S3); 5 Playwright e2e — e2e remains out of CI (needs a separately started app)
+- ✅ Docker 3-stage non-root image; compose (postgres17 + MinIO with bucket bootstrap)
+- ✅ CI: `verify` (npm ci → prisma generate → tsc → biome → build)
+- ❌ Automated tests removed by request (unit, integration and e2e suites deleted)
 - 🟡 Email: configurable SMTP host/port/secure/from with env defaults preserving Gmail, graceful not-configured fallback, 7 email types — still no `MailLog` delivery table
 - 🟡 Live state: zustand `school-store` has zero consumers; TanStack Query wired for SSR but **zero** `useQuery` call sites (all data via loaders + manual action calls)
 - ✅ Design system: one semantic token set mapped to the cream/red palette, Fraunces bound to marketing headings, `--positive`/`--info`, config-driven CSS variables at SSR; `src/components/ui` primitives started (DS-2 still partial)

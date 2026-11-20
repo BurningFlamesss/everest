@@ -15,6 +15,16 @@ export interface ClassroomInput {
 	context?: InviteContext;
 }
 
+export interface ClassInput {
+	grade: string;
+	section: string;
+	roomNo?: string;
+	capacity?: number;
+	classTeacherId?: string | null;
+	academicYear?: string;
+	context?: InviteContext;
+}
+
 export interface CourseInput {
 	code: string;
 	name: string;
@@ -84,6 +94,71 @@ export async function updateClassroom(
 
 export async function deleteClassroom(id: string) {
 	return prisma.classroom.delete({ where: { id } });
+}
+
+export async function listClasses() {
+	return prisma.schoolClass.findMany({
+		include: {
+			classTeacher: {
+				include: { user: { select: { name: true } } },
+			},
+			_count: { select: { students: true } },
+		},
+		orderBy: [{ order: "asc" }, { grade: "asc" }, { section: "asc" }],
+	});
+}
+
+export async function createClass(input: ClassInput) {
+	const context = input.context ?? (await getDefaultInviteContext());
+	const order = await prisma.schoolClass.count({
+		where: { branchId: context.branchId },
+	});
+
+	return prisma.schoolClass.create({
+		data: {
+			branchId: context.branchId,
+			name: `${input.grade.trim()} · ${input.section.trim()}`,
+			grade: input.grade.trim(),
+			section: input.section.trim(),
+			roomNo: clean(input.roomNo),
+			capacity: input.capacity ?? 40,
+			classTeacherId: input.classTeacherId || null,
+			academicYear: clean(input.academicYear),
+			order,
+		},
+	});
+}
+
+export async function updateClass(id: string, input: Partial<ClassInput>) {
+	const existing = await prisma.schoolClass.findUnique({ where: { id } });
+
+	if (!existing) throw new Error("CLASS_NOT_FOUND");
+
+	const grade = input.grade?.trim() ?? existing.grade;
+	const section = input.section?.trim() ?? existing.section;
+
+	return prisma.schoolClass.update({
+		where: { id },
+		data: {
+			...((input.grade !== undefined || input.section !== undefined) && {
+				grade,
+				section,
+				name: `${grade} · ${section}`,
+			}),
+			...(input.roomNo !== undefined ? { roomNo: clean(input.roomNo) } : {}),
+			...(input.capacity !== undefined ? { capacity: input.capacity } : {}),
+			...(input.classTeacherId !== undefined
+				? { classTeacherId: input.classTeacherId || null }
+				: {}),
+			...(input.academicYear !== undefined
+				? { academicYear: clean(input.academicYear) }
+				: {}),
+		},
+	});
+}
+
+export async function deleteClass(id: string) {
+	return prisma.schoolClass.delete({ where: { id } });
 }
 
 export async function listCourses(options?: {

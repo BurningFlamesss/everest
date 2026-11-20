@@ -476,3 +476,88 @@ export const routines: Routine[] = [
 
 export const routineByKey = (key: string): Routine | undefined =>
 	routines.find((r) => r.key === key);
+
+/** Coerce one CMS routine row into a Routine, tolerating missing fields. */
+export function routineFromRow(
+	raw: Record<string, unknown> | undefined,
+): Routine | undefined {
+	if (!raw || typeof raw !== "object") return undefined;
+	const key = typeof raw.key === "string" ? raw.key : "";
+	if (!key) return undefined;
+
+	const periods = Array.isArray(raw.periods)
+		? raw.periods.map((period) => {
+				const item =
+					period && typeof period === "object"
+						? (period as Record<string, unknown>)
+						: {};
+				return {
+					label: typeof item.label === "string" ? item.label : "",
+					start: typeof item.start === "string" ? item.start : "",
+					end: typeof item.end === "string" ? item.end : "",
+					isBreak: item.isBreak === true || item.isBreak === "true",
+				};
+			})
+		: [];
+
+	const rows = Array.isArray(raw.rows)
+		? raw.rows.map((row) => {
+				const item =
+					row && typeof row === "object"
+						? (row as Record<string, unknown>)
+						: {};
+				return {
+					day: (typeof item.day === "string"
+						? item.day
+						: "Sunday") as Routine["rows"][number]["day"],
+					slots: Array.isArray(item.slots)
+						? item.slots.filter(
+								(slot): slot is string => typeof slot === "string",
+							)
+						: [],
+				};
+			})
+		: [];
+
+	return {
+		key: key as Routine["key"],
+		label: typeof raw.label === "string" ? raw.label : key,
+		shift: typeof raw.shift === "string" ? raw.shift : "",
+		room: typeof raw.room === "string" ? raw.room : "",
+		effectiveFrom:
+			typeof raw.effectiveFrom === "string" ? raw.effectiveFrom : "",
+		periods,
+		rows,
+	};
+}
+
+/**
+ * The section routines saved in the `academics` CMS section, merged over the
+ * bundled defaults so every section keeps a routine even before it is edited.
+ */
+export function routinesFromFields(
+	fields: Record<string, unknown>,
+	base: Routine[] = routines,
+): Routine[] {
+	const saved = Array.isArray(fields.routines)
+		? fields.routines
+				.map((row) =>
+					routineFromRow(
+						row && typeof row === "object"
+							? (row as Record<string, unknown>)
+							: undefined,
+					),
+				)
+				.filter((routine): routine is Routine => Boolean(routine))
+		: [];
+
+	if (saved.length === 0) return base;
+
+	const merged = base.map(
+		(routine) => saved.find((item) => item.key === routine.key) ?? routine,
+	);
+	for (const routine of saved) {
+		if (!merged.some((item) => item.key === routine.key)) merged.push(routine);
+	}
+	return merged;
+}

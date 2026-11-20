@@ -47,6 +47,35 @@ export const deleteProgramServer = createServerFn({ method: "POST" })
 		await prisma.program.delete({ where: { id } });
 	});
 
+/**
+ * Pin (or unpin) one programme as the level's "most-chosen" programme. The
+ * public courses header shows the pinned programme, so pinning clears the flag
+ * on every other programme at the same level in one transaction.
+ */
+export const pinProgramServer = createServerFn({ method: "POST" })
+	.middleware([requirePermission("courses.manage")])
+	.validator(
+		z.object({ id: z.string().min(1), spotlight: z.boolean().default(true) }),
+	)
+	.handler(async ({ data: { id, spotlight } }) => {
+		return await prisma.$transaction(async (tx) => {
+			const program = await tx.program.findUnique({ where: { id } });
+			if (!program) throw new Error("PROGRAMME_NOT_FOUND");
+
+			if (spotlight) {
+				await tx.program.updateMany({
+					where: { level: program.level, spotlight: true },
+					data: { spotlight: false },
+				});
+			}
+
+			return tx.program.update({
+				where: { id },
+				data: { spotlight },
+			});
+		});
+	});
+
 const facilitySaveSchema = z.object({
 	id: z.string().optional(),
 	name: z.string().min(1),
@@ -282,6 +311,7 @@ const facultySaveSchema = z.object({
 	extension: z.string().default(""),
 	officeHours: z.string().default(""),
 	bio: z.string().default(""),
+	image: z.string().default(""),
 	joined: z.string().default(""),
 	leadership: z.boolean().default(false),
 	rank: z.number().int().nullable().optional(),

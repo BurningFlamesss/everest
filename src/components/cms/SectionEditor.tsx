@@ -27,6 +27,14 @@ interface SectionEditorProps {
 	canManage: boolean;
 	saving: boolean;
 	onSave: (fields: Record<string, unknown>) => void;
+	/**
+	 * Restrict the rendered fields to these keys. The full field set is still
+	 * submitted on save, so a page-skeleton editor can edit one visual block
+	 * without overwriting the rest of the section.
+	 */
+	onlyKeys?: string[];
+	/** Optional panel heading; defaults to the section label. */
+	title?: string;
 }
 
 type ListField =
@@ -56,6 +64,8 @@ export function SectionEditor({
 	canManage,
 	saving,
 	onSave,
+	onlyKeys,
+	title,
 }: SectionEditorProps) {
 	const [draft, setDraft] = useState<Record<string, unknown>>({});
 
@@ -86,7 +96,10 @@ export function SectionEditor({
 		);
 	}
 
-	const defs = BLOCK_FIELDS[sectionType] ?? [];
+	const allDefs = BLOCK_FIELDS[sectionType] ?? [];
+	const defs = onlyKeys
+		? allDefs.filter((field) => onlyKeys.includes(field.key))
+		: allDefs;
 	const set = (key: string, value: unknown) =>
 		setDraft((current) => ({ ...current, [key]: value }));
 
@@ -214,7 +227,7 @@ export function SectionEditor({
 	return (
 		<Panel
 			eyebrow="Section editor"
-			title={sectionLabel(sectionType)}
+			title={title ?? sectionLabel(sectionType)}
 			description={sectionType.replace(/_/g, " ")}
 			testId="cms-section-editor"
 			bodyClassName="p-0"

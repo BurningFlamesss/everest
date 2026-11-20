@@ -1,39 +1,47 @@
-import { useMemo, useState } from "react";
-import { routines } from "#/lib/routines";
+import { useEffect, useMemo, useState } from "react";
+import type { Routine } from "#/types";
 import { RoutineTable } from "../shared/RoutineTable";
 import { Eyebrow, WidgetCaption } from "../Text";
 
-export function RoutineViewer() {
-	const [selectedClass, setSelectedClass] = useState("Grade 11-12 (Science)");
-	const [selectedSection, setSelectedSection] = useState("A");
-	const [selectedShift, setSelectedShift] = useState("Morning");
+/**
+ * Public section routine. The timetable is section-specific, so the selector
+ * lists the same routines the school publishes (grades 1–5, 6–8, 9–10, +2
+ * Science, +2 Management and any admin-defined sections).
+ */
+export function RoutineViewer({
+	routines,
+	initialKey,
+}: {
+	routines: Routine[];
+	initialKey?: string;
+}) {
+	const [selectedKey, setSelectedKey] = useState(
+		initialKey && routines.some((routine) => routine.key === initialKey)
+			? initialKey
+			: (routines[0]?.key ?? ""),
+	);
 
-	// Mocking the classes/sections/shifts based on what exists
-	const classes = [
-		"Grade 11-12 (Science)",
-		"Grade 11-12 (Management)",
-		"Basic Level (Grade 6-8)",
-	];
-	const sections = ["A", "B", "C"];
-	const shifts = ["Morning", "Day"];
+	useEffect(() => {
+		if (initialKey && routines.some((routine) => routine.key === initialKey)) {
+			setSelectedKey(initialKey);
+		}
+	}, [initialKey, routines]);
 
-	const routineIdMap: Record<string, string> = {
-		"Grade 11-12 (Science)": "grade-11-12-science",
-		"Grade 11-12 (Management)": "grade-11-12-management",
-		"Basic Level (Grade 6-8)": "basic-level",
-	};
+	const routine = useMemo(
+		() => routines.find((item) => item.key === selectedKey) ?? routines[0],
+		[routines, selectedKey],
+	);
 
-	// Fallback to whichever is closest in the mock data, or render empty.
-	// In real implementation this would fetch the exact assigned routine.
-	const mappedKey = routineIdMap[selectedClass] || "basic-level";
-	const routine = useMemo(() => {
-		const raw = routines.find((r) => r.key === mappedKey) || routines[0];
-		return {
-			...raw,
-			label: `${selectedClass} - Section ${selectedSection}`,
-			shift: `${selectedShift} Shift`,
-		};
-	}, [mappedKey, selectedClass, selectedSection, selectedShift]);
+	if (!routine) {
+		return (
+			<div className="flex flex-col gap-2" data-testid="routine-viewer">
+				<Eyebrow tone="muted">Class routine</Eyebrow>
+				<WidgetCaption>
+					No section routines have been published yet.
+				</WidgetCaption>
+			</div>
+		);
+	}
 
 	return (
 		<div className="flex flex-col gap-8" data-testid="routine-viewer">
@@ -44,64 +52,25 @@ export function RoutineViewer() {
 				</WidgetCaption>
 			</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-				<label className="flex flex-col gap-1.5 text-sm font-medium text-foreground">
-					Class
-					<select
-						value={selectedClass}
-						onChange={(e) => setSelectedClass(e.target.value)}
-						className="flex min-h-11 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-					>
-						{classes.map((c) => (
-							<option
-								key={c}
-								value={c}
-								className="text-foreground bg-background"
-							>
-								{c}
-							</option>
-						))}
-					</select>
-				</label>
-
-				<label className="flex flex-col gap-1.5 text-sm font-medium text-foreground">
-					Section
-					<select
-						value={selectedSection}
-						onChange={(e) => setSelectedSection(e.target.value)}
-						className="flex min-h-11 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-					>
-						{sections.map((s) => (
-							<option
-								key={s}
-								value={s}
-								className="text-foreground bg-background"
-							>
-								{s}
-							</option>
-						))}
-					</select>
-				</label>
-
-				<label className="flex flex-col gap-1.5 text-sm font-medium text-foreground">
-					Shift
-					<select
-						value={selectedShift}
-						onChange={(e) => setSelectedShift(e.target.value)}
-						className="flex min-h-11 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-					>
-						{shifts.map((sh) => (
-							<option
-								key={sh}
-								value={sh}
-								className="text-foreground bg-background"
-							>
-								{sh}
-							</option>
-						))}
-					</select>
-				</label>
-			</div>
+			<label className="flex max-w-sm flex-col gap-1.5 text-sm font-medium text-foreground">
+				Class
+				<select
+					value={routine.key}
+					onChange={(event) => setSelectedKey(event.target.value)}
+					data-testid="routine-class-select"
+					className="flex min-h-11 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+				>
+					{routines.map((item) => (
+						<option
+							key={item.key}
+							value={item.key}
+							className="text-foreground bg-background"
+						>
+							{item.label || item.key}
+						</option>
+					))}
+				</select>
+			</label>
 
 			<div className="-mx-2 sm:-mx-0">
 				<RoutineTable routine={routine} />

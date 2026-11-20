@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { GraduationCap, Pencil, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { GraduationCap, Layers, Pencil, Plus, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ConfirmDialog } from "#/components/common/ConfirmDialog";
 import { type Column, DataTable } from "#/components/common/DataTable";
@@ -28,21 +28,17 @@ import {
 } from "#/components/ui/select";
 import { Switch } from "#/components/ui/switch";
 import { Textarea } from "#/components/ui/textarea";
+import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
+import { levelsFromFields } from "#/lib/programs";
+import { getWebsitePage, saveSectionFields } from "#/lib/website-admin-api";
 import { getProgramsServer } from "#/packages/content/server/content";
 import {
 	deleteProgramServer,
 	saveProgramServer,
 } from "#/packages/content/server/mutations";
+import { ProgrammeLevelsDialog } from "#/pages/admin/programmes/ProgrammeLevelsDialog";
 import { useAuth } from "#/providers/AuthProvider";
-import type { FeeLine, Program, Subject } from "#/types/index";
-
-const LEVELS = [
-	{ id: "basic", label: "Early Years & Primary" },
-	{ id: "lower-secondary", label: "Lower Secondary" },
-	{ id: "secondary", label: "Secondary" },
-	{ id: "plus2-science", label: "+2 Science" },
-	{ id: "plus2-management", label: "+2 Management" },
-];
+import type { FeeLine, Level, Program, Subject } from "#/types/index";
 
 const ROUTINE_KEYS = [
 	{ id: "grade-1-5", label: "Grade 1 – 5" },
@@ -91,16 +87,52 @@ function blankProgram(): Partial<Program> {
 }
 
 export default function ProgrammesPage() {
-	const { can } = useAuth();
+	const { actor, can } = useAuth();
 	const canManage = can("courses.manage");
 	const qc = useQueryClient();
 	const [open, setOpen] = useState(false);
+	const [levelsOpen, setLevelsOpen] = useState(false);
 	const [editing, setEditing] = useState<Partial<Program> | null>(null);
 	const [pendingDelete, setPendingDelete] = useState<Program | null>(null);
 
 	const { data: programs = [], isLoading } = useQuery({
 		queryKey: ["programs"],
 		queryFn: () => getProgramsServer(),
+	});
+
+	const { data: coursesPage } = useQuery({
+		queryKey: ["website-page", "courses"],
+		queryFn: () => getWebsitePage("courses"),
+	});
+
+	const academicsSection = useMemo(
+		() => ({
+			...sectionDefaults("academics"),
+			...getSectionFields(coursesPage?.blocks, "academics"),
+		}),
+		[coursesPage],
+	);
+	const levelOptions = useMemo<Level[]>(
+		() => levelsFromFields(academicsSection),
+		[academicsSection],
+	);
+
+	const saveLevelsMutation = useMutation({
+		mutationFn: (next: Level[]) =>
+			saveSectionFields(
+				"courses",
+				"academics",
+				{ ...academicsSection, levels: next, levelsComplete: true },
+				actor,
+			),
+		onSuccess: () => {
+			toast.success("Programme levels saved");
+			void qc.invalidateQueries({ queryKey: ["website-page", "courses"] });
+			void qc.invalidateQueries({ queryKey: ["content"] });
+			setLevelsOpen(false);
+		},
+		onError: (error: Error) =>
+			toast.error(error.message || "Failed to save levels"),
 	});
 
 	const invalidate = () => {
@@ -164,7 +196,8 @@ export default function ProgrammesPage() {
 			key: "level",
 			header: "Level",
 			render: (row) =>
-				LEVELS.find((level) => level.id === row.level)?.label ?? row.level,
+				levelOptions.find((level) => level.id === row.level)?.label ??
+				row.level,
 		},
 		{ key: "seats", header: "Seats", render: (row) => String(row.seats) },
 		{
@@ -237,17 +270,31 @@ export default function ProgrammesPage() {
 				description="Every programme record shown on the public courses page: identity, copy, subjects, fees and the timetable it links to."
 				actions={
 					canManage ? (
-						<Button
-							size="sm"
-							className="gap-1.5"
-							data-testid="programme-add"
-							onClick={() => {
-								setEditing(blankProgram());
-								setOpen(true);
-							}}
-						>
-							<Plus className="h-3.5 w-3.5" /> Add Programme
-						</Button>
+						<div className="flex flex-wrap items-center gap-2">
+							<Button
+								variant="outline"
+								size="sm"
+								className="gap-1.5"
+								data-testid="programme-manage-levels"
+								onClick={() => setLevelsOpen(true)}
+							>
+								<Layers className="h-3.5 w-3.5" /> Manage levels
+							</Button>
+							<Button
+								size="sm"
+								className="gap-1.5"
+								data-testid="programme-add"
+								onClick={() => {
+									setEditing({
+										...blankProgram(),
+										level: levelOptions[0]?.id ?? "plus2-science",
+									});
+									setOpen(true);
+								}}
+							>
+								<Plus className="h-3.5 w-3.5" /> Add Programme
+							</Button>
+						</div>
 					) : null
 				}
 			/>
@@ -267,7 +314,10 @@ export default function ProgrammesPage() {
 						onPrimary={
 							canManage
 								? () => {
-										setEditing(blankProgram());
+										setEditing({
+											...blankProgram(),
+											level: levelOptions[0]?.id ?? "plus2-science",
+										});
 										setOpen(true);
 									}
 								: undefined
@@ -297,16 +347,14 @@ export default function ProgrammesPage() {
 								<div className="space-y-2">
 									<Label className="text-xs">Level</Label>
 									<Select
-										value={editing?.level ?? "plus2-science"}
-										onValueChange={(value: string) =>
-											setField("level", value as Program["level"])
-										}
+										value={editing?.level ?? levelOptions[0]?.id ?? ""}
+										onValueChange={(value: string) => setField("level", value)}
 									>
 										<SelectTrigger className="h-9">
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
-											{LEVELS.map((level) => (
+											{levelOptions.map((level) => (
 												<SelectItem key={level.id} value={level.id}>
 													{level.label}
 												</SelectItem>
@@ -752,6 +800,14 @@ export default function ProgrammesPage() {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+
+			<ProgrammeLevelsDialog
+				open={levelsOpen}
+				levels={levelOptions}
+				busy={saveLevelsMutation.isPending}
+				onOpenChange={setLevelsOpen}
+				onSave={(next) => saveLevelsMutation.mutate(next)}
+			/>
 
 			<ConfirmDialog
 				open={!!pendingDelete}

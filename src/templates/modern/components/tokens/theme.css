@@ -154,7 +154,10 @@
 	--m-label-shift: 6;
 	--m-arrow-shift: 3;
 	--m-press: 0.98;
-	--nav-w: var(--l-nav-width);
+	/* Set to the sidebar width by the Sidebar while it is open. Defaulting to 0
+	   keeps the content column centred when the sidebar never mounts (e.g. the
+	   database is unavailable and hydration fails). */
+	--nav-w: 0px;
 	--page-pad: var(--l-page-pad-mobile);
 	--hair: var(--l-hairline);
 }

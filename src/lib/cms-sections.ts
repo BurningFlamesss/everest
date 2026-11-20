@@ -721,6 +721,7 @@ export const SECTION_PAGE_HERO_DEFAULTS: Partial<
 			primaryCtaHref: string;
 			secondaryCtaLabel: string;
 			secondaryCtaHref: string;
+			image?: string;
 		}
 	>
 > = {
@@ -735,6 +736,7 @@ export const SECTION_PAGE_HERO_DEFAULTS: Partial<
 		primaryCtaHref: "/admissions",
 		secondaryCtaLabel: "Visit the campus",
 		secondaryCtaHref: "/contact",
+		image: "/schools/everest/landing-footage/frame_0139.jpeg",
 	},
 };
 

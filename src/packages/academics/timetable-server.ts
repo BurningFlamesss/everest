@@ -47,8 +47,10 @@ function failure(error: unknown) {
 
 const slotSchema = z.object({
 	academicYearId: z.string().min(1),
-	courseId: z.string().min(1),
+	classId: z.string().trim().nullable().optional(),
+	courseId: z.string().trim().nullable().optional(),
 	staffId: z.string().trim().nullable().optional(),
+	facultyMemberId: z.string().trim().nullable().optional(),
 	classroomId: z.string().trim().nullable().optional(),
 	weekday: z.number().int().min(1).max(7),
 	periodIndex: z.number().int().min(1).max(20),
@@ -68,11 +70,18 @@ export const getTimetableOptionsFn = createServerFn().handler(async () => {
 });
 
 export const getTimetableDataFn = createServerFn()
-	.validator(z.object({ academicYearId: z.string().optional() }).optional())
+	.validator(
+		z
+			.object({
+				academicYearId: z.string().optional(),
+				classId: z.string().optional(),
+			})
+			.optional(),
+	)
 	.handler(async ({ data }) => {
 		try {
 			await requireManager();
-			const slots = await listTimetable(data?.academicYearId);
+			const slots = await listTimetable(data?.academicYearId, data?.classId);
 
 			return { success: true as const, slots };
 		} catch (error) {
@@ -89,7 +98,10 @@ export const createTimetableSlotAction = createServerFn()
 
 			return {
 				success: true as const,
-				slots: await listTimetable(data.academicYearId),
+				slots: await listTimetable(
+					data.academicYearId,
+					data.classId ?? undefined,
+				),
 			};
 		} catch (error) {
 			return failure(error);

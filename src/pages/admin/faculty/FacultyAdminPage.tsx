@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { ConfirmDialog } from "#/components/common/ConfirmDialog";
 import { type Column, DataTable } from "#/components/common/DataTable";
 import { EmptyState } from "#/components/common/EmptyState";
+import { ImageUploader } from "#/components/common/ImageUploader";
 import { PageHeader } from "#/components/common/PageHeader";
 import { Button } from "#/components/ui/button";
 import {
@@ -38,6 +39,7 @@ interface FacultyRow {
 	extension: string;
 	officeHours: string;
 	bio: string;
+	image: string;
 	joined: string;
 	leadership: boolean;
 	rank: number | null;
@@ -314,6 +316,15 @@ export default function FacultyAdminPage() {
 								/>
 							</div>
 						</div>
+						<ImageUploader
+							value={editing?.image || undefined}
+							label="Faculty portrait"
+							aspect="aspect-[3/4]"
+							testId="faculty-form-image"
+							onChange={(url: string | undefined) =>
+								setEditing((p) => ({ ...p, image: url ?? "" }))
+							}
+						/>
 						<div className="space-y-2">
 							<Label className="text-xs">Bio</Label>
 							<Textarea

@@ -80,7 +80,7 @@ Admissions pipeline (applications/enquiry forms), library (catalog/loans/fines),
 | `MailLog` delivery visibility still absent | mail | T-21 |
 
 ## 6. Success Criteria (per release)
-1. `npx tsc --noEmit`, `npx biome check src`, `npm test` all green; schema change ships with a versioned migration + updated seed.
+1. `npx tsc --noEmit`, `npx biome check src`, and `npm run build` all green; schema change ships with a versioned migration + updated seed.
 2. New admin surfaces are permission-gated server-side (not just UI-hidden), follow the `getXFn` / `*Action` + `{ success, error }` envelope conventions ([Architecture.md](./Architecture.md) §Conventions).
 3. Every new student/guardian-visible surface also works for anonymous visitors without leaking records.
 4. The public site pages remain LCP-friendly: no blocking client data fetch on public routes.

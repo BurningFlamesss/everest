@@ -567,6 +567,11 @@ export type CourseMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type CourseNullableScalarRelationFilter = {
+  is?: Prisma.CourseWhereInput | null
+  isNot?: Prisma.CourseWhereInput | null
+}
+
 export type CourseCreateNestedManyWithoutOrganizationInput = {
   create?: Prisma.XOR<Prisma.CourseCreateWithoutOrganizationInput, Prisma.CourseUncheckedCreateWithoutOrganizationInput> | Prisma.CourseCreateWithoutOrganizationInput[] | Prisma.CourseUncheckedCreateWithoutOrganizationInput[]
   connectOrCreate?: Prisma.CourseCreateOrConnectWithoutOrganizationInput | Prisma.CourseCreateOrConnectWithoutOrganizationInput[]
@@ -797,10 +802,12 @@ export type CourseCreateNestedOneWithoutTimetableSlotsInput = {
   connect?: Prisma.CourseWhereUniqueInput
 }
 
-export type CourseUpdateOneRequiredWithoutTimetableSlotsNestedInput = {
+export type CourseUpdateOneWithoutTimetableSlotsNestedInput = {
   create?: Prisma.XOR<Prisma.CourseCreateWithoutTimetableSlotsInput, Prisma.CourseUncheckedCreateWithoutTimetableSlotsInput>
   connectOrCreate?: Prisma.CourseCreateOrConnectWithoutTimetableSlotsInput
   upsert?: Prisma.CourseUpsertWithoutTimetableSlotsInput
+  disconnect?: Prisma.CourseWhereInput | boolean
+  delete?: Prisma.CourseWhereInput | boolean
   connect?: Prisma.CourseWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.CourseUpdateToOneWithWhereWithoutTimetableSlotsInput, Prisma.CourseUpdateWithoutTimetableSlotsInput>, Prisma.CourseUncheckedUpdateWithoutTimetableSlotsInput>
 }

@@ -59,6 +59,52 @@ export const levels: Level[] = [
 	},
 ];
 
+/**
+ * Programme levels from the courses CMS section. Admins can regroup levels
+ * (e.g. "Montessori · Nursery · KG" and "Class 1–8"), so a saved complete list
+ * wins outright; older partial overrides are merged onto the bundled levels.
+ */
+export function levelsFromFields(fields: Record<string, unknown>): Level[] {
+	const raw = Array.isArray(fields.levels) ? fields.levels : [];
+	const saved = raw
+		.map((row) => (row && typeof row === "object" ? row : null))
+		.filter((row): row is Record<string, unknown> => Boolean(row))
+		.map((row) => ({
+			id: String(row.id ?? "").trim(),
+			label: String(row.label ?? "").trim(),
+			short: String(row.short ?? "").trim(),
+			grades: String(row.grades ?? "").trim(),
+			board: String(row.board ?? "").trim(),
+			tagline: String(row.tagline ?? "").trim(),
+			description: String(row.description ?? "").trim(),
+			image: String(row.image ?? "").trim(),
+		}))
+		.filter((row) => row.id && row.label);
+
+	if (saved.length === 0) return levels;
+	if (fields.levelsComplete === true) return saved;
+
+	const merged = levels.map((base) => {
+		const override = saved.find((row) => row.id === base.id);
+		if (!override) return base;
+		return {
+			...base,
+			label: override.label || base.label,
+			short: override.short || base.short,
+			grades: override.grades || base.grades,
+			board: override.board || base.board,
+			tagline: override.tagline || base.tagline,
+			description: override.description || base.description,
+			image: override.image || base.image,
+		};
+	});
+
+	return [
+		...merged,
+		...saved.filter((row) => !levels.some((base) => base.id === row.id)),
+	];
+}
+
 export const programs: Program[] = [
 	/* ------------------------------ Basic ------------------------------ */
 	{

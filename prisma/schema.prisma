@@ -415,6 +415,8 @@ model SchoolClass {
   students   Student[]
   attendance AttendanceRecord[]
 
+  timetableSlots TimetableSlot[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -672,6 +674,8 @@ model ContentBlock {
 /// faculty-page-detail route is driven from the database instead of static files.
 model FacultyMember {
   id            String   @id @default(cuid())
+
+  timetableSlots TimetableSlot[]
   slug          String   @unique
   name          String
   role          String
@@ -683,6 +687,7 @@ model FacultyMember {
   extension     String
   officeHours   String
   bio           String
+  image         String?
   joined        String
   leadership    Boolean  @default(false)
   rank          Int?
@@ -1682,11 +1687,20 @@ model TimetableSlot {
   academicYearId String
   academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
 
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  /// Homeroom class/section this period belongs to. The timetable is now
+  /// class-first; `courseId` remains the optional subject taught in it.
+  classId String?
+  class   SchoolClass? @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  courseId String?
+  course   Course? @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   staffId String?
   staff   Staff?  @relation(fields: [staffId], references: [id], onDelete: SetNull)
+
+  /// Canonical faculty record chosen in the timetable teacher picker.
+  facultyMemberId String?
+  facultyMember   FacultyMember? @relation(fields: [facultyMemberId], references: [id], onDelete: SetNull)
 
   classroomId String?
   classroom   Classroom? @relation(fields: [classroomId], references: [id], onDelete: SetNull)
@@ -1701,8 +1715,10 @@ model TimetableSlot {
   updatedAt DateTime @updatedAt
 
   @@unique([academicYearId, courseId, weekday, periodIndex])
+  @@unique([academicYearId, classId, weekday, periodIndex])
   @@index([academicYearId, weekday, periodIndex])
   @@index([staffId, weekday])
+  @@index([classId, weekday])
   @@index([classroomId, weekday])
 }
 

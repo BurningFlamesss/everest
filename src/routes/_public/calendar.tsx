@@ -35,6 +35,7 @@ import {
 	WEEKDAYS_NE,
 	WEEKDAYS_SHORT,
 } from "#/lib/nepaliDate";
+import { routinesFromFields } from "#/lib/routines";
 import { cn } from "#/lib/utils";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import {
@@ -118,8 +119,16 @@ function RouteComponent() {
 	const cms = search.cms;
 	const { previewPage } = Route.useLoaderData();
 	const publishedContent = useWebsitePageContent("calendar");
+	const coursesContent = useWebsitePageContent("courses");
 	const preview = String(cms ?? "") === "1";
 	const cmsData = (preview ? previewPage : publishedContent) as any;
+	const academicsSection = {
+		...sectionDefaults("academics"),
+		...getSectionFields((coursesContent as any)?.blocks, "academics"),
+	};
+	const routines = routinesFromFields(academicsSection);
+	const requestedRoutine =
+		typeof search.routine === "string" ? search.routine : undefined;
 
 	const headerSection = {
 		...sectionDefaults("headline"),
@@ -659,7 +668,7 @@ function RouteComponent() {
 			</CmsSectionBox>
 
 			<ChromeSection testId="calendar-routine">
-				<RoutineViewer />
+				<RoutineViewer routines={routines} initialKey={requestedRoutine} />
 			</ChromeSection>
 		</PageFrame>
 	);

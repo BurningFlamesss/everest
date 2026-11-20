@@ -508,7 +508,7 @@ function ClosingHero({ closing }: { closing: Record<string, unknown> }) {
 							<Link
 								to={secondaryHref as never}
 								data-testid="landing-hero-secondary-cta"
-								className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-medium text-black transition-colors duration-200 hover:text-[var(--c-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FEF2F2]"
+								className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-medium text-black no-underline transition-colors duration-200 hover:text-[var(--c-red)] hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FEF2F2]"
 							>
 								<span className="border-b border-black/30 pb-1 transition-colors duration-200 group-hover:border-[var(--c-red)]">
 									{str(closing, "secondaryCtaLabel", "Visit the campus")}
@@ -530,7 +530,7 @@ function ClosingHero({ closing }: { closing: Record<string, unknown> }) {
 							/>
 							<div className="absolute inset-x-[10px] bottom-0 top-[10px] overflow-hidden rounded-t-full bg-[#16181d]">
 								<img
-									src={CLOSING_IMAGE}
+									src={str(closing, "image", CLOSING_IMAGE)}
 									alt="The brick façade of Everest English Boarding, its flags flying above the roofline in Butwal."
 									className="h-full w-full object-cover object-[50%_60%] transition-transform duration-700 ease-out hover:scale-[1.03]"
 								/>

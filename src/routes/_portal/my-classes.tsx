@@ -68,7 +68,9 @@ function MyClasses() {
 										>
 											<div className="min-w-0">
 												<p className="text-[14px] font-medium text-foreground">
-													{slot.course.code} · {slot.course.name}
+													{slot.course
+														? `${slot.course.code} · ${slot.course.name}`
+														: (slot.class?.name ?? "Class period")}
 												</p>
 												<p className="t-meta mt-1">
 													{slot.startsAt}–{slot.endsAt}

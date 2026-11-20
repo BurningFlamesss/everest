@@ -185,6 +185,108 @@ async function main() {
     skipDuplicates: true
   })
 
+  // Starter classes and rooms make the operational timetable usable on a
+  // fresh database. Existing rows are matched by branch + name and kept.
+  const starterClasses = [
+    ...["Nursery", "LKG", "UKG"].map((grade) => ({ grade, section: "A" })),
+    ...Array.from({ length: 10 }, (_, index) => ({
+      grade: `Grade ${index + 1}`,
+      section: "A",
+    })),
+    { grade: "Grade 11 · Science", section: "A" },
+    { grade: "Grade 11 · Management", section: "A" },
+    { grade: "Grade 12 · Science", section: "A" },
+    { grade: "Grade 12 · Management", section: "A" },
+  ];
+
+  for (const [index, entry] of starterClasses.entries()) {
+    const name = `${entry.grade} · ${entry.section}`;
+    const existing = await prisma.schoolClass.findFirst({
+      where: { branchId: branch.id, name },
+      select: { id: true },
+    });
+
+    if (!existing) {
+      await prisma.schoolClass.create({
+        data: {
+          branchId: branch.id,
+          name,
+          grade: entry.grade,
+          section: entry.section,
+          roomNo: String(101 + index),
+          capacity: 40,
+          academicYear: academicYear.name,
+          order: index,
+        },
+      });
+    }
+  }
+
+  const starterRooms = [
+    "Room 101",
+    "Room 102",
+    "Room 103",
+    "Room 104",
+    "Room 105",
+    "Science Lab",
+    "Computer Lab",
+    "Library",
+  ];
+
+  for (const name of starterRooms) {
+    await prisma.classroom.upsert({
+      where: { branchId_name: { branchId: branch.id, name } },
+      update: {},
+      create: {
+        organizationId: organization.id,
+        branchId: branch.id,
+        name,
+        building: "Main Block",
+        capacity: 40,
+        isActive: true,
+      },
+    });
+  }
+
+  // The subject catalogue used by Academics → Courses and the timetable.
+  const starterSubjects = [
+    { code: "ENG", name: "English" },
+    { code: "NEP", name: "Nepali" },
+    { code: "MAT", name: "Mathematics" },
+    { code: "SCI", name: "Science" },
+    { code: "SOC", name: "Social Studies" },
+    { code: "CMP", name: "Computer Science" },
+    { code: "HPE", name: "Health & Physical Education" },
+    { code: "MOR", name: "Moral Education" },
+    { code: "OPT-MAT", name: "Optional Mathematics" },
+    { code: "PHY", name: "Physics" },
+    { code: "CHE", name: "Chemistry" },
+    { code: "BIO", name: "Biology" },
+    { code: "ACC", name: "Accountancy" },
+    { code: "ECO", name: "Economics" },
+    { code: "BUS", name: "Business Studies" },
+    { code: "BUS-MAT", name: "Business Mathematics" },
+  ];
+
+  for (const subject of starterSubjects) {
+    await prisma.course.upsert({
+      where: {
+        organizationId_code: {
+          organizationId: organization.id,
+          code: subject.code,
+        },
+      },
+      update: {},
+      create: {
+        organizationId: organization.id,
+        branchId: branch.id,
+        code: subject.code,
+        name: subject.name,
+        isActive: true,
+      },
+    });
+  }
+
   // The super admin should not receive a fresh invite on every seed run.
   const existingInvite = await prisma.invite.findFirst({
     where: { userId: user.id, usedAt: null },
@@ -199,31 +301,6 @@ async function main() {
 				Date.now() + 1000 * 60 * 60 * 24 * 7,
 			),
 		},
-  })
-
-  // A small set of starter content so the public pages are never empty.
-  // Notices are public content with no unique key besides `id`, so this is a
-  // delete-and-recreate rather than an upsert.
-  await prisma.notice.deleteMany({ where: { ref: "STARTER/2083/001" } })
-  await prisma.notice.create({
-    data: {
-      ref: "STARTER/2083/001",
-      title: "Welcome to the new school year",
-      summary:
-        "The school office shares the key dates and reminders for the start of the academic session.",
-      dateAd: new Date().toISOString().slice(0, 10),
-      dateBs: "2083-01-01",
-      audience: "All",
-      issuedBy: "School Office",
-      category: "General",
-      body: [
-        "Welcome back, everyone.",
-        "Classes resume on the first working day of the new session. Students should arrive by 9:00 with their uniforms, notebooks and a completed emergency contact form.",
-        "The office will publish the full calendar, including examination dates and parent meetings, under Events. Please check the Notices page regularly for updates.",
-      ],
-      attachments: [],
-      order: 0,
-    },
   })
 
   await prisma.event.upsert({
@@ -406,7 +483,18 @@ async function seedWebsitePages(_authorId: string, authorName: string, pages: Re
 
   for (const pageData of Object.values(pages)) {
     const key = pageData.key as WebsitePageKey;
-    await prisma.websitePage.upsert({
+    const blockData = pageData.blocks.map((block, index) => ({
+      type: block.type as BlockType,
+      label: block.label,
+      visible: block.visible,
+      order: block.order ?? index,
+      fields: block.fields as Record<string, string>,
+    }));
+
+    // Never overwrite a page an editor has already changed. On a fresh
+    // database this creates the page and its saved CMS blocks exactly as the
+    // school page currently looks.
+    const page = await prisma.websitePage.upsert({
       where: { key },
       update: {},
       create: {
@@ -419,23 +507,22 @@ async function seedWebsitePages(_authorId: string, authorName: string, pages: Re
         seoDescription: pageData.seoDescription,
         seoKeywords: pageData.seoKeywords,
         updatedBy: authorName,
-        blocks: {
-          create: pageData.blocks.map((block, index) => ({
-            type: block.type as BlockType,
-            label: block.label,
-            visible: block.visible,
-            order: block.order ?? index,
-            fields: block.fields as Record<string, string>,
-          })),
-        },
+        publishedAt: pageData.status === "published" ? new Date() : null,
+        blocks: { create: blockData },
       },
     });
 
-    if (pageData.status === "published") {
-      await prisma.websitePage.update({
-        where: { key },
-        data: { publishedAt: new Date() },
+    // Existing installs may predate the saved blocks in content.json. Fill
+    // only an empty page so editor-created sections are never overwritten.
+    if (blockData.length > 0) {
+      const existingBlocks = await prisma.contentBlock.count({
+        where: { pageId: page.id },
       });
+      if (existingBlocks === 0) {
+        await prisma.contentBlock.createMany({
+          data: blockData.map((block) => ({ ...block, pageId: page.id })),
+        });
+      }
     }
 
     console.log(`  ✓ ${pageData.title} (${pageData.key})`);
@@ -445,75 +532,95 @@ async function seedWebsitePages(_authorId: string, authorName: string, pages: Re
 async function seedPublicCollections() {
   console.log('🌱 Seeding public content collections...');
 
-  await prisma.facultyMember.deleteMany({});
-  await prisma.facultyMember.createMany({
-    data: people.map((person, index) => ({
-      slug: person.id,
-      name: person.name,
-      role: person.role,
-      department: person.department,
-      qualification: person.qualification,
-      experience: person.experience,
-      subjects: person.subjects,
-      email: person.email,
-      extension: person.extension,
-      officeHours: person.officeHours,
-      bio: person.bio,
-      joined: person.joined,
-      leadership: Boolean(person.leadership),
-      rank: person.rank ?? null,
-      order: index,
-    })),
-  });
+  // Upsert by the stable slug/title keys rather than deleting the collections.
+  // This keeps uploaded faculty portraits, edits, and timetable references
+  // intact when the seed is run again on a live installation.
+  for (const [index, person] of people.entries()) {
+    await prisma.facultyMember.upsert({
+      where: { slug: person.id },
+      update: {},
+      create: {
+        slug: person.id,
+        name: person.name,
+        role: person.role,
+        department: person.department,
+        qualification: person.qualification,
+        experience: person.experience,
+        subjects: person.subjects,
+        email: person.email,
+        extension: person.extension,
+        officeHours: person.officeHours,
+        bio: person.bio,
+        joined: person.joined,
+        leadership: Boolean(person.leadership),
+        rank: person.rank ?? null,
+        order: index,
+      },
+    });
+  }
   console.log(`  ✓ ${people.length} faculty members`);
 
-  await prisma.notice.deleteMany({});
-  await prisma.notice.createMany({
-    data: notices.map((notice, index) => ({
-      ref: notice.ref,
-      title: notice.title,
-      category: notice.category,
-      dateAd: notice.dateAd,
-      dateBs: notice.dateBs,
-      audience: notice.audience,
-      issuedBy: notice.issuedBy,
-      summary: notice.summary,
-      body: toJson(notice.body) as never,
-      bullets: toJson(notice.bullets) as never,
-      table: toJson(notice.table) as never,
-      attachments: toJson(notice.attachments) as never,
-      pinned: Boolean(notice.pinned),
-      order: index,
-    })),
-  });
+  for (const [index, notice] of notices.entries()) {
+    const existing = await prisma.notice.findFirst({
+      where: { ref: notice.ref },
+      select: { id: true },
+    });
+    if (existing) continue;
+
+    await prisma.notice.create({
+      data: {
+        ref: notice.ref,
+        title: notice.title,
+        category: notice.category,
+        dateAd: notice.dateAd,
+        dateBs: notice.dateBs,
+        audience: notice.audience,
+        issuedBy: notice.issuedBy,
+        summary: notice.summary,
+        body: toJson(notice.body) as never,
+        bullets: toJson(notice.bullets) as never,
+        table: toJson(notice.table) as never,
+        attachments: toJson(notice.attachments) as never,
+        pinned: Boolean(notice.pinned),
+        order: index,
+      },
+    });
+  }
   console.log(`  ✓ ${notices.length} notices`);
 
-  await prisma.scholarship.deleteMany({});
-  await prisma.scholarship.createMany({
-    data: scholarships.map((scholarship, index) => ({
-      ref: scholarship.ref,
-      name: scholarship.name,
-      nepaliName: scholarship.nepaliName,
-      category: scholarship.category,
-      coverage: scholarship.coverage,
-      award: scholarship.award,
-      amountNpr: scholarship.amountNpr,
-      seats: scholarship.seats,
-      deadlineAd: scholarship.deadlineAd,
-      deadlineBs: scholarship.deadlineBs,
-      appliesTo: scholarship.appliesTo,
-      summary: scholarship.summary,
-      description: scholarship.description,
-      eligibility: toJson(scholarship.eligibility) as never,
-      benefits: toJson(scholarship.benefits) as never,
-      documents: toJson(scholarship.documents) as never,
-      process: toJson(scholarship.process) as never,
-      renewal: scholarship.renewal,
-      contact: scholarship.contact,
-      spotlight: Boolean(scholarship.spotlight),
-      order: index,
-    })),
-  });
+  for (const [index, scholarship] of scholarships.entries()) {
+    const existing = await prisma.scholarship.findFirst({
+      where: { ref: scholarship.ref },
+      select: { id: true },
+    });
+    if (existing) continue;
+
+    await prisma.scholarship.create({
+      data: {
+        ref: scholarship.ref,
+        name: scholarship.name,
+        nepaliName: scholarship.nepaliName,
+        category: scholarship.category,
+        coverage: scholarship.coverage,
+        award: scholarship.award,
+        amountNpr: scholarship.amountNpr,
+        seats: scholarship.seats,
+        deadlineAd: scholarship.deadlineAd,
+        deadlineBs: scholarship.deadlineBs,
+        appliesTo: scholarship.appliesTo,
+        summary: scholarship.summary,
+        description: scholarship.description,
+        eligibility: toJson(scholarship.eligibility) as never,
+        benefits: toJson(scholarship.benefits) as never,
+        documents: toJson(scholarship.documents) as never,
+        process: toJson(scholarship.process) as never,
+        renewal: scholarship.renewal,
+        contact: scholarship.contact,
+        spotlight: Boolean(scholarship.spotlight),
+        order: index,
+      },
+    });
+  }
   console.log(`  ✓ ${scholarships.length} scholarships`);
 }
 

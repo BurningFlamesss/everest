@@ -39,8 +39,10 @@ export type TimetableSlotSumAggregateOutputType = {
 export type TimetableSlotMinAggregateOutputType = {
   id: string | null
   academicYearId: string | null
+  classId: string | null
   courseId: string | null
   staffId: string | null
+  facultyMemberId: string | null
   classroomId: string | null
   weekday: number | null
   periodIndex: number | null
@@ -53,8 +55,10 @@ export type TimetableSlotMinAggregateOutputType = {
 export type TimetableSlotMaxAggregateOutputType = {
   id: string | null
   academicYearId: string | null
+  classId: string | null
   courseId: string | null
   staffId: string | null
+  facultyMemberId: string | null
   classroomId: string | null
   weekday: number | null
   periodIndex: number | null
@@ -67,8 +71,10 @@ export type TimetableSlotMaxAggregateOutputType = {
 export type TimetableSlotCountAggregateOutputType = {
   id: number
   academicYearId: number
+  classId: number
   courseId: number
   staffId: number
+  facultyMemberId: number
   classroomId: number
   weekday: number
   periodIndex: number
@@ -93,8 +99,10 @@ export type TimetableSlotSumAggregateInputType = {
 export type TimetableSlotMinAggregateInputType = {
   id?: true
   academicYearId?: true
+  classId?: true
   courseId?: true
   staffId?: true
+  facultyMemberId?: true
   classroomId?: true
   weekday?: true
   periodIndex?: true
@@ -107,8 +115,10 @@ export type TimetableSlotMinAggregateInputType = {
 export type TimetableSlotMaxAggregateInputType = {
   id?: true
   academicYearId?: true
+  classId?: true
   courseId?: true
   staffId?: true
+  facultyMemberId?: true
   classroomId?: true
   weekday?: true
   periodIndex?: true
@@ -121,8 +131,10 @@ export type TimetableSlotMaxAggregateInputType = {
 export type TimetableSlotCountAggregateInputType = {
   id?: true
   academicYearId?: true
+  classId?: true
   courseId?: true
   staffId?: true
+  facultyMemberId?: true
   classroomId?: true
   weekday?: true
   periodIndex?: true
@@ -222,8 +234,10 @@ export type TimetableSlotGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 export type TimetableSlotGroupByOutputType = {
   id: string
   academicYearId: string
-  courseId: string
+  classId: string | null
+  courseId: string | null
   staffId: string | null
+  facultyMemberId: string | null
   classroomId: string | null
   weekday: number
   periodIndex: number
@@ -259,8 +273,10 @@ export type TimetableSlotWhereInput = {
   NOT?: Prisma.TimetableSlotWhereInput | Prisma.TimetableSlotWhereInput[]
   id?: Prisma.StringFilter<"TimetableSlot"> | string
   academicYearId?: Prisma.StringFilter<"TimetableSlot"> | string
-  courseId?: Prisma.StringFilter<"TimetableSlot"> | string
+  classId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
+  courseId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
   staffId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
+  facultyMemberId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
   classroomId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
   weekday?: Prisma.IntFilter<"TimetableSlot"> | number
   periodIndex?: Prisma.IntFilter<"TimetableSlot"> | number
@@ -269,16 +285,20 @@ export type TimetableSlotWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"TimetableSlot"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TimetableSlot"> | Date | string
   academicYear?: Prisma.XOR<Prisma.AcademicYearScalarRelationFilter, Prisma.AcademicYearWhereInput>
-  course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>
+  class?: Prisma.XOR<Prisma.SchoolClassNullableScalarRelationFilter, Prisma.SchoolClassWhereInput> | null
+  course?: Prisma.XOR<Prisma.CourseNullableScalarRelationFilter, Prisma.CourseWhereInput> | null
   staff?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
+  facultyMember?: Prisma.XOR<Prisma.FacultyMemberNullableScalarRelationFilter, Prisma.FacultyMemberWhereInput> | null
   classroom?: Prisma.XOR<Prisma.ClassroomNullableScalarRelationFilter, Prisma.ClassroomWhereInput> | null
 }
 
 export type TimetableSlotOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
-  courseId?: Prisma.SortOrder
+  classId?: Prisma.SortOrderInput | Prisma.SortOrder
+  courseId?: Prisma.SortOrderInput | Prisma.SortOrder
   staffId?: Prisma.SortOrderInput | Prisma.SortOrder
+  facultyMemberId?: Prisma.SortOrderInput | Prisma.SortOrder
   classroomId?: Prisma.SortOrderInput | Prisma.SortOrder
   weekday?: Prisma.SortOrder
   periodIndex?: Prisma.SortOrder
@@ -287,20 +307,25 @@ export type TimetableSlotOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   academicYear?: Prisma.AcademicYearOrderByWithRelationInput
+  class?: Prisma.SchoolClassOrderByWithRelationInput
   course?: Prisma.CourseOrderByWithRelationInput
   staff?: Prisma.StaffOrderByWithRelationInput
+  facultyMember?: Prisma.FacultyMemberOrderByWithRelationInput
   classroom?: Prisma.ClassroomOrderByWithRelationInput
 }
 
 export type TimetableSlotWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   academicYearId_courseId_weekday_periodIndex?: Prisma.TimetableSlotAcademicYearIdCourseIdWeekdayPeriodIndexCompoundUniqueInput
+  academicYearId_classId_weekday_periodIndex?: Prisma.TimetableSlotAcademicYearIdClassIdWeekdayPeriodIndexCompoundUniqueInput
   AND?: Prisma.TimetableSlotWhereInput | Prisma.TimetableSlotWhereInput[]
   OR?: Prisma.TimetableSlotWhereInput[]
   NOT?: Prisma.TimetableSlotWhereInput | Prisma.TimetableSlotWhereInput[]
   academicYearId?: Prisma.StringFilter<"TimetableSlot"> | string
-  courseId?: Prisma.StringFilter<"TimetableSlot"> | string
+  classId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
+  courseId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
   staffId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
+  facultyMemberId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
   classroomId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
   weekday?: Prisma.IntFilter<"TimetableSlot"> | number
   periodIndex?: Prisma.IntFilter<"TimetableSlot"> | number
@@ -309,16 +334,20 @@ export type TimetableSlotWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"TimetableSlot"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TimetableSlot"> | Date | string
   academicYear?: Prisma.XOR<Prisma.AcademicYearScalarRelationFilter, Prisma.AcademicYearWhereInput>
-  course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>
+  class?: Prisma.XOR<Prisma.SchoolClassNullableScalarRelationFilter, Prisma.SchoolClassWhereInput> | null
+  course?: Prisma.XOR<Prisma.CourseNullableScalarRelationFilter, Prisma.CourseWhereInput> | null
   staff?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
+  facultyMember?: Prisma.XOR<Prisma.FacultyMemberNullableScalarRelationFilter, Prisma.FacultyMemberWhereInput> | null
   classroom?: Prisma.XOR<Prisma.ClassroomNullableScalarRelationFilter, Prisma.ClassroomWhereInput> | null
-}, "id" | "academicYearId_courseId_weekday_periodIndex">
+}, "id" | "academicYearId_courseId_weekday_periodIndex" | "academicYearId_classId_weekday_periodIndex">
 
 export type TimetableSlotOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
-  courseId?: Prisma.SortOrder
+  classId?: Prisma.SortOrderInput | Prisma.SortOrder
+  courseId?: Prisma.SortOrderInput | Prisma.SortOrder
   staffId?: Prisma.SortOrderInput | Prisma.SortOrder
+  facultyMemberId?: Prisma.SortOrderInput | Prisma.SortOrder
   classroomId?: Prisma.SortOrderInput | Prisma.SortOrder
   weekday?: Prisma.SortOrder
   periodIndex?: Prisma.SortOrder
@@ -339,8 +368,10 @@ export type TimetableSlotScalarWhereWithAggregatesInput = {
   NOT?: Prisma.TimetableSlotScalarWhereWithAggregatesInput | Prisma.TimetableSlotScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"TimetableSlot"> | string
   academicYearId?: Prisma.StringWithAggregatesFilter<"TimetableSlot"> | string
-  courseId?: Prisma.StringWithAggregatesFilter<"TimetableSlot"> | string
+  classId?: Prisma.StringNullableWithAggregatesFilter<"TimetableSlot"> | string | null
+  courseId?: Prisma.StringNullableWithAggregatesFilter<"TimetableSlot"> | string | null
   staffId?: Prisma.StringNullableWithAggregatesFilter<"TimetableSlot"> | string | null
+  facultyMemberId?: Prisma.StringNullableWithAggregatesFilter<"TimetableSlot"> | string | null
   classroomId?: Prisma.StringNullableWithAggregatesFilter<"TimetableSlot"> | string | null
   weekday?: Prisma.IntWithAggregatesFilter<"TimetableSlot"> | number
   periodIndex?: Prisma.IntWithAggregatesFilter<"TimetableSlot"> | number
@@ -359,16 +390,20 @@ export type TimetableSlotCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutTimetableSlotsInput
-  course: Prisma.CourseCreateNestedOneWithoutTimetableSlotsInput
+  class?: Prisma.SchoolClassCreateNestedOneWithoutTimetableSlotsInput
+  course?: Prisma.CourseCreateNestedOneWithoutTimetableSlotsInput
   staff?: Prisma.StaffCreateNestedOneWithoutTimetableSlotsInput
+  facultyMember?: Prisma.FacultyMemberCreateNestedOneWithoutTimetableSlotsInput
   classroom?: Prisma.ClassroomCreateNestedOneWithoutTimetableSlotsInput
 }
 
 export type TimetableSlotUncheckedCreateInput = {
   id?: string
   academicYearId: string
-  courseId: string
+  classId?: string | null
+  courseId?: string | null
   staffId?: string | null
+  facultyMemberId?: string | null
   classroomId?: string | null
   weekday: number
   periodIndex: number
@@ -387,16 +422,20 @@ export type TimetableSlotUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutTimetableSlotsNestedInput
-  course?: Prisma.CourseUpdateOneRequiredWithoutTimetableSlotsNestedInput
+  class?: Prisma.SchoolClassUpdateOneWithoutTimetableSlotsNestedInput
+  course?: Prisma.CourseUpdateOneWithoutTimetableSlotsNestedInput
   staff?: Prisma.StaffUpdateOneWithoutTimetableSlotsNestedInput
+  facultyMember?: Prisma.FacultyMemberUpdateOneWithoutTimetableSlotsNestedInput
   classroom?: Prisma.ClassroomUpdateOneWithoutTimetableSlotsNestedInput
 }
 
 export type TimetableSlotUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
-  courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  courseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facultyMemberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weekday?: Prisma.IntFieldUpdateOperationsInput | number
   periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
@@ -409,8 +448,10 @@ export type TimetableSlotUncheckedUpdateInput = {
 export type TimetableSlotCreateManyInput = {
   id?: string
   academicYearId: string
-  courseId: string
+  classId?: string | null
+  courseId?: string | null
   staffId?: string | null
+  facultyMemberId?: string | null
   classroomId?: string | null
   weekday: number
   periodIndex: number
@@ -433,8 +474,10 @@ export type TimetableSlotUpdateManyMutationInput = {
 export type TimetableSlotUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
-  courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  courseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facultyMemberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weekday?: Prisma.IntFieldUpdateOperationsInput | number
   periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
@@ -461,11 +504,20 @@ export type TimetableSlotAcademicYearIdCourseIdWeekdayPeriodIndexCompoundUniqueI
   periodIndex: number
 }
 
+export type TimetableSlotAcademicYearIdClassIdWeekdayPeriodIndexCompoundUniqueInput = {
+  academicYearId: string
+  classId: string
+  weekday: number
+  periodIndex: number
+}
+
 export type TimetableSlotCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
+  classId?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   staffId?: Prisma.SortOrder
+  facultyMemberId?: Prisma.SortOrder
   classroomId?: Prisma.SortOrder
   weekday?: Prisma.SortOrder
   periodIndex?: Prisma.SortOrder
@@ -483,8 +535,10 @@ export type TimetableSlotAvgOrderByAggregateInput = {
 export type TimetableSlotMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
+  classId?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   staffId?: Prisma.SortOrder
+  facultyMemberId?: Prisma.SortOrder
   classroomId?: Prisma.SortOrder
   weekday?: Prisma.SortOrder
   periodIndex?: Prisma.SortOrder
@@ -497,8 +551,10 @@ export type TimetableSlotMaxOrderByAggregateInput = {
 export type TimetableSlotMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
+  classId?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   staffId?: Prisma.SortOrder
+  facultyMemberId?: Prisma.SortOrder
   classroomId?: Prisma.SortOrder
   weekday?: Prisma.SortOrder
   periodIndex?: Prisma.SortOrder
@@ -552,6 +608,90 @@ export type TimetableSlotUncheckedUpdateManyWithoutStaffNestedInput = {
   connect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
   update?: Prisma.TimetableSlotUpdateWithWhereUniqueWithoutStaffInput | Prisma.TimetableSlotUpdateWithWhereUniqueWithoutStaffInput[]
   updateMany?: Prisma.TimetableSlotUpdateManyWithWhereWithoutStaffInput | Prisma.TimetableSlotUpdateManyWithWhereWithoutStaffInput[]
+  deleteMany?: Prisma.TimetableSlotScalarWhereInput | Prisma.TimetableSlotScalarWhereInput[]
+}
+
+export type TimetableSlotCreateNestedManyWithoutClassInput = {
+  create?: Prisma.XOR<Prisma.TimetableSlotCreateWithoutClassInput, Prisma.TimetableSlotUncheckedCreateWithoutClassInput> | Prisma.TimetableSlotCreateWithoutClassInput[] | Prisma.TimetableSlotUncheckedCreateWithoutClassInput[]
+  connectOrCreate?: Prisma.TimetableSlotCreateOrConnectWithoutClassInput | Prisma.TimetableSlotCreateOrConnectWithoutClassInput[]
+  createMany?: Prisma.TimetableSlotCreateManyClassInputEnvelope
+  connect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+}
+
+export type TimetableSlotUncheckedCreateNestedManyWithoutClassInput = {
+  create?: Prisma.XOR<Prisma.TimetableSlotCreateWithoutClassInput, Prisma.TimetableSlotUncheckedCreateWithoutClassInput> | Prisma.TimetableSlotCreateWithoutClassInput[] | Prisma.TimetableSlotUncheckedCreateWithoutClassInput[]
+  connectOrCreate?: Prisma.TimetableSlotCreateOrConnectWithoutClassInput | Prisma.TimetableSlotCreateOrConnectWithoutClassInput[]
+  createMany?: Prisma.TimetableSlotCreateManyClassInputEnvelope
+  connect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+}
+
+export type TimetableSlotUpdateManyWithoutClassNestedInput = {
+  create?: Prisma.XOR<Prisma.TimetableSlotCreateWithoutClassInput, Prisma.TimetableSlotUncheckedCreateWithoutClassInput> | Prisma.TimetableSlotCreateWithoutClassInput[] | Prisma.TimetableSlotUncheckedCreateWithoutClassInput[]
+  connectOrCreate?: Prisma.TimetableSlotCreateOrConnectWithoutClassInput | Prisma.TimetableSlotCreateOrConnectWithoutClassInput[]
+  upsert?: Prisma.TimetableSlotUpsertWithWhereUniqueWithoutClassInput | Prisma.TimetableSlotUpsertWithWhereUniqueWithoutClassInput[]
+  createMany?: Prisma.TimetableSlotCreateManyClassInputEnvelope
+  set?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  disconnect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  delete?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  connect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  update?: Prisma.TimetableSlotUpdateWithWhereUniqueWithoutClassInput | Prisma.TimetableSlotUpdateWithWhereUniqueWithoutClassInput[]
+  updateMany?: Prisma.TimetableSlotUpdateManyWithWhereWithoutClassInput | Prisma.TimetableSlotUpdateManyWithWhereWithoutClassInput[]
+  deleteMany?: Prisma.TimetableSlotScalarWhereInput | Prisma.TimetableSlotScalarWhereInput[]
+}
+
+export type TimetableSlotUncheckedUpdateManyWithoutClassNestedInput = {
+  create?: Prisma.XOR<Prisma.TimetableSlotCreateWithoutClassInput, Prisma.TimetableSlotUncheckedCreateWithoutClassInput> | Prisma.TimetableSlotCreateWithoutClassInput[] | Prisma.TimetableSlotUncheckedCreateWithoutClassInput[]
+  connectOrCreate?: Prisma.TimetableSlotCreateOrConnectWithoutClassInput | Prisma.TimetableSlotCreateOrConnectWithoutClassInput[]
+  upsert?: Prisma.TimetableSlotUpsertWithWhereUniqueWithoutClassInput | Prisma.TimetableSlotUpsertWithWhereUniqueWithoutClassInput[]
+  createMany?: Prisma.TimetableSlotCreateManyClassInputEnvelope
+  set?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  disconnect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  delete?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  connect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  update?: Prisma.TimetableSlotUpdateWithWhereUniqueWithoutClassInput | Prisma.TimetableSlotUpdateWithWhereUniqueWithoutClassInput[]
+  updateMany?: Prisma.TimetableSlotUpdateManyWithWhereWithoutClassInput | Prisma.TimetableSlotUpdateManyWithWhereWithoutClassInput[]
+  deleteMany?: Prisma.TimetableSlotScalarWhereInput | Prisma.TimetableSlotScalarWhereInput[]
+}
+
+export type TimetableSlotCreateNestedManyWithoutFacultyMemberInput = {
+  create?: Prisma.XOR<Prisma.TimetableSlotCreateWithoutFacultyMemberInput, Prisma.TimetableSlotUncheckedCreateWithoutFacultyMemberInput> | Prisma.TimetableSlotCreateWithoutFacultyMemberInput[] | Prisma.TimetableSlotUncheckedCreateWithoutFacultyMemberInput[]
+  connectOrCreate?: Prisma.TimetableSlotCreateOrConnectWithoutFacultyMemberInput | Prisma.TimetableSlotCreateOrConnectWithoutFacultyMemberInput[]
+  createMany?: Prisma.TimetableSlotCreateManyFacultyMemberInputEnvelope
+  connect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+}
+
+export type TimetableSlotUncheckedCreateNestedManyWithoutFacultyMemberInput = {
+  create?: Prisma.XOR<Prisma.TimetableSlotCreateWithoutFacultyMemberInput, Prisma.TimetableSlotUncheckedCreateWithoutFacultyMemberInput> | Prisma.TimetableSlotCreateWithoutFacultyMemberInput[] | Prisma.TimetableSlotUncheckedCreateWithoutFacultyMemberInput[]
+  connectOrCreate?: Prisma.TimetableSlotCreateOrConnectWithoutFacultyMemberInput | Prisma.TimetableSlotCreateOrConnectWithoutFacultyMemberInput[]
+  createMany?: Prisma.TimetableSlotCreateManyFacultyMemberInputEnvelope
+  connect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+}
+
+export type TimetableSlotUpdateManyWithoutFacultyMemberNestedInput = {
+  create?: Prisma.XOR<Prisma.TimetableSlotCreateWithoutFacultyMemberInput, Prisma.TimetableSlotUncheckedCreateWithoutFacultyMemberInput> | Prisma.TimetableSlotCreateWithoutFacultyMemberInput[] | Prisma.TimetableSlotUncheckedCreateWithoutFacultyMemberInput[]
+  connectOrCreate?: Prisma.TimetableSlotCreateOrConnectWithoutFacultyMemberInput | Prisma.TimetableSlotCreateOrConnectWithoutFacultyMemberInput[]
+  upsert?: Prisma.TimetableSlotUpsertWithWhereUniqueWithoutFacultyMemberInput | Prisma.TimetableSlotUpsertWithWhereUniqueWithoutFacultyMemberInput[]
+  createMany?: Prisma.TimetableSlotCreateManyFacultyMemberInputEnvelope
+  set?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  disconnect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  delete?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  connect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  update?: Prisma.TimetableSlotUpdateWithWhereUniqueWithoutFacultyMemberInput | Prisma.TimetableSlotUpdateWithWhereUniqueWithoutFacultyMemberInput[]
+  updateMany?: Prisma.TimetableSlotUpdateManyWithWhereWithoutFacultyMemberInput | Prisma.TimetableSlotUpdateManyWithWhereWithoutFacultyMemberInput[]
+  deleteMany?: Prisma.TimetableSlotScalarWhereInput | Prisma.TimetableSlotScalarWhereInput[]
+}
+
+export type TimetableSlotUncheckedUpdateManyWithoutFacultyMemberNestedInput = {
+  create?: Prisma.XOR<Prisma.TimetableSlotCreateWithoutFacultyMemberInput, Prisma.TimetableSlotUncheckedCreateWithoutFacultyMemberInput> | Prisma.TimetableSlotCreateWithoutFacultyMemberInput[] | Prisma.TimetableSlotUncheckedCreateWithoutFacultyMemberInput[]
+  connectOrCreate?: Prisma.TimetableSlotCreateOrConnectWithoutFacultyMemberInput | Prisma.TimetableSlotCreateOrConnectWithoutFacultyMemberInput[]
+  upsert?: Prisma.TimetableSlotUpsertWithWhereUniqueWithoutFacultyMemberInput | Prisma.TimetableSlotUpsertWithWhereUniqueWithoutFacultyMemberInput[]
+  createMany?: Prisma.TimetableSlotCreateManyFacultyMemberInputEnvelope
+  set?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  disconnect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  delete?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  connect?: Prisma.TimetableSlotWhereUniqueInput | Prisma.TimetableSlotWhereUniqueInput[]
+  update?: Prisma.TimetableSlotUpdateWithWhereUniqueWithoutFacultyMemberInput | Prisma.TimetableSlotUpdateWithWhereUniqueWithoutFacultyMemberInput[]
+  updateMany?: Prisma.TimetableSlotUpdateManyWithWhereWithoutFacultyMemberInput | Prisma.TimetableSlotUpdateManyWithWhereWithoutFacultyMemberInput[]
   deleteMany?: Prisma.TimetableSlotScalarWhereInput | Prisma.TimetableSlotScalarWhereInput[]
 }
 
@@ -690,14 +830,18 @@ export type TimetableSlotCreateWithoutStaffInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutTimetableSlotsInput
-  course: Prisma.CourseCreateNestedOneWithoutTimetableSlotsInput
+  class?: Prisma.SchoolClassCreateNestedOneWithoutTimetableSlotsInput
+  course?: Prisma.CourseCreateNestedOneWithoutTimetableSlotsInput
+  facultyMember?: Prisma.FacultyMemberCreateNestedOneWithoutTimetableSlotsInput
   classroom?: Prisma.ClassroomCreateNestedOneWithoutTimetableSlotsInput
 }
 
 export type TimetableSlotUncheckedCreateWithoutStaffInput = {
   id?: string
   academicYearId: string
-  courseId: string
+  classId?: string | null
+  courseId?: string | null
+  facultyMemberId?: string | null
   classroomId?: string | null
   weekday: number
   periodIndex: number
@@ -739,8 +883,10 @@ export type TimetableSlotScalarWhereInput = {
   NOT?: Prisma.TimetableSlotScalarWhereInput | Prisma.TimetableSlotScalarWhereInput[]
   id?: Prisma.StringFilter<"TimetableSlot"> | string
   academicYearId?: Prisma.StringFilter<"TimetableSlot"> | string
-  courseId?: Prisma.StringFilter<"TimetableSlot"> | string
+  classId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
+  courseId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
   staffId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
+  facultyMemberId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
   classroomId?: Prisma.StringNullableFilter<"TimetableSlot"> | string | null
   weekday?: Prisma.IntFilter<"TimetableSlot"> | number
   periodIndex?: Prisma.IntFilter<"TimetableSlot"> | number
@@ -748,6 +894,118 @@ export type TimetableSlotScalarWhereInput = {
   endsAt?: Prisma.StringFilter<"TimetableSlot"> | string
   createdAt?: Prisma.DateTimeFilter<"TimetableSlot"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TimetableSlot"> | Date | string
+}
+
+export type TimetableSlotCreateWithoutClassInput = {
+  id?: string
+  weekday: number
+  periodIndex: number
+  startsAt: string
+  endsAt: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  academicYear: Prisma.AcademicYearCreateNestedOneWithoutTimetableSlotsInput
+  course?: Prisma.CourseCreateNestedOneWithoutTimetableSlotsInput
+  staff?: Prisma.StaffCreateNestedOneWithoutTimetableSlotsInput
+  facultyMember?: Prisma.FacultyMemberCreateNestedOneWithoutTimetableSlotsInput
+  classroom?: Prisma.ClassroomCreateNestedOneWithoutTimetableSlotsInput
+}
+
+export type TimetableSlotUncheckedCreateWithoutClassInput = {
+  id?: string
+  academicYearId: string
+  courseId?: string | null
+  staffId?: string | null
+  facultyMemberId?: string | null
+  classroomId?: string | null
+  weekday: number
+  periodIndex: number
+  startsAt: string
+  endsAt: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TimetableSlotCreateOrConnectWithoutClassInput = {
+  where: Prisma.TimetableSlotWhereUniqueInput
+  create: Prisma.XOR<Prisma.TimetableSlotCreateWithoutClassInput, Prisma.TimetableSlotUncheckedCreateWithoutClassInput>
+}
+
+export type TimetableSlotCreateManyClassInputEnvelope = {
+  data: Prisma.TimetableSlotCreateManyClassInput | Prisma.TimetableSlotCreateManyClassInput[]
+  skipDuplicates?: boolean
+}
+
+export type TimetableSlotUpsertWithWhereUniqueWithoutClassInput = {
+  where: Prisma.TimetableSlotWhereUniqueInput
+  update: Prisma.XOR<Prisma.TimetableSlotUpdateWithoutClassInput, Prisma.TimetableSlotUncheckedUpdateWithoutClassInput>
+  create: Prisma.XOR<Prisma.TimetableSlotCreateWithoutClassInput, Prisma.TimetableSlotUncheckedCreateWithoutClassInput>
+}
+
+export type TimetableSlotUpdateWithWhereUniqueWithoutClassInput = {
+  where: Prisma.TimetableSlotWhereUniqueInput
+  data: Prisma.XOR<Prisma.TimetableSlotUpdateWithoutClassInput, Prisma.TimetableSlotUncheckedUpdateWithoutClassInput>
+}
+
+export type TimetableSlotUpdateManyWithWhereWithoutClassInput = {
+  where: Prisma.TimetableSlotScalarWhereInput
+  data: Prisma.XOR<Prisma.TimetableSlotUpdateManyMutationInput, Prisma.TimetableSlotUncheckedUpdateManyWithoutClassInput>
+}
+
+export type TimetableSlotCreateWithoutFacultyMemberInput = {
+  id?: string
+  weekday: number
+  periodIndex: number
+  startsAt: string
+  endsAt: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  academicYear: Prisma.AcademicYearCreateNestedOneWithoutTimetableSlotsInput
+  class?: Prisma.SchoolClassCreateNestedOneWithoutTimetableSlotsInput
+  course?: Prisma.CourseCreateNestedOneWithoutTimetableSlotsInput
+  staff?: Prisma.StaffCreateNestedOneWithoutTimetableSlotsInput
+  classroom?: Prisma.ClassroomCreateNestedOneWithoutTimetableSlotsInput
+}
+
+export type TimetableSlotUncheckedCreateWithoutFacultyMemberInput = {
+  id?: string
+  academicYearId: string
+  classId?: string | null
+  courseId?: string | null
+  staffId?: string | null
+  classroomId?: string | null
+  weekday: number
+  periodIndex: number
+  startsAt: string
+  endsAt: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TimetableSlotCreateOrConnectWithoutFacultyMemberInput = {
+  where: Prisma.TimetableSlotWhereUniqueInput
+  create: Prisma.XOR<Prisma.TimetableSlotCreateWithoutFacultyMemberInput, Prisma.TimetableSlotUncheckedCreateWithoutFacultyMemberInput>
+}
+
+export type TimetableSlotCreateManyFacultyMemberInputEnvelope = {
+  data: Prisma.TimetableSlotCreateManyFacultyMemberInput | Prisma.TimetableSlotCreateManyFacultyMemberInput[]
+  skipDuplicates?: boolean
+}
+
+export type TimetableSlotUpsertWithWhereUniqueWithoutFacultyMemberInput = {
+  where: Prisma.TimetableSlotWhereUniqueInput
+  update: Prisma.XOR<Prisma.TimetableSlotUpdateWithoutFacultyMemberInput, Prisma.TimetableSlotUncheckedUpdateWithoutFacultyMemberInput>
+  create: Prisma.XOR<Prisma.TimetableSlotCreateWithoutFacultyMemberInput, Prisma.TimetableSlotUncheckedCreateWithoutFacultyMemberInput>
+}
+
+export type TimetableSlotUpdateWithWhereUniqueWithoutFacultyMemberInput = {
+  where: Prisma.TimetableSlotWhereUniqueInput
+  data: Prisma.XOR<Prisma.TimetableSlotUpdateWithoutFacultyMemberInput, Prisma.TimetableSlotUncheckedUpdateWithoutFacultyMemberInput>
+}
+
+export type TimetableSlotUpdateManyWithWhereWithoutFacultyMemberInput = {
+  where: Prisma.TimetableSlotScalarWhereInput
+  data: Prisma.XOR<Prisma.TimetableSlotUpdateManyMutationInput, Prisma.TimetableSlotUncheckedUpdateManyWithoutFacultyMemberInput>
 }
 
 export type TimetableSlotCreateWithoutAcademicYearInput = {
@@ -758,15 +1016,19 @@ export type TimetableSlotCreateWithoutAcademicYearInput = {
   endsAt: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  course: Prisma.CourseCreateNestedOneWithoutTimetableSlotsInput
+  class?: Prisma.SchoolClassCreateNestedOneWithoutTimetableSlotsInput
+  course?: Prisma.CourseCreateNestedOneWithoutTimetableSlotsInput
   staff?: Prisma.StaffCreateNestedOneWithoutTimetableSlotsInput
+  facultyMember?: Prisma.FacultyMemberCreateNestedOneWithoutTimetableSlotsInput
   classroom?: Prisma.ClassroomCreateNestedOneWithoutTimetableSlotsInput
 }
 
 export type TimetableSlotUncheckedCreateWithoutAcademicYearInput = {
   id?: string
-  courseId: string
+  classId?: string | null
+  courseId?: string | null
   staffId?: string | null
+  facultyMemberId?: string | null
   classroomId?: string | null
   weekday: number
   periodIndex: number
@@ -811,15 +1073,19 @@ export type TimetableSlotCreateWithoutClassroomInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutTimetableSlotsInput
-  course: Prisma.CourseCreateNestedOneWithoutTimetableSlotsInput
+  class?: Prisma.SchoolClassCreateNestedOneWithoutTimetableSlotsInput
+  course?: Prisma.CourseCreateNestedOneWithoutTimetableSlotsInput
   staff?: Prisma.StaffCreateNestedOneWithoutTimetableSlotsInput
+  facultyMember?: Prisma.FacultyMemberCreateNestedOneWithoutTimetableSlotsInput
 }
 
 export type TimetableSlotUncheckedCreateWithoutClassroomInput = {
   id?: string
   academicYearId: string
-  courseId: string
+  classId?: string | null
+  courseId?: string | null
   staffId?: string | null
+  facultyMemberId?: string | null
   weekday: number
   periodIndex: number
   startsAt: string
@@ -863,14 +1129,18 @@ export type TimetableSlotCreateWithoutCourseInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutTimetableSlotsInput
+  class?: Prisma.SchoolClassCreateNestedOneWithoutTimetableSlotsInput
   staff?: Prisma.StaffCreateNestedOneWithoutTimetableSlotsInput
+  facultyMember?: Prisma.FacultyMemberCreateNestedOneWithoutTimetableSlotsInput
   classroom?: Prisma.ClassroomCreateNestedOneWithoutTimetableSlotsInput
 }
 
 export type TimetableSlotUncheckedCreateWithoutCourseInput = {
   id?: string
   academicYearId: string
+  classId?: string | null
   staffId?: string | null
+  facultyMemberId?: string | null
   classroomId?: string | null
   weekday: number
   periodIndex: number
@@ -909,7 +1179,9 @@ export type TimetableSlotUpdateManyWithWhereWithoutCourseInput = {
 export type TimetableSlotCreateManyStaffInput = {
   id?: string
   academicYearId: string
-  courseId: string
+  classId?: string | null
+  courseId?: string | null
+  facultyMemberId?: string | null
   classroomId?: string | null
   weekday: number
   periodIndex: number
@@ -928,14 +1200,18 @@ export type TimetableSlotUpdateWithoutStaffInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutTimetableSlotsNestedInput
-  course?: Prisma.CourseUpdateOneRequiredWithoutTimetableSlotsNestedInput
+  class?: Prisma.SchoolClassUpdateOneWithoutTimetableSlotsNestedInput
+  course?: Prisma.CourseUpdateOneWithoutTimetableSlotsNestedInput
+  facultyMember?: Prisma.FacultyMemberUpdateOneWithoutTimetableSlotsNestedInput
   classroom?: Prisma.ClassroomUpdateOneWithoutTimetableSlotsNestedInput
 }
 
 export type TimetableSlotUncheckedUpdateWithoutStaffInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
-  courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  courseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facultyMemberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weekday?: Prisma.IntFieldUpdateOperationsInput | number
   periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
@@ -948,7 +1224,129 @@ export type TimetableSlotUncheckedUpdateWithoutStaffInput = {
 export type TimetableSlotUncheckedUpdateManyWithoutStaffInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
-  courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  courseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facultyMemberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weekday?: Prisma.IntFieldUpdateOperationsInput | number
+  periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  startsAt?: Prisma.StringFieldUpdateOperationsInput | string
+  endsAt?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TimetableSlotCreateManyClassInput = {
+  id?: string
+  academicYearId: string
+  courseId?: string | null
+  staffId?: string | null
+  facultyMemberId?: string | null
+  classroomId?: string | null
+  weekday: number
+  periodIndex: number
+  startsAt: string
+  endsAt: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TimetableSlotUpdateWithoutClassInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weekday?: Prisma.IntFieldUpdateOperationsInput | number
+  periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  startsAt?: Prisma.StringFieldUpdateOperationsInput | string
+  endsAt?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutTimetableSlotsNestedInput
+  course?: Prisma.CourseUpdateOneWithoutTimetableSlotsNestedInput
+  staff?: Prisma.StaffUpdateOneWithoutTimetableSlotsNestedInput
+  facultyMember?: Prisma.FacultyMemberUpdateOneWithoutTimetableSlotsNestedInput
+  classroom?: Prisma.ClassroomUpdateOneWithoutTimetableSlotsNestedInput
+}
+
+export type TimetableSlotUncheckedUpdateWithoutClassInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  courseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facultyMemberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weekday?: Prisma.IntFieldUpdateOperationsInput | number
+  periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  startsAt?: Prisma.StringFieldUpdateOperationsInput | string
+  endsAt?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TimetableSlotUncheckedUpdateManyWithoutClassInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  courseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facultyMemberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weekday?: Prisma.IntFieldUpdateOperationsInput | number
+  periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  startsAt?: Prisma.StringFieldUpdateOperationsInput | string
+  endsAt?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TimetableSlotCreateManyFacultyMemberInput = {
+  id?: string
+  academicYearId: string
+  classId?: string | null
+  courseId?: string | null
+  staffId?: string | null
+  classroomId?: string | null
+  weekday: number
+  periodIndex: number
+  startsAt: string
+  endsAt: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TimetableSlotUpdateWithoutFacultyMemberInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weekday?: Prisma.IntFieldUpdateOperationsInput | number
+  periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  startsAt?: Prisma.StringFieldUpdateOperationsInput | string
+  endsAt?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutTimetableSlotsNestedInput
+  class?: Prisma.SchoolClassUpdateOneWithoutTimetableSlotsNestedInput
+  course?: Prisma.CourseUpdateOneWithoutTimetableSlotsNestedInput
+  staff?: Prisma.StaffUpdateOneWithoutTimetableSlotsNestedInput
+  classroom?: Prisma.ClassroomUpdateOneWithoutTimetableSlotsNestedInput
+}
+
+export type TimetableSlotUncheckedUpdateWithoutFacultyMemberInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  courseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weekday?: Prisma.IntFieldUpdateOperationsInput | number
+  periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  startsAt?: Prisma.StringFieldUpdateOperationsInput | string
+  endsAt?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TimetableSlotUncheckedUpdateManyWithoutFacultyMemberInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  courseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weekday?: Prisma.IntFieldUpdateOperationsInput | number
   periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
@@ -960,8 +1358,10 @@ export type TimetableSlotUncheckedUpdateManyWithoutStaffInput = {
 
 export type TimetableSlotCreateManyAcademicYearInput = {
   id?: string
-  courseId: string
+  classId?: string | null
+  courseId?: string | null
   staffId?: string | null
+  facultyMemberId?: string | null
   classroomId?: string | null
   weekday: number
   periodIndex: number
@@ -979,15 +1379,19 @@ export type TimetableSlotUpdateWithoutAcademicYearInput = {
   endsAt?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  course?: Prisma.CourseUpdateOneRequiredWithoutTimetableSlotsNestedInput
+  class?: Prisma.SchoolClassUpdateOneWithoutTimetableSlotsNestedInput
+  course?: Prisma.CourseUpdateOneWithoutTimetableSlotsNestedInput
   staff?: Prisma.StaffUpdateOneWithoutTimetableSlotsNestedInput
+  facultyMember?: Prisma.FacultyMemberUpdateOneWithoutTimetableSlotsNestedInput
   classroom?: Prisma.ClassroomUpdateOneWithoutTimetableSlotsNestedInput
 }
 
 export type TimetableSlotUncheckedUpdateWithoutAcademicYearInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  courseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facultyMemberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weekday?: Prisma.IntFieldUpdateOperationsInput | number
   periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
@@ -999,8 +1403,10 @@ export type TimetableSlotUncheckedUpdateWithoutAcademicYearInput = {
 
 export type TimetableSlotUncheckedUpdateManyWithoutAcademicYearInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  courseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facultyMemberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weekday?: Prisma.IntFieldUpdateOperationsInput | number
   periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1013,8 +1419,10 @@ export type TimetableSlotUncheckedUpdateManyWithoutAcademicYearInput = {
 export type TimetableSlotCreateManyClassroomInput = {
   id?: string
   academicYearId: string
-  courseId: string
+  classId?: string | null
+  courseId?: string | null
   staffId?: string | null
+  facultyMemberId?: string | null
   weekday: number
   periodIndex: number
   startsAt: string
@@ -1032,15 +1440,19 @@ export type TimetableSlotUpdateWithoutClassroomInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutTimetableSlotsNestedInput
-  course?: Prisma.CourseUpdateOneRequiredWithoutTimetableSlotsNestedInput
+  class?: Prisma.SchoolClassUpdateOneWithoutTimetableSlotsNestedInput
+  course?: Prisma.CourseUpdateOneWithoutTimetableSlotsNestedInput
   staff?: Prisma.StaffUpdateOneWithoutTimetableSlotsNestedInput
+  facultyMember?: Prisma.FacultyMemberUpdateOneWithoutTimetableSlotsNestedInput
 }
 
 export type TimetableSlotUncheckedUpdateWithoutClassroomInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
-  courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  courseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facultyMemberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weekday?: Prisma.IntFieldUpdateOperationsInput | number
   periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1052,8 +1464,10 @@ export type TimetableSlotUncheckedUpdateWithoutClassroomInput = {
 export type TimetableSlotUncheckedUpdateManyWithoutClassroomInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
-  courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  courseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facultyMemberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weekday?: Prisma.IntFieldUpdateOperationsInput | number
   periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1065,7 +1479,9 @@ export type TimetableSlotUncheckedUpdateManyWithoutClassroomInput = {
 export type TimetableSlotCreateManyCourseInput = {
   id?: string
   academicYearId: string
+  classId?: string | null
   staffId?: string | null
+  facultyMemberId?: string | null
   classroomId?: string | null
   weekday: number
   periodIndex: number
@@ -1084,14 +1500,18 @@ export type TimetableSlotUpdateWithoutCourseInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutTimetableSlotsNestedInput
+  class?: Prisma.SchoolClassUpdateOneWithoutTimetableSlotsNestedInput
   staff?: Prisma.StaffUpdateOneWithoutTimetableSlotsNestedInput
+  facultyMember?: Prisma.FacultyMemberUpdateOneWithoutTimetableSlotsNestedInput
   classroom?: Prisma.ClassroomUpdateOneWithoutTimetableSlotsNestedInput
 }
 
 export type TimetableSlotUncheckedUpdateWithoutCourseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facultyMemberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weekday?: Prisma.IntFieldUpdateOperationsInput | number
   periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1104,7 +1524,9 @@ export type TimetableSlotUncheckedUpdateWithoutCourseInput = {
 export type TimetableSlotUncheckedUpdateManyWithoutCourseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facultyMemberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weekday?: Prisma.IntFieldUpdateOperationsInput | number
   periodIndex?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1119,8 +1541,10 @@ export type TimetableSlotUncheckedUpdateManyWithoutCourseInput = {
 export type TimetableSlotSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   academicYearId?: boolean
+  classId?: boolean
   courseId?: boolean
   staffId?: boolean
+  facultyMemberId?: boolean
   classroomId?: boolean
   weekday?: boolean
   periodIndex?: boolean
@@ -1129,16 +1553,20 @@ export type TimetableSlotSelect<ExtArgs extends runtime.Types.Extensions.Interna
   createdAt?: boolean
   updatedAt?: boolean
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
-  course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
+  class?: boolean | Prisma.TimetableSlot$classArgs<ExtArgs>
+  course?: boolean | Prisma.TimetableSlot$courseArgs<ExtArgs>
   staff?: boolean | Prisma.TimetableSlot$staffArgs<ExtArgs>
+  facultyMember?: boolean | Prisma.TimetableSlot$facultyMemberArgs<ExtArgs>
   classroom?: boolean | Prisma.TimetableSlot$classroomArgs<ExtArgs>
 }, ExtArgs["result"]["timetableSlot"]>
 
 export type TimetableSlotSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   academicYearId?: boolean
+  classId?: boolean
   courseId?: boolean
   staffId?: boolean
+  facultyMemberId?: boolean
   classroomId?: boolean
   weekday?: boolean
   periodIndex?: boolean
@@ -1147,16 +1575,20 @@ export type TimetableSlotSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   createdAt?: boolean
   updatedAt?: boolean
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
-  course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
+  class?: boolean | Prisma.TimetableSlot$classArgs<ExtArgs>
+  course?: boolean | Prisma.TimetableSlot$courseArgs<ExtArgs>
   staff?: boolean | Prisma.TimetableSlot$staffArgs<ExtArgs>
+  facultyMember?: boolean | Prisma.TimetableSlot$facultyMemberArgs<ExtArgs>
   classroom?: boolean | Prisma.TimetableSlot$classroomArgs<ExtArgs>
 }, ExtArgs["result"]["timetableSlot"]>
 
 export type TimetableSlotSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   academicYearId?: boolean
+  classId?: boolean
   courseId?: boolean
   staffId?: boolean
+  facultyMemberId?: boolean
   classroomId?: boolean
   weekday?: boolean
   periodIndex?: boolean
@@ -1165,16 +1597,20 @@ export type TimetableSlotSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   createdAt?: boolean
   updatedAt?: boolean
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
-  course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
+  class?: boolean | Prisma.TimetableSlot$classArgs<ExtArgs>
+  course?: boolean | Prisma.TimetableSlot$courseArgs<ExtArgs>
   staff?: boolean | Prisma.TimetableSlot$staffArgs<ExtArgs>
+  facultyMember?: boolean | Prisma.TimetableSlot$facultyMemberArgs<ExtArgs>
   classroom?: boolean | Prisma.TimetableSlot$classroomArgs<ExtArgs>
 }, ExtArgs["result"]["timetableSlot"]>
 
 export type TimetableSlotSelectScalar = {
   id?: boolean
   academicYearId?: boolean
+  classId?: boolean
   courseId?: boolean
   staffId?: boolean
+  facultyMemberId?: boolean
   classroomId?: boolean
   weekday?: boolean
   periodIndex?: boolean
@@ -1184,23 +1620,29 @@ export type TimetableSlotSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TimetableSlotOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "academicYearId" | "courseId" | "staffId" | "classroomId" | "weekday" | "periodIndex" | "startsAt" | "endsAt" | "createdAt" | "updatedAt", ExtArgs["result"]["timetableSlot"]>
+export type TimetableSlotOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "academicYearId" | "classId" | "courseId" | "staffId" | "facultyMemberId" | "classroomId" | "weekday" | "periodIndex" | "startsAt" | "endsAt" | "createdAt" | "updatedAt", ExtArgs["result"]["timetableSlot"]>
 export type TimetableSlotInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
-  course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
+  class?: boolean | Prisma.TimetableSlot$classArgs<ExtArgs>
+  course?: boolean | Prisma.TimetableSlot$courseArgs<ExtArgs>
   staff?: boolean | Prisma.TimetableSlot$staffArgs<ExtArgs>
+  facultyMember?: boolean | Prisma.TimetableSlot$facultyMemberArgs<ExtArgs>
   classroom?: boolean | Prisma.TimetableSlot$classroomArgs<ExtArgs>
 }
 export type TimetableSlotIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
-  course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
+  class?: boolean | Prisma.TimetableSlot$classArgs<ExtArgs>
+  course?: boolean | Prisma.TimetableSlot$courseArgs<ExtArgs>
   staff?: boolean | Prisma.TimetableSlot$staffArgs<ExtArgs>
+  facultyMember?: boolean | Prisma.TimetableSlot$facultyMemberArgs<ExtArgs>
   classroom?: boolean | Prisma.TimetableSlot$classroomArgs<ExtArgs>
 }
 export type TimetableSlotIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
-  course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
+  class?: boolean | Prisma.TimetableSlot$classArgs<ExtArgs>
+  course?: boolean | Prisma.TimetableSlot$courseArgs<ExtArgs>
   staff?: boolean | Prisma.TimetableSlot$staffArgs<ExtArgs>
+  facultyMember?: boolean | Prisma.TimetableSlot$facultyMemberArgs<ExtArgs>
   classroom?: boolean | Prisma.TimetableSlot$classroomArgs<ExtArgs>
 }
 
@@ -1208,15 +1650,26 @@ export type $TimetableSlotPayload<ExtArgs extends runtime.Types.Extensions.Inter
   name: "TimetableSlot"
   objects: {
     academicYear: Prisma.$AcademicYearPayload<ExtArgs>
-    course: Prisma.$CoursePayload<ExtArgs>
+    class: Prisma.$SchoolClassPayload<ExtArgs> | null
+    course: Prisma.$CoursePayload<ExtArgs> | null
     staff: Prisma.$StaffPayload<ExtArgs> | null
+    facultyMember: Prisma.$FacultyMemberPayload<ExtArgs> | null
     classroom: Prisma.$ClassroomPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     academicYearId: string
-    courseId: string
+    /**
+     * Homeroom class/section this period belongs to. The timetable is now
+     * class-first; `courseId` remains the optional subject taught in it.
+     */
+    classId: string | null
+    courseId: string | null
     staffId: string | null
+    /**
+     * Canonical faculty record chosen in the timetable teacher picker.
+     */
+    facultyMemberId: string | null
     classroomId: string | null
     /**
      * 1 = Monday … 7 = Sunday.
@@ -1622,8 +2075,10 @@ readonly fields: TimetableSlotFieldRefs;
 export interface Prisma__TimetableSlotClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   academicYear<T extends Prisma.AcademicYearDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicYearDefaultArgs<ExtArgs>>): Prisma.Prisma__AcademicYearClient<runtime.Types.Result.GetResult<Prisma.$AcademicYearPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  course<T extends Prisma.CourseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CourseDefaultArgs<ExtArgs>>): Prisma.Prisma__CourseClient<runtime.Types.Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  class<T extends Prisma.TimetableSlot$classArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TimetableSlot$classArgs<ExtArgs>>): Prisma.Prisma__SchoolClassClient<runtime.Types.Result.GetResult<Prisma.$SchoolClassPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  course<T extends Prisma.TimetableSlot$courseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TimetableSlot$courseArgs<ExtArgs>>): Prisma.Prisma__CourseClient<runtime.Types.Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   staff<T extends Prisma.TimetableSlot$staffArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TimetableSlot$staffArgs<ExtArgs>>): Prisma.Prisma__StaffClient<runtime.Types.Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  facultyMember<T extends Prisma.TimetableSlot$facultyMemberArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TimetableSlot$facultyMemberArgs<ExtArgs>>): Prisma.Prisma__FacultyMemberClient<runtime.Types.Result.GetResult<Prisma.$FacultyMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   classroom<T extends Prisma.TimetableSlot$classroomArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TimetableSlot$classroomArgs<ExtArgs>>): Prisma.Prisma__ClassroomClient<runtime.Types.Result.GetResult<Prisma.$ClassroomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1656,8 +2111,10 @@ export interface Prisma__TimetableSlotClient<T, Null = never, ExtArgs extends ru
 export interface TimetableSlotFieldRefs {
   readonly id: Prisma.FieldRef<"TimetableSlot", 'String'>
   readonly academicYearId: Prisma.FieldRef<"TimetableSlot", 'String'>
+  readonly classId: Prisma.FieldRef<"TimetableSlot", 'String'>
   readonly courseId: Prisma.FieldRef<"TimetableSlot", 'String'>
   readonly staffId: Prisma.FieldRef<"TimetableSlot", 'String'>
+  readonly facultyMemberId: Prisma.FieldRef<"TimetableSlot", 'String'>
   readonly classroomId: Prisma.FieldRef<"TimetableSlot", 'String'>
   readonly weekday: Prisma.FieldRef<"TimetableSlot", 'Int'>
   readonly periodIndex: Prisma.FieldRef<"TimetableSlot", 'Int'>
@@ -2066,6 +2523,44 @@ export type TimetableSlotDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
+ * TimetableSlot.class
+ */
+export type TimetableSlot$classArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SchoolClass
+   */
+  select?: Prisma.SchoolClassSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SchoolClass
+   */
+  omit?: Prisma.SchoolClassOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SchoolClassInclude<ExtArgs> | null
+  where?: Prisma.SchoolClassWhereInput
+}
+
+/**
+ * TimetableSlot.course
+ */
+export type TimetableSlot$courseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Course
+   */
+  select?: Prisma.CourseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Course
+   */
+  omit?: Prisma.CourseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CourseInclude<ExtArgs> | null
+  where?: Prisma.CourseWhereInput
+}
+
+/**
  * TimetableSlot.staff
  */
 export type TimetableSlot$staffArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2082,6 +2577,25 @@ export type TimetableSlot$staffArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   include?: Prisma.StaffInclude<ExtArgs> | null
   where?: Prisma.StaffWhereInput
+}
+
+/**
+ * TimetableSlot.facultyMember
+ */
+export type TimetableSlot$facultyMemberArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FacultyMember
+   */
+  select?: Prisma.FacultyMemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FacultyMember
+   */
+  omit?: Prisma.FacultyMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FacultyMemberInclude<ExtArgs> | null
+  where?: Prisma.FacultyMemberWhereInput
 }
 
 /**

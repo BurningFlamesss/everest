@@ -27,6 +27,7 @@ export const prismaFacultyListServer = createServerFn({ method: "GET" })
 			extension: r.extension,
 			officeHours: r.officeHours,
 			bio: r.bio,
+			image: r.image ?? "",
 			joined: r.joined,
 			leadership: r.leadership,
 			rank: r.rank,

@@ -20,7 +20,7 @@ src/
   schools/everest/   config.json + content.json (theme/nav/contact data)
   store/             zustand+immer (currently unused)
 prisma/              schema.prisma (26 models), seed.ts (idempotent), migrations/ (versioned)
-tests/               integration + e2e (unit tests live next to sources as *.test.ts)
+(the project ships no automated test suites; verify with tsc, biome and the build)
 .products            none — docs live as Agents/PRD/Checklist/Design-system/Architecture/Tasks .md
 ```
 
@@ -31,7 +31,7 @@ tests/               integration + e2e (unit tests live next to sources as *.tes
 4. **Schema changes ship as versioned migrations** (`npm run db:migrate`), keep `@@unique` + index discipline per [Architecture.md](./Architecture.md) §4, and keep `prisma/seed.ts` idempotent (upserts keyed on env-provided slugs).
 5. **No in-process scheduled timers.** Anything periodic goes through `/api/cron/cleanup`-style token-protected endpoints.
 6. Never commit secrets; required env goes in `.env.example` + `src/env/server.ts|client.ts` validators, keep them in sync (today they're missing `VITE_APP_TITLE`, `S3_REGION`).
-7. Don't run `db:push` against anything but throwaway DBs; integration/e2e tests require `_test`/`_verification` database names.
+7. Don't run `db:push` against anything but throwaway DBs; use `_test`/`_verification` database names when exercising a disposable database.
 8. Biome style: tabs, double quotes, `npm run check` before pushing.
 
 ## 4. Conventions (follow existing files)
@@ -51,13 +51,10 @@ npm run build                   # production build (also checks react-compiler c
 npm run generate-routes         # after adding/removing route files (tsr generate)
 npm run check                   # biome format+lint over src
 npx tsc --noEmit                # types (also in CI)
-npm test                        # unit/UI regression (no DB required)
 npm run db:generate && npm run db:migrate:deploy && npm run db:seed   # bootstrapping
 npm run db:migrate              # create a named versioned migration for schema edits
-npm run test:integration        # needs SCMS_TEST_DATABASE_URL (…_test), and Start Postgres via docker compose
-npm run test:e2e                # needs an app already running w/ SCMS_E2E_DATABASE_URL / _BASE_URL (setup per README E2E section)
 ```
-CI parity: `npm ci → prisma generate → tsc --noEmit → biome lint src → npm test → build`. Fast CI: build only tests what compile+unit-catches; add heavier checks locally before releasing.
+CI parity: `npm ci → prisma generate → tsc --noEmit → biome lint src → build`.
 
 ## 6. Build-new-feature checklist
 1. Confirm PRD/Checklist/Tasks references for the slice and pick the unchecked item.
@@ -66,7 +63,7 @@ CI parity: `npm ci → prisma generate → tsc --noEmit → biome lint src → n
 4. Domain package: `src/packages/<domain>/{service.ts,server.ts}`; service holds prisma logic (pure-ish), server.ts is theZod’d `createServerFn` surface.
 5. Route(s): add files under `src/routes`, run `npm run generate-routes`; add `beforeLoad` viewer gating for the admin console nav; public pages stay session-less.
 6. UI: use/extend `src/components/ui` primitives only (Design-system.md §3 quality bar); do not hand-roll new button/input/dialog styles.
-7. Tests: mirror the pattern of `src/packages/*/server.test.ts` (unit), `tests/integration` (schema/storage-flavored), `tests/e2e` (auth-critical flows).
+7. Verification: `npx tsc --noEmit`, `npm run check` and `npm run build`; the project has no automated test suites.
 8. Update Checklist.md ✅/🟡/❌ + Tasks.md checkboxes for what you did; add new discovered debt to PRD §5.
 
 ## 7. Updated-Codebase Cautions (from audit)
@@ -76,7 +73,6 @@ CI parity: `npm ci → prisma generate → tsc --noEmit → biome lint src → n
 - The `/uploads/$` route serves any `FileAsset`; if you surface sensitive documents, implement the asset-authz decision (Tasks T-5) before linking those documents.
 - `react-query` provider is plumbed for SSR but unused; if you introduce hooks, either convert a whole domain to it or don't — don't mix patterns within a page.
 - Lenis + `scroll-behavior: smooth` conflict is latent breakage; resolve before touching smooth-scroll UX (Design-system.md §2.4).
-- Playwright e2e requires a *separately started app instance* per README; don't try to have tests spawn the server.
 
 ## 8. Definition of Done (for any task)
-`npx tsc --noEmit` clean · `npm run check` clean · `npm test` passes · relevant integration/e2e pass if touched · migration+seed updated · docs (Checklist/Tasks/README relevant section) updated · no new env var without `.env.example` + validator entries.
+`npx tsc --noEmit` clean · `npm run check` clean · migration+seed updated · docs (Checklist/Tasks/README relevant section) updated · no new env var without `.env.example` + validator entries.

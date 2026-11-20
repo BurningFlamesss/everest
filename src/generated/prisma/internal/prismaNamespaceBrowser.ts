@@ -468,6 +468,7 @@ export const FacultyMemberScalarFieldEnum = {
   extension: 'extension',
   officeHours: 'officeHours',
   bio: 'bio',
+  image: 'image',
   joined: 'joined',
   leadership: 'leadership',
   rank: 'rank',
@@ -1137,8 +1138,10 @@ export type GalleryImageScalarFieldEnum = (typeof GalleryImageScalarFieldEnum)[k
 export const TimetableSlotScalarFieldEnum = {
   id: 'id',
   academicYearId: 'academicYearId',
+  classId: 'classId',
   courseId: 'courseId',
   staffId: 'staffId',
+  facultyMemberId: 'facultyMemberId',
   classroomId: 'classroomId',
   weekday: 'weekday',
   periodIndex: 'periodIndex',

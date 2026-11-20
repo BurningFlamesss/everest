@@ -49,6 +49,7 @@ export type FacultyMemberMinAggregateOutputType = {
   extension: string | null
   officeHours: string | null
   bio: string | null
+  image: string | null
   joined: string | null
   leadership: boolean | null
   rank: number | null
@@ -69,6 +70,7 @@ export type FacultyMemberMaxAggregateOutputType = {
   extension: string | null
   officeHours: string | null
   bio: string | null
+  image: string | null
   joined: string | null
   leadership: boolean | null
   rank: number | null
@@ -90,6 +92,7 @@ export type FacultyMemberCountAggregateOutputType = {
   extension: number
   officeHours: number
   bio: number
+  image: number
   joined: number
   leadership: number
   rank: number
@@ -122,6 +125,7 @@ export type FacultyMemberMinAggregateInputType = {
   extension?: true
   officeHours?: true
   bio?: true
+  image?: true
   joined?: true
   leadership?: true
   rank?: true
@@ -142,6 +146,7 @@ export type FacultyMemberMaxAggregateInputType = {
   extension?: true
   officeHours?: true
   bio?: true
+  image?: true
   joined?: true
   leadership?: true
   rank?: true
@@ -163,6 +168,7 @@ export type FacultyMemberCountAggregateInputType = {
   extension?: true
   officeHours?: true
   bio?: true
+  image?: true
   joined?: true
   leadership?: true
   rank?: true
@@ -271,6 +277,7 @@ export type FacultyMemberGroupByOutputType = {
   extension: string
   officeHours: string
   bio: string
+  image: string | null
   joined: string
   leadership: boolean
   rank: number | null
@@ -315,12 +322,14 @@ export type FacultyMemberWhereInput = {
   extension?: Prisma.StringFilter<"FacultyMember"> | string
   officeHours?: Prisma.StringFilter<"FacultyMember"> | string
   bio?: Prisma.StringFilter<"FacultyMember"> | string
+  image?: Prisma.StringNullableFilter<"FacultyMember"> | string | null
   joined?: Prisma.StringFilter<"FacultyMember"> | string
   leadership?: Prisma.BoolFilter<"FacultyMember"> | boolean
   rank?: Prisma.IntNullableFilter<"FacultyMember"> | number | null
   order?: Prisma.IntFilter<"FacultyMember"> | number
   createdAt?: Prisma.DateTimeFilter<"FacultyMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FacultyMember"> | Date | string
+  timetableSlots?: Prisma.TimetableSlotListRelationFilter
 }
 
 export type FacultyMemberOrderByWithRelationInput = {
@@ -336,12 +345,14 @@ export type FacultyMemberOrderByWithRelationInput = {
   extension?: Prisma.SortOrder
   officeHours?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  image?: Prisma.SortOrderInput | Prisma.SortOrder
   joined?: Prisma.SortOrder
   leadership?: Prisma.SortOrder
   rank?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  timetableSlots?: Prisma.TimetableSlotOrderByRelationAggregateInput
 }
 
 export type FacultyMemberWhereUniqueInput = Prisma.AtLeast<{
@@ -360,12 +371,14 @@ export type FacultyMemberWhereUniqueInput = Prisma.AtLeast<{
   extension?: Prisma.StringFilter<"FacultyMember"> | string
   officeHours?: Prisma.StringFilter<"FacultyMember"> | string
   bio?: Prisma.StringFilter<"FacultyMember"> | string
+  image?: Prisma.StringNullableFilter<"FacultyMember"> | string | null
   joined?: Prisma.StringFilter<"FacultyMember"> | string
   leadership?: Prisma.BoolFilter<"FacultyMember"> | boolean
   rank?: Prisma.IntNullableFilter<"FacultyMember"> | number | null
   order?: Prisma.IntFilter<"FacultyMember"> | number
   createdAt?: Prisma.DateTimeFilter<"FacultyMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FacultyMember"> | Date | string
+  timetableSlots?: Prisma.TimetableSlotListRelationFilter
 }, "id" | "slug">
 
 export type FacultyMemberOrderByWithAggregationInput = {
@@ -381,6 +394,7 @@ export type FacultyMemberOrderByWithAggregationInput = {
   extension?: Prisma.SortOrder
   officeHours?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  image?: Prisma.SortOrderInput | Prisma.SortOrder
   joined?: Prisma.SortOrder
   leadership?: Prisma.SortOrder
   rank?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -410,6 +424,7 @@ export type FacultyMemberScalarWhereWithAggregatesInput = {
   extension?: Prisma.StringWithAggregatesFilter<"FacultyMember"> | string
   officeHours?: Prisma.StringWithAggregatesFilter<"FacultyMember"> | string
   bio?: Prisma.StringWithAggregatesFilter<"FacultyMember"> | string
+  image?: Prisma.StringNullableWithAggregatesFilter<"FacultyMember"> | string | null
   joined?: Prisma.StringWithAggregatesFilter<"FacultyMember"> | string
   leadership?: Prisma.BoolWithAggregatesFilter<"FacultyMember"> | boolean
   rank?: Prisma.IntNullableWithAggregatesFilter<"FacultyMember"> | number | null
@@ -431,12 +446,14 @@ export type FacultyMemberCreateInput = {
   extension: string
   officeHours: string
   bio: string
+  image?: string | null
   joined: string
   leadership?: boolean
   rank?: number | null
   order: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutFacultyMemberInput
 }
 
 export type FacultyMemberUncheckedCreateInput = {
@@ -452,12 +469,14 @@ export type FacultyMemberUncheckedCreateInput = {
   extension: string
   officeHours: string
   bio: string
+  image?: string | null
   joined: string
   leadership?: boolean
   rank?: number | null
   order: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutFacultyMemberInput
 }
 
 export type FacultyMemberUpdateInput = {
@@ -473,12 +492,14 @@ export type FacultyMemberUpdateInput = {
   extension?: Prisma.StringFieldUpdateOperationsInput | string
   officeHours?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joined?: Prisma.StringFieldUpdateOperationsInput | string
   leadership?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutFacultyMemberNestedInput
 }
 
 export type FacultyMemberUncheckedUpdateInput = {
@@ -494,12 +515,14 @@ export type FacultyMemberUncheckedUpdateInput = {
   extension?: Prisma.StringFieldUpdateOperationsInput | string
   officeHours?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joined?: Prisma.StringFieldUpdateOperationsInput | string
   leadership?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutFacultyMemberNestedInput
 }
 
 export type FacultyMemberCreateManyInput = {
@@ -515,6 +538,7 @@ export type FacultyMemberCreateManyInput = {
   extension: string
   officeHours: string
   bio: string
+  image?: string | null
   joined: string
   leadership?: boolean
   rank?: number | null
@@ -536,6 +560,7 @@ export type FacultyMemberUpdateManyMutationInput = {
   extension?: Prisma.StringFieldUpdateOperationsInput | string
   officeHours?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joined?: Prisma.StringFieldUpdateOperationsInput | string
   leadership?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -557,6 +582,7 @@ export type FacultyMemberUncheckedUpdateManyInput = {
   extension?: Prisma.StringFieldUpdateOperationsInput | string
   officeHours?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joined?: Prisma.StringFieldUpdateOperationsInput | string
   leadership?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -578,6 +604,7 @@ export type FacultyMemberCountOrderByAggregateInput = {
   extension?: Prisma.SortOrder
   officeHours?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   joined?: Prisma.SortOrder
   leadership?: Prisma.SortOrder
   rank?: Prisma.SortOrder
@@ -603,6 +630,7 @@ export type FacultyMemberMaxOrderByAggregateInput = {
   extension?: Prisma.SortOrder
   officeHours?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   joined?: Prisma.SortOrder
   leadership?: Prisma.SortOrder
   rank?: Prisma.SortOrder
@@ -623,6 +651,7 @@ export type FacultyMemberMinOrderByAggregateInput = {
   extension?: Prisma.SortOrder
   officeHours?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   joined?: Prisma.SortOrder
   leadership?: Prisma.SortOrder
   rank?: Prisma.SortOrder
@@ -636,6 +665,160 @@ export type FacultyMemberSumOrderByAggregateInput = {
   order?: Prisma.SortOrder
 }
 
+export type FacultyMemberNullableScalarRelationFilter = {
+  is?: Prisma.FacultyMemberWhereInput | null
+  isNot?: Prisma.FacultyMemberWhereInput | null
+}
+
+export type FacultyMemberCreateNestedOneWithoutTimetableSlotsInput = {
+  create?: Prisma.XOR<Prisma.FacultyMemberCreateWithoutTimetableSlotsInput, Prisma.FacultyMemberUncheckedCreateWithoutTimetableSlotsInput>
+  connectOrCreate?: Prisma.FacultyMemberCreateOrConnectWithoutTimetableSlotsInput
+  connect?: Prisma.FacultyMemberWhereUniqueInput
+}
+
+export type FacultyMemberUpdateOneWithoutTimetableSlotsNestedInput = {
+  create?: Prisma.XOR<Prisma.FacultyMemberCreateWithoutTimetableSlotsInput, Prisma.FacultyMemberUncheckedCreateWithoutTimetableSlotsInput>
+  connectOrCreate?: Prisma.FacultyMemberCreateOrConnectWithoutTimetableSlotsInput
+  upsert?: Prisma.FacultyMemberUpsertWithoutTimetableSlotsInput
+  disconnect?: Prisma.FacultyMemberWhereInput | boolean
+  delete?: Prisma.FacultyMemberWhereInput | boolean
+  connect?: Prisma.FacultyMemberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FacultyMemberUpdateToOneWithWhereWithoutTimetableSlotsInput, Prisma.FacultyMemberUpdateWithoutTimetableSlotsInput>, Prisma.FacultyMemberUncheckedUpdateWithoutTimetableSlotsInput>
+}
+
+export type FacultyMemberCreateWithoutTimetableSlotsInput = {
+  id?: string
+  slug: string
+  name: string
+  role: string
+  department: string
+  qualification: string
+  experience: string
+  subjects: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  email: string
+  extension: string
+  officeHours: string
+  bio: string
+  image?: string | null
+  joined: string
+  leadership?: boolean
+  rank?: number | null
+  order: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type FacultyMemberUncheckedCreateWithoutTimetableSlotsInput = {
+  id?: string
+  slug: string
+  name: string
+  role: string
+  department: string
+  qualification: string
+  experience: string
+  subjects: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  email: string
+  extension: string
+  officeHours: string
+  bio: string
+  image?: string | null
+  joined: string
+  leadership?: boolean
+  rank?: number | null
+  order: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type FacultyMemberCreateOrConnectWithoutTimetableSlotsInput = {
+  where: Prisma.FacultyMemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.FacultyMemberCreateWithoutTimetableSlotsInput, Prisma.FacultyMemberUncheckedCreateWithoutTimetableSlotsInput>
+}
+
+export type FacultyMemberUpsertWithoutTimetableSlotsInput = {
+  update: Prisma.XOR<Prisma.FacultyMemberUpdateWithoutTimetableSlotsInput, Prisma.FacultyMemberUncheckedUpdateWithoutTimetableSlotsInput>
+  create: Prisma.XOR<Prisma.FacultyMemberCreateWithoutTimetableSlotsInput, Prisma.FacultyMemberUncheckedCreateWithoutTimetableSlotsInput>
+  where?: Prisma.FacultyMemberWhereInput
+}
+
+export type FacultyMemberUpdateToOneWithWhereWithoutTimetableSlotsInput = {
+  where?: Prisma.FacultyMemberWhereInput
+  data: Prisma.XOR<Prisma.FacultyMemberUpdateWithoutTimetableSlotsInput, Prisma.FacultyMemberUncheckedUpdateWithoutTimetableSlotsInput>
+}
+
+export type FacultyMemberUpdateWithoutTimetableSlotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.StringFieldUpdateOperationsInput | string
+  qualification?: Prisma.StringFieldUpdateOperationsInput | string
+  experience?: Prisma.StringFieldUpdateOperationsInput | string
+  subjects?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  extension?: Prisma.StringFieldUpdateOperationsInput | string
+  officeHours?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joined?: Prisma.StringFieldUpdateOperationsInput | string
+  leadership?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type FacultyMemberUncheckedUpdateWithoutTimetableSlotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.StringFieldUpdateOperationsInput | string
+  qualification?: Prisma.StringFieldUpdateOperationsInput | string
+  experience?: Prisma.StringFieldUpdateOperationsInput | string
+  subjects?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  extension?: Prisma.StringFieldUpdateOperationsInput | string
+  officeHours?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joined?: Prisma.StringFieldUpdateOperationsInput | string
+  leadership?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type FacultyMemberCountOutputType
+ */
+
+export type FacultyMemberCountOutputType = {
+  timetableSlots: number
+}
+
+export type FacultyMemberCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  timetableSlots?: boolean | FacultyMemberCountOutputTypeCountTimetableSlotsArgs
+}
+
+/**
+ * FacultyMemberCountOutputType without action
+ */
+export type FacultyMemberCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FacultyMemberCountOutputType
+   */
+  select?: Prisma.FacultyMemberCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * FacultyMemberCountOutputType without action
+ */
+export type FacultyMemberCountOutputTypeCountTimetableSlotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TimetableSlotWhereInput
+}
 
 
 export type FacultyMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -651,12 +834,15 @@ export type FacultyMemberSelect<ExtArgs extends runtime.Types.Extensions.Interna
   extension?: boolean
   officeHours?: boolean
   bio?: boolean
+  image?: boolean
   joined?: boolean
   leadership?: boolean
   rank?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  timetableSlots?: boolean | Prisma.FacultyMember$timetableSlotsArgs<ExtArgs>
+  _count?: boolean | Prisma.FacultyMemberCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["facultyMember"]>
 
 export type FacultyMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -672,6 +858,7 @@ export type FacultyMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   extension?: boolean
   officeHours?: boolean
   bio?: boolean
+  image?: boolean
   joined?: boolean
   leadership?: boolean
   rank?: boolean
@@ -693,6 +880,7 @@ export type FacultyMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   extension?: boolean
   officeHours?: boolean
   bio?: boolean
+  image?: boolean
   joined?: boolean
   leadership?: boolean
   rank?: boolean
@@ -714,6 +902,7 @@ export type FacultyMemberSelectScalar = {
   extension?: boolean
   officeHours?: boolean
   bio?: boolean
+  image?: boolean
   joined?: boolean
   leadership?: boolean
   rank?: boolean
@@ -722,11 +911,19 @@ export type FacultyMemberSelectScalar = {
   updatedAt?: boolean
 }
 
-export type FacultyMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "role" | "department" | "qualification" | "experience" | "subjects" | "email" | "extension" | "officeHours" | "bio" | "joined" | "leadership" | "rank" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["facultyMember"]>
+export type FacultyMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "role" | "department" | "qualification" | "experience" | "subjects" | "email" | "extension" | "officeHours" | "bio" | "image" | "joined" | "leadership" | "rank" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["facultyMember"]>
+export type FacultyMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  timetableSlots?: boolean | Prisma.FacultyMember$timetableSlotsArgs<ExtArgs>
+  _count?: boolean | Prisma.FacultyMemberCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type FacultyMemberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type FacultyMemberIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $FacultyMemberPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "FacultyMember"
-  objects: {}
+  objects: {
+    timetableSlots: Prisma.$TimetableSlotPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     slug: string
@@ -740,6 +937,7 @@ export type $FacultyMemberPayload<ExtArgs extends runtime.Types.Extensions.Inter
     extension: string
     officeHours: string
     bio: string
+    image: string | null
     joined: string
     leadership: boolean
     rank: number | null
@@ -1140,6 +1338,7 @@ readonly fields: FacultyMemberFieldRefs;
  */
 export interface Prisma__FacultyMemberClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  timetableSlots<T extends Prisma.FacultyMember$timetableSlotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FacultyMember$timetableSlotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TimetableSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1181,6 +1380,7 @@ export interface FacultyMemberFieldRefs {
   readonly extension: Prisma.FieldRef<"FacultyMember", 'String'>
   readonly officeHours: Prisma.FieldRef<"FacultyMember", 'String'>
   readonly bio: Prisma.FieldRef<"FacultyMember", 'String'>
+  readonly image: Prisma.FieldRef<"FacultyMember", 'String'>
   readonly joined: Prisma.FieldRef<"FacultyMember", 'String'>
   readonly leadership: Prisma.FieldRef<"FacultyMember", 'Boolean'>
   readonly rank: Prisma.FieldRef<"FacultyMember", 'Int'>
@@ -1204,6 +1404,10 @@ export type FacultyMemberFindUniqueArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.FacultyMemberOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FacultyMemberInclude<ExtArgs> | null
+  /**
    * Filter, which FacultyMember to fetch.
    */
   where: Prisma.FacultyMemberWhereUniqueInput
@@ -1222,6 +1426,10 @@ export type FacultyMemberFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ext
    */
   omit?: Prisma.FacultyMemberOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FacultyMemberInclude<ExtArgs> | null
+  /**
    * Filter, which FacultyMember to fetch.
    */
   where: Prisma.FacultyMemberWhereUniqueInput
@@ -1239,6 +1447,10 @@ export type FacultyMemberFindFirstArgs<ExtArgs extends runtime.Types.Extensions.
    * Omit specific fields from the FacultyMember
    */
   omit?: Prisma.FacultyMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FacultyMemberInclude<ExtArgs> | null
   /**
    * Filter, which FacultyMember to fetch.
    */
@@ -1288,6 +1500,10 @@ export type FacultyMemberFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exte
    */
   omit?: Prisma.FacultyMemberOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FacultyMemberInclude<ExtArgs> | null
+  /**
    * Filter, which FacultyMember to fetch.
    */
   where?: Prisma.FacultyMemberWhereInput
@@ -1335,6 +1551,10 @@ export type FacultyMemberFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Omit specific fields from the FacultyMember
    */
   omit?: Prisma.FacultyMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FacultyMemberInclude<ExtArgs> | null
   /**
    * Filter, which FacultyMembers to fetch.
    */
@@ -1384,6 +1604,10 @@ export type FacultyMemberCreateArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.FacultyMemberOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FacultyMemberInclude<ExtArgs> | null
+  /**
    * The data needed to create a FacultyMember.
    */
   data: Prisma.XOR<Prisma.FacultyMemberCreateInput, Prisma.FacultyMemberUncheckedCreateInput>
@@ -1431,6 +1655,10 @@ export type FacultyMemberUpdateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the FacultyMember
    */
   omit?: Prisma.FacultyMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FacultyMemberInclude<ExtArgs> | null
   /**
    * The data needed to update a FacultyMember.
    */
@@ -1498,6 +1726,10 @@ export type FacultyMemberUpsertArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.FacultyMemberOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FacultyMemberInclude<ExtArgs> | null
+  /**
    * The filter to search for the FacultyMember to update in case it exists.
    */
   where: Prisma.FacultyMemberWhereUniqueInput
@@ -1524,6 +1756,10 @@ export type FacultyMemberDeleteArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.FacultyMemberOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FacultyMemberInclude<ExtArgs> | null
+  /**
    * Filter which FacultyMember to delete.
    */
   where: Prisma.FacultyMemberWhereUniqueInput
@@ -1544,6 +1780,30 @@ export type FacultyMemberDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
+ * FacultyMember.timetableSlots
+ */
+export type FacultyMember$timetableSlotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TimetableSlot
+   */
+  select?: Prisma.TimetableSlotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TimetableSlot
+   */
+  omit?: Prisma.TimetableSlotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TimetableSlotInclude<ExtArgs> | null
+  where?: Prisma.TimetableSlotWhereInput
+  orderBy?: Prisma.TimetableSlotOrderByWithRelationInput | Prisma.TimetableSlotOrderByWithRelationInput[]
+  cursor?: Prisma.TimetableSlotWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TimetableSlotScalarFieldEnum | Prisma.TimetableSlotScalarFieldEnum[]
+}
+
+/**
  * FacultyMember without action
  */
 export type FacultyMemberDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1555,4 +1815,8 @@ export type FacultyMemberDefaultArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the FacultyMember
    */
   omit?: Prisma.FacultyMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FacultyMemberInclude<ExtArgs> | null
 }

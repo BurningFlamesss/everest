@@ -32,18 +32,28 @@ interface YearOption {
 	isActive: boolean;
 }
 
+interface ClassOption {
+	id: string;
+	name: string;
+	grade: string;
+	section: string;
+	roomNo: string | null;
+}
+
 interface CourseOption {
 	id: string;
 	code: string;
 	name: string;
 	grade: string | null;
+	section: string | null;
 	teacherId: string | null;
 }
 
-interface StaffOption {
+interface FacultyOption {
 	id: string;
-	designation: string;
-	user: { name: string };
+	name: string;
+	role: string;
+	department: string;
 }
 
 interface ClassroomOption {
@@ -58,20 +68,29 @@ interface SlotRow {
 	periodIndex: number;
 	startsAt: string;
 	endsAt: string;
-	course: { id: string; code: string; name: string; grade: string | null };
+	class: { id: string; name: string; grade: string; section: string } | null;
+	course: {
+		id: string;
+		code: string;
+		name: string;
+		grade: string | null;
+	} | null;
 	staff: { id: string; user: { name: string } } | null;
+	facultyMember: { id: string; name: string; role: string } | null;
 	classroom: { id: string; name: string } | null;
 }
 
 function AdminTimetable() {
 	const [years, setYears] = useState<Array<YearOption>>([]);
+	const [classes, setClasses] = useState<Array<ClassOption>>([]);
 	const [courses, setCourses] = useState<Array<CourseOption>>([]);
-	const [staff, setStaff] = useState<Array<StaffOption>>([]);
+	const [faculty, setFaculty] = useState<Array<FacultyOption>>([]);
 	const [classrooms, setClassrooms] = useState<Array<ClassroomOption>>([]);
 	const [slots, setSlots] = useState<Array<SlotRow>>([]);
 	const [yearId, setYearId] = useState("");
+	const [classId, setClassId] = useState("");
 	const [courseId, setCourseId] = useState("");
-	const [staffId, setStaffId] = useState("");
+	const [facultyMemberId, setFacultyMemberId] = useState("");
 	const [classroomId, setClassroomId] = useState("");
 	const [weekday, setWeekday] = useState("1");
 	const [periodIndex, setPeriodIndex] = useState("1");
@@ -93,8 +112,9 @@ function AdminTimetable() {
 		}
 
 		setYears(response.years as Array<YearOption>);
+		setClasses(response.classes as Array<ClassOption>);
 		setCourses(response.courses as Array<CourseOption>);
-		setStaff(response.staff as Array<StaffOption>);
+		setFaculty(response.faculty as Array<FacultyOption>);
 		setClassrooms(response.classrooms as Array<ClassroomOption>);
 
 		const active = (response.years as Array<YearOption>).find(
@@ -102,38 +122,49 @@ function AdminTimetable() {
 		);
 
 		setYearId((current) => current || active?.id || "");
-
-		const firstCourse = (response.courses as Array<CourseOption>)[0];
-		setCourseId((current) => current || firstCourse?.id || "");
+		setClassId(
+			(current) =>
+				current || (response.classes as Array<ClassOption>)[0]?.id || "",
+		);
 		setIsLoading(false);
 	}, []);
 
-	const loadSlots = useCallback(async (academicYearId: string) => {
-		const response = await getTimetableDataFn({
-			data: { academicYearId: academicYearId || undefined },
-		});
+	const loadSlots = useCallback(
+		async (academicYearId: string, selectedClassId: string) => {
+			const response = await getTimetableDataFn({
+				data: {
+					academicYearId: academicYearId || undefined,
+					classId: selectedClassId || undefined,
+				},
+			});
 
-		if (!response.success) {
-			setError(response.error);
-			return;
-		}
+			if (!response.success) {
+				setError(response.error);
+				return;
+			}
 
-		setSlots(response.slots as Array<SlotRow>);
-	}, []);
+			setSlots(response.slots as Array<SlotRow>);
+		},
+		[],
+	);
 
 	useEffect(() => {
 		void loadOptions();
 	}, [loadOptions]);
 
 	useEffect(() => {
-		if (yearId) void loadSlots(yearId);
-	}, [yearId, loadSlots]);
+		if (yearId) void loadSlots(yearId, classId);
+	}, [yearId, classId, loadSlots]);
 
-	const chooseCourse = (value: string) => {
-		setCourseId(value);
-		const course = courses.find((entry) => entry.id === value);
-		setStaffId(course?.teacherId ?? "");
-	};
+	const chooseCourse = (value: string) => setCourseId(value);
+
+	const selectedClass = classes.find((entry) => entry.id === classId);
+	const courseChoices = courses.filter(
+		(course) =>
+			!selectedClass ||
+			((!course.grade || course.grade === selectedClass.grade) &&
+				(!course.section || course.section === selectedClass.section)),
+	);
 
 	const submit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -144,8 +175,9 @@ function AdminTimetable() {
 		const response = await createTimetableSlotAction({
 			data: {
 				academicYearId: yearId,
-				courseId,
-				staffId: staffId || null,
+				classId,
+				courseId: courseId || null,
+				facultyMemberId: facultyMemberId || null,
 				classroomId: classroomId || null,
 				weekday: Number(weekday),
 				periodIndex: Number(periodIndex),
@@ -248,29 +280,47 @@ function AdminTimetable() {
 						))}
 					</Select>
 					<Select
-						label="Course"
-						value={courseId}
-						onChange={(event) => chooseCourse(event.target.value)}
+						label="Class"
+						value={classId}
+						onChange={(event) => {
+							setClassId(event.target.value);
+							setCourseId("");
+							setFacultyMemberId("");
+						}}
 						required
-						testId="timetable-course-select"
+						testId="timetable-class-select"
 					>
 						<option value="">Select…</option>
-						{courses.map((course) => (
+						{classes.map((entry) => (
+							<option key={entry.id} value={entry.id}>
+								{entry.name}
+								{entry.roomNo ? ` · Room ${entry.roomNo}` : ""}
+							</option>
+						))}
+					</Select>
+					<Select
+						label="Subject (optional)"
+						value={courseId}
+						onChange={(event) => chooseCourse(event.target.value)}
+						testId="timetable-course-select"
+					>
+						<option value="">Class period</option>
+						{courseChoices.map((course) => (
 							<option key={course.id} value={course.id}>
 								{course.code} · {course.name}
 							</option>
 						))}
 					</Select>
 					<Select
-						label="Teacher"
-						value={staffId}
-						onChange={(event) => setStaffId(event.target.value)}
+						label="Teacher (faculty)"
+						value={facultyMemberId}
+						onChange={(event) => setFacultyMemberId(event.target.value)}
 						testId="timetable-teacher-select"
 					>
 						<option value="">Unassigned</option>
-						{staff.map((member) => (
+						{faculty.map((member) => (
 							<option key={member.id} value={member.id}>
-								{member.user.name}
+								{member.name} · {member.role}
 							</option>
 						))}
 					</Select>
@@ -323,9 +373,10 @@ function AdminTimetable() {
 						testId="timetable-ends-input"
 					/>
 					<div className="md:col-span-4">
+						{" "}
 						<Button
 							type="submit"
-							disabled={isSubmitting || !yearId || !courseId}
+							disabled={isSubmitting || !yearId || !classId}
 							className="gap-1.5"
 							data-testid="timetable-add-slot"
 						>
@@ -342,7 +393,7 @@ function AdminTimetable() {
 
 			<Panel
 				title="Weekly grid"
-				description="The timetable for the selected academic year."
+				description="The selected class's weekly timetable. Teachers come from active faculty; rooms come from the classroom inventory under Academics → Classrooms."
 				testId="timetable-grid-panel"
 				bodyClassName="p-0"
 			>
@@ -389,13 +440,20 @@ function AdminTimetable() {
 													{slot ? (
 														<div className="group rounded-lg border border-primary/20 bg-primary/[0.06] p-2 transition-colors duration-150">
 															<p className="text-xs font-semibold text-primary">
-																{slot.course.code}
+																{slot.class?.name ?? "Class period"}
 															</p>
+															{slot.course ? (
+																<p className="text-[11px] text-foreground">
+																	{slot.course.code} · {slot.course.name}
+																</p>
+															) : null}
 															<p className="num text-[11px] text-foreground">
 																{slot.startsAt}–{slot.endsAt}
 															</p>
 															<p className="text-[11px] text-muted-foreground">
-																{slot.staff?.user.name ?? "Unassigned"}
+																{slot.facultyMember?.name ??
+																	slot.staff?.user.name ??
+																	"Unassigned"}
 																{slot.classroom
 																	? ` · ${slot.classroom.name}`
 																	: ""}
