@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+	ChevronDown,
+	ChevronUp,
 	CloudUpload,
 	ExternalLink,
+	Globe,
 	ImageIcon,
 	MousePointerClick,
 	Pencil,
@@ -37,6 +40,7 @@ import {
 	publishPage,
 	saveSectionFields,
 	unpublishPage,
+	updatePageSeo,
 } from "#/lib/website-admin-api";
 import { useAuth } from "#/providers/AuthProvider";
 import type { WebsitePageKey } from "#/types";
@@ -72,21 +76,21 @@ const GROUPS: Record<
 };
 
 const CHAPTER_FIELDS = [
-	{ key: "name", label: "Name", kind: "text" },
+	{ key: "name", label: "Chapter Title (Name)", kind: "text" },
 	{ key: "category", label: "Category", kind: "text" },
-	{ key: "description", label: "Description", kind: "textarea" },
-	{ key: "inCharge", label: "In charge", kind: "text" },
-	{ key: "since", label: "Since", kind: "text" },
-	{ key: "block", label: "Block", kind: "text" },
-	{ key: "studentsLove", label: "Why students love it", kind: "textarea" },
+	{ key: "description", label: "Story / Description", kind: "textarea" },
+	{ key: "inCharge", label: "Key Stakeholders / Focus", kind: "text" },
+	{ key: "since", label: "Initiated Since (Year)", kind: "text" },
+	{ key: "block", label: "Focus Area / Block", kind: "text" },
+	{ key: "studentsLove", label: "Why students love it (Quote / Highlight)", kind: "textarea" },
 	{
 		key: "stats",
-		label: "Stats (one “Label | Value” per line)",
+		label: "Metrics & Stats Strip (one “Label | Value” per line)",
 		kind: "textarea",
 	},
 	{
 		key: "gallery",
-		label: "Gallery image URLs (one per line)",
+		label: "Gallery Image URLs (one per line)",
 		kind: "textarea",
 	},
 ] as const;
@@ -99,11 +103,26 @@ export default function AboutContentPage() {
 	const [selectedKey, setSelectedKey] = useState<AboutBlockKey | null>("intro");
 	const [editingChapter, setEditingChapter] = useState<number | null>(null);
 	const [chapterDraft, setChapterDraft] = useState<Record<string, unknown>>({});
+	const [editingSeo, setEditingSeo] = useState(false);
+	const [seoDraft, setSeoDraft] = useState({
+		title: "",
+		description: "",
+		keywords: "",
+	});
 
 	const { data: page, isLoading } = useQuery({
 		queryKey: ["website-page", PAGE_KEY],
 		queryFn: () => getWebsitePage(PAGE_KEY),
 	});
+
+	const openSeoDialog = () => {
+		setSeoDraft({
+			title: page?.seoTitle || "",
+			description: page?.seoDescription || "",
+			keywords: page?.seoKeywords || "",
+		});
+		setEditingSeo(true);
+	};
 
 	const fields = useMemo(
 		() => ({
@@ -148,6 +167,24 @@ export default function AboutContentPage() {
 		},
 		onError: (error: Error) => toast.error(error.message),
 	});
+
+	const seoMutation = useMutation({
+		mutationFn: () => updatePageSeo(PAGE_KEY, seoDraft, actor),
+		onSuccess: (next) => {
+			applyPage(next);
+			setEditingSeo(false);
+			toast.success("SEO settings saved");
+		},
+		onError: (error: Error) => toast.error(error.message),
+	});
+
+	const moveChapter = (fromIndex: number, toIndex: number) => {
+		if (toIndex < 0 || toIndex >= chapters.length) return;
+		const next = [...chapters];
+		const [moved] = next.splice(fromIndex, 1);
+		next.splice(toIndex, 0, moved);
+		saveMutation.mutate({ ...fields, chapters: next });
+	};
 
 	const openChapter = (index: number) => {
 		setChapterDraft({ ...chapters[index] });
@@ -218,6 +255,16 @@ export default function AboutContentPage() {
 						>
 							<ExternalLink className="h-3.5 w-3.5" /> View page
 						</Button>
+						{canManage && (
+							<Button
+								variant="outline"
+								size="sm"
+								className="gap-1.5"
+								onClick={openSeoDialog}
+							>
+								<Globe className="h-3.5 w-3.5" /> SEO Settings
+							</Button>
+						)}
 						{canManage && page?.status === "published" && (
 							<Button
 								variant="outline"
@@ -342,15 +389,47 @@ export default function AboutContentPage() {
 														</p>
 													</button>
 													{canManage && (
-														<button
-															type="button"
-															aria-label={`Remove ${str(chapter, "name") || "chapter"}`}
-															onClick={() => removeChapter(index)}
-															disabled={saveMutation.isPending}
-															className="absolute right-1.5 top-1.5 rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
-														>
-															<Trash2 className="h-3 w-3" />
-														</button>
+														<div className="absolute right-1.5 top-1.5 flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 bg-surface-2/95 rounded px-0.5 shadow-sm border border-hairline/60">
+															<button
+																type="button"
+																aria-label={`Move ${str(chapter, "name") || "chapter"} up`}
+																onClick={(e) => {
+																	e.stopPropagation();
+																	moveChapter(index, index - 1);
+																}}
+																disabled={index === 0 || saveMutation.isPending}
+																className="rounded p-1 text-muted-foreground hover:text-foreground disabled:opacity-20"
+																title="Move up"
+															>
+																<ChevronUp className="h-3 w-3" />
+															</button>
+															<button
+																type="button"
+																aria-label={`Move ${str(chapter, "name") || "chapter"} down`}
+																onClick={(e) => {
+																	e.stopPropagation();
+																	moveChapter(index, index + 1);
+																}}
+																disabled={index === chapters.length - 1 || saveMutation.isPending}
+																className="rounded p-1 text-muted-foreground hover:text-foreground disabled:opacity-20"
+																title="Move down"
+															>
+																<ChevronDown className="h-3 w-3" />
+															</button>
+															<button
+																type="button"
+																aria-label={`Remove ${str(chapter, "name") || "chapter"}`}
+																onClick={(e) => {
+																	e.stopPropagation();
+																	removeChapter(index);
+																}}
+																disabled={saveMutation.isPending}
+																className="rounded p-1 text-muted-foreground hover:text-destructive"
+																title="Remove chapter"
+															>
+																<Trash2 className="h-3 w-3" />
+															</button>
+														</div>
 													)}
 												</div>
 											))}
@@ -605,6 +684,83 @@ export default function AboutContentPage() {
 						>
 							<Pencil className="h-3.5 w-3.5" />
 							{saveMutation.isPending ? "Saving…" : "Save chapter"}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			<Dialog
+				open={editingSeo}
+				onOpenChange={(open: boolean) => !open && setEditingSeo(false)}
+			>
+				<DialogContent className="max-w-lg border-hairline bg-popover">
+					<DialogHeader>
+						<DialogTitle>About Page SEO</DialogTitle>
+						<DialogDescription>
+							Search engine title, meta description, and keywords for the public About page.
+						</DialogDescription>
+					</DialogHeader>
+
+					<div className="space-y-3.5 py-2">
+						<div className="space-y-1.5">
+							<Label className="text-xs">SEO Title</Label>
+							<Input
+								value={seoDraft.title}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+									setSeoDraft((current) => ({
+										...current,
+										title: e.target.value,
+									}))
+								}
+								placeholder="About Us | Everest English Boarding Secondary School"
+							/>
+						</div>
+
+						<div className="space-y-1.5">
+							<Label className="text-xs">Meta Description</Label>
+							<Textarea
+								rows={3}
+								value={seoDraft.description}
+								onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+									setSeoDraft((current) => ({
+										...current,
+										description: e.target.value,
+									}))
+								}
+								placeholder="Our history, mission, leadership, and values at Everest English Boarding Secondary School."
+							/>
+						</div>
+
+						<div className="space-y-1.5">
+							<Label className="text-xs">Keywords (comma-separated)</Label>
+							<Input
+								value={seoDraft.keywords}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+									setSeoDraft((current) => ({
+										...current,
+										keywords: e.target.value,
+									}))
+								}
+								placeholder="about, history, mission, leadership, butwal"
+							/>
+						</div>
+					</div>
+
+					<DialogFooter>
+						<Button
+							variant="outline"
+							onClick={() => setEditingSeo(false)}
+							disabled={seoMutation.isPending}
+						>
+							Cancel
+						</Button>
+						<Button
+							className="gap-1.5"
+							disabled={!canManage || seoMutation.isPending}
+							onClick={() => seoMutation.mutate()}
+						>
+							<CloudUpload className="h-3.5 w-3.5" />
+							{seoMutation.isPending ? "Saving…" : "Save SEO"}
 						</Button>
 					</DialogFooter>
 				</DialogContent>

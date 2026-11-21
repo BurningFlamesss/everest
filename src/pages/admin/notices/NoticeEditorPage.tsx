@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import {
 	ArrowLeft,
+	CalendarClock,
 	Check,
 	ChevronDown,
 	Save,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { EmbedTimetableModal } from "#/components/common/EmbedTimetableModal";
 import { ImageUploader } from "#/components/common/ImageUploader";
 import { PageHeader } from "#/components/common/PageHeader";
 import { Panel } from "#/components/common/Panel";
@@ -111,6 +113,7 @@ export default function NoticeEditorPage() {
 
 	const [form, setForm] = useState<NoticeInput>(EMPTY_FORM);
 	const [audienceOpen, setAudienceOpen] = useState(false);
+	const [embedModalOpen, setEmbedModalOpen] = useState(false);
 
 	const { data: existing, isLoading } = useQuery({
 		queryKey: ["notice", id],
@@ -299,7 +302,20 @@ export default function NoticeEditorPage() {
 										/>
 									</div>
 									<div className="space-y-1.5">
-										<Label className="text-xs">Body</Label>
+										<div className="flex items-center justify-between">
+											<Label className="text-xs">Body</Label>
+											<Button
+												type="button"
+												variant="outline"
+												size="sm"
+												onClick={() => setEmbedModalOpen(true)}
+												className="h-7 gap-1.5 px-2.5 text-xs font-semibold text-primary hover:bg-primary/10"
+												data-testid="notice-embed-timetable-quick-button"
+											>
+												<CalendarClock className="h-3.5 w-3.5" />
+												Embed Timetable
+											</Button>
+										</div>
 										<RichTextEditor
 											value={form.content}
 											onChange={(html: string) => patch({ content: html })}
@@ -589,6 +605,19 @@ export default function NoticeEditorPage() {
 					</Panel>
 				</div>
 			</div>
+
+			<EmbedTimetableModal
+				open={embedModalOpen}
+				onOpenChange={setEmbedModalOpen}
+				onInsert={(html) => {
+					patch({
+						content: form.content && form.content !== "<p></p>"
+							? `${form.content}${html}`
+							: html,
+					});
+					toast.success("Timetable embedded into notice content");
+				}}
+			/>
 		</div>
 	);
 }

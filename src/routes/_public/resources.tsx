@@ -5,6 +5,7 @@ import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import { getResourcesServer } from "#/packages/content/server/content";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import {
 	PageFrame,
 	PageHeader,
@@ -13,6 +14,16 @@ import { DownloadsCentre } from "#/templates/modern/components/utilities/Downloa
 import type { BlockType } from "#/types";
 
 export const Route = createFileRoute("/_public/resources")({
+	head: () =>
+		pageMeta({
+			title:
+				"Student & Parent Downloads | Everest English Boarding Secondary School (EEBSS)",
+			description:
+				"Official download center for Everest School, Butwal: syllabus PDFs, holiday assignments, leave application forms, code of conduct, uniform guidelines, and academic circulars.",
+			path: "/resources",
+			keywords:
+				"everest school syllabus download, school forms nepal, student assignment pdf butwal, eebss downloads",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		let previewPage = null;

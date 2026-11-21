@@ -40,8 +40,19 @@ const CATEGORY_ORDER = [
 ];
 
 import { getFacilitiesServer } from "#/packages/content/server/content.ts";
+import { pageMeta } from "#/packages/school/meta.ts";
 
 export const Route = createFileRoute("/_public/facilities")({
+	head: () =>
+		pageMeta({
+			title:
+				"Campus Infrastructure & Modern Facilities | Everest English Boarding Secondary School (EEBSS)",
+			description:
+				"Explore our modern campus infrastructure in Butwal, Nepal: physics, chemistry & biology laboratories, computer labs, library, basketball courts, and smart classrooms at Everest School.",
+			path: "/facilities",
+			keywords:
+				"everest school facilities, science lab butwal, computer lab school nepal, sports grounds school nepal, eebss infrastructure",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		let previewPage = null;

@@ -18,12 +18,20 @@ import {
 } from "#/templates/modern/components/chrome/PageFrame";
 
 export const Route = createFileRoute("/_public/clubs_/$slug")({
-	head: () =>
-		pageMeta({
-			title: "Club",
+	head: ({ loaderData, params }) => {
+		const club = (loaderData as any)?.detail?.club;
+		return pageMeta({
+			title: club
+				? `${club.name} | Student Clubs | Everest English Boarding Secondary School`
+				: "Club Profile | Everest School (EEBSS)",
 			description:
-				"Club profile, meeting schedule, attachments and the latest updates from the club feed.",
-		}),
+				club?.description ||
+				"Club profile, meeting schedule, member activities, and latest announcements from Everest School, Butwal.",
+			image: club?.bannerImage || club?.logoImage,
+			path: `/clubs/${params.slug}`,
+			keywords: `${club?.name || "club"}, everest school clubs, eebss student life, butwal school societies`,
+		});
+	},
 	loader: async ({ params }) => ({
 		detail: await getClubDetailFn({ data: { slug: params.slug } }),
 	}),
@@ -37,16 +45,16 @@ const JOIN_POLICY_LABEL = {
 } as const;
 
 function ClubDetailPage() {
-	const { detail } = Route.useLoaderData();
+	const { detail } = (Route.useLoaderData() as { detail: any }) || {};
 	const router = useRouter();
 	const [isJoining, setIsJoining] = useState(false);
 
-	if (!detail.success) {
+	if (!detail || !detail.success) {
 		return (
 			<PageFrame dense>
 				<div className="py-24 text-center">
 					<p className="text-sm font-medium text-foreground">
-						{detail.error || "Club not found."}
+						{detail?.error || "Club not found."}
 					</p>
 					<Link
 						to="/clubs"
@@ -155,7 +163,9 @@ function ClubDetailPage() {
 			<Section className="mt-6">
 				<div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
 					<div className="min-w-0">
-						<p className="t-eyebrow">{JOIN_POLICY_LABEL[club.joinPolicy]}</p>
+						<p className="t-eyebrow">
+							{JOIN_POLICY_LABEL[club.joinPolicy as keyof typeof JOIN_POLICY_LABEL] || club.joinPolicy}
+						</p>
 						<h1 className="mt-3 font-display text-3xl font-semibold leading-tight text-foreground sm:text-4xl">
 							{club.name}
 						</h1>
@@ -193,7 +203,7 @@ function ClubDetailPage() {
 									Attachments
 								</h2>
 								<ul className="mt-3 grid gap-2 sm:grid-cols-2">
-									{club.attachments.map((attachment) => (
+									{club.attachments.map((attachment: any) => (
 										<li key={attachment.id}>
 											<a
 												href={attachment.fileAsset.url}
@@ -239,7 +249,7 @@ function ClubDetailPage() {
 							<div className="flex items-baseline justify-between gap-3">
 								<dt className="text-muted-foreground">Joining</dt>
 								<dd className="font-medium text-foreground">
-									{JOIN_POLICY_LABEL[club.joinPolicy]}
+									{JOIN_POLICY_LABEL[club.joinPolicy as keyof typeof JOIN_POLICY_LABEL] || club.joinPolicy}
 								</dd>
 							</div>
 							{access?.roleName ? (

@@ -16,26 +16,26 @@ export function AuthShell({
 	badge?: string;
 }) {
 	return (
-		<main className="flex min-h-screen items-center justify-center bg-[#f6f1e8] px-4 py-12 md:pl-72">
+		<main className="flex min-h-[calc(100vh-88px)] items-center justify-center bg-[var(--paper)] px-4 py-12">
 			<div className="w-full max-w-md">
 				<Link
 					to="/"
-					className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900"
+					className="auth-back mb-6 inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground"
 				>
-					<ArrowLeft className="h-4 w-4" /> Back to the school
+					<ArrowLeft className="h-3.5 w-3.5 text-primary" /> Back to the school
 				</Link>
 
-				<div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-xl shadow-black/5">
+				<div className="rounded-2xl border border-hairline bg-surface-1 p-8 shadow-xl shadow-black/5">
 					{badge ? (
-						<p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-red-600">
+						<p className="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-primary">
 							{badge}
 						</p>
 					) : null}
-					<h1 className="text-3xl font-bold tracking-tight text-gray-900">
+					<h1 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
 						{title}
 					</h1>
 					{subtitle ? (
-						<p className="mt-2 text-sm leading-relaxed text-gray-500">
+						<p className="mt-2 text-sm leading-relaxed text-muted-foreground">
 							{subtitle}
 						</p>
 					) : null}
@@ -44,7 +44,9 @@ export function AuthShell({
 				</div>
 
 				{footer ? (
-					<div className="mt-6 text-center text-sm text-gray-600">{footer}</div>
+					<div className="mt-6 text-center text-xs text-muted-foreground">
+						{footer}
+					</div>
 				) : null}
 			</div>
 		</main>
@@ -57,12 +59,12 @@ export function Field({
 }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
 	return (
 		<label className="block">
-			<span className="mb-1.5 block text-sm font-medium text-gray-700">
+			<span className="mb-1.5 block text-xs font-semibold tracking-wide text-foreground">
 				{label}
 			</span>
 			<input
 				{...props}
-				className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-red-400 focus:ring-2 focus:ring-red-100 disabled:bg-gray-50"
+				className="w-full rounded-lg border border-hairline bg-surface-2 px-3.5 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-muted"
 			/>
 		</label>
 	);
@@ -74,7 +76,7 @@ export function FormError({ message }: { message?: string | null }) {
 	return (
 		<div
 			role="alert"
-			className="rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 text-sm text-red-700"
+			className="rounded-lg border border-destructive/30 bg-destructive/10 px-3.5 py-3 text-sm text-destructive"
 		>
 			{message}
 		</div>
@@ -85,7 +87,7 @@ export function FormSuccess({ message }: { message?: string | null }) {
 	if (!message) return null;
 
 	return (
-		<output className="block rounded-lg border border-green-200 bg-green-50 px-3.5 py-3 text-sm text-green-700">
+		<output className="block rounded-lg border border-success/30 bg-success/10 px-3.5 py-3 text-sm text-success">
 			{message}
 		</output>
 	);

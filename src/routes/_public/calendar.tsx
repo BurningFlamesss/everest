@@ -42,6 +42,7 @@ import {
 	useCalendarEvents,
 	useWebsitePageContent,
 } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import { Button } from "#/templates/modern/components/Button";
 import {
 	Section as ChromeSection,
@@ -100,6 +101,16 @@ const KIND_TEXT: Record<EventKind, string> = {
 };
 
 export const Route = createFileRoute("/_public/calendar")({
+	head: () =>
+		pageMeta({
+			title:
+				"Academic Calendar 2083/2084 BS | Everest English Boarding Secondary School (EEBSS)",
+			description:
+				"Official Bikram Sambat (BS) and Gregorian (AD) academic calendar of Everest School, Butwal: term examination routines, SEE dates, national holidays, festivals, and events.",
+			path: "/calendar",
+			keywords:
+				"academic calendar nepal 2083, bs calendar school butwal, everest school exam routine, eebss calendar, nepal school holidays",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		if (String(search.cms) === "1") {

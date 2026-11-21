@@ -1,4 +1,5 @@
 import type { BlockType, ContentBlock } from "@/types";
+import { photo } from "./media";
 import { routines as builtInRoutines } from "./routines";
 
 // ---------------------------------------------------------------------------
@@ -271,72 +272,84 @@ export const SECTION_DEFAULTS: Partial<
 				category: "Foundation",
 				description:
 					"Welcome to Everest English Boarding Secondary School, a premier institution dedicated to nurturing young minds. For over three decades, we have provided an environment that balances rigorous academic standards with holistic personal development.",
-				image: "",
+				image: photo("schoolBuilding"),
 				inCharge: "School Board",
 				since: "1995",
 				block: "Overall Campus",
 				studentsLove:
 					"A home away from home where every student is known, valued, and inspired to succeed.",
+				stats: "Established | 1995\nStudents | 1,200+\nPass Rate | 98%",
+				gallery: `${photo("assemblyCrowd")}\n${photo("youngLearners")}\n${photo("studyPair")}`,
 			},
 			{
 				name: "Vision & Mission",
 				category: "Foundation",
 				description:
 					"Our vision is to be a center of excellence that shapes global citizens. Our mission is to foster academic excellence while developing strong character and integrity in every student, making disciplined learning feel personal and connected.",
-				image: "",
+				image: photo("assemblyCrowd"),
 				inCharge: "Academic Council",
 				since: "1995",
 				block: "Institutional Policy",
 				studentsLove:
 					"Education is not just about filling minds, but igniting curiosity that lasts a lifetime.",
+				stats: "Core Focus | Academics\nApproach | Holistic\nValues | Integrity",
+				gallery: `${photo("classroomTeens")}\n${photo("studentsWithBooks")}\n${photo("lectureRoom")}`,
 			},
 			{
 				name: "Principal's Message",
 				category: "Leadership",
 				description:
 					"Education is a shared commitment between dedicated teachers, motivated students, and enthusiastic parents. We strive to create a dynamic environment where every child is empowered to discover their potential and achieve their dreams.",
-				image: "",
+				image: photo("teacherPortrait"),
 				inCharge: "Principal's Office",
 				since: "2010",
 				block: "Administration",
 				studentsLove:
 					"The principal's door is always open—leadership here is about listening and guiding.",
+				stats: "Leadership | Krishna Neupane\nExperience | 25+ Years\nFocus | Excellence",
+				gallery: `${photo("teacherPortrait")}\n${photo("readingSupport")}\n${photo("auditoriumAudience")}`,
 			},
 			{
 				name: "Legacy & Heritage",
 				category: "History",
 				description:
 					"What started as a small cohort of dedicated educators has blossomed into a vibrant, multi-building campus. Everest EBSS has consistently ranked among the top educational institutions in the Lumbini Province, shaping regional standards.",
-				image: "",
+				image: photo("schoolBuilding"),
 				inCharge: "Founding Members",
 				since: "1995",
 				block: "Legacy & Timeline",
 				studentsLove:
 					"The history of our school is reflected in every brick and every lesson.",
+				stats: "Alumni Network | 4,500+\nAcademic Rank | Top 10\nCampus Expanse | 2 Blocks",
+				gallery: `${photo("libraryHall")}\n${photo("schoolBuilding")}\n${photo("himalaya")}`,
 			},
 			{
 				name: "Core Values",
 				category: "Student Life",
 				description:
 					"We are guided by respect, responsibility, curiosity, and resilience. Everest encourages active participation in extracurricular activities, social service programs, and leadership councils to ensure students grow both inside and outside the classroom.",
-				image: "",
+				image: photo("studentGroup"),
 				inCharge: "Student Council",
 				since: "2000",
 				block: "Student Governance",
 				studentsLove:
 					"The strength of Everest lies in the diversity of its community and the shared commitment to excellence.",
+				stats: "Student Clubs | 12\nSchool Houses | 4\nYearly Events | 20+",
+				gallery: `${photo("coachBus")}\n${photo("basketball")}\n${photo("studentsTeamwork")}`,
 			},
 			{
 				name: "Accreditations",
 				category: "Academics",
 				description:
 					"Fully accredited by the National Examinations Board (NEB) and the Ministry of Education, Nepal. We maintain rigorous standards across all our primary, secondary, and +2 programs ensuring our students are prepared for higher education globally.",
-				image: "",
+				image: photo("booksStacked"),
 				inCharge: "Examination Board",
 				since: "1995",
 				block: "Academic Quality",
 				studentsLove:
 					"Knowing our education is recognized everywhere gives us the confidence to aim high.",
+				stats: "Board | NEB Nepal\nCurriculum | National\nPrograms | PG to +2",
+				gallery: `${photo("libraryShelf")}\n${photo("equations")}\n${photo("labCoat")}`,
 			},
 		],
 	},

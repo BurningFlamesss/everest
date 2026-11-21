@@ -18,6 +18,7 @@ import { school, departments as staticDepartments } from "#/lib/site";
 import { submitContactMessageAction } from "#/packages/contact/server.ts";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import { Button } from "#/templates/modern/components/Button";
 import { Input } from "#/templates/modern/components/Input";
 import { Label } from "#/templates/modern/components/Label";
@@ -49,6 +50,16 @@ const ROUTES = [
 ] as const;
 type EnquiryRoute = (typeof ROUTES)[number];
 export const Route = createFileRoute("/_public/contact")({
+	head: () =>
+		pageMeta({
+			title:
+				"Contact Us & Campus Location | Everest English Boarding Secondary School (EEBSS)",
+			description:
+				"Contact Everest English Boarding Secondary School in Sukkhanagar, Butwal-8, Rupandehi, Nepal. Official telephone: +977-71-535962, email, visiting hours, and campus directions.",
+			path: "/contact",
+			keywords:
+				"contact everest school, eebss phone number, everest school address, school in butwal contact, butwal school location",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		if (String(search.cms) === "1") {

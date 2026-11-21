@@ -8,6 +8,7 @@ import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import { photo } from "#/lib/media";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import {
 	PageFrame,
 	PageHeader,
@@ -183,6 +184,16 @@ const CATEGORY_ORDER = [
 ];
 
 export const Route = createFileRoute("/_public/about")({
+	head: () =>
+		pageMeta({
+			title:
+				"About Us & School History | Everest English Boarding Secondary School (EEBSS)",
+			description:
+				"Discover the 30+ year legacy, visionary leadership, core values, accreditations, and academic excellence of Everest English Boarding Secondary School (EEBSS) in Butwal, Nepal.",
+			path: "/about",
+			keywords:
+				"about everest school, eebss history, everest english boarding school butwal, best school in nepal history, principal krishna neupane, school mission vision nepal",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		if (String(search.cms) === "1") {
@@ -287,19 +298,27 @@ function RouteComponent() {
 		[filtered, activeId],
 	);
 
-	const chipOptions = useMemo(
-		() => [
+	const chipOptions = useMemo(() => {
+		const existingCategories = Array.from(
+			new Set(allChapters.map((f) => f.category).filter(Boolean)),
+		);
+		const orderedKnown = CATEGORY_ORDER.filter((c) =>
+			existingCategories.includes(c),
+		);
+		const customCategories = existingCategories.filter(
+			(c) => !CATEGORY_ORDER.includes(c),
+		);
+		const sortedCategories = [...orderedKnown, ...customCategories];
+
+		return [
 			{ value: "all", label: "All chapters", count: allChapters.length },
-			...CATEGORY_ORDER.filter((c) =>
-				allChapters.some((f) => f.category === c),
-			).map((c) => ({
+			...sortedCategories.map((c) => ({
 				value: c,
 				label: c,
 				count: allChapters.filter((f) => f.category === c).length,
 			})),
-		],
-		[allChapters],
-	);
+		];
+	}, [allChapters]);
 
 	const handleCategory = (next: string) => {
 		setCategory(next);

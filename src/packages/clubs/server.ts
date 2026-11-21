@@ -131,6 +131,70 @@ export const getClubPostsFn = createServerFn()
 		return { success: true as const, posts: await listClubPosts(club.id) };
 	});
 
+export const getPublicClubActivitiesFn = createServerFn().handler(async () => {
+	const [clubs, recentPosts] = await Promise.all([
+		prisma.club.findMany({
+			where: { isActive: true },
+			include: {
+				attachments: {
+					select: {
+						id: true,
+						fileAssetId: true,
+						label: true,
+						fileAsset: {
+							select: {
+								url: true,
+								originalName: true,
+								mimeType: true,
+								size: true,
+							},
+						},
+					},
+				},
+				_count: {
+					select: { members: true, posts: true },
+				},
+			},
+			orderBy: { name: "asc" },
+		}),
+		prisma.post.findMany({
+			where: {
+				club: { isActive: true },
+				visibility: "PUBLIC",
+			},
+			orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
+			take: 20,
+			include: {
+				club: {
+					select: {
+						id: true,
+						name: true,
+						slug: true,
+						coverImage: true,
+					},
+				},
+				author: {
+					select: { id: true, name: true, image: true },
+				},
+				authorStudent: {
+					select: {
+						id: true,
+						user: { select: { id: true, name: true, image: true } },
+					},
+				},
+				_count: {
+					select: { comments: true },
+				},
+			},
+		}),
+	]);
+
+	return {
+		clubs,
+		recentPosts,
+	};
+});
+
 export const getAllMyClubAccessFn = createServerFn().handler(async () => {
 	const user = await getSessionUser();
 	if (!user?.id) {
@@ -522,8 +586,114 @@ export const saveClubMembersAction = createServerFn()
 const postInputSchema = z.object({
 	title: z.string().trim().min(1, "Give the post a title"),
 	body: z.string().trim().min(1, "Write something in the post"),
+	excerpt: z.string().trim().optional(),
+	coverImage: z.string().trim().optional(),
+	category: z.string().trim().optional(),
+	visibility: z.string().trim().optional(),
+	allowComments: z.boolean().optional(),
 	isPinned: z.boolean().optional(),
 });
+
+export const getClubPostDetailFn = createServerFn()
+	.validator(z.object({ postId: z.string().min(1) }))
+	.handler(async ({ data }) => {
+		const user = await getSessionUser();
+		const post = await prisma.post.findUnique({
+			where: { id: data.postId },
+			include: {
+				club: {
+					select: {
+						id: true,
+						name: true,
+						slug: true,
+						coverImage: true,
+						meetingSchedule: true,
+						description: true,
+						_count: { select: { members: true, posts: true } },
+					},
+				},
+				author: {
+					select: { id: true, name: true, image: true, email: true },
+				},
+				authorStudent: {
+					select: {
+						id: true,
+						grade: true,
+						section: true,
+						user: { select: { id: true, name: true, image: true } },
+					},
+				},
+				comments: {
+					orderBy: { createdAt: "asc" },
+					include: {
+						author: { select: { id: true, name: true, image: true } },
+					},
+				},
+			},
+		});
+
+		if (!post) {
+			return { success: false as const, error: "Article not found" };
+		}
+
+		if (post.visibility === "MEMBERS_ONLY" || post.visibility === "DRAFT") {
+			if (!user?.id) {
+				return {
+					success: false as const,
+					error: "This article is restricted to club members. Please sign in.",
+				};
+			}
+			const access = await resolveClubAccess(post.clubId, user.id);
+			if (post.visibility === "MEMBERS_ONLY" && !access.isMember) {
+				return {
+					success: false as const,
+					error: "This article is private to members of this club.",
+				};
+			}
+			if (
+				post.visibility === "DRAFT" &&
+				!access.canCreatePosts &&
+				post.authorId !== user.id
+			) {
+				return {
+					success: false as const,
+					error: "This draft article is only visible to authors and club officers.",
+				};
+			}
+		}
+
+		const moreFromClub = await prisma.post.findMany({
+			where: {
+				clubId: post.clubId,
+				id: { not: post.id },
+				visibility: "PUBLIC",
+			},
+			orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
+			take: 3,
+			select: {
+				id: true,
+				title: true,
+				excerpt: true,
+				body: true,
+				createdAt: true,
+				coverImage: true,
+				category: true,
+				club: {
+					select: {
+						name: true,
+						slug: true,
+					},
+				},
+			},
+		});
+
+		return {
+			success: true as const,
+			post,
+			moreFromClub,
+			userId: user?.id ?? null,
+		};
+	});
 
 export const createClubPostAction = createServerFn({ method: "POST" })
 	.validator(
@@ -545,6 +715,11 @@ export const createClubPostAction = createServerFn({ method: "POST" })
 			const post = await createClubPost(club.id, user.id, {
 				title: data.title,
 				body: data.body,
+				excerpt: data.excerpt,
+				coverImage: data.coverImage,
+				category: data.category,
+				visibility: data.visibility,
+				allowComments: data.allowComments,
 				isPinned: data.isPinned,
 			});
 			return { success: true as const, post };
@@ -569,6 +744,11 @@ export const updateClubPostAction = createServerFn({ method: "POST" })
 			const post = await updateClubPost(data.postId, user.id, {
 				...(data.title !== undefined ? { title: data.title } : {}),
 				...(data.body !== undefined ? { body: data.body } : {}),
+				...(data.excerpt !== undefined ? { excerpt: data.excerpt } : {}),
+				...(data.coverImage !== undefined ? { coverImage: data.coverImage } : {}),
+				...(data.category !== undefined ? { category: data.category } : {}),
+				...(data.visibility !== undefined ? { visibility: data.visibility } : {}),
+				...(data.allowComments !== undefined ? { allowComments: data.allowComments } : {}),
 				...(data.isPinned !== undefined ? { isPinned: data.isPinned } : {}),
 			});
 			return { success: true as const, post };

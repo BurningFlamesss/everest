@@ -10,6 +10,7 @@ import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import { STREAM_NAMES } from "#/lib/quiz";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import {
 	PageFrame,
 	PageHeader,
@@ -22,6 +23,16 @@ import { StreamCompare } from "#/templates/modern/components/interactions/Stream
 import type { BlockType, QuizStreamId } from "#/types";
 
 export const Route = createFileRoute("/_public/course-finder")({
+	head: () =>
+		pageMeta({
+			title:
+				"Interactive Course & Stream Finder | Everest English Boarding Secondary School",
+			description:
+				"Find your ideal academic path after SEE. Compare +2 Science and +2 Management courses, elective subjects, career opportunities, and eligibility at Everest School (EEBSS), Butwal.",
+			path: "/course-finder",
+			keywords:
+				"course finder nepal, +2 stream selector, science or management after see, everest school courses, eebss course chooser",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		if (String(search.cms) === "1") {

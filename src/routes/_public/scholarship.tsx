@@ -28,6 +28,7 @@ import {
 	useScholarships,
 	useWebsitePageContent,
 } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import {
 	PageFrame,
 	PageHeader,
@@ -443,6 +444,16 @@ const ScholarshipDetail = ({ item }: { item: Scholarship }) => {
 };
 
 export const Route = createFileRoute("/_public/scholarship")({
+	head: () =>
+		pageMeta({
+			title:
+				"Merit & Need-Based Scholarships | Everest English Boarding Secondary School (EEBSS)",
+			description:
+				"Explore scholarship opportunities at Everest School, Butwal: SEE board topper grants, entrance merit awards, sports scholarships, and underprivileged student assistance programs.",
+			path: "/scholarship",
+			keywords:
+				"everest school scholarship, see scholarship nepal, +2 scholarship butwal, merit scholarship school nepal, eebss financial aid",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		if (String(search.cms) === "1") {

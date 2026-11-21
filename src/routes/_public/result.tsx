@@ -5,6 +5,7 @@ import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import { getBoardResultsServer } from "#/packages/content/server/content";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import {
 	PageFrame,
 	PageHeader,
@@ -13,6 +14,16 @@ import { ResultsChart } from "#/templates/modern/components/utilities/ResultsCha
 import type { BlockType } from "#/types";
 
 export const Route = createFileRoute("/_public/result")({
+	head: () =>
+		pageMeta({
+			title:
+				"Board Exam Results & SEE Academic Excellence | Everest School (EEBSS)",
+			description:
+				"Explore our outstanding academic achievements: 98%+ SEE pass rate, GPA 4.0 achievers, NEB +2 Science & Management board ranks, and historical academic performance at Everest School, Butwal.",
+			path: "/result",
+			keywords:
+				"see results everest school, eebss board results, best see result butwal, neb 12 result nepal, school pass rate nepal",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		let previewPage = null;

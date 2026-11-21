@@ -28,9 +28,13 @@ type ClubRow = Awaited<ReturnType<typeof getClubsFn>>[number];
 export const Route = createFileRoute("/_public/clubs")({
 	head: () =>
 		pageMeta({
-			title: "Clubs",
+			title:
+				"Student Clubs & Societies | Everest English Boarding Secondary School (EEBSS)",
 			description:
-				"Clubs give students a place to build skills, make friends and take on responsibility beyond the classroom.",
+				"Join student clubs at Everest School, Butwal: Science & Innovation, Robotics & IT, Literature & Debate, Eco Conservation, and Athletics. Developing leadership, teamwork, and passion.",
+			path: "/clubs",
+			keywords:
+				"everest school clubs, student societies nepal, eebss clubs, robotics club school butwal, extracurricular activities nepal",
 		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };

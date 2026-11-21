@@ -16,6 +16,7 @@ import {
 	useFacultyDirectory,
 	useWebsitePageContent,
 } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import {
 	PageFrame,
 	PageHeader,
@@ -59,6 +60,16 @@ const QuickAction = ({
 );
 
 export const Route = createFileRoute("/_public/faculty")({
+	head: () =>
+		pageMeta({
+			title:
+				"Faculty & Academic Leadership | Everest English Boarding Secondary School (EEBSS)",
+			description:
+				"Meet the faculty, subject department heads, and visionary academic leadership of Everest English Boarding Secondary School in Butwal, Nepal.",
+			path: "/faculty",
+			keywords:
+				"everest school teachers, everest school principal, eebss faculty, teachers in butwal nepal, best educators nepal",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		if (String(search.cms ?? "") === "1") {

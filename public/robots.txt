@@ -1,3 +1,9 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /uploads
+Disallow: /dashboard
+Disallow: /my-records
+
+Sitemap: https://everestebss.edu.np/sitemap.xml

@@ -18,11 +18,17 @@ export const Route = createFileRoute("/_public/events/$slug")({
 
 		return event;
 	},
-	head: ({ loaderData }) =>
+	head: ({ loaderData, params }) =>
 		pageMeta({
-			title: loaderData?.title ?? "Event",
-			description: loaderData?.description ?? undefined,
+			title: loaderData?.title
+				? `${loaderData.title} | Events | Everest English Boarding Secondary School`
+				: "School Event | Everest School (EEBSS)",
+			description:
+				loaderData?.description ||
+				"School event details, schedule, location, and participation guidelines from Everest School, Butwal.",
 			image: loaderData?.coverImage,
+			path: `/events/${params.slug}`,
+			type: "article",
 		}),
 	notFoundComponent: () => (
 		<PageFrame>

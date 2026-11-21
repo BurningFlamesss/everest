@@ -29,6 +29,7 @@ import { Route as PortalMyResultsRouteImport } from './routes/_portal/my-results
 import { Route as PortalNotificationsRouteImport } from './routes/_portal/notifications'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as PublicAboutRouteImport } from './routes/_public/about'
+import { Route as PublicActivitiesRouteImport } from './routes/_public/activities'
 import { Route as PublicAdmissionsRouteImport } from './routes/_public/admissions'
 import { Route as PublicCalendarRouteImport } from './routes/_public/calendar'
 import { Route as PublicClubsRouteImport } from './routes/_public/clubs'
@@ -50,7 +51,10 @@ import { Route as UploadsSplatRouteImport } from './routes/uploads/$'
 import { Route as UserIndexRouteImport } from './routes/user/index'
 import { Route as OnboardActivateIndexRouteImport } from './routes/_onboard/activate.index'
 import { Route as OnboardActivateTokenRouteImport } from './routes/_onboard/activate.$token'
+import { Route as PublicActivitiesPostIdRouteImport } from './routes/_public/activities_.$postId'
+import { Route as PublicClubPublicRouteImport } from './routes/_public/club_.public'
 import { Route as PublicClubsSlugRouteImport } from './routes/_public/clubs_.$slug'
+import { Route as PublicClubsPublicRouteImport } from './routes/_public/clubs_.public'
 import { Route as PublicEventsIndexRouteImport } from './routes/_public/events.index'
 import { Route as PublicEventsSlugRouteImport } from './routes/_public/events.$slug'
 import { Route as PublicNoticesIndexRouteImport } from './routes/_public/notices.index'
@@ -119,6 +123,7 @@ import { Route as AdminAdminSubjectsIndexRouteImport } from './routes/admin/_adm
 import { Route as AdminAdminSubjectsIdRouteImport } from './routes/admin/_admin/subjects.$id'
 import { Route as ApiWebsitePageKeyRouteImport } from './routes/api/website/page/$key'
 import { Route as ApiWebsitePagesKeyRouteImport } from './routes/api/website/pages/$key'
+import { Route as PublicClubsSlugPostsPostIdRouteImport } from './routes/_public/clubs_.$slug.posts_.$postId'
 import { Route as AdminAdminNoticesIdIndexRouteImport } from './routes/admin/_admin/notices.$id.index'
 import { Route as AdminAdminNoticesIdEditRouteImport } from './routes/admin/_admin/notices.$id.edit'
 import { Route as ApiWebsitePagesKeyBlocksRouteImport } from './routes/api/website/pages/$key/blocks'
@@ -222,6 +227,11 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
 const PublicAboutRoute = PublicAboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicActivitiesRoute = PublicActivitiesRouteImport.update({
+  id: '/activities',
+  path: '/activities',
   getParentRoute: () => PublicRoute,
 } as any)
 const PublicAdmissionsRoute = PublicAdmissionsRouteImport.update({
@@ -329,9 +339,24 @@ const OnboardActivateTokenRoute = OnboardActivateTokenRouteImport.update({
   path: '/activate/$token',
   getParentRoute: () => OnboardRoute,
 } as any)
+const PublicActivitiesPostIdRoute = PublicActivitiesPostIdRouteImport.update({
+  id: '/activities_/$postId',
+  path: '/activities/$postId',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicClubPublicRoute = PublicClubPublicRouteImport.update({
+  id: '/club_/public',
+  path: '/club/public',
+  getParentRoute: () => PublicRoute,
+} as any)
 const PublicClubsSlugRoute = PublicClubsSlugRouteImport.update({
   id: '/clubs_/$slug',
   path: '/clubs/$slug',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicClubsPublicRoute = PublicClubsPublicRouteImport.update({
+  id: '/clubs_/public',
+  path: '/clubs/public',
   getParentRoute: () => PublicRoute,
 } as any)
 const PublicEventsIndexRoute = PublicEventsIndexRouteImport.update({
@@ -677,6 +702,12 @@ const ApiWebsitePagesKeyRoute = ApiWebsitePagesKeyRouteImport.update({
   path: '/$key',
   getParentRoute: () => ApiWebsitePagesRoute,
 } as any)
+const PublicClubsSlugPostsPostIdRoute =
+  PublicClubsSlugPostsPostIdRouteImport.update({
+    id: '/posts_/$postId',
+    path: '/posts/$postId',
+    getParentRoute: () => PublicClubsSlugRoute,
+  } as any)
 const AdminAdminNoticesIdIndexRoute =
   AdminAdminNoticesIdIndexRouteImport.update({
     id: '/',
@@ -737,6 +768,7 @@ export interface FileRoutesByFullPath {
   '/my-results': typeof PortalMyResultsRoute
   '/notifications': typeof PortalNotificationsRoute
   '/about': typeof PublicAboutRoute
+  '/activities': typeof PublicActivitiesRoute
   '/admissions': typeof PublicAdmissionsRoute
   '/calendar': typeof PublicCalendarRoute
   '/clubs': typeof PublicClubsRoute
@@ -757,7 +789,10 @@ export interface FileRoutesByFullPath {
   '/uploads/$': typeof UploadsSplatRoute
   '/user/': typeof UserIndexRoute
   '/activate/$token': typeof OnboardActivateTokenRoute
-  '/clubs/$slug': typeof PublicClubsSlugRoute
+  '/activities/$postId': typeof PublicActivitiesPostIdRoute
+  '/club/public': typeof PublicClubPublicRoute
+  '/clubs/$slug': typeof PublicClubsSlugRouteWithChildren
+  '/clubs/public': typeof PublicClubsPublicRoute
   '/events/$slug': typeof PublicEventsSlugRoute
   '/notices/$slug': typeof PublicNoticesSlugRoute
   '/admin/$': typeof AdminAdminSplatRoute
@@ -827,6 +862,7 @@ export interface FileRoutesByFullPath {
   '/admin/staff/': typeof AdminAdminStaffIndexRoute
   '/admin/students/': typeof AdminAdminStudentsIndexRoute
   '/admin/subjects/': typeof AdminAdminSubjectsIndexRoute
+  '/clubs/$slug/posts/$postId': typeof PublicClubsSlugPostsPostIdRoute
   '/admin/notices/$id/edit': typeof AdminAdminNoticesIdEditRoute
   '/api/website/pages/$key/blocks': typeof ApiWebsitePagesKeyBlocksRouteWithChildren
   '/api/website/pages/$key/publish': typeof ApiWebsitePagesKeyPublishRoute
@@ -851,6 +887,7 @@ export interface FileRoutesByTo {
   '/my-results': typeof PortalMyResultsRoute
   '/notifications': typeof PortalNotificationsRoute
   '/about': typeof PublicAboutRoute
+  '/activities': typeof PublicActivitiesRoute
   '/admissions': typeof PublicAdmissionsRoute
   '/calendar': typeof PublicCalendarRoute
   '/clubs': typeof PublicClubsRoute
@@ -869,7 +906,10 @@ export interface FileRoutesByTo {
   '/uploads/$': typeof UploadsSplatRoute
   '/user': typeof UserIndexRoute
   '/activate/$token': typeof OnboardActivateTokenRoute
-  '/clubs/$slug': typeof PublicClubsSlugRoute
+  '/activities/$postId': typeof PublicActivitiesPostIdRoute
+  '/club/public': typeof PublicClubPublicRoute
+  '/clubs/$slug': typeof PublicClubsSlugRouteWithChildren
+  '/clubs/public': typeof PublicClubsPublicRoute
   '/events/$slug': typeof PublicEventsSlugRoute
   '/notices/$slug': typeof PublicNoticesSlugRoute
   '/admin/$': typeof AdminAdminSplatRoute
@@ -930,6 +970,7 @@ export interface FileRoutesByTo {
   '/admin/staff': typeof AdminAdminStaffIndexRoute
   '/admin/students': typeof AdminAdminStudentsIndexRoute
   '/admin/subjects': typeof AdminAdminSubjectsIndexRoute
+  '/clubs/$slug/posts/$postId': typeof PublicClubsSlugPostsPostIdRoute
   '/admin/notices/$id/edit': typeof AdminAdminNoticesIdEditRoute
   '/api/website/pages/$key/blocks': typeof ApiWebsitePagesKeyBlocksRouteWithChildren
   '/api/website/pages/$key/publish': typeof ApiWebsitePagesKeyPublishRoute
@@ -959,6 +1000,7 @@ export interface FileRoutesById {
   '/_portal/my-results': typeof PortalMyResultsRoute
   '/_portal/notifications': typeof PortalNotificationsRoute
   '/_public/about': typeof PublicAboutRoute
+  '/_public/activities': typeof PublicActivitiesRoute
   '/_public/admissions': typeof PublicAdmissionsRoute
   '/_public/calendar': typeof PublicCalendarRoute
   '/_public/clubs': typeof PublicClubsRoute
@@ -980,7 +1022,10 @@ export interface FileRoutesById {
   '/_public/': typeof PublicIndexRoute
   '/user/': typeof UserIndexRoute
   '/_onboard/activate/$token': typeof OnboardActivateTokenRoute
-  '/_public/clubs_/$slug': typeof PublicClubsSlugRoute
+  '/_public/activities_/$postId': typeof PublicActivitiesPostIdRoute
+  '/_public/club_/public': typeof PublicClubPublicRoute
+  '/_public/clubs_/$slug': typeof PublicClubsSlugRouteWithChildren
+  '/_public/clubs_/public': typeof PublicClubsPublicRoute
   '/_public/events/$slug': typeof PublicEventsSlugRoute
   '/_public/notices/$slug': typeof PublicNoticesSlugRoute
   '/admin/_admin/$': typeof AdminAdminSplatRoute
@@ -1050,6 +1095,7 @@ export interface FileRoutesById {
   '/admin/_admin/staff/': typeof AdminAdminStaffIndexRoute
   '/admin/_admin/students/': typeof AdminAdminStudentsIndexRoute
   '/admin/_admin/subjects/': typeof AdminAdminSubjectsIndexRoute
+  '/_public/clubs_/$slug/posts_/$postId': typeof PublicClubsSlugPostsPostIdRoute
   '/admin/_admin/notices/$id/edit': typeof AdminAdminNoticesIdEditRoute
   '/api/website/pages/$key/blocks': typeof ApiWebsitePagesKeyBlocksRouteWithChildren
   '/api/website/pages/$key/publish': typeof ApiWebsitePagesKeyPublishRoute
@@ -1078,6 +1124,7 @@ export interface FileRouteTypes {
     | '/my-results'
     | '/notifications'
     | '/about'
+    | '/activities'
     | '/admissions'
     | '/calendar'
     | '/clubs'
@@ -1098,7 +1145,10 @@ export interface FileRouteTypes {
     | '/uploads/$'
     | '/user/'
     | '/activate/$token'
+    | '/activities/$postId'
+    | '/club/public'
     | '/clubs/$slug'
+    | '/clubs/public'
     | '/events/$slug'
     | '/notices/$slug'
     | '/admin/$'
@@ -1168,6 +1218,7 @@ export interface FileRouteTypes {
     | '/admin/staff/'
     | '/admin/students/'
     | '/admin/subjects/'
+    | '/clubs/$slug/posts/$postId'
     | '/admin/notices/$id/edit'
     | '/api/website/pages/$key/blocks'
     | '/api/website/pages/$key/publish'
@@ -1192,6 +1243,7 @@ export interface FileRouteTypes {
     | '/my-results'
     | '/notifications'
     | '/about'
+    | '/activities'
     | '/admissions'
     | '/calendar'
     | '/clubs'
@@ -1210,7 +1262,10 @@ export interface FileRouteTypes {
     | '/uploads/$'
     | '/user'
     | '/activate/$token'
+    | '/activities/$postId'
+    | '/club/public'
     | '/clubs/$slug'
+    | '/clubs/public'
     | '/events/$slug'
     | '/notices/$slug'
     | '/admin/$'
@@ -1271,6 +1326,7 @@ export interface FileRouteTypes {
     | '/admin/staff'
     | '/admin/students'
     | '/admin/subjects'
+    | '/clubs/$slug/posts/$postId'
     | '/admin/notices/$id/edit'
     | '/api/website/pages/$key/blocks'
     | '/api/website/pages/$key/publish'
@@ -1299,6 +1355,7 @@ export interface FileRouteTypes {
     | '/_portal/my-results'
     | '/_portal/notifications'
     | '/_public/about'
+    | '/_public/activities'
     | '/_public/admissions'
     | '/_public/calendar'
     | '/_public/clubs'
@@ -1320,7 +1377,10 @@ export interface FileRouteTypes {
     | '/_public/'
     | '/user/'
     | '/_onboard/activate/$token'
+    | '/_public/activities_/$postId'
+    | '/_public/club_/public'
     | '/_public/clubs_/$slug'
+    | '/_public/clubs_/public'
     | '/_public/events/$slug'
     | '/_public/notices/$slug'
     | '/admin/_admin/$'
@@ -1390,6 +1450,7 @@ export interface FileRouteTypes {
     | '/admin/_admin/staff/'
     | '/admin/_admin/students/'
     | '/admin/_admin/subjects/'
+    | '/_public/clubs_/$slug/posts_/$postId'
     | '/admin/_admin/notices/$id/edit'
     | '/api/website/pages/$key/blocks'
     | '/api/website/pages/$key/publish'
@@ -1558,6 +1619,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicAboutRouteImport
       parentRoute: typeof PublicRoute
     }
+    '/_public/activities': {
+      id: '/_public/activities'
+      path: '/activities'
+      fullPath: '/activities'
+      preLoaderRoute: typeof PublicActivitiesRouteImport
+      parentRoute: typeof PublicRoute
+    }
     '/_public/admissions': {
       id: '/_public/admissions'
       path: '/admissions'
@@ -1705,11 +1773,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardActivateTokenRouteImport
       parentRoute: typeof OnboardRoute
     }
+    '/_public/activities_/$postId': {
+      id: '/_public/activities_/$postId'
+      path: '/activities/$postId'
+      fullPath: '/activities/$postId'
+      preLoaderRoute: typeof PublicActivitiesPostIdRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/club_/public': {
+      id: '/_public/club_/public'
+      path: '/club/public'
+      fullPath: '/club/public'
+      preLoaderRoute: typeof PublicClubPublicRouteImport
+      parentRoute: typeof PublicRoute
+    }
     '/_public/clubs_/$slug': {
       id: '/_public/clubs_/$slug'
       path: '/clubs/$slug'
       fullPath: '/clubs/$slug'
       preLoaderRoute: typeof PublicClubsSlugRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/clubs_/public': {
+      id: '/_public/clubs_/public'
+      path: '/clubs/public'
+      fullPath: '/clubs/public'
+      preLoaderRoute: typeof PublicClubsPublicRouteImport
       parentRoute: typeof PublicRoute
     }
     '/_public/events/': {
@@ -2188,6 +2277,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiWebsitePagesKeyRouteImport
       parentRoute: typeof ApiWebsitePagesRoute
     }
+    '/_public/clubs_/$slug/posts_/$postId': {
+      id: '/_public/clubs_/$slug/posts_/$postId'
+      path: '/posts/$postId'
+      fullPath: '/clubs/$slug/posts/$postId'
+      preLoaderRoute: typeof PublicClubsSlugPostsPostIdRouteImport
+      parentRoute: typeof PublicClubsSlugRoute
+    }
     '/admin/_admin/notices/$id/': {
       id: '/admin/_admin/notices/$id/'
       path: '/'
@@ -2312,8 +2408,21 @@ const PublicNoticesRouteWithChildren = PublicNoticesRoute._addFileChildren(
   PublicNoticesRouteChildren,
 )
 
+interface PublicClubsSlugRouteChildren {
+  PublicClubsSlugPostsPostIdRoute: typeof PublicClubsSlugPostsPostIdRoute
+}
+
+const PublicClubsSlugRouteChildren: PublicClubsSlugRouteChildren = {
+  PublicClubsSlugPostsPostIdRoute: PublicClubsSlugPostsPostIdRoute,
+}
+
+const PublicClubsSlugRouteWithChildren = PublicClubsSlugRoute._addFileChildren(
+  PublicClubsSlugRouteChildren,
+)
+
 interface PublicRouteChildren {
   PublicAboutRoute: typeof PublicAboutRoute
+  PublicActivitiesRoute: typeof PublicActivitiesRoute
   PublicAdmissionsRoute: typeof PublicAdmissionsRoute
   PublicCalendarRoute: typeof PublicCalendarRoute
   PublicClubsRoute: typeof PublicClubsRoute
@@ -2331,11 +2440,15 @@ interface PublicRouteChildren {
   PublicScholarshipRoute: typeof PublicScholarshipRoute
   PublicTransportationRoute: typeof PublicTransportationRoute
   PublicIndexRoute: typeof PublicIndexRoute
-  PublicClubsSlugRoute: typeof PublicClubsSlugRoute
+  PublicActivitiesPostIdRoute: typeof PublicActivitiesPostIdRoute
+  PublicClubPublicRoute: typeof PublicClubPublicRoute
+  PublicClubsSlugRoute: typeof PublicClubsSlugRouteWithChildren
+  PublicClubsPublicRoute: typeof PublicClubsPublicRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
   PublicAboutRoute: PublicAboutRoute,
+  PublicActivitiesRoute: PublicActivitiesRoute,
   PublicAdmissionsRoute: PublicAdmissionsRoute,
   PublicCalendarRoute: PublicCalendarRoute,
   PublicClubsRoute: PublicClubsRoute,
@@ -2353,7 +2466,10 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicScholarshipRoute: PublicScholarshipRoute,
   PublicTransportationRoute: PublicTransportationRoute,
   PublicIndexRoute: PublicIndexRoute,
-  PublicClubsSlugRoute: PublicClubsSlugRoute,
+  PublicActivitiesPostIdRoute: PublicActivitiesPostIdRoute,
+  PublicClubPublicRoute: PublicClubPublicRoute,
+  PublicClubsSlugRoute: PublicClubsSlugRouteWithChildren,
+  PublicClubsPublicRoute: PublicClubsPublicRoute,
 }
 
 const PublicRouteWithChildren =

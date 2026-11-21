@@ -27,11 +27,13 @@ export type AggregateBusRoute = {
 }
 
 export type BusRouteAvgAggregateOutputType = {
+  capacity: number | null
   feeMonthly: number | null
   order: number | null
 }
 
 export type BusRouteSumAggregateOutputType = {
+  capacity: number | null
   feeMonthly: number | null
   order: number | null
 }
@@ -41,6 +43,8 @@ export type BusRouteMinAggregateOutputType = {
   busNumber: string | null
   driverName: string | null
   driverPhone: string | null
+  vehicleType: string | null
+  capacity: number | null
   feeMonthly: number | null
   order: number | null
   createdAt: Date | null
@@ -52,6 +56,8 @@ export type BusRouteMaxAggregateOutputType = {
   busNumber: string | null
   driverName: string | null
   driverPhone: string | null
+  vehicleType: string | null
+  capacity: number | null
   feeMonthly: number | null
   order: number | null
   createdAt: Date | null
@@ -63,6 +69,8 @@ export type BusRouteCountAggregateOutputType = {
   busNumber: number
   driverName: number
   driverPhone: number
+  vehicleType: number
+  capacity: number
   stops: number
   feeMonthly: number
   order: number
@@ -73,11 +81,13 @@ export type BusRouteCountAggregateOutputType = {
 
 
 export type BusRouteAvgAggregateInputType = {
+  capacity?: true
   feeMonthly?: true
   order?: true
 }
 
 export type BusRouteSumAggregateInputType = {
+  capacity?: true
   feeMonthly?: true
   order?: true
 }
@@ -87,6 +97,8 @@ export type BusRouteMinAggregateInputType = {
   busNumber?: true
   driverName?: true
   driverPhone?: true
+  vehicleType?: true
+  capacity?: true
   feeMonthly?: true
   order?: true
   createdAt?: true
@@ -98,6 +110,8 @@ export type BusRouteMaxAggregateInputType = {
   busNumber?: true
   driverName?: true
   driverPhone?: true
+  vehicleType?: true
+  capacity?: true
   feeMonthly?: true
   order?: true
   createdAt?: true
@@ -109,6 +123,8 @@ export type BusRouteCountAggregateInputType = {
   busNumber?: true
   driverName?: true
   driverPhone?: true
+  vehicleType?: true
+  capacity?: true
   stops?: true
   feeMonthly?: true
   order?: true
@@ -208,6 +224,8 @@ export type BusRouteGroupByOutputType = {
   busNumber: string
   driverName: string
   driverPhone: string
+  vehicleType: string | null
+  capacity: number | null
   stops: runtime.JsonValue
   feeMonthly: number | null
   order: number
@@ -243,6 +261,8 @@ export type BusRouteWhereInput = {
   busNumber?: Prisma.StringFilter<"BusRoute"> | string
   driverName?: Prisma.StringFilter<"BusRoute"> | string
   driverPhone?: Prisma.StringFilter<"BusRoute"> | string
+  vehicleType?: Prisma.StringNullableFilter<"BusRoute"> | string | null
+  capacity?: Prisma.IntNullableFilter<"BusRoute"> | number | null
   stops?: Prisma.JsonFilter<"BusRoute">
   feeMonthly?: Prisma.IntNullableFilter<"BusRoute"> | number | null
   order?: Prisma.IntFilter<"BusRoute"> | number
@@ -255,6 +275,8 @@ export type BusRouteOrderByWithRelationInput = {
   busNumber?: Prisma.SortOrder
   driverName?: Prisma.SortOrder
   driverPhone?: Prisma.SortOrder
+  vehicleType?: Prisma.SortOrderInput | Prisma.SortOrder
+  capacity?: Prisma.SortOrderInput | Prisma.SortOrder
   stops?: Prisma.SortOrder
   feeMonthly?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
@@ -270,6 +292,8 @@ export type BusRouteWhereUniqueInput = Prisma.AtLeast<{
   busNumber?: Prisma.StringFilter<"BusRoute"> | string
   driverName?: Prisma.StringFilter<"BusRoute"> | string
   driverPhone?: Prisma.StringFilter<"BusRoute"> | string
+  vehicleType?: Prisma.StringNullableFilter<"BusRoute"> | string | null
+  capacity?: Prisma.IntNullableFilter<"BusRoute"> | number | null
   stops?: Prisma.JsonFilter<"BusRoute">
   feeMonthly?: Prisma.IntNullableFilter<"BusRoute"> | number | null
   order?: Prisma.IntFilter<"BusRoute"> | number
@@ -282,6 +306,8 @@ export type BusRouteOrderByWithAggregationInput = {
   busNumber?: Prisma.SortOrder
   driverName?: Prisma.SortOrder
   driverPhone?: Prisma.SortOrder
+  vehicleType?: Prisma.SortOrderInput | Prisma.SortOrder
+  capacity?: Prisma.SortOrderInput | Prisma.SortOrder
   stops?: Prisma.SortOrder
   feeMonthly?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
@@ -302,6 +328,8 @@ export type BusRouteScalarWhereWithAggregatesInput = {
   busNumber?: Prisma.StringWithAggregatesFilter<"BusRoute"> | string
   driverName?: Prisma.StringWithAggregatesFilter<"BusRoute"> | string
   driverPhone?: Prisma.StringWithAggregatesFilter<"BusRoute"> | string
+  vehicleType?: Prisma.StringNullableWithAggregatesFilter<"BusRoute"> | string | null
+  capacity?: Prisma.IntNullableWithAggregatesFilter<"BusRoute"> | number | null
   stops?: Prisma.JsonWithAggregatesFilter<"BusRoute">
   feeMonthly?: Prisma.IntNullableWithAggregatesFilter<"BusRoute"> | number | null
   order?: Prisma.IntWithAggregatesFilter<"BusRoute"> | number
@@ -314,6 +342,8 @@ export type BusRouteCreateInput = {
   busNumber: string
   driverName: string
   driverPhone: string
+  vehicleType?: string | null
+  capacity?: number | null
   stops: Prisma.JsonNullValueInput | runtime.InputJsonValue
   feeMonthly?: number | null
   order?: number
@@ -326,6 +356,8 @@ export type BusRouteUncheckedCreateInput = {
   busNumber: string
   driverName: string
   driverPhone: string
+  vehicleType?: string | null
+  capacity?: number | null
   stops: Prisma.JsonNullValueInput | runtime.InputJsonValue
   feeMonthly?: number | null
   order?: number
@@ -338,6 +370,8 @@ export type BusRouteUpdateInput = {
   busNumber?: Prisma.StringFieldUpdateOperationsInput | string
   driverName?: Prisma.StringFieldUpdateOperationsInput | string
   driverPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  vehicleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   stops?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   feeMonthly?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -350,6 +384,8 @@ export type BusRouteUncheckedUpdateInput = {
   busNumber?: Prisma.StringFieldUpdateOperationsInput | string
   driverName?: Prisma.StringFieldUpdateOperationsInput | string
   driverPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  vehicleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   stops?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   feeMonthly?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -362,6 +398,8 @@ export type BusRouteCreateManyInput = {
   busNumber: string
   driverName: string
   driverPhone: string
+  vehicleType?: string | null
+  capacity?: number | null
   stops: Prisma.JsonNullValueInput | runtime.InputJsonValue
   feeMonthly?: number | null
   order?: number
@@ -374,6 +412,8 @@ export type BusRouteUpdateManyMutationInput = {
   busNumber?: Prisma.StringFieldUpdateOperationsInput | string
   driverName?: Prisma.StringFieldUpdateOperationsInput | string
   driverPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  vehicleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   stops?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   feeMonthly?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -386,6 +426,8 @@ export type BusRouteUncheckedUpdateManyInput = {
   busNumber?: Prisma.StringFieldUpdateOperationsInput | string
   driverName?: Prisma.StringFieldUpdateOperationsInput | string
   driverPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  vehicleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   stops?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   feeMonthly?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -398,6 +440,8 @@ export type BusRouteCountOrderByAggregateInput = {
   busNumber?: Prisma.SortOrder
   driverName?: Prisma.SortOrder
   driverPhone?: Prisma.SortOrder
+  vehicleType?: Prisma.SortOrder
+  capacity?: Prisma.SortOrder
   stops?: Prisma.SortOrder
   feeMonthly?: Prisma.SortOrder
   order?: Prisma.SortOrder
@@ -406,6 +450,7 @@ export type BusRouteCountOrderByAggregateInput = {
 }
 
 export type BusRouteAvgOrderByAggregateInput = {
+  capacity?: Prisma.SortOrder
   feeMonthly?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
@@ -415,6 +460,8 @@ export type BusRouteMaxOrderByAggregateInput = {
   busNumber?: Prisma.SortOrder
   driverName?: Prisma.SortOrder
   driverPhone?: Prisma.SortOrder
+  vehicleType?: Prisma.SortOrder
+  capacity?: Prisma.SortOrder
   feeMonthly?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -426,6 +473,8 @@ export type BusRouteMinOrderByAggregateInput = {
   busNumber?: Prisma.SortOrder
   driverName?: Prisma.SortOrder
   driverPhone?: Prisma.SortOrder
+  vehicleType?: Prisma.SortOrder
+  capacity?: Prisma.SortOrder
   feeMonthly?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -433,6 +482,7 @@ export type BusRouteMinOrderByAggregateInput = {
 }
 
 export type BusRouteSumOrderByAggregateInput = {
+  capacity?: Prisma.SortOrder
   feeMonthly?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
@@ -444,6 +494,8 @@ export type BusRouteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   busNumber?: boolean
   driverName?: boolean
   driverPhone?: boolean
+  vehicleType?: boolean
+  capacity?: boolean
   stops?: boolean
   feeMonthly?: boolean
   order?: boolean
@@ -456,6 +508,8 @@ export type BusRouteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   busNumber?: boolean
   driverName?: boolean
   driverPhone?: boolean
+  vehicleType?: boolean
+  capacity?: boolean
   stops?: boolean
   feeMonthly?: boolean
   order?: boolean
@@ -468,6 +522,8 @@ export type BusRouteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   busNumber?: boolean
   driverName?: boolean
   driverPhone?: boolean
+  vehicleType?: boolean
+  capacity?: boolean
   stops?: boolean
   feeMonthly?: boolean
   order?: boolean
@@ -480,6 +536,8 @@ export type BusRouteSelectScalar = {
   busNumber?: boolean
   driverName?: boolean
   driverPhone?: boolean
+  vehicleType?: boolean
+  capacity?: boolean
   stops?: boolean
   feeMonthly?: boolean
   order?: boolean
@@ -487,7 +545,7 @@ export type BusRouteSelectScalar = {
   updatedAt?: boolean
 }
 
-export type BusRouteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "busNumber" | "driverName" | "driverPhone" | "stops" | "feeMonthly" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["busRoute"]>
+export type BusRouteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "busNumber" | "driverName" | "driverPhone" | "vehicleType" | "capacity" | "stops" | "feeMonthly" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["busRoute"]>
 
 export type $BusRoutePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BusRoute"
@@ -497,6 +555,8 @@ export type $BusRoutePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     busNumber: string
     driverName: string
     driverPhone: string
+    vehicleType: string | null
+    capacity: number | null
     stops: runtime.JsonValue
     feeMonthly: number | null
     order: number
@@ -929,6 +989,8 @@ export interface BusRouteFieldRefs {
   readonly busNumber: Prisma.FieldRef<"BusRoute", 'String'>
   readonly driverName: Prisma.FieldRef<"BusRoute", 'String'>
   readonly driverPhone: Prisma.FieldRef<"BusRoute", 'String'>
+  readonly vehicleType: Prisma.FieldRef<"BusRoute", 'String'>
+  readonly capacity: Prisma.FieldRef<"BusRoute", 'Int'>
   readonly stops: Prisma.FieldRef<"BusRoute", 'Json'>
   readonly feeMonthly: Prisma.FieldRef<"BusRoute", 'Int'>
   readonly order: Prisma.FieldRef<"BusRoute", 'Int'>

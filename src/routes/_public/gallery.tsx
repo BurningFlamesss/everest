@@ -18,6 +18,7 @@ import {
 	getWebsitePagePreviewServer,
 } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import { Button } from "#/templates/modern/components/Button.tsx";
 import { Chip } from "#/templates/modern/components/Chip";
 import {
@@ -47,6 +48,16 @@ const SPANS = [
 ];
 
 export const Route = createFileRoute("/_public/gallery")({
+	head: () =>
+		pageMeta({
+			title:
+				"Photo & Video Gallery | Everest English Boarding Secondary School (EEBSS)",
+			description:
+				"View photographs and moments from annual day functions, sports tournaments, science exhibitions, musical festivals, and campus life at Everest School, Butwal.",
+			path: "/gallery",
+			keywords:
+				"everest school photos, eebss gallery, school events butwal photos, school annual day nepal, student life everest school",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		if (String(search.cms) === "1") {

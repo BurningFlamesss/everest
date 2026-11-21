@@ -190,6 +190,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 	},
 	head: ({ loaderData }) => {
 		const config = loaderData?.config;
+		const defaultTitle =
+			config?.seo?.title ||
+			"Everest English Boarding Secondary School | EEBSS - Best School in Nepal";
+		const defaultDescription =
+			config?.seo?.description ||
+			"Everest English Boarding Secondary School (EEBSS) in Butwal, Nepal. Premier academic institution offering Early Childhood to Grade 12 (+2 Science & Management) affiliated with NEB Nepal.";
+		const defaultImage =
+			config?.seo?.ogImage || "https://everestebss.edu.np/schools/everest/logo.png";
 
 		return {
 			meta: [
@@ -200,14 +208,37 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 					name: "viewport",
 					content: "width=device-width, initial-scale=1",
 				},
-				{ title: config?.seo?.title },
+				{
+					name: "robots",
+					content:
+						"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+				},
+				{ name: "googlebot", content: "index, follow" },
+				{
+					name: "keywords",
+					content:
+						"everest school, everest english boarding school, eebss, school in nepal, best school in nepal, top school in nepal, best school in butwal, top school in butwal, best school in rupandehi, everest english boarding secondary school, everest butwal, eebss butwal, +2 science in butwal nepal, +2 management in butwal nepal, best secondary school in nepal, top neb school in nepal",
+				},
+				{
+					name: "author",
+					content: "Everest English Boarding Secondary School",
+				},
+				{
+					name: "publisher",
+					content: "Everest English Boarding Secondary School",
+				},
+				{ name: "geo.region", content: "NP-P5" },
+				{ name: "geo.placename", content: "Butwal, Rupandehi, Nepal" },
+				{ name: "geo.position", content: "27.7;83.4486" },
+				{ name: "ICBM", content: "27.7, 83.4486" },
+				{ title: defaultTitle },
 				{
 					name: "description",
-					content: config?.seo?.description,
+					content: defaultDescription,
 				},
 				{
 					name: "theme-color",
-					content: config?.theme?.primary,
+					content: config?.theme?.primary || "#DC2626",
 				},
 				{
 					property: "og:type",
@@ -215,34 +246,54 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				},
 				{
 					property: "og:site_name",
-					content: config?.organization?.name,
+					content: "Everest English Boarding Secondary School (EEBSS)",
+				},
+				{
+					property: "og:locale",
+					content: "en_US",
+				},
+				{
+					property: "og:locale:alternate",
+					content: "ne_NP",
 				},
 				{
 					property: "og:title",
-					content: config?.seo?.title,
+					content: defaultTitle,
 				},
 				{
 					property: "og:description",
-					content: config?.seo?.description,
+					content: defaultDescription,
 				},
 				{
 					property: "og:image",
-					content: config?.seo?.ogImage,
+					content: defaultImage,
 				},
 				{
 					name: "twitter:card",
 					content: "summary_large_image",
 				},
 				{
+					name: "twitter:site",
+					content: "@eebssbutwal",
+				},
+				{
 					name: "twitter:title",
-					content: config?.seo?.title,
+					content: defaultTitle,
 				},
 				{
 					name: "twitter:description",
-					content: config?.seo?.description,
+					content: defaultDescription,
+				},
+				{
+					name: "twitter:image",
+					content: defaultImage,
 				},
 			],
 			links: [
+				{
+					rel: "canonical",
+					href: "https://everestebss.edu.np",
+				},
 				{
 					rel: "stylesheet",
 					href: globalCss,
@@ -267,6 +318,104 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 	shellComponent: RootDocument,
 });
 
+const schoolStructuredData = {
+	"@context": "https://schema.org",
+	"@type": ["School", "EducationalOrganization"],
+	"@id": "https://everestebss.edu.np/#school",
+	name: "Everest English Boarding Secondary School",
+	alternateName: [
+		"EEBSS",
+		"Everest School",
+		"Everest English Boarding School",
+		"Everest School Butwal",
+		"Everest Higher Secondary School",
+		"EEBSS Butwal",
+		"श्री एभरेस्ट इङ्लिश बोर्डिङ माध्यमिक विद्यालय",
+	],
+	url: "https://everestebss.edu.np",
+	logo: "https://everestebss.edu.np/schools/everest/logo.png",
+	image:
+		"https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1200&q=80",
+	description:
+		"Everest English Boarding Secondary School (EEBSS), established in 1985 AD (2042 BS), is one of the top and best schools in Nepal. Located in Butwal-8, Rupandehi, Everest EBSS provides premier education from Early Years through Grade 12 (+2 Science & Management) affiliated with National Examinations Board (NEB), Nepal.",
+	address: {
+		"@type": "PostalAddress",
+		streetAddress: "Butwal-8, Sukkhanagar",
+		addressLocality: "Butwal",
+		addressRegion: "Lumbini Province",
+		postalCode: "32907",
+		addressCountry: "NP",
+	},
+	geo: {
+		"@type": "GeoCoordinates",
+		latitude: 27.7,
+		longitude: 83.4486,
+	},
+	telephone: "+977-71-535962",
+	email: "everestbutwal@gmail.com",
+	foundingDate: "1985",
+	sameAs: [
+		"https://www.facebook.com/eebssbutwal",
+		"https://www.instagram.com/",
+	],
+	hasOfferCatalog: {
+		"@type": "OfferCatalog",
+		name: "Academic Programs",
+		itemListElement: [
+			{
+				"@type": "Offer",
+				itemOffered: {
+					"@type": "Course",
+					name: "+2 Science Program",
+					description:
+						"Physics, Chemistry, Biology, Mathematics and Computer Science program affiliated with NEB Nepal.",
+				},
+			},
+			{
+				"@type": "Offer",
+				itemOffered: {
+					"@type": "Course",
+					name: "+2 Management Program",
+					description:
+						"Accounting, Economics, Business Studies, Marketing and Computer Applications affiliated with NEB Nepal.",
+				},
+			},
+			{
+				"@type": "Offer",
+				itemOffered: {
+					"@type": "Course",
+					name: "Secondary School (Grades 1-10 / SEE)",
+					description:
+						"Rigorous school education preparing students for the national Secondary Education Examination (SEE).",
+				},
+			},
+			{
+				"@type": "Offer",
+				itemOffered: {
+					"@type": "Course",
+					name: "Early Childhood Care & Primary School",
+					description:
+						"Foundational education fostering curiosity, creativity, and character development.",
+				},
+			},
+		],
+	},
+};
+
+const websiteStructuredData = {
+	"@context": "https://schema.org",
+	"@type": "WebSite",
+	"@id": "https://everestebss.edu.np/#website",
+	name: "Everest English Boarding Secondary School - EEBSS",
+	alternateName: "Everest School Nepal",
+	url: "https://everestebss.edu.np",
+	potentialAction: {
+		"@type": "SearchAction",
+		target: "https://everestebss.edu.np/course-finder?q={search_term_string}",
+		"query-input": "required name=search_term_string",
+	},
+};
+
 function RootDocument({ children }: { children: React.ReactNode }) {
 	const { config } = Route.useLoaderData();
 
@@ -274,6 +423,18 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 		<html lang="en" style={schoolThemeStyle(config)}>
 			<head>
 				<HeadContent />
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{
+						__html: JSON.stringify(schoolStructuredData),
+					}}
+				/>
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{
+						__html: JSON.stringify(websiteStructuredData),
+					}}
+				/>
 			</head>
 			<body>
 				<AuthProvider>

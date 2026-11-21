@@ -143,6 +143,8 @@ const busRouteSaveSchema = z.object({
 	busNumber: z.string().min(1),
 	driverName: z.string().default(""),
 	driverPhone: z.string().default(""),
+	vehicleType: z.string().nullable().optional(),
+	capacity: z.number().int().nullable().optional(),
 	stops: z.array(z.any()).default([]),
 	feeMonthly: z.number().int().nullable().optional(),
 	order: z.number().int().default(0),

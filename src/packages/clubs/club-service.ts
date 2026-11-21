@@ -297,6 +297,11 @@ async function isClubManager(userId: string): Promise<boolean> {
 export interface ClubPostInput {
 	title: string;
 	body: string;
+	excerpt?: string;
+	coverImage?: string;
+	category?: string;
+	visibility?: "PUBLIC" | "MEMBERS_ONLY" | "DRAFT" | string;
+	allowComments?: boolean;
 	isPinned?: boolean;
 }
 
@@ -491,6 +496,11 @@ export async function createClubPost(
 			authorId: userId,
 			title: input.title.trim(),
 			body: input.body.trim(),
+			excerpt: input.excerpt?.trim() || null,
+			coverImage: input.coverImage?.trim() || null,
+			category: input.category?.trim() || "General",
+			visibility: input.visibility || "PUBLIC",
+			allowComments: input.allowComments ?? true,
 			isPinned: Boolean(input.isPinned && access.canPinPosts),
 		},
 	});
@@ -516,7 +526,12 @@ export async function updateClubPost(
 	const isPinOnlyChange =
 		input.isPinned !== undefined &&
 		input.title === undefined &&
-		input.body === undefined;
+		input.body === undefined &&
+		input.excerpt === undefined &&
+		input.coverImage === undefined &&
+		input.category === undefined &&
+		input.visibility === undefined &&
+		input.allowComments === undefined;
 
 	if (!canEdit && !(isPinOnlyChange && access.canPinPosts)) {
 		throw new ClubAccessError(
@@ -541,6 +556,21 @@ export async function updateClubPost(
 				: {}),
 			...(input.body !== undefined && canEdit
 				? { body: input.body.trim() }
+				: {}),
+			...(input.excerpt !== undefined && canEdit
+				? { excerpt: input.excerpt?.trim() || null }
+				: {}),
+			...(input.coverImage !== undefined && canEdit
+				? { coverImage: input.coverImage?.trim() || null }
+				: {}),
+			...(input.category !== undefined && canEdit
+				? { category: input.category?.trim() || "General" }
+				: {}),
+			...(input.visibility !== undefined && canEdit
+				? { visibility: input.visibility }
+				: {}),
+			...(input.allowComments !== undefined && canEdit
+				? { allowComments: input.allowComments }
 				: {}),
 			...(input.isPinned !== undefined && access.canPinPosts
 				? { isPinned: input.isPinned }

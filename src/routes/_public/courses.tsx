@@ -20,6 +20,7 @@ import {
 	getWebsitePagePreviewServer,
 } from "#/packages/content/server/content.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import {
 	PageFrame,
 	PageHeader,
@@ -340,6 +341,16 @@ const ProgramDetail = ({
 };
 
 export const Route = createFileRoute("/_public/courses")({
+	head: () =>
+		pageMeta({
+			title:
+				"Courses & Academic Programs (+2 Science, Management & SEE) | Everest School (EEBSS)",
+			description:
+				"Discover academic streams at Everest English Boarding Secondary School: +2 Science, +2 Management, Secondary Education (Grades 1-10 / SEE), and Early Childhood. NEB curriculum, modern science labs, and proven board results in Nepal.",
+			path: "/courses",
+			keywords:
+				"+2 science in nepal, +2 management butwal, courses at everest school, best science college butwal, best management college butwal, see school nepal, neb programs butwal",
+		}),
 	validateSearch: (
 		search: Record<string, unknown>,
 	): { cms?: string; level?: string } => ({

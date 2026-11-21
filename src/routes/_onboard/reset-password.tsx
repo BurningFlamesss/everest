@@ -1,13 +1,25 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { KeyRound, Loader2 } from "lucide-react";
-import { useState } from "react";
 import {
-	AuthShell,
-	Field,
-	FormError,
-	FormSuccess,
-} from "#/components/auth/AuthShell.tsx";
+	AlertCircle,
+	ArrowLeft,
+	CheckCircle2,
+	Eye,
+	EyeOff,
+	KeyRound,
+	LoaderCircle,
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { authClient } from "#/packages/auth/auth-client.ts";
+import { Button } from "#/templates/modern/components/Button.tsx";
+import {
+	ImageReveal,
+	SectionLabel,
+} from "#/templates/modern/components/Editorial.tsx";
+import { Input } from "#/templates/modern/components/Input.tsx";
+import { Label } from "#/templates/modern/components/Label.tsx";
+
+const VISUAL_IMAGE = "/schools/everest/landing-footage/frame_0001.jpeg";
 
 interface ResetSearch {
 	token?: string;
@@ -30,6 +42,8 @@ function RouteComponent() {
 	);
 	const [message, setMessage] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [showNewPassword, setShowNewPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -37,7 +51,9 @@ function RouteComponent() {
 		setMessage("");
 
 		if (!token) {
-			setError("This reset link is missing its token. Request a new email.");
+			setError(
+				"This reset link is missing its security token. Please request a new password reset email.",
+			);
 			return;
 		}
 
@@ -46,7 +62,7 @@ function RouteComponent() {
 		const confirmPassword = String(formData.get("confirmPassword") ?? "");
 
 		if (newPassword.length < 8) {
-			setError("Use at least 8 characters for your new password.");
+			setError("Password must contain at least 8 characters.");
 			return;
 		}
 
@@ -69,12 +85,13 @@ function RouteComponent() {
 			}
 
 			setMessage(
-				"Password updated. You can now sign in with your new password.",
+				"Password successfully updated. You can now sign in with your new credentials.",
 			);
+			toast.success("Password updated successfully");
 
 			setTimeout(() => {
 				void navigate({ to: "/login" });
-			}, 1200);
+			}, 1400);
 		} catch (resetError) {
 			setError(
 				resetError instanceof Error
@@ -87,57 +104,202 @@ function RouteComponent() {
 	};
 
 	return (
-		<AuthShell
-			badge="Account recovery"
-			title="Choose a new password"
-			subtitle="Pick something you haven't used before. You'll be signed out of other sessions."
-			footer={
-				<p>
-					<Link
-						to="/login"
-						className="font-semibold text-red-600 hover:text-red-700"
-					>
-						Back to sign in
-					</Link>
-				</p>
-			}
+		<section
+			className="auth-page overflow-x-hidden min-w-0"
+			aria-labelledby="reset-title"
+			data-testid="reset-password-page"
 		>
-			<form onSubmit={handleSubmit} className="space-y-4">
-				<FormError message={error} />
-				<FormSuccess message={message} />
-
-				<Field
-					label="New password"
-					type="password"
-					name="newPassword"
-					autoComplete="new-password"
-					placeholder="At least 8 characters"
-					minLength={8}
-					required
+			{/* Editorial Left Visual Panel */}
+			<div className="auth-visual min-w-0">
+				<ImageReveal
+					src={VISUAL_IMAGE}
+					alt="School architecture marking the entrance to Everest"
+					eager
+					testId="reset-visual-image"
 				/>
-				<Field
-					label="Confirm new password"
-					type="password"
-					name="confirmPassword"
-					autoComplete="new-password"
-					placeholder="Repeat your new password"
-					minLength={8}
-					required
-				/>
+				<div className="auth-visual__overlay">
+					<SectionLabel number="04" inverse>
+						Everest Credentials // Security
+					</SectionLabel>
+					<p>Reset Password.</p>
+					<span>One community / connected responsibly</span>
+				</div>
+			</div>
 
-				<button
-					type="submit"
-					disabled={isSubmitting || !token}
-					className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-red-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
+			{/* Editorial Right Form Panel */}
+			<div className="auth-panel">
+				<Link
+					to="/login"
+					className="auth-back"
+					data-testid="reset-back-login-link"
+					style={{ color: "var(--c-black)" }}
 				>
-					{isSubmitting ? (
-						<Loader2 className="h-4 w-4 animate-spin" />
-					) : (
-						<KeyRound className="h-4 w-4" />
-					)}
-					{isSubmitting ? "Updating…" : "Update password"}
-				</button>
-			</form>
-		</AuthShell>
+					<ArrowLeft aria-hidden="true" style={{ color: "var(--c-red)" }} />
+					Back to sign in
+				</Link>
+
+				<div className="auth-panel__inner">
+					<span className="auth-kicker">ACCOUNT RECOVERY</span>
+					<h1 id="reset-title" className="t-page-title text-foreground">
+						Set a new password.
+					</h1>
+					<p className="auth-intro" style={{ color: "var(--c-black)" }}>
+						Pick something you haven't used before. After updating, you will be
+						prompted to sign in with your new credentials.
+					</p>
+
+					{error ? (
+						<div
+							role="alert"
+							className="mb-6 flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
+							data-testid="reset-password-error"
+						>
+							<AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+							<div>
+								<p className="font-medium">{error}</p>
+								{!token && (
+									<Link
+										to="/forgot-password"
+										className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary underline underline-offset-4 hover:opacity-80"
+									>
+										Request a new reset link →
+									</Link>
+								)}
+							</div>
+						</div>
+					) : null}
+
+					{message ? (
+						<div
+							role="status"
+							className="mb-6 flex items-start gap-3 rounded-xl border border-success/30 bg-success/10 p-4 text-sm text-success"
+							data-testid="reset-password-success"
+						>
+							<CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+							<div>
+								<p className="font-medium">{message}</p>
+								<p className="mt-1 text-xs opacity-90">
+									Redirecting to sign in…
+								</p>
+							</div>
+						</div>
+					) : null}
+
+					<form
+						onSubmit={handleSubmit}
+						noValidate
+						className="auth-form"
+						data-testid="reset-password-form"
+					>
+						<div className="form-control">
+							<Label
+								htmlFor="newPassword"
+								style={{ color: "var(--c-black)" }}
+							>
+								New password
+							</Label>
+							<div className="password-field">
+								<Input
+									id="newPassword"
+									name="newPassword"
+									type={showNewPassword ? "text" : "password"}
+									autoComplete="new-password"
+									placeholder="At least 8 characters"
+									minLength={8}
+									required
+									disabled={isSubmitting || Boolean(message)}
+									className="editorial-input"
+									data-testid="new-password-input"
+								/>
+								<button
+									type="button"
+									className="password-toggle"
+									onClick={() => setShowNewPassword((value) => !value)}
+									aria-label={
+										showNewPassword ? "Hide password" : "Show password"
+									}
+									tabIndex={-1}
+									style={{ color: "var(--c-red) !important" }}
+								>
+									{showNewPassword ? (
+										<EyeOff aria-hidden="true" className="h-4 w-4" />
+									) : (
+										<Eye aria-hidden="true" className="h-4 w-4" />
+									)}
+								</button>
+							</div>
+							<p className="mt-1 text-[11px] text-muted-foreground">
+								Use 8 or more characters with letters, numbers or symbols.
+							</p>
+						</div>
+
+						<div className="form-control">
+							<Label
+								htmlFor="confirmPassword"
+								style={{ color: "var(--c-black)" }}
+							>
+								Confirm new password
+							</Label>
+							<div className="password-field">
+								<Input
+									id="confirmPassword"
+									name="confirmPassword"
+									type={showConfirmPassword ? "text" : "password"}
+									autoComplete="new-password"
+									placeholder="Repeat your new password"
+									minLength={8}
+									required
+									disabled={isSubmitting || Boolean(message)}
+									className="editorial-input"
+									data-testid="confirm-password-input"
+								/>
+								<button
+									type="button"
+									className="password-toggle"
+									onClick={() => setShowConfirmPassword((value) => !value)}
+									aria-label={
+										showConfirmPassword ? "Hide password" : "Show password"
+									}
+									tabIndex={-1}
+									style={{ color: "var(--c-red) !important" }}
+								>
+									{showConfirmPassword ? (
+										<EyeOff aria-hidden="true" className="h-4 w-4" />
+									) : (
+										<Eye aria-hidden="true" className="h-4 w-4" />
+									)}
+								</button>
+							</div>
+						</div>
+
+						<Button
+							type="submit"
+							disabled={isSubmitting || Boolean(message) || !token}
+							className="institution-button institution-button--full"
+							data-testid="reset-password-submit-button"
+						>
+							{isSubmitting ? (
+								<LoaderCircle className="spin" aria-hidden="true" />
+							) : (
+								<KeyRound className="h-4 w-4" />
+							)}
+							{isSubmitting ? "Updating credentials…" : "Update password"}
+						</Button>
+					</form>
+
+					<div className="auth-contact">
+						<span style={{ color: "var(--c-black)" }}>
+							Need help with access?
+						</span>
+						<Link
+							to="/contact"
+							style={{ color: "var(--c-red)", fontWeight: 500 }}
+						>
+							Contact the school office <span aria-hidden="true">→</span>
+						</Link>
+					</div>
+				</div>
+			</div>
+		</section>
 	);
 }

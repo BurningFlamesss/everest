@@ -837,7 +837,9 @@ model BusRoute {
   busNumber   String
   driverName  String
   driverPhone String
-  stops       Json // Array of strings or {time, stopName}
+  vehicleType String?  @default("Bus")
+  capacity    Int?     @default(30)
+  stops       Json // Array of strings or RouteStop objects: { name, pickupTime, dropoffTime, fare, landmark }
   feeMonthly  Int?
   order       Int      @default(0)
   createdAt   DateTime @default(now())
@@ -1187,9 +1189,14 @@ model Post {
   authorStudentId String?
   authorStudent   Student? @relation(fields: [authorStudentId], references: [id], onDelete: SetNull)
 
-  title      String
-  body       String
-  isPinned   Boolean  @default(false)
+  title         String
+  body          String
+  excerpt       String?
+  coverImage    String?
+  category      String?  @default("General")
+  visibility    String   @default("PUBLIC")
+  allowComments Boolean  @default(true)
+  isPinned      Boolean  @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1199,6 +1206,7 @@ model Post {
   @@index([clubId, createdAt])
   @@index([authorId])
   @@index([authorStudentId])
+  @@index([visibility])
 }
 
 /** A comment on a club post. */

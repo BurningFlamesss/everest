@@ -31,6 +31,11 @@ export type PostMinAggregateOutputType = {
   authorStudentId: string | null
   title: string | null
   body: string | null
+  excerpt: string | null
+  coverImage: string | null
+  category: string | null
+  visibility: string | null
+  allowComments: boolean | null
   isPinned: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -43,6 +48,11 @@ export type PostMaxAggregateOutputType = {
   authorStudentId: string | null
   title: string | null
   body: string | null
+  excerpt: string | null
+  coverImage: string | null
+  category: string | null
+  visibility: string | null
+  allowComments: boolean | null
   isPinned: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -55,6 +65,11 @@ export type PostCountAggregateOutputType = {
   authorStudentId: number
   title: number
   body: number
+  excerpt: number
+  coverImage: number
+  category: number
+  visibility: number
+  allowComments: number
   isPinned: number
   createdAt: number
   updatedAt: number
@@ -69,6 +84,11 @@ export type PostMinAggregateInputType = {
   authorStudentId?: true
   title?: true
   body?: true
+  excerpt?: true
+  coverImage?: true
+  category?: true
+  visibility?: true
+  allowComments?: true
   isPinned?: true
   createdAt?: true
   updatedAt?: true
@@ -81,6 +101,11 @@ export type PostMaxAggregateInputType = {
   authorStudentId?: true
   title?: true
   body?: true
+  excerpt?: true
+  coverImage?: true
+  category?: true
+  visibility?: true
+  allowComments?: true
   isPinned?: true
   createdAt?: true
   updatedAt?: true
@@ -93,6 +118,11 @@ export type PostCountAggregateInputType = {
   authorStudentId?: true
   title?: true
   body?: true
+  excerpt?: true
+  coverImage?: true
+  category?: true
+  visibility?: true
+  allowComments?: true
   isPinned?: true
   createdAt?: true
   updatedAt?: true
@@ -178,6 +208,11 @@ export type PostGroupByOutputType = {
   authorStudentId: string | null
   title: string
   body: string
+  excerpt: string | null
+  coverImage: string | null
+  category: string | null
+  visibility: string
+  allowComments: boolean
   isPinned: boolean
   createdAt: Date
   updatedAt: Date
@@ -211,6 +246,11 @@ export type PostWhereInput = {
   authorStudentId?: Prisma.StringNullableFilter<"Post"> | string | null
   title?: Prisma.StringFilter<"Post"> | string
   body?: Prisma.StringFilter<"Post"> | string
+  excerpt?: Prisma.StringNullableFilter<"Post"> | string | null
+  coverImage?: Prisma.StringNullableFilter<"Post"> | string | null
+  category?: Prisma.StringNullableFilter<"Post"> | string | null
+  visibility?: Prisma.StringFilter<"Post"> | string
+  allowComments?: Prisma.BoolFilter<"Post"> | boolean
   isPinned?: Prisma.BoolFilter<"Post"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
@@ -227,6 +267,11 @@ export type PostOrderByWithRelationInput = {
   authorStudentId?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  excerpt?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  visibility?: Prisma.SortOrder
+  allowComments?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -246,6 +291,11 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   authorStudentId?: Prisma.StringNullableFilter<"Post"> | string | null
   title?: Prisma.StringFilter<"Post"> | string
   body?: Prisma.StringFilter<"Post"> | string
+  excerpt?: Prisma.StringNullableFilter<"Post"> | string | null
+  coverImage?: Prisma.StringNullableFilter<"Post"> | string | null
+  category?: Prisma.StringNullableFilter<"Post"> | string | null
+  visibility?: Prisma.StringFilter<"Post"> | string
+  allowComments?: Prisma.BoolFilter<"Post"> | boolean
   isPinned?: Prisma.BoolFilter<"Post"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
@@ -262,6 +312,11 @@ export type PostOrderByWithAggregationInput = {
   authorStudentId?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  excerpt?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  visibility?: Prisma.SortOrder
+  allowComments?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -280,6 +335,11 @@ export type PostScalarWhereWithAggregatesInput = {
   authorStudentId?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
   title?: Prisma.StringWithAggregatesFilter<"Post"> | string
   body?: Prisma.StringWithAggregatesFilter<"Post"> | string
+  excerpt?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
+  coverImage?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
+  category?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
+  visibility?: Prisma.StringWithAggregatesFilter<"Post"> | string
+  allowComments?: Prisma.BoolWithAggregatesFilter<"Post"> | boolean
   isPinned?: Prisma.BoolWithAggregatesFilter<"Post"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Post"> | Date | string
@@ -289,6 +349,11 @@ export type PostCreateInput = {
   id?: string
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -305,6 +370,11 @@ export type PostUncheckedCreateInput = {
   authorStudentId?: string | null
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -315,6 +385,11 @@ export type PostUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -331,6 +406,11 @@ export type PostUncheckedUpdateInput = {
   authorStudentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -344,6 +424,11 @@ export type PostCreateManyInput = {
   authorStudentId?: string | null
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -353,6 +438,11 @@ export type PostUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -365,6 +455,11 @@ export type PostUncheckedUpdateManyInput = {
   authorStudentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -387,6 +482,11 @@ export type PostCountOrderByAggregateInput = {
   authorStudentId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  excerpt?: Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  visibility?: Prisma.SortOrder
+  allowComments?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -399,6 +499,11 @@ export type PostMaxOrderByAggregateInput = {
   authorStudentId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  excerpt?: Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  visibility?: Prisma.SortOrder
+  allowComments?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -411,6 +516,11 @@ export type PostMinOrderByAggregateInput = {
   authorStudentId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  excerpt?: Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  visibility?: Prisma.SortOrder
+  allowComments?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -565,6 +675,11 @@ export type PostCreateWithoutAuthorInput = {
   id?: string
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -579,6 +694,11 @@ export type PostUncheckedCreateWithoutAuthorInput = {
   authorStudentId?: string | null
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -621,6 +741,11 @@ export type PostScalarWhereInput = {
   authorStudentId?: Prisma.StringNullableFilter<"Post"> | string | null
   title?: Prisma.StringFilter<"Post"> | string
   body?: Prisma.StringFilter<"Post"> | string
+  excerpt?: Prisma.StringNullableFilter<"Post"> | string | null
+  coverImage?: Prisma.StringNullableFilter<"Post"> | string | null
+  category?: Prisma.StringNullableFilter<"Post"> | string | null
+  visibility?: Prisma.StringFilter<"Post"> | string
+  allowComments?: Prisma.BoolFilter<"Post"> | boolean
   isPinned?: Prisma.BoolFilter<"Post"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
@@ -630,6 +755,11 @@ export type PostCreateWithoutAuthorStudentInput = {
   id?: string
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -644,6 +774,11 @@ export type PostUncheckedCreateWithoutAuthorStudentInput = {
   authorId?: string | null
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -680,6 +815,11 @@ export type PostCreateWithoutClubInput = {
   id?: string
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -694,6 +834,11 @@ export type PostUncheckedCreateWithoutClubInput = {
   authorStudentId?: string | null
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -730,6 +875,11 @@ export type PostCreateWithoutCommentsInput = {
   id?: string
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -745,6 +895,11 @@ export type PostUncheckedCreateWithoutCommentsInput = {
   authorStudentId?: string | null
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -770,6 +925,11 @@ export type PostUpdateWithoutCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -785,6 +945,11 @@ export type PostUncheckedUpdateWithoutCommentsInput = {
   authorStudentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -796,6 +961,11 @@ export type PostCreateManyAuthorInput = {
   authorStudentId?: string | null
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -805,6 +975,11 @@ export type PostUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -819,6 +994,11 @@ export type PostUncheckedUpdateWithoutAuthorInput = {
   authorStudentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -831,6 +1011,11 @@ export type PostUncheckedUpdateManyWithoutAuthorInput = {
   authorStudentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -842,6 +1027,11 @@ export type PostCreateManyAuthorStudentInput = {
   authorId?: string | null
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -851,6 +1041,11 @@ export type PostUpdateWithoutAuthorStudentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -865,6 +1060,11 @@ export type PostUncheckedUpdateWithoutAuthorStudentInput = {
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -877,6 +1077,11 @@ export type PostUncheckedUpdateManyWithoutAuthorStudentInput = {
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -888,6 +1093,11 @@ export type PostCreateManyClubInput = {
   authorStudentId?: string | null
   title: string
   body: string
+  excerpt?: string | null
+  coverImage?: string | null
+  category?: string | null
+  visibility?: string
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -897,6 +1107,11 @@ export type PostUpdateWithoutClubInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -911,6 +1126,11 @@ export type PostUncheckedUpdateWithoutClubInput = {
   authorStudentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -923,6 +1143,11 @@ export type PostUncheckedUpdateManyWithoutClubInput = {
   authorStudentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visibility?: Prisma.StringFieldUpdateOperationsInput | string
+  allowComments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -966,6 +1191,11 @@ export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   authorStudentId?: boolean
   title?: boolean
   body?: boolean
+  excerpt?: boolean
+  coverImage?: boolean
+  category?: boolean
+  visibility?: boolean
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -983,6 +1213,11 @@ export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   authorStudentId?: boolean
   title?: boolean
   body?: boolean
+  excerpt?: boolean
+  coverImage?: boolean
+  category?: boolean
+  visibility?: boolean
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -998,6 +1233,11 @@ export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   authorStudentId?: boolean
   title?: boolean
   body?: boolean
+  excerpt?: boolean
+  coverImage?: boolean
+  category?: boolean
+  visibility?: boolean
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1013,12 +1253,17 @@ export type PostSelectScalar = {
   authorStudentId?: boolean
   title?: boolean
   body?: boolean
+  excerpt?: boolean
+  coverImage?: boolean
+  category?: boolean
+  visibility?: boolean
+  allowComments?: boolean
   isPinned?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clubId" | "authorId" | "authorStudentId" | "title" | "body" | "isPinned" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
+export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clubId" | "authorId" | "authorStudentId" | "title" | "body" | "excerpt" | "coverImage" | "category" | "visibility" | "allowComments" | "isPinned" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
 export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   club?: boolean | Prisma.ClubDefaultArgs<ExtArgs>
   author?: boolean | Prisma.Post$authorArgs<ExtArgs>
@@ -1052,6 +1297,11 @@ export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     authorStudentId: string | null
     title: string
     body: string
+    excerpt: string | null
+    coverImage: string | null
+    category: string | null
+    visibility: string
+    allowComments: boolean
     isPinned: boolean
     createdAt: Date
     updatedAt: Date
@@ -1488,6 +1738,11 @@ export interface PostFieldRefs {
   readonly authorStudentId: Prisma.FieldRef<"Post", 'String'>
   readonly title: Prisma.FieldRef<"Post", 'String'>
   readonly body: Prisma.FieldRef<"Post", 'String'>
+  readonly excerpt: Prisma.FieldRef<"Post", 'String'>
+  readonly coverImage: Prisma.FieldRef<"Post", 'String'>
+  readonly category: Prisma.FieldRef<"Post", 'String'>
+  readonly visibility: Prisma.FieldRef<"Post", 'String'>
+  readonly allowComments: Prisma.FieldRef<"Post", 'Boolean'>
   readonly isPinned: Prisma.FieldRef<"Post", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Post", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Post", 'DateTime'>

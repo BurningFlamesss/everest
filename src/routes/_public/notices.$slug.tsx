@@ -18,11 +18,20 @@ export const Route = createFileRoute("/_public/notices/$slug")({
 
 		return notice;
 	},
-	head: ({ loaderData }) =>
+	head: ({ loaderData, params }) =>
 		pageMeta({
-			title: loaderData?.title ?? "Notice",
-			description: loaderData?.summary ?? undefined,
+			title: loaderData?.title
+				? `${loaderData.title} | Notice Board | Everest English Boarding Secondary School`
+				: "Official Notice | Everest School (EEBSS)",
+			description:
+				loaderData?.summary ||
+				"Official notice and academic circular from Everest English Boarding Secondary School (EEBSS), Butwal.",
 			image: loaderData?.coverImage,
+			path: `/notices/${params.slug}`,
+			type: "article",
+			publishedTime: loaderData?.publishedAt
+				? new Date(loaderData.publishedAt).toISOString()
+				: undefined,
 		}),
 	notFoundComponent: () => (
 		<PageFrame>
@@ -87,12 +96,21 @@ function NoticeDetail() {
 						</p>
 					) : null}
 
-					<div className="mt-8 space-y-4 border-t border-rule pt-8 text-base leading-relaxed text-muted-foreground">
-						{notice.body.split(/\n{2,}/).map((paragraph: string) => (
-							<p key={`${paragraph.slice(0, 32)}-${paragraph.length}`}>
-								{paragraph}
-							</p>
-						))}
+					<div className="mt-8 border-t border-rule pt-8 text-base leading-relaxed text-muted-foreground prose-editor">
+						{notice.body.includes("<") ? (
+							<div
+								dangerouslySetInnerHTML={{ __html: notice.body }}
+								data-testid="notice-public-body"
+							/>
+						) : (
+							<div className="space-y-4">
+								{notice.body.split(/\n{2,}/).map((paragraph: string) => (
+									<p key={`${paragraph.slice(0, 32)}-${paragraph.length}`}>
+										{paragraph}
+									</p>
+								))}
+							</div>
+						)}
 					</div>
 
 					{notice.attachments.length > 0 ? (

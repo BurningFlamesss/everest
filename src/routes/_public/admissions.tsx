@@ -13,6 +13,7 @@ import {
 	useSchoolConfig,
 	useWebsitePageContent,
 } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import {
 	PageFrame,
 	PageHeader,
@@ -22,6 +23,16 @@ import {
 import type { BlockType } from "#/types";
 
 export const Route = createFileRoute("/_public/admissions")({
+	head: () =>
+		pageMeta({
+			title:
+				"Admissions 2026/2083 | Everest English Boarding Secondary School (EEBSS)",
+			description:
+				"Apply for admission at Everest English Boarding Secondary School (EEBSS) in Butwal, Nepal. Enrolment criteria, entrance test dates, scholarship eligibility, and fee structure for Playgroup to Grade 12 (+2 Science & Management).",
+			path: "/admissions",
+			keywords:
+				"everest school admission, eebss admission, school admission in nepal, +2 science admission butwal, +2 management admission nepal, best school admission nepal, see admission",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		if (String(search.cms) === "1") {

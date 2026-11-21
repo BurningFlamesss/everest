@@ -848,12 +848,23 @@ export interface BoardResult {
 	order: number;
 }
 
+export interface BusRouteStop {
+	name: string;
+	nameNe?: string;
+	landmark?: string;
+	pickupTime?: string;
+	dropoffTime?: string;
+	fare?: number;
+}
+
 export interface BusRoute {
 	id: string;
 	busNumber: string;
 	driverName: string;
 	driverPhone: string;
-	stops: string[];
+	vehicleType?: "Bus" | "Van" | "Custom" | string;
+	capacity?: number;
+	stops: Array<string | BusRouteStop>;
 	feeMonthly?: number;
 	order: number;
 }

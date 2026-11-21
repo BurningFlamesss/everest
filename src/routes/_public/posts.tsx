@@ -11,6 +11,7 @@ import { FACEBOOK_PAGE_URL, type FacebookPost } from "#/lib/facebook-feed.ts";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { getFacebookPostsServer } from "#/packages/content/server/facebook";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import {
 	PageFrame,
 	PageHeader,
@@ -21,6 +22,16 @@ import { RevealUp } from "#/templates/modern/components/motion";
 import type { BlockType } from "#/types";
 
 export const Route = createFileRoute("/_public/posts")({
+	head: () =>
+		pageMeta({
+			title:
+				"Social Updates & News Feed | Everest English Boarding Secondary School (EEBSS)",
+			description:
+				"Live updates, news posts, daily moments, and community highlights from the official Everest School Facebook feed in Butwal, Nepal.",
+			path: "/posts",
+			keywords:
+				"everest school facebook, eebss news, school updates butwal, everest school social media",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		if (String(search.cms) === "1") {

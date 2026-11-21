@@ -172,6 +172,7 @@ export type Stop = {
 	pickup: string;
 	drop: string;
 	order: number;
+	fare?: number;
 };
 
 export type BusRoute = {
@@ -185,6 +186,8 @@ export type BusRoute = {
 	/** Driver assigned to this route, shown by the bus finder. */
 	driverName: string;
 	driverPhone: string;
+	vehicleType?: string;
+	capacity?: number;
 };
 
 export type AreaAlias = { areaId: string; ward?: number; aliases: string[] };

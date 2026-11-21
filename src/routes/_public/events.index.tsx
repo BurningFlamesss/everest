@@ -19,9 +19,13 @@ type EventRow = Awaited<ReturnType<typeof getEventsFn>>[number];
 export const Route = createFileRoute("/_public/events/")({
 	head: () =>
 		pageMeta({
-			title: "Events",
+			title:
+				"Events & Celebrations | Everest English Boarding Secondary School (EEBSS)",
 			description:
-				"Programmes, examinations, sports and celebrations on the school calendar.",
+				"Explore upcoming events, sports meets, cultural exhibitions, academic competitions, and parent-teacher conferences at Everest School, Butwal, Nepal.",
+			path: "/events",
+			keywords:
+				"everest school events, school sports meet butwal, science exhibition nepal, annual function everest school",
 		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };

@@ -10,6 +10,7 @@ import {
 	Building2,
 	ExternalLink,
 	Info,
+	Users,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { num, rows, str } from "#/components/cms/block-fields";
@@ -37,6 +38,7 @@ import {
 	START_DELAY_MS,
 } from "#/lib/hero-autoplay.ts";
 import type { WebsitePageContent } from "#/lib/website-content-loader";
+import { getPublicClubActivitiesFn } from "#/packages/clubs/server.ts";
 import { getFacebookPostsServer } from "#/packages/content/server/facebook.ts";
 import { SectionHeading } from "#/templates/modern/components/chrome/PageFrame";
 import { MonogramAvatar } from "#/templates/modern/components/shared/MonogramAvatar";
@@ -50,6 +52,10 @@ interface LandingCmsContent {
 	page: WebsitePageContent | null;
 	/** True when rendered inside the admin live-preview iframe (?cms=1). */
 	preview: boolean;
+	clubData?: {
+		clubs: any[];
+		recentPosts: any[];
+	};
 }
 
 /** Merge a section's defaults with any saved CMS overrides. */
@@ -73,6 +79,7 @@ const DISCOVER_ICONS: Record<string, typeof BookOpen> = {
 export default function LandingPage({
 	page = null,
 	preview = false,
+	clubData,
 }: Partial<LandingCmsContent> = {}) {
 	const containerRef = useRef<HTMLDivElement>(null);
 
@@ -81,6 +88,16 @@ export default function LandingPage({
 	const facts = useSection(page, "landing_facts");
 	const discover = useSection(page, "discover_cards");
 	const headings = useSection(page, "landing_section_headings");
+
+	const { data: dynamicClubs } = useQuery({
+		queryKey: ["landing-public-clubs"],
+		queryFn: () => getPublicClubActivitiesFn(),
+		initialData: clubData,
+	});
+
+	const clubsList = dynamicClubs?.clubs ?? clubData?.clubs ?? [];
+	const activitiesList =
+		dynamicClubs?.recentPosts ?? clubData?.recentPosts ?? [];
 
 	const onSelectSection = (sectionType: BlockType) => {
 		if (typeof window !== "undefined" && window.parent) {
@@ -364,7 +381,7 @@ export default function LandingPage({
 						</div>
 
 						{/* Faculty */}
-						<div>
+						<div className="mb-32">
 							<SectionHeading
 								eyebrow={str(headings, "facultyEyebrow", "Leadership")}
 								title={str(headings, "facultyTitle", "Our Faculty")}
@@ -411,6 +428,144 @@ export default function LandingPage({
 									</Link>
 								))}
 							</div>
+						</div>
+
+						{/* Activities & Clubs Section */}
+						<div data-testid="landing-activities-section">
+							<SectionHeading
+								eyebrow={str(
+									headings,
+									"activitiesEyebrow",
+									"Co-Curricular & Student Life",
+								)}
+								title={str(
+									headings,
+									"activitiesTitle",
+									"Student Clubs & Activities",
+								)}
+								description={str(
+									headings,
+									"activitiesDesc",
+									"From science exhibitions and robotics sprints to bilingual debates and athletics conditioning — explore student-led societies shaping leadership beyond the classroom.",
+								)}
+								aside={
+									<Link
+										to="/activities"
+										data-testid="landing-view-all-activities"
+										className="inline-flex min-h-11 items-center gap-1.5 rounded-chip border border-border bg-card px-3.5 py-2 text-[12px] font-medium text-foreground transition-colors duration-fast hover:border-rule-strong hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
+									>
+										Explore all clubs & activities
+										<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+									</Link>
+								}
+							/>
+
+							{/* Clubs Showcase Grid */}
+							<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+								{clubsList.slice(0, 3).map((club: any) => {
+									const memberCount = club._count?.members ?? 0;
+									return (
+										<Link
+											key={club.id}
+											to="/clubs/$slug"
+											params={{ slug: club.slug }}
+											className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
+										>
+											{club.coverImage ? (
+												<div className="mb-4 h-[180px] w-full overflow-hidden rounded-md border border-border bg-secondary">
+													<img
+														src={club.coverImage}
+														alt={club.name}
+														className="h-full w-full object-cover transition-transform duration-[400ms] group-hover:scale-105"
+													/>
+												</div>
+											) : (
+												<div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
+													<Users className="h-6 w-6" />
+												</div>
+											)}
+											<div className="flex items-center justify-between gap-2">
+												<span className="t-eyebrow">
+													{club.meetingSchedule || "Weekly Meetings"}
+												</span>
+												<span className="rounded-full border border-border bg-background px-2 py-0.5 text-[10.5px] font-medium text-muted-foreground">
+													{memberCount} {memberCount === 1 ? "member" : "members"}
+												</span>
+											</div>
+											<h3 className="mt-2.5 font-display text-[19px] font-semibold leading-snug text-foreground">
+												{club.name}
+											</h3>
+											{club.description && (
+												<p className="mt-2 text-[13px] leading-relaxed text-muted-foreground line-clamp-2">
+													{club.description}
+												</p>
+											)}
+											<span className="mt-auto pt-6 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
+												View club & feed
+												<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+											</span>
+										</Link>
+									);
+								})}
+							</div>
+
+							{/* Public Activity Feed / Recent Club Posts */}
+							{activitiesList.length > 0 && (
+								<div className="mt-10 rounded-2xl border border-border bg-card/60 p-6 sm:p-8">
+									<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-4">
+										<div>
+											<span className="t-eyebrow text-primary">LATEST UPDATES</span>
+											<h4 className="text-base font-semibold text-foreground mt-0.5">
+												Recent Club Activity & Announcements
+											</h4>
+										</div>
+										<Link
+											to="/activities"
+											className="text-xs text-primary hover:underline font-medium inline-flex items-center gap-1"
+										>
+											View all activities <ArrowRight className="h-3 w-3" />
+										</Link>
+									</div>
+
+									<div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+										{activitiesList.slice(0, 3).map((post: any) => (
+											<Link
+												key={post.id}
+												to="/activities/$postId"
+												params={{ postId: post.id }}
+												className="rounded-xl border border-border/80 bg-background/80 p-4 hover:border-primary/50 transition-colors flex flex-col justify-between"
+											>
+												<div>
+													<div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground mb-1.5">
+														<span className="font-medium text-primary line-clamp-1">
+															{post.club.name}
+														</span>
+														<span>
+															{formatDistanceToNow(new Date(post.createdAt), {
+																addSuffix: true,
+															})}
+														</span>
+													</div>
+													<h5 className="font-semibold text-sm text-foreground line-clamp-2">
+														{post.title}
+													</h5>
+													<p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+														{post.body}
+													</p>
+												</div>
+												<div className="mt-3 pt-2.5 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground">
+													<span>
+														By {post.authorStudent?.user?.name || post.author?.name || "Club Officer"}
+													</span>
+													<span className="text-primary font-medium flex items-center gap-1">
+														Read <ArrowRight className="h-2.5 w-2.5" />
+													</span>
+												</div>
+											</Link>
+										))}
+									</div>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
@@ -473,7 +628,10 @@ function ClosingHero({ closing }: { closing: Record<string, unknown> }) {
 				{/* The statement and the single campus plate. */}
 				<div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(280px,30%)] lg:grid-rows-[minmax(0,1fr)_auto] xl:grid-cols-[minmax(0,1fr)_minmax(300px,33%)]">
 					<div className="flex min-h-0 flex-col justify-center pb-8 pt-8 sm:pt-10 lg:col-start-1 lg:row-start-1 lg:justify-start lg:pr-12 lg:pt-6">
-						<h2 className="font-display text-[clamp(2.4rem,4.2vw,4.4rem)] font-medium leading-[0.98] tracking-[-0.03em]">
+						<h1 className="font-display text-[clamp(2.4rem,4.2vw,4.4rem)] font-medium leading-[0.98] tracking-[-0.03em]">
+							<span className="sr-only">
+								Everest English Boarding Secondary School (EEBSS) - Best School in Nepal ·{" "}
+							</span>
 							{lines.map((line, index) => (
 								<span
 									// biome-ignore lint/suspicious/noArrayIndexKey: headline lines are static copy reordered only by CMS edits
@@ -483,7 +641,7 @@ function ClosingHero({ closing }: { closing: Record<string, unknown> }) {
 									{line}
 								</span>
 							))}
-						</h2>
+						</h1>
 
 						<p className="mt-6 max-w-[56ch] text-[15px] leading-[1.7] text-black/70 sm:text-[16px]">
 							{str(

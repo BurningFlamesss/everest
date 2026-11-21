@@ -1,6 +1,7 @@
 import {
 	AlertTriangle,
 	CheckCircle2,
+	FileEdit,
 	Loader2,
 	MoreHorizontal,
 	Paperclip,
@@ -18,6 +19,7 @@ import { FilterBar } from "#/components/common/FilterBar";
 import { PageHeader } from "#/components/common/PageHeader";
 import { ListSkeleton } from "#/components/common/Skeletons";
 import { StatusBadge } from "#/components/common/StatusBadge";
+import { ClubPostComposerDialog } from "#/components/clubs/ClubPostComposerDialog";
 import { AttachmentUploadField } from "#/components/content/AttachmentUploadField.tsx";
 import { ImageUploadField } from "#/components/content/ImageUploadField.tsx";
 import { Button } from "#/components/ui/button";
@@ -178,6 +180,7 @@ export default function ClubsPage() {
 	const [isSavingAttachments, setIsSavingAttachments] = useState(false);
 	const [isSavingContent, setIsSavingContent] = useState(false);
 	const [isEditingUpload, setIsEditingUpload] = useState(false);
+	const [postComposerClub, setPostComposerClub] = useState<ClubRow | null>(null);
 
 	const [pendingDelete, setPendingDelete] = useState<ClubRow | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -738,6 +741,12 @@ export default function ClubsPage() {
 								}}
 							>
 								<Users className="mr-2 h-3.5 w-3.5" /> Roles &amp; members
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								data-testid={`club-publish-${club.id}`}
+								onClick={() => setPostComposerClub(club)}
+							>
+								<FileEdit className="mr-2 h-3.5 w-3.5" /> Write post / story
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
@@ -1436,6 +1445,15 @@ export default function ClubsPage() {
 					</form>
 				</DialogContent>
 			</Dialog>
+
+			<ClubPostComposerDialog
+				open={Boolean(postComposerClub)}
+				onOpenChange={(op) => !op && setPostComposerClub(null)}
+				clubSlug={postComposerClub?.slug || ""}
+				clubName={postComposerClub?.name}
+				canPin={true}
+				onSuccess={() => void load()}
+			/>
 
 			<ConfirmDialog
 				open={!!pendingDelete}

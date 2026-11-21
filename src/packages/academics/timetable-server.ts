@@ -118,7 +118,10 @@ export const updateTimetableSlotAction = createServerFn()
 
 			return {
 				success: true as const,
-				slots: await listTimetable(input.academicYearId),
+				slots: await listTimetable(
+					input.academicYearId,
+					input.classId ?? undefined,
+				),
 			};
 		} catch (error) {
 			return failure(error);

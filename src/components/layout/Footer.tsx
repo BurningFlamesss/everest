@@ -8,6 +8,7 @@ const exploreLinks = [
 	{ label: "Notices", to: "/notices" },
 	{ label: "Events", to: "/events" },
 	{ label: "Clubs", to: "/clubs" },
+	{ label: "Activities", to: "/activities" },
 	{ label: "Gallery", to: "/gallery" },
 	{ label: "Admissions", to: "/admissions" },
 	{ label: "Contact", to: "/contact" },

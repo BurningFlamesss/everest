@@ -10,6 +10,7 @@ import { type Notice, notices as staticNotices } from "#/lib/notices";
 import { downloadOfficialPdf } from "#/lib/pdf";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { useNotices, useWebsitePageContent } from "#/packages/school/hook.tsx";
+import { pageMeta } from "#/packages/school/meta.ts";
 import {
 	PageFrame,
 	PageHeader,
@@ -180,6 +181,16 @@ const NoticeReader = ({ notice }: { notice: Notice }) => (
 /* ------------------------------- Page -------------------------------- */
 
 export const Route = createFileRoute("/_public/notices/")({
+	head: () =>
+		pageMeta({
+			title:
+				"Official Notices & Announcements | Everest English Boarding Secondary School (EEBSS)",
+			description:
+				"Stay informed with official circulars, examination schedules, SEE routines, fee payment notices, and academic updates from Everest School, Butwal, Nepal.",
+			path: "/notices",
+			keywords:
+				"everest school notices, eebss notice board, see exam routine butwal, school holidays nepal, everest school announcements",
+		}),
 	loader: async ({ location }) => {
 		const search = location.search as { cms?: string };
 		if (String(search.cms) === "1") {

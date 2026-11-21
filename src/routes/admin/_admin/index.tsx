@@ -65,15 +65,19 @@ function AdminOverview() {
 		{
 			label: "Published notices",
 			value: stats.publishedNotices,
-			to: "/admin/content",
+			to: "/admin/notices?status=published",
 		},
-		{ label: "Draft notices", value: stats.draftNotices, to: "/admin/content" },
+		{
+			label: "Draft notices",
+			value: stats.draftNotices,
+			to: "/admin/notices?status=draft",
+		},
 		{
 			label: "Upcoming events",
 			value: stats.upcomingEvents,
-			to: "/admin/content",
+			to: "/admin/events",
 		},
-		{ label: "Active clubs", value: stats.clubs, to: "/admin/content" },
+		{ label: "Active clubs", value: stats.clubs, to: "/admin/clubs" },
 	];
 
 	return (
@@ -134,7 +138,7 @@ function AdminOverview() {
 							</Link>
 						</Button>
 						<Button variant="outline" size="sm" className="gap-1.5" asChild>
-							<Link to="/admin/content">
+							<Link to="/admin/notices/new">
 								<Megaphone className="h-3.5 w-3.5" /> Publish a notice
 							</Link>
 						</Button>

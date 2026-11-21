@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Search, X } from "lucide-react";
+import { ArrowRight, Bus, Car, Search, X } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useMemo, useRef, useState } from "react";
 import { popularAreas } from "#/content/facilities";
 import { formatNpr } from "#/lib/fees";
-import { findPickup } from "#/lib/pickup";
+import { findPickup, normalizeDbRoute } from "#/lib/pickup";
 import { Chip } from "../Chip";
 import { RevealUp } from "../motion";
 import { Eyebrow, WidgetCaption } from "../Text";
@@ -50,19 +50,44 @@ function pointOnPath(
 	return { x: last[0], y: last[1] };
 }
 
+export interface BusFinderProps {
+	dynamicRoutes?: any[];
+}
+
 /**
  * SIGNATURE INTERACTION - Facilities
  * Bus route and pickup finder. Search leads; the diagram only confirms. The
  * no-result state is the most valuable state here, so it says so plainly and
  * captures the enquiry rather than faking a match.
  */
-export function BusFinder() {
+export function BusFinder({ dynamicRoutes }: BusFinderProps = {}) {
 	const reduced = Boolean(useReducedMotion());
 	const [q, setQ] = useState("");
 	const [shift, setShift] = useState("Morning");
 	const inputRef = useRef<HTMLInputElement>(null);
 
-	const matches = useMemo(() => findPickup(q), [q]);
+	const normalizedRoutes = useMemo(() => {
+		if (dynamicRoutes && dynamicRoutes.length > 0) {
+			return dynamicRoutes.map((r, i) => normalizeDbRoute(r, i));
+		}
+		return undefined;
+	}, [dynamicRoutes]);
+
+	const availableAreas = useMemo(() => {
+		if (normalizedRoutes && normalizedRoutes.length > 0) {
+			const stopNames = normalizedRoutes
+				.flatMap((r) => r.stops.map((s) => s.name))
+				.filter(Boolean);
+			const merged = Array.from(new Set([...stopNames, ...popularAreas]));
+			return merged.slice(0, 10);
+		}
+		return popularAreas;
+	}, [normalizedRoutes]);
+
+	const matches = useMemo(
+		() => findPickup(q, normalizedRoutes),
+		[q, normalizedRoutes],
+	);
 	const best = matches[0] ?? null;
 	const searched = q.trim().length >= 2;
 
@@ -101,14 +126,14 @@ export function BusFinder() {
 			<div className="flex flex-col gap-2">
 				<Eyebrow tone="muted">Bus route and pickup finder</Eyebrow>
 				<WidgetCaption>
-					Type an area, a ward number or a landmark, in English or Nepali.
+					Type an area, a stop name, or a landmark in English or Nepali to find routes, timings, and per-stop fares.
 				</WidgetCaption>
 			</div>
 
 			<div className="flex flex-col gap-4 border-y border-border py-6">
 				<div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-2">
 					<label htmlFor="bus-search" className="u-label text-muted-foreground">
-						Your area
+						Your area / pickup point
 					</label>
 					<div className="flex items-center gap-2">
 						<span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -140,7 +165,7 @@ export function BusFinder() {
 						type="search"
 						value={q}
 						onChange={(e) => setQ(e.target.value)}
-						placeholder="Sukkhanagar, Ward 8, सुख्खानगर …"
+						placeholder="Sukkhanagar, Devdaha, सुख्खानगर, Stop name …"
 						data-testid="bus-search"
 						className="min-h-[52px] w-full bg-transparent text-[19px] leading-snug text-foreground placeholder:text-muted-foreground"
 						style={{ boxShadow: "none", outline: "none", border: "none" }}
@@ -163,12 +188,12 @@ export function BusFinder() {
 
 				<div className="flex flex-wrap gap-2">
 					<span className="u-label mr-2 self-center text-muted-foreground">
-						Common areas
+						Common areas & stops
 					</span>
-					{popularAreas.map((a) => (
+					{availableAreas.map((a) => (
 						<Chip
 							key={a}
-							selected={q === a}
+							selected={q.toLowerCase() === a.toLowerCase()}
 							onClick={() => setQ(a)}
 							testId={"bus-chip-" + a.toLowerCase().replace(/\s+/g, "-")}
 						>
@@ -199,8 +224,9 @@ export function BusFinder() {
 					className="text-body-l text-muted-foreground"
 					data-testid="bus-empty"
 				>
-					Three routes cover Rupandehi from Devdaha in the north-east to Sunauli
-					in the south. Start typing, or choose one of the common areas above.
+					{normalizedRoutes && normalizedRoutes.length > 0
+						? `${normalizedRoutes.length} active routes cover Rupandehi and surrounding areas. Start typing your stop or area above.`
+						: "Routes cover Rupandehi from Devdaha to Sunauli. Start typing or choose one of the areas above."}
 				</p>
 			) : matches.length === 0 ? (
 				<div
@@ -208,7 +234,7 @@ export function BusFinder() {
 					data-testid="bus-nomatch"
 				>
 					<p className="max-w-measure text-body-l text-foreground">
-						No bus currently stops in &ldquo;{q.trim()}&rdquo;. The school adds
+						No vehicle currently stops in &ldquo;{q.trim()}&rdquo;. The school adds
 						stops when enough families ask from the same area.
 					</p>
 					<Link
@@ -227,8 +253,25 @@ export function BusFinder() {
 						key={best!.stop.id}
 					>
 						<div className="flex flex-wrap items-baseline justify-between gap-4">
-							<div className="flex flex-col gap-2">
-								<Eyebrow tone="muted">{best!.route.busNo}</Eyebrow>
+							<div className="flex flex-col gap-1.5">
+								<div className="flex items-center gap-2 flex-wrap">
+									<Eyebrow tone="muted">{best!.route.busNo}</Eyebrow>
+									{best!.route.vehicleType && (
+										<span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-secondary-foreground">
+											{best!.route.vehicleType.toLowerCase() === "van" ? (
+												<Car className="h-2.5 w-2.5" />
+											) : (
+												<Bus className="h-2.5 w-2.5" />
+											)}
+											{best!.route.vehicleType}
+										</span>
+									)}
+									{best!.route.capacity ? (
+										<span className="text-xs text-muted-foreground font-medium">
+											· {best!.route.capacity} seats capacity
+										</span>
+									) : null}
+								</div>
 								<h3
 									className="u-display text-display-m text-foreground"
 									data-testid="bus-route-name"
@@ -236,15 +279,22 @@ export function BusFinder() {
 									{best!.route.name}
 								</h3>
 							</div>
-							<p
-								className="u-display tnum text-display-m text-foreground"
-								data-testid="bus-fare"
-							>
-								{formatNpr(best!.route.monthlyFare)}
-								<span className="u-label ml-2 text-muted-foreground">
-									a month
-								</span>
-							</p>
+							<div className="flex flex-col items-end">
+								<p
+									className="u-display tnum text-display-m text-foreground"
+									data-testid="bus-fare"
+								>
+									{formatNpr(best!.stop.fare ?? best!.route.monthlyFare)}
+									<span className="u-label ml-2 text-muted-foreground">
+										a month
+									</span>
+								</p>
+								{best!.stop.fare && (
+									<span className="text-xs text-muted-foreground font-medium">
+										Stop-specific pricing
+									</span>
+								)}
+							</div>
 						</div>
 
 						<dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
@@ -267,7 +317,7 @@ export function BusFinder() {
 									Nearest landmark
 								</dt>
 								<dd className="u-label text-foreground">
-									{best!.stop.landmark}
+									{best!.stop.landmark || "Designated stop"}
 								</dd>
 							</div>
 							<div className="flex justify-between gap-4 border-t border-border pt-3">
@@ -293,10 +343,10 @@ export function BusFinder() {
 								Assigned Driver
 							</span>
 							<span className="u-label text-foreground">
-								Shri {best!.route.driverName || "Ram Bahadur"} —{" "}
+								{best!.route.driverName || "Assigned Driver"} —{" "}
 								<a
 									href={`tel:${best!.route.driverPhone || "+977 71 540 000"}`}
-									className="text-red-dark underline underline-offset-4"
+									className="text-red-dark underline underline-offset-4 font-mono"
 								>
 									{best!.route.driverPhone || "+977 71 540 000"}
 								</a>
@@ -304,7 +354,7 @@ export function BusFinder() {
 						</div>
 					</RevealUp>
 
-					{/* Confirmatory only: the list below carries identical information. */}
+					{/* Polyline diagram */}
 					<div>
 						<motion.svg
 							key={best!.route.id}
@@ -326,7 +376,7 @@ export function BusFinder() {
 								strokeWidth="2"
 							/>
 							{best!.route.stops.map((s, i) => {
-								const { x, y } = stopPositions[i];
+								const { x, y } = stopPositions[i] ?? { x: 0, y: 0 };
 								const isMatch = s.id === best!.stop.id;
 								return (
 									<g key={s.id}>
@@ -356,32 +406,42 @@ export function BusFinder() {
 					</div>
 
 					<div className="flex flex-col gap-4">
-						<p className="u-label text-muted-foreground">
-							All stops on this route
-						</p>
+						<div className="flex items-center justify-between">
+							<p className="u-label text-muted-foreground">
+								All stops on this route
+							</p>
+							<span className="text-xs text-muted-foreground">
+								{best!.route.stops.length} stops total
+							</span>
+						</div>
 						<ul className="flex flex-col" data-testid="bus-stop-list">
 							{best!.route.stops.map((s) => (
 								<li
 									key={s.id}
 									className={
 										"flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t border-border py-3 last:border-b " +
-										(s.id === best!.stop.id ? "border-accent" : "border-border")
+										(s.id === best!.stop.id ? "bg-accent/15 -mx-3 px-3 rounded-md border-accent" : "border-border")
 									}
 								>
-									<span className="u-label tnum w-6 text-red-dark">
+									<span className="u-label tnum w-6 text-red-dark font-mono">
 										{String(s.order).padStart(2, "0")}
 									</span>
-									<span className="min-w-0 flex-1 text-body-m text-foreground">
+									<span className="min-w-0 flex-1 text-body-m text-foreground font-medium">
 										{s.name}
-										<span className="u-ne ml-2 text-muted-foreground">
-											{s.nameNe}
-										</span>
+										{s.nameNe ? (
+											<span className="u-ne ml-2 text-muted-foreground">
+												{s.nameNe}
+											</span>
+										) : null}
 									</span>
 									<span className="u-label text-muted-foreground">
 										{s.landmark}
 									</span>
 									<span className="u-label tnum text-foreground">
 										{s.pickup} · {s.drop}
+									</span>
+									<span className="u-label tnum text-muted-foreground font-mono text-xs">
+										{formatNpr(s.fare ?? best!.route.monthlyFare)}
 									</span>
 								</li>
 							))}

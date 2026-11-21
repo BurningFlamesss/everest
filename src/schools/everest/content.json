@@ -1,389 +1,389 @@
 {
-	"sidebar": {
-		"logo": "/schools/everest/logo.png",
-		"tagline": "LEARNING WITH PURPOSE. GROWING WITH CONFIDENCE.",
-		"collapsible": {
-			"about": {
-				"id": "about",
-				"label": "About Everest",
-				"href": "/about"
-			},
-			"courses": {
-				"id": "courses",
-				"label": "Courses",
-				"href": "/courses"
-			},
-			"facilities": {
-				"id": "facilities",
-				"label": "Facilities",
-				"href": "/facilities"
-			},
-			"gallery": {
-				"id": "gallery",
-				"label": "Gallery",
-				"href": "/gallery"
-			},
-			"faculty": {
-				"id": "faculty",
-				"label": "Faculty & Staff",
-				"href": "/faculty"
-			},
-			"notices": {
-				"id": "notices",
-				"label": "Notice Board",
-				"href": "/notices"
-			},
-			"more_info": {
-				"id": "more_info",
-				"label": "More Info",
-				"children": [
-					{
-						"id": "calendar",
-						"label": "Calendar",
-						"href": "/calendar"
-					},
-					{
-						"id": "scholarship",
-						"label": "Scholarships",
-						"href": "/scholarship"
-					},
-					{
-						"id": "transportation",
-						"label": "Transportation",
-						"href": "/transportation"
-					},
-					{
-						"id": "resources",
-						"label": "Downloads Centre",
-						"href": "/resources"
-					},
-					{
-						"id": "result",
-						"label": "Board Results",
-						"href": "/result"
-					},
-					{
-						"id": "posts",
-						"label": "Latest Posts",
-						"href": "/posts"
-					}
-				]
-			},
-			"contact": {
-				"id": "contact",
-				"label": "Contact",
-				"href": "/contact"
-			}
-		}
-	},
-	"pages": {
-		"home": {
-			"key": "home",
-			"title": "Home",
-			"path": "/",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Everest English Boarding Secondary School",
-			"seoDescription": "A complete school journey in Butwal, built on close teaching, clear standards and care for every learner.",
-			"seoKeywords": "school, everest, butwal, education, admissions",
-			"blocks": [
-				{
-					"type": "landing_facts",
-					"label": "Landing facts",
-					"visible": true,
-					"order": 0,
-					"fields": {
-						"body": "Everest English Boarding Higher Secondary School is a learning institution in Nepal built around a simple conviction: students thrive when expectations are clear, relationships are strong, and curiosity has room to become practice.",
-						"facts": [
-							{
-								"label": "Institution",
-								"value": "Everest English Boarding Higher Secondary School"
-							},
-							{
-								"label": "Learning Spaces",
-								"value": "Everest Building + Canon Building"
-							},
-							{
-								"label": "Streams",
-								"value": "Science (Computer/Biology), Management"
-							}
-						],
-						"title": "Established in purpose.\nContemporary in outlook."
-					}
-				}
-			]
-		},
-		"about": {
-			"key": "about",
-			"title": "About",
-			"path": "/about",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "About Everest English Boarding Secondary School",
-			"seoDescription": "Our history, mission and the people who shape Everest English Boarding Secondary School.",
-			"seoKeywords": "about, history, mission, vision, principal, everest",
-			"blocks": []
-		},
-		"contact": {
-			"key": "contact",
-			"title": "Contact Us",
-			"path": "/contact",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Contact Everest English Boarding Secondary School",
-			"seoDescription": "Get in touch with Everest English Boarding Secondary School. Choose a department and your enquiry reaches the team best placed to help.",
-			"seoKeywords": "contact, everest, butwal, phone, email, address",
-			"blocks": [
-				{
-					"type": "contact_details",
-					"label": "Contact details",
-					"visible": true,
-					"order": 1,
-					"fields": {
-						"email": "everestbutwal@gmail.com",
-						"phone": "+977 71 535962",
-						"address": "Butwal-8, Sukkhanagar, Rupandehi, Lumbini Province, Nepal",
-						"secondaryPhone": "+977 71 531342",
-						"admissionsEmail": "admissions@everestbutwal.edu.np"
-					}
-				},
-				{
-					"type": "office_hours",
-					"label": "Office hours",
-					"visible": true,
-					"order": 2,
-					"fields": {
-						"note": "Office hours follow the academic calendar.",
-						"sunday": "09:00–16:00",
-						"saturday": "CLOSED",
-						"weekdays": "09:00–16:00"
-					}
-				},
-				{
-					"type": "map",
-					"label": "Map & directions",
-					"visible": true,
-					"order": 3,
-					"fields": {
-						"label": "Main Campus",
-						"latitude": "27.7006",
-						"longitude": "83.4323",
-						"directions": "Located in Butwal-8, Sukkhanagar. Accessible by public transport from Milan Chowk (15 min) and Butwal Bus Park (25 min)."
-					}
-				},
-				{
-					"type": "social_links",
-					"label": "Social links",
-					"visible": true,
-					"order": 4,
-					"fields": {
-						"x": "",
-						"youtube": "https://youtube.com/@everestbutwal",
-						"facebook": "https://facebook.com/everestbutwal",
-						"linkedin": "",
-						"instagram": "https://instagram.com/everestbutwal"
-					}
-				}
-			]
-		},
-		"other": {
-			"key": "other",
-			"title": "Other",
-			"path": "/other",
-			"status": "draft",
-			"hasUnpublishedChanges": true,
-			"seoTitle": "",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"faculty": {
-			"key": "faculty",
-			"title": "Faculty & Administration",
-			"path": "/faculty",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Faculty & Administration",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"login": {
-			"key": "login",
-			"title": "Sign In",
-			"path": "/login",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Sign In",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"activate": {
-			"key": "activate",
-			"title": "Account Activation",
-			"path": "/activate",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Activate Account",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"courses": {
-			"key": "courses",
-			"title": "Courses & Programmes",
-			"path": "/courses",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Courses & Academic Programmes",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"facilities": {
-			"key": "facilities",
-			"title": "Facilities",
-			"path": "/facilities",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Facilities & Infrastructure",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"gallery": {
-			"key": "gallery",
-			"title": "Photo Gallery",
-			"path": "/gallery",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Gallery",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"calendar": {
-			"key": "calendar",
-			"title": "Academic Calendar",
-			"path": "/calendar",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Academic Calendar",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"resources": {
-			"key": "resources",
-			"title": "Downloads & Resources",
-			"path": "/resources",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Resources & Downloads",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"result": {
-			"key": "result",
-			"title": "Board Results",
-			"path": "/result",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Board Results",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"transportation": {
-			"key": "transportation",
-			"title": "Transportation",
-			"path": "/transportation",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Transportation",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"notices": {
-			"key": "notices",
-			"title": "Notices & Circulars",
-			"path": "/notices",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Notice Board",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"scholarship": {
-			"key": "scholarship",
-			"title": "Scholarships",
-			"path": "/scholarship",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Scholarships",
-			"seoDescription": "",
-			"seoKeywords": "",
-			"blocks": []
-		},
-		"posts": {
-			"key": "posts",
-			"title": "Latest Posts",
-			"path": "/posts",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Latest Posts",
-			"seoDescription": "Updates & News from our Facebook Page",
-			"seoKeywords": "posts, facebook, news",
-			"blocks": []
-		},
-		"course_finder": {
-			"key": "course_finder",
-			"title": "Course Finder",
-			"path": "/course-finder",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Course Finder",
-			"seoDescription": "Six questions. Find out which stream of study fits you best at Everest English Boarding Secondary School.",
-			"seoKeywords": "course finder, stream finder, science, management, humanities, everest",
-			"blocks": []
-		},
-		"admissions": {
-			"key": "admissions",
-			"title": "Admissions",
-			"path": "/admissions",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Admissions",
-			"seoDescription": "How to apply: enquire, visit the campus, submit documents and complete enrolment.",
-			"seoKeywords": "admissions, apply, enrolment, everest",
-			"blocks": []
-		},
-		"clubs": {
-			"key": "clubs",
-			"title": "Clubs & Activities",
-			"path": "/clubs",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Clubs",
-			"seoDescription": "Clubs give students a place to build skills, make friends and take on responsibility beyond the classroom.",
-			"seoKeywords": "clubs, student life, extracurricular, everest",
-			"blocks": []
-		},
-		"events": {
-			"key": "events",
-			"title": "School Events",
-			"path": "/events",
-			"status": "published",
-			"hasUnpublishedChanges": false,
-			"seoTitle": "Events",
-			"seoDescription": "Programmes, examinations, sports and celebrations on the school calendar.",
-			"seoKeywords": "events, calendar, school events, everest",
-			"blocks": []
-		}
-	},
-	"login": {}
+  "sidebar": {
+    "logo": "/schools/everest/logo.png",
+    "tagline": "LEARNING WITH PURPOSE. GROWING WITH CONFIDENCE.",
+    "collapsible": {
+      "about": {
+        "id": "about",
+        "label": "About Everest",
+        "href": "/about"
+      },
+      "courses": {
+        "id": "courses",
+        "label": "Courses",
+        "href": "/courses"
+      },
+      "facilities": {
+        "id": "facilities",
+        "label": "Facilities",
+        "href": "/facilities"
+      },
+      "gallery": {
+        "id": "gallery",
+        "label": "Gallery",
+        "href": "/gallery"
+      },
+      "faculty": {
+        "id": "faculty",
+        "label": "Faculty & Staff",
+        "href": "/faculty"
+      },
+      "notices": {
+        "id": "notices",
+        "label": "Notice Board",
+        "href": "/notices"
+      },
+      "more_info": {
+        "id": "more_info",
+        "label": "More Info",
+        "children": [
+          {
+            "id": "calendar",
+            "label": "Calendar",
+            "href": "/calendar"
+          },
+          {
+            "id": "scholarship",
+            "label": "Scholarships",
+            "href": "/scholarship"
+          },
+          {
+            "id": "transportation",
+            "label": "Transportation",
+            "href": "/transportation"
+          },
+          {
+            "id": "resources",
+            "label": "Downloads Centre",
+            "href": "/resources"
+          },
+          {
+            "id": "result",
+            "label": "Board Results",
+            "href": "/result"
+          },
+          {
+            "id": "posts",
+            "label": "Latest Posts",
+            "href": "/posts"
+          }
+        ]
+      },
+      "contact": {
+        "id": "contact",
+        "label": "Contact",
+        "href": "/contact"
+      }
+    }
+  },
+  "pages": {
+    "home": {
+      "key": "home",
+      "title": "Home",
+      "path": "/",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Everest English Boarding Secondary School | EEBSS - Best School in Nepal",
+      "seoDescription": "Everest English Boarding Secondary School (EEBSS) in Butwal, Nepal. Ranked among the best schools in Nepal, offering pre-primary to Grade 12 (+2 Science & Management) with NEB affiliation.",
+      "seoKeywords": "everest school, everest english boarding school, eebss, school in nepal, best school in nepal, top school in nepal, best school in butwal, best school in rupandehi, everest english boarding secondary school, everest butwal, eebss butwal, +2 science in butwal nepal, +2 management in butwal nepal",
+      "blocks": [
+        {
+          "type": "landing_facts",
+          "label": "Landing facts",
+          "visible": true,
+          "order": 0,
+          "fields": {
+            "body": "Everest English Boarding Higher Secondary School is a learning institution in Nepal built around a simple conviction: students thrive when expectations are clear, relationships are strong, and curiosity has room to become practice.",
+            "facts": [
+              {
+                "label": "Institution",
+                "value": "Everest English Boarding Higher Secondary School"
+              },
+              {
+                "label": "Learning Spaces",
+                "value": "Everest Building + Canon Building"
+              },
+              {
+                "label": "Streams",
+                "value": "Science (Computer/Biology), Management"
+              }
+            ],
+            "title": "Established in purpose.\nContemporary in outlook."
+          }
+        }
+      ]
+    },
+    "about": {
+      "key": "about",
+      "title": "About",
+      "path": "/about",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "About Everest English Boarding Secondary School (EEBSS) | Legacy & History",
+      "seoDescription": "Discover the 30+ year legacy, visionary leadership, core values, accreditations, and academic excellence of Everest English Boarding Secondary School in Butwal, Nepal.",
+      "seoKeywords": "about everest school, eebss history, everest english boarding school butwal, best school in nepal history, principal krishna neupane, school mission vision nepal",
+      "blocks": []
+    },
+    "contact": {
+      "key": "contact",
+      "title": "Contact Us",
+      "path": "/contact",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Contact Us & Campus Location | Everest English Boarding Secondary School (EEBSS)",
+      "seoDescription": "Contact Everest English Boarding Secondary School in Sukkhanagar, Butwal-8, Rupandehi, Nepal. Telephone: +977-71-535962, email, visiting hours, and campus directions.",
+      "seoKeywords": "contact everest school, eebss phone number, everest school address, school in butwal contact, butwal school location",
+      "blocks": [
+        {
+          "type": "contact_details",
+          "label": "Contact details",
+          "visible": true,
+          "order": 1,
+          "fields": {
+            "email": "everestbutwal@gmail.com",
+            "phone": "+977 71 535962",
+            "address": "Butwal-8, Sukkhanagar, Rupandehi, Lumbini Province, Nepal",
+            "secondaryPhone": "+977 71 531342",
+            "admissionsEmail": "admissions@everestbutwal.edu.np"
+          }
+        },
+        {
+          "type": "office_hours",
+          "label": "Office hours",
+          "visible": true,
+          "order": 2,
+          "fields": {
+            "note": "Office hours follow the academic calendar.",
+            "sunday": "09:00–16:00",
+            "saturday": "CLOSED",
+            "weekdays": "09:00–16:00"
+          }
+        },
+        {
+          "type": "map",
+          "label": "Map & directions",
+          "visible": true,
+          "order": 3,
+          "fields": {
+            "label": "Main Campus",
+            "latitude": "27.7006",
+            "longitude": "83.4323",
+            "directions": "Located in Butwal-8, Sukkhanagar. Accessible by public transport from Milan Chowk (15 min) and Butwal Bus Park (25 min)."
+          }
+        },
+        {
+          "type": "social_links",
+          "label": "Social links",
+          "visible": true,
+          "order": 4,
+          "fields": {
+            "x": "",
+            "youtube": "https://youtube.com/@everestbutwal",
+            "facebook": "https://facebook.com/everestbutwal",
+            "linkedin": "",
+            "instagram": "https://instagram.com/everestbutwal"
+          }
+        }
+      ]
+    },
+    "other": {
+      "key": "other",
+      "title": "Other",
+      "path": "/other",
+      "status": "draft",
+      "hasUnpublishedChanges": true,
+      "seoTitle": "",
+      "seoDescription": "",
+      "seoKeywords": "",
+      "blocks": []
+    },
+    "faculty": {
+      "key": "faculty",
+      "title": "Faculty & Administration",
+      "path": "/faculty",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Faculty & Academic Leadership | Everest English Boarding Secondary School (EEBSS)",
+      "seoDescription": "Meet the faculty, subject department heads, and visionary academic leadership of Everest English Boarding Secondary School in Butwal, Nepal.",
+      "seoKeywords": "everest school teachers, everest school principal, eebss faculty, teachers in butwal nepal, best educators nepal",
+      "blocks": []
+    },
+    "login": {
+      "key": "login",
+      "title": "Sign In",
+      "path": "/login",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Sign In",
+      "seoDescription": "",
+      "seoKeywords": "",
+      "blocks": []
+    },
+    "activate": {
+      "key": "activate",
+      "title": "Account Activation",
+      "path": "/activate",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Activate Account",
+      "seoDescription": "",
+      "seoKeywords": "",
+      "blocks": []
+    },
+    "courses": {
+      "key": "courses",
+      "title": "Courses & Programmes",
+      "path": "/courses",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Courses & Academic Programs (+2 Science, Management & SEE) | Everest School (EEBSS)",
+      "seoDescription": "Discover academic streams at Everest English Boarding Secondary School: +2 Science, +2 Management, Secondary Education (Grades 1-10 / SEE), and Early Childhood.",
+      "seoKeywords": "+2 science in nepal, +2 management butwal, courses at everest school, best science college butwal, best management college butwal, see school nepal",
+      "blocks": []
+    },
+    "facilities": {
+      "key": "facilities",
+      "title": "Facilities",
+      "path": "/facilities",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Campus Infrastructure & Modern Facilities | Everest English Boarding Secondary School (EEBSS)",
+      "seoDescription": "Explore our modern campus infrastructure in Butwal, Nepal: physics, chemistry & biology laboratories, computer labs, library, basketball courts, and smart classrooms.",
+      "seoKeywords": "everest school facilities, science lab butwal, computer lab school nepal, sports grounds school nepal, eebss infrastructure",
+      "blocks": []
+    },
+    "gallery": {
+      "key": "gallery",
+      "title": "Photo Gallery",
+      "path": "/gallery",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Photo & Video Gallery | Everest English Boarding Secondary School (EEBSS)",
+      "seoDescription": "View photographs and moments from annual day functions, sports tournaments, science exhibitions, musical festivals, and campus life at Everest School.",
+      "seoKeywords": "everest school photos, eebss gallery, school events butwal photos, school annual day nepal, student life everest school",
+      "blocks": []
+    },
+    "calendar": {
+      "key": "calendar",
+      "title": "Academic Calendar",
+      "path": "/calendar",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Academic Calendar 2083/2084 BS | Everest English Boarding Secondary School (EEBSS)",
+      "seoDescription": "Official Bikram Sambat (BS) and Gregorian (AD) academic calendar of Everest School, Butwal: term examination routines, SEE dates, national holidays, and festivals.",
+      "seoKeywords": "academic calendar nepal 2083, bs calendar school butwal, everest school exam routine, eebss calendar, nepal school holidays",
+      "blocks": []
+    },
+    "resources": {
+      "key": "resources",
+      "title": "Downloads & Resources",
+      "path": "/resources",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Student & Parent Downloads | Everest English Boarding Secondary School (EEBSS)",
+      "seoDescription": "Official download center for Everest School, Butwal: syllabus PDFs, holiday assignments, leave application forms, code of conduct, and uniform guidelines.",
+      "seoKeywords": "everest school syllabus download, school forms nepal, student assignment pdf butwal, eebss downloads",
+      "blocks": []
+    },
+    "result": {
+      "key": "result",
+      "title": "Board Results",
+      "path": "/result",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Board Exam Results & SEE Academic Excellence | Everest School (EEBSS)",
+      "seoDescription": "Explore our outstanding academic achievements: 98%+ SEE pass rate, GPA 4.0 achievers, NEB +2 Science & Management board ranks at Everest School, Butwal.",
+      "seoKeywords": "see results everest school, eebss board results, best see result butwal, neb 12 result nepal, school pass rate nepal",
+      "blocks": []
+    },
+    "transportation": {
+      "key": "transportation",
+      "title": "Transportation",
+      "path": "/transportation",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "School Bus Routes & Transportation Network | Everest English Boarding Secondary School (EEBSS)",
+      "seoDescription": "Safe, scheduled school bus routes covering Butwal, Tilottama, Manigram, Devdaha, and Sainamaina for Everest School students.",
+      "seoKeywords": "everest school bus, school transportation butwal, school bus routes tilottama, eebss bus service, rupandehi student transport",
+      "blocks": []
+    },
+    "notices": {
+      "key": "notices",
+      "title": "Notices & Circulars",
+      "path": "/notices",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Official Notices & Announcements | Everest English Boarding Secondary School (EEBSS)",
+      "seoDescription": "Stay informed with official circulars, examination schedules, SEE routines, fee payment notices, and academic updates from Everest School, Butwal.",
+      "seoKeywords": "everest school notices, eebss notice board, see exam routine butwal, school holidays nepal, everest school announcements",
+      "blocks": []
+    },
+    "scholarship": {
+      "key": "scholarship",
+      "title": "Scholarships",
+      "path": "/scholarship",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Merit & Need-Based Scholarships | Everest English Boarding Secondary School (EEBSS)",
+      "seoDescription": "Explore scholarship opportunities at Everest School, Butwal: SEE board topper grants, entrance merit awards, sports scholarships, and underprivileged student assistance.",
+      "seoKeywords": "everest school scholarship, see scholarship nepal, +2 scholarship butwal, merit scholarship school nepal, eebss financial aid",
+      "blocks": []
+    },
+    "posts": {
+      "key": "posts",
+      "title": "Latest Posts",
+      "path": "/posts",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Latest Posts",
+      "seoDescription": "Updates & News from our Facebook Page",
+      "seoKeywords": "posts, facebook, news",
+      "blocks": []
+    },
+    "course_finder": {
+      "key": "course_finder",
+      "title": "Course Finder",
+      "path": "/course-finder",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Interactive Course & Stream Finder | Everest English Boarding Secondary School",
+      "seoDescription": "Find your ideal academic path after SEE. Compare +2 Science and +2 Management courses, elective subjects, career opportunities, and eligibility.",
+      "seoKeywords": "course finder nepal, +2 stream selector, science or management after see, everest school courses, eebss course chooser",
+      "blocks": []
+    },
+    "admissions": {
+      "key": "admissions",
+      "title": "Admissions",
+      "path": "/admissions",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Admissions 2026/2083 | Everest English Boarding Secondary School (EEBSS)",
+      "seoDescription": "Apply for admission at Everest English Boarding Secondary School (EEBSS) in Butwal, Nepal. Enrolment criteria, entrance test dates, scholarship eligibility, and fee structure.",
+      "seoKeywords": "everest school admission, eebss admission, school admission in nepal, +2 science admission butwal, +2 management admission nepal, best school admission nepal",
+      "blocks": []
+    },
+    "clubs": {
+      "key": "clubs",
+      "title": "Clubs & Activities",
+      "path": "/clubs",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Student Clubs & Societies | Everest English Boarding Secondary School (EEBSS)",
+      "seoDescription": "Join student clubs at Everest School, Butwal: Science & Innovation, Robotics & IT, Literature & Debate, Eco Conservation, and Athletics.",
+      "seoKeywords": "everest school clubs, student societies nepal, eebss clubs, robotics club school butwal, extracurricular activities nepal",
+      "blocks": []
+    },
+    "events": {
+      "key": "events",
+      "title": "School Events",
+      "path": "/events",
+      "status": "published",
+      "hasUnpublishedChanges": false,
+      "seoTitle": "Events & Celebrations | Everest English Boarding Secondary School (EEBSS)",
+      "seoDescription": "Explore upcoming events, sports meets, cultural exhibitions, academic competitions, and parent-teacher conferences at Everest School, Butwal.",
+      "seoKeywords": "everest school events, school sports meet butwal, science exhibition nepal, annual function everest school",
+      "blocks": []
+    }
+  },
+  "login": {}
 }

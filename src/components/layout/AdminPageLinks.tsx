@@ -1,11 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import {
 	BookOpen,
-	Bus,
 	CalendarDays,
 	Clock3,
 	FileSpreadsheet,
-	FileText,
 	GraduationCap,
 	Inbox,
 	Library,
@@ -25,7 +23,6 @@ import { NAV_GROUPS } from "./nav-config";
 const MORE_LINKS = [
 	{ label: "Invitations", to: "/admin/invites", icon: UserPlus },
 	{ label: "Directory", to: "/admin/directory", icon: Users },
-	{ label: "Content", to: "/admin/content", icon: FileText },
 	{ label: "Calendar", to: "/admin/calendar", icon: CalendarDays },
 	{ label: "Timetable", to: "/admin/timetable", icon: Clock3 },
 	{ label: "Exams", to: "/admin/exams", icon: FileSpreadsheet },
@@ -33,7 +30,6 @@ const MORE_LINKS = [
 	{ label: "Homework", to: "/admin/homework", icon: BookOpen },
 	{ label: "Classes", to: "/admin/classes", icon: GraduationCap },
 	{ label: "Subjects", to: "/admin/subjects", icon: Library },
-	{ label: "Transport", to: "/admin/transport", icon: Bus },
 	{ label: "Mail", to: "/admin/mail", icon: Mail },
 	{ label: "Inbox", to: "/admin/inbox", icon: Inbox },
 	{ label: "Permissions", to: "/admin/permissions", icon: ShieldCheck },

@@ -322,24 +322,68 @@ async function main() {
     },
   })
 
-  const scienceClub = await prisma.club.upsert({
-    where: { slug: "science-club" },
-    update: {},
-    create: {
-      name: "Science Club",
-      slug: "science-club",
-      description:
-        "Student-led experiments, science exhibitions and preparation for regional competitions.",
-      meetingSchedule: "Fridays, 2:00 – 3:00",
-      isActive: true,
-      organizationId: organization.id,
-      branchId: branch.id,
-    },
-  })
+  // Seed Clubs, Club Roles, and Showcase Activity Posts
+  await seedClubsAndActivities(organization.id, branch.id, user.id);
 
-  // Default role board. Permissions are comma-separated keys from
-  // `src/packages/clubs/permissions.ts`; a plain Member has none and cannot
-  // publish to the club feed. Admins can edit these under Content → Clubs → Roles.
+  // Seed Transportation Bus Routes with per-stop pricing & timings
+  await seedBusRoutes();
+
+  // Seed Timetable Slots for Homeroom Classes
+  await seedTimetableSlots(academicYear.id, branch.id);
+
+  console.log(`
+    SUPER ADMIN created:
+    
+    EMAIL: ${user.email}
+
+    ACTIVATION LINK: ${serverEnv.APP_URL}/activate/${invite.token}
+    `)
+
+  await seedTestUsers(organization.id, branch.id);
+
+  // Seed default website pages from content.json
+  await seedWebsitePages(user.id, user.name, contentFile.pages);
+
+  // Seed the public content collections that drive the -page-detail routes
+  await seedPublicCollections();
+}
+
+async function seedClubsAndActivities(organizationId: string, branchId: string, authorId: string) {
+  console.log('🌱 Seeding clubs and activity posts...');
+
+  const starterClubs = [
+    {
+      name: "Science & Innovation Club",
+      slug: "science-club",
+      description: "Student-led experiments, science exhibitions, astronomical observation, and regional STEM Olympiad training.",
+      meetingSchedule: "Fridays, 2:00 – 3:30",
+    },
+    {
+      name: "Robotics & IT Club",
+      slug: "robotics-club",
+      description: "Hardware tinkering, robotics engineering, microcontrollers, IoT workshops, and competitive coding.",
+      meetingSchedule: "Wednesdays, 3:30 – 5:00",
+    },
+    {
+      name: "Literature & Debate Society",
+      slug: "literature-club",
+      description: "Parliamentary debate, extempore speech, creative writing anthology, and oratory championships.",
+      meetingSchedule: "Thursdays, 2:30 – 4:00",
+    },
+    {
+      name: "Eco & Nature Conservation Club",
+      slug: "eco-club",
+      description: "Tree plantation drives, campus botanical surveys, waste segregation, and community environmental awareness.",
+      meetingSchedule: "Tuesdays, 3:00 – 4:30",
+    },
+    {
+      name: "Sports & Athletics Club",
+      slug: "sports-club",
+      description: "Inter-school tournaments, track & field events, basketball, football, cricket, and youth fitness coaching.",
+      meetingSchedule: "Mon/Wed/Fri, 4:00 – 5:30",
+    },
+  ];
+
   const defaultRoles = [
     {
       name: "President",
@@ -369,31 +413,275 @@ async function main() {
       isBoard: false,
       sortOrder: 3,
     },
-  ]
+  ];
 
-  for (const role of defaultRoles) {
-    await prisma.clubRole.upsert({
-      where: { clubId_name: { clubId: scienceClub.id, name: role.name } },
-      update: {},
-      create: { ...role, clubId: scienceClub.id },
-    })
+  const clubMap = new Map<string, string>();
+
+  for (const clubData of starterClubs) {
+    const club = await prisma.club.upsert({
+      where: { slug: clubData.slug },
+      update: {
+        name: clubData.name,
+        description: clubData.description,
+        meetingSchedule: clubData.meetingSchedule,
+      },
+      create: {
+        ...clubData,
+        isActive: true,
+        organizationId,
+        branchId,
+      },
+    });
+
+    clubMap.set(clubData.slug, club.id);
+
+    for (const role of defaultRoles) {
+      await prisma.clubRole.upsert({
+        where: { clubId_name: { clubId: club.id, name: role.name } },
+        update: {},
+        create: { ...role, clubId: club.id },
+      });
+    }
   }
 
-  console.log(`
-    SUPER ADMIN created:
-    
-    EMAIL: ${user.email}
+  const postsData = [
+    {
+      clubSlug: "sports-club",
+      title: "Rupandehi District Inter-School Basketball Semi-Finals",
+      category: "Sports",
+      excerpt: "The Everest Boys Senior Basketball team clinched a thrilling 52-48 victory against Butwal Public School to secure their place in the tournament finals!",
+      body: "<p>The Everest Boys Senior Basketball team clinched a thrilling <strong>52-48 victory</strong> against Butwal Public School yesterday evening in front of an electric home crowd, securing their place in the <em>Rupandehi District Inter-School Tournament Finals</em>!</p><p>Point guard <strong>Aayush Shrestha (Grade 11)</strong> led the fourth-quarter rally with 18 points, converting four crucial three-pointers in the final three minutes to overcome a six-point deficit.</p><p>The championship final is scheduled for this coming Saturday at 3:00 PM at the District Sports Complex. All students, parents, and alumni are invited to cheer our squad!</p>",
+      isPinned: true,
+    },
+    {
+      clubSlug: "literature-club",
+      title: "Inter-House Extempore & Debate Championship Round 1",
+      category: "Debate",
+      excerpt: "Fierce and eloquent debate round conducted on the motion: 'Artificial intelligence will democratize quality education in South Asia'. Congratulations to all speakers!",
+      body: "<p>The opening round of the annual <strong>Inter-House Extempore & Debate Championship</strong> saw fiery argumentation and meticulous cross-examinations in the Main Auditorium.</p><p>The house debated the motion: <em>'This House believes that generative artificial intelligence will democratize quality education across South Asia rather than widen regional disparities.'</em></p><p>Congratulations to <strong>Sagarmatha House</strong> for leading Round 1 scores, and best speaker honors awarded to <strong>Sneha Sharma (Grade 10 · A)</strong> for her compelling rebuttal on digital infrastructure access.</p>",
+      isPinned: true,
+    },
+    {
+      clubSlug: "robotics-club",
+      title: "Autonomous Line-Follower Bot Workshop Complete",
+      category: "Workshop",
+      excerpt: "Hands-on session concluded yesterday where 8 junior teams assembled infrared sensor arrays and programmed PID control loops on Arduino Uno.",
+      body: "<p>Yesterday's intensive 6-hour hands-on robotics session concluded with <strong>8 junior teams</strong> successfully assembling and calibrating infrared reflectance sensor arrays on Arduino Uno platforms.</p><p>Students implemented discrete PID feedback loops to navigate intricate track curves with variable line thicknesses. Top precision honors went to Team RoboTech (Grade 9) completing the course in 14.2 seconds!</p><p>Next week: Introduction to ultrasonic obstacle-avoidance algorithms and motor driver bridge circuitry.</p>",
+      isPinned: true,
+    },
+    {
+      clubSlug: "science-club",
+      title: "Annual Science & Technology Expo 2083 Guidelines Released",
+      category: "Exhibition",
+      excerpt: "Detailed registration handbook, project safety criteria, and innovation categories now available for Grades 6 through 12.",
+      body: "<p>The guidelines for the upcoming <strong>Everest Science & Technology Expo 2083</strong> are officially published. This year's central theme is <em>'Sustainable Engineering & Clean Energy for Rural Nepal'</em>.</p><p>Categories include Renewable Energy Systems, Agro-Technology Innovations, Environmental Bio-Chemistry, and Computational Modeling. Project submissions close next Friday at 4:00 PM.</p>",
+      isPinned: false,
+    },
+    {
+      clubSlug: "science-club",
+      title: "Astronomy Night & Telescope Observation Recap",
+      category: "Event",
+      excerpt: "Over 140 students observed the rings of Saturn and lunar craters using our newly acquired 8-inch Dobsonian reflector.",
+      body: "<p>Under crisp autumn skies, more than 140 students and faculty gathered on the main campus terrace for our inaugural <strong>Autumn Stargazing Night</strong>.</p><p>Attendees observed the Cassini division in Saturn's rings, four Galilean moons of Jupiter, and crater details across Mare Tranquillitatis through the club's 8-inch Dobsonian reflector telescope.</p>",
+      isPinned: false,
+    },
+    {
+      clubSlug: "eco-club",
+      title: "Campus Botanical Inventory Project Launched",
+      category: "Initiative",
+      excerpt: "Student researchers have documented 42 distinct native flora species across the school grounds and tagged them with educational QR codes.",
+      body: "<p>The Eco Club launched its comprehensive <strong>Campus Biodiversity Mapping Project</strong>. Over two weeks of fieldwork, student teams identified, catalogued, and indexed 42 native plant and tree species across our 4-acre premises.</p><p>Each specimen now displays a weatherproof QR placard linking visitors to botanical data, medicinal heritage, and ecological roles.</p>",
+      isPinned: false,
+    },
+  ];
 
-    ACTIVATION LINK: ${serverEnv.APP_URL}/activate/${invite.token}
-    `)
+  for (const postData of postsData) {
+    const clubId = clubMap.get(postData.clubSlug);
+    if (!clubId) continue;
 
-  await seedTestUsers(organization.id, branch.id);
+    const existing = await prisma.post.findFirst({
+      where: { clubId, title: postData.title },
+      select: { id: true },
+    });
 
-  // Seed default website pages from content.json
-  await seedWebsitePages(user.id, user.name, contentFile.pages);
+    if (!existing) {
+      await prisma.post.create({
+        data: {
+          clubId,
+          authorId,
+          title: postData.title,
+          excerpt: postData.excerpt,
+          body: postData.body,
+          category: postData.category,
+          visibility: "PUBLIC",
+          allowComments: true,
+          isPinned: postData.isPinned,
+        },
+      });
+    }
+  }
 
-  // Seed the public content collections that drive the -page-detail routes
-  await seedPublicCollections();
+  console.log(`  ✓ 5 clubs and ${postsData.length} showcase activity posts`);
+}
+
+async function seedBusRoutes() {
+  console.log('🌱 Seeding transportation bus routes...');
+
+  const routes = [
+    {
+      busNumber: "LU 1 KHA 4028",
+      vehicleType: "Bus",
+      capacity: 42,
+      driverName: "Bhim Bahadur Thapa",
+      driverPhone: "+977-9846021178",
+      feeMonthly: 2100,
+      order: 0,
+      stops: [
+        { name: "Traffic Chowk", pickupTime: "06:52", dropoffTime: "16:18", fare: 1800, landmark: "Butwal Bus Park" },
+        { name: "Deepnagar", pickupTime: "06:57", dropoffTime: "16:13", fare: 1900, landmark: "Deepnagar Chowk" },
+        { name: "Devinagar", pickupTime: "07:03", dropoffTime: "16:07", fare: 2000, landmark: "Devinagar Bazaar" },
+        { name: "Sukkhanagar", pickupTime: "07:09", dropoffTime: "16:01", fare: 2100, landmark: "Sukkhanagar Chowk" },
+        { name: "Tilottama", pickupTime: "07:15", dropoffTime: "15:55", fare: 2200, landmark: "Tilottama Bazaar" },
+        { name: "Jitgadhi", pickupTime: "07:21", dropoffTime: "15:49", fare: 2300, landmark: "Jitgadhi Chowk" },
+      ],
+    },
+    {
+      busNumber: "LU 1 KHA 2290",
+      vehicleType: "Bus",
+      capacity: 45,
+      driverName: "Tek Bahadur Gurung",
+      driverPhone: "+977-9856034421",
+      feeMonthly: 2400,
+      order: 1,
+      stops: [
+        { name: "Manigram", pickupTime: "06:40", dropoffTime: "16:30", fare: 2200, landmark: "Manigram Chowk" },
+        { name: "Sainamaina", pickupTime: "06:46", dropoffTime: "16:24", fare: 2300, landmark: "Sainamaina Bazaar" },
+        { name: "Motipur", pickupTime: "06:52", dropoffTime: "16:18", fare: 2400, landmark: "Motipur Chowk" },
+        { name: "Siddharthanagar", pickupTime: "06:59", dropoffTime: "16:11", fare: 2500, landmark: "Siddharthanagar Bus Stop" },
+        { name: "Belahiya", pickupTime: "07:06", dropoffTime: "16:04", fare: 2600, landmark: "Sunauli Border" },
+        { name: "Lumbini", pickupTime: "07:14", dropoffTime: "15:56", fare: 2800, landmark: "Lumbini Sanskritik" },
+      ],
+    },
+    {
+      busNumber: "BA 2 KHA 5512",
+      vehicleType: "Van",
+      capacity: 18,
+      driverName: "Ram Prasad Sharma",
+      driverPhone: "+977-9847055912",
+      feeMonthly: 2600,
+      order: 2,
+      stops: [
+        { name: "Golpark", pickupTime: "07:10", dropoffTime: "16:10", fare: 2000, landmark: "Golpark Traffic Island" },
+        { name: "Puspalal Park", pickupTime: "07:20", dropoffTime: "16:00", fare: 2200, landmark: "Park Gate" },
+        { name: "Drivertole", pickupTime: "07:30", dropoffTime: "15:50", fare: 2400, landmark: "Drivertole Chowk" },
+        { name: "Yogikuti", pickupTime: "07:40", dropoffTime: "15:40", fare: 2600, landmark: "Yogikuti Overbridge" },
+      ],
+    },
+  ];
+
+  for (const route of routes) {
+    const existing = await prisma.busRoute.findFirst({
+      where: { busNumber: route.busNumber },
+      select: { id: true },
+    });
+
+    if (existing) {
+      await prisma.busRoute.update({
+        where: { id: existing.id },
+        data: {
+          vehicleType: route.vehicleType,
+          capacity: route.capacity,
+          driverName: route.driverName,
+          driverPhone: route.driverPhone,
+          feeMonthly: route.feeMonthly,
+          order: route.order,
+          stops: route.stops,
+        },
+      });
+    } else {
+      await prisma.busRoute.create({
+        data: {
+          ...route,
+          stops: route.stops,
+        },
+      });
+    }
+  }
+
+  console.log(`  ✓ ${routes.length} transportation bus routes`);
+}
+
+async function seedTimetableSlots(academicYearId: string, branchId: string) {
+  console.log('🌱 Seeding sample timetable slots...');
+
+  const targetClass = await prisma.schoolClass.findFirst({
+    where: { branchId, name: "Grade 10 · A" },
+    select: { id: true },
+  });
+
+  if (!targetClass) return;
+
+  const courses = await prisma.course.findMany({
+    where: { isActive: true },
+    select: { id: true, code: true },
+  });
+
+  const courseMap = new Map(courses.map((c) => [c.code, c.id]));
+
+  const room = await prisma.classroom.findFirst({
+    where: { branchId, name: "Room 101" },
+    select: { id: true },
+  });
+
+  const faculty = await prisma.facultyMember.findFirst({
+    select: { id: true },
+  });
+
+  const periodDefs = [
+    { periodIndex: 1, startsAt: "09:30", endsAt: "10:15", courseCode: "ENG" },
+    { periodIndex: 2, startsAt: "10:15", endsAt: "11:00", courseCode: "MAT" },
+    { periodIndex: 3, startsAt: "11:00", endsAt: "11:45", courseCode: "SCI" },
+    { periodIndex: 4, startsAt: "11:45", endsAt: "12:30", courseCode: "NEP" },
+    { periodIndex: 5, startsAt: "13:15", endsAt: "14:00", courseCode: "SOC" },
+    { periodIndex: 6, startsAt: "14:00", endsAt: "14:45", courseCode: "CMP" },
+    { periodIndex: 7, startsAt: "14:45", endsAt: "15:30", courseCode: "HPE" },
+  ];
+
+  // Weekdays 1 (Monday) through 5 (Friday)
+  for (let weekday = 1; weekday <= 5; weekday++) {
+    for (const period of periodDefs) {
+      const courseId = courseMap.get(period.courseCode);
+      if (!courseId) continue;
+
+      const existing = await prisma.timetableSlot.findFirst({
+        where: {
+          academicYearId,
+          classId: targetClass.id,
+          weekday,
+          periodIndex: period.periodIndex,
+        },
+        select: { id: true },
+      });
+
+      if (!existing) {
+        await prisma.timetableSlot.create({
+          data: {
+            academicYearId,
+            classId: targetClass.id,
+            courseId,
+            classroomId: room?.id ?? null,
+            facultyMemberId: faculty?.id ?? null,
+            weekday,
+            periodIndex: period.periodIndex,
+            startsAt: period.startsAt,
+            endsAt: period.endsAt,
+          },
+        });
+      }
+    }
+  }
+
+  console.log(`  ✓ Sample timetable slots for Grade 10 · A (35 periods)`);
 }
 
 async function seedTestUsers(organizationId: string, branchId: string) {
