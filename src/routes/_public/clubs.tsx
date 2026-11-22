@@ -1,17 +1,10 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { ArrowRight, Clock, Paperclip, Users } from "lucide-react";
-import {
-	type ClubAccess,
-	ClubFeed,
-	type ClubPost,
-} from "#/components/clubs/ClubFeed";
+import type { ClubAccess } from "#/components/clubs/ClubFeed";
 import { str } from "#/components/cms/block-fields";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
-import {
-	getAllMyClubAccessFn,
-	getClubPostsFn,
-} from "#/packages/clubs/server.ts";
+import { getAllMyClubAccessFn } from "#/packages/clubs/server.ts";
 import { getWebsitePagePreviewServer } from "#/packages/content/server/content.ts";
 import { getClubsFn } from "#/packages/content/server.ts";
 import { useWebsitePageContent } from "#/packages/school/hook.tsx";
@@ -46,24 +39,9 @@ export const Route = createFileRoute("/_public/clubs")({
 				: Promise.resolve(null),
 		]);
 
-		// Each card renders its own feed, so fetch the boards in parallel once
-		// rather than letting every card waterfall a client request.
-		const boards = await Promise.all(
-			clubs.map(async (club: ClubRow) => {
-				const board = await getClubPostsFn({ data: { slug: club.slug } });
-				return board.success ? { slug: club.slug, posts: board.posts } : null;
-			}),
-		);
-		const postsBySlug: Record<string, ClubPost[]> = {};
-		for (const board of boards) {
-			if (board) postsBySlug[board.slug] = board.posts;
-		}
-
 		return {
 			clubs,
-			userId: accessResult.userId,
 			accessBySlug: accessResult.accessBySlug as ClubAccessMap,
-			postsBySlug,
 			previewPage,
 		};
 	},
@@ -76,8 +54,7 @@ function ClubsPage() {
 	const search =
 		(useSearch({ strict: false }) as Record<string, unknown>) || {};
 	const cms = search.cms;
-	const { clubs, accessBySlug, postsBySlug, userId, previewPage } =
-		Route.useLoaderData();
+	const { clubs, accessBySlug, previewPage } = Route.useLoaderData();
 	const publishedContent = useWebsitePageContent("clubs");
 	const preview = String(cms ?? "") === "1";
 	const cmsData = preview ? previewPage : publishedContent;
@@ -132,8 +109,6 @@ function ClubsPage() {
 								key={club.id}
 								club={club}
 								access={accessBySlug[club.slug]}
-								posts={postsBySlug[club.slug] ?? []}
-								userId={userId}
 							/>
 						))}
 					</div>
@@ -146,18 +121,14 @@ function ClubsPage() {
 function ClubCard({
 	club,
 	access,
-	posts,
-	userId,
 }: {
 	club: ClubRow;
 	access?: ClubAccess;
-	posts: ClubPost[];
-	userId?: string | null;
 }) {
 	const memberCount = (club.members || []).length;
 
 	return (
-		<article className="flex h-full flex-col rounded-2xl border border-border bg-card p-6">
+		<article className="flex h-full flex-col justify-between rounded-card border border-border bg-card p-6 shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 text-left">
 			<Link
 				to="/clubs/$slug"
 				params={{ slug: club.slug }}
@@ -165,41 +136,56 @@ function ClubCard({
 				className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
 			>
 				{club.coverImage ? (
-					<img
-						src={club.coverImage}
-						alt=""
-						className="mb-4 h-40 w-full rounded-xl object-cover"
-					/>
-				) : null}
-				<div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-					<Users className="h-5 w-5" />
+					<div className="mb-6 h-[200px] w-full overflow-hidden rounded-md border border-border bg-secondary">
+						<img
+							src={club.coverImage}
+							alt={club.name}
+							className="h-full w-full object-cover transition-transform duration-[400ms] group-hover:scale-105"
+						/>
+					</div>
+				) : (
+					<div className="mb-6 flex h-12 w-12 items-center justify-center rounded-md border border-border bg-secondary text-foreground">
+						<Users className="h-5 w-5" aria-hidden="true" />
+					</div>
+				)}
+
+				<div className="flex items-center justify-between gap-2">
+					<span className="t-eyebrow text-muted-foreground">Student Society</span>
+					<span className="inline-flex items-center gap-1 rounded-full border border-border/80 bg-secondary/60 px-2.5 py-0.5 text-[11px] font-mono text-muted-foreground shrink-0">
+						{memberCount} {memberCount === 1 ? "member" : "members"}
+					</span>
 				</div>
-				<div className="mt-4 flex flex-wrap items-center gap-2">
-					<h2 className="text-xl font-semibold text-foreground">{club.name}</h2>
+
+				<div className="mt-2.5 flex flex-wrap items-center gap-2">
+					<h2 className="font-display text-[20px] font-semibold leading-snug text-foreground">
+						{club.name}
+					</h2>
 					{access?.isMember ? (
 						<span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10.5px] font-medium text-primary">
 							Member
 						</span>
 					) : null}
 				</div>
-				{club.description ? (
-					<p className="mt-2 line-clamp-4 text-sm leading-relaxed text-muted-foreground">
-						{club.description}
-					</p>
-				) : null}
+
 				{club.meetingSchedule ? (
-					<p className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-						<Clock className="h-3.5 w-3.5" />
-						{club.meetingSchedule}
+					<p className="mt-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+						<Clock className="h-3.5 w-3.5 shrink-0 text-primary/70" />
+						<span>{club.meetingSchedule}</span>
 					</p>
 				) : null}
 
-				<div className="mt-5 flex items-center justify-between gap-3 border-t border-rule pt-4">
-					<span className="text-xs text-muted-foreground">
-						{memberCount} member{memberCount === 1 ? "" : "s"}
+				{club.description ? (
+					<p className="mt-3 line-clamp-3 text-[13px] leading-relaxed text-muted-foreground">
+						{club.description}
+					</p>
+				) : null}
+
+				<div className="mt-6 flex items-center justify-between gap-3 border-t border-rule-soft pt-4">
+					<span className="t-meta">
+						Official Society
 					</span>
 					<span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-foreground">
-						View club
+						View society
 						<ArrowRight
 							className="h-3.5 w-3.5 transition-transform duration-fast group-hover:translate-x-0.5"
 							aria-hidden="true"
@@ -218,23 +204,23 @@ function ClubCard({
 			) : null}
 
 			{club.attachments.length > 0 ? (
-				<div className="mt-5 border-t border-rule pt-4">
-					<h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-						<Paperclip className="h-4 w-4 text-primary" /> Attachments
+				<div className="mt-4 border-t border-rule-soft pt-3">
+					<h3 className="flex items-center gap-2 text-xs font-semibold text-foreground">
+						<Paperclip className="h-3.5 w-3.5 text-primary" /> Attachments
 					</h3>
-					<ul className="mt-2 space-y-2">
+					<ul className="mt-2 space-y-1.5">
 						{club.attachments.map((attachment) => (
 							<li key={attachment.id}>
 								<a
 									href={attachment.fileAsset.url}
 									target="_blank"
 									rel="noreferrer"
-									className="flex items-center justify-between gap-2 rounded-lg bg-secondary px-3 py-2 text-sm text-foreground hover:bg-secondary/70"
+									className="flex items-center justify-between gap-2 rounded-md bg-secondary/60 px-2.5 py-1.5 text-xs text-foreground hover:bg-secondary"
 								>
-									<span className="min-w-0 break-words font-medium">
+									<span className="min-w-0 truncate font-medium">
 										{attachment.label ?? attachment.fileAsset.originalName}
 									</span>
-									<span className="shrink-0 text-xs text-muted-foreground">
+									<span className="shrink-0 text-[10px] text-muted-foreground font-mono">
 										{Math.max(1, Math.round(attachment.fileAsset.size / 1024))}{" "}
 										KB
 									</span>
@@ -244,13 +230,6 @@ function ClubCard({
 					</ul>
 				</div>
 			) : null}
-
-			<ClubFeed
-				clubSlug={club.slug}
-				posts={posts}
-				access={access}
-				userId={userId}
-			/>
 		</article>
 	);
 }

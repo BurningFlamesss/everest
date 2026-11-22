@@ -6,19 +6,14 @@ import {
 	Calendar,
 	Check,
 	Clock,
-	Lock,
 	MessageSquare,
 	Send,
 	Share2,
 	ShieldAlert,
-	Sparkles,
-	Tag,
-	Users,
 } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { Textarea } from "#/components/ui/textarea";
 import {
@@ -163,64 +158,62 @@ function ActivityBlogPostPage() {
 					<Link
 						to="/clubs/$slug"
 						params={{ slug: post.club.slug }}
-						className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors"
+						className="t-eyebrow text-foreground hover:underline"
 					>
-						<Users className="h-3.5 w-3.5" />
 						{post.club.name}
 					</Link>
 					{post.category && (
-						<Badge variant="outline" className="text-xs font-mono font-medium py-0.5">
-							<Tag className="mr-1 h-3 w-3 text-muted-foreground" />
+						<span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[11px] font-mono text-muted-foreground">
 							{post.category}
-						</Badge>
+						</span>
 					)}
 					{post.isPinned && (
-						<Badge className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-xs">
-							<Sparkles className="mr-1 h-3 w-3" /> Pinned Feature
-						</Badge>
+						<span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[11px] font-mono text-muted-foreground">
+							Notice Board Feature
+						</span>
 					)}
 					{post.visibility !== "PUBLIC" && (
-						<Badge variant="secondary" className="text-xs">
-							<Lock className="mr-1 h-3 w-3" /> {post.visibility}
-						</Badge>
+						<span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[11px] font-mono text-muted-foreground">
+							{post.visibility}
+						</span>
 					)}
 				</div>
 
 				{/* Blog Title */}
-				<h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display tracking-tight text-foreground leading-[1.15]">
+				<h1 className="font-display text-3xl sm:text-4xl lg:text-[42px] font-semibold tracking-tight text-foreground leading-[1.15]">
 					{post.title}
 				</h1>
 
 				{/* Excerpt if present */}
 				{post.excerpt && (
-					<p className="mt-4 text-lg text-muted-foreground font-serif italic border-l-2 border-primary/60 pl-4 py-1 leading-relaxed">
+					<p className="mt-5 text-base sm:text-lg text-muted-foreground font-serif italic border-l-2 border-rule-strong pl-4 py-1 leading-relaxed">
 						{post.excerpt}
 					</p>
 				)}
 
 				{/* Author & Publication Meta Row */}
-				<div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-y border-border py-4">
+				<div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-y border-rule-soft py-4">
 					<div className="flex items-center gap-3">
-						<div className="h-10 w-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-sm text-primary uppercase">
+						<div className="h-9 w-9 rounded-full border border-border bg-secondary flex items-center justify-center font-mono text-xs text-foreground uppercase">
 							{authorName.charAt(0)}
 						</div>
 						<div className="flex flex-col">
-							<span className="text-sm font-semibold text-foreground">
+							<span className="text-[13px] font-medium text-foreground">
 								{authorName}
 							</span>
-							<span className="text-xs text-muted-foreground">
+							<span className="t-meta">
 								{authorSub} · {post.club.name}
 							</span>
 						</div>
 					</div>
 
 					<div className="flex items-center gap-4 text-xs text-muted-foreground">
-						<span className="flex items-center gap-1 font-mono">
+						<span className="flex items-center gap-1.5 t-meta">
 							<Calendar className="h-3.5 w-3.5" />
 							{format(new Date(post.createdAt), "MMMM d, yyyy")}
 						</span>
 						<span>·</span>
-						<span className="flex items-center gap-1 font-mono">
+						<span className="flex items-center gap-1.5 t-meta">
 							<Clock className="h-3.5 w-3.5" />
 							{readMinutes} min read
 						</span>
@@ -246,7 +239,7 @@ function ActivityBlogPostPage() {
 
 				{/* Featured Cover Image */}
 				{post.coverImage && (
-					<div className="mt-8 overflow-hidden rounded-2xl border border-border bg-secondary shadow-sm">
+					<div className="mt-8 overflow-hidden rounded-md border border-border bg-secondary shadow-xs">
 						<img
 							src={post.coverImage}
 							alt={post.title}
@@ -259,60 +252,63 @@ function ActivityBlogPostPage() {
 				<div className="mt-10 article-body">
 					{post.body.includes("<") && post.body.includes(">") ? (
 						<div
-							className="prose prose-neutral max-w-none dark:prose-invert leading-relaxed text-foreground [&_h1]:text-2xl [&_h2]:text-xl [&_h3]:text-lg [&_p]:text-base [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_img]:rounded-xl [&_table]:w-full [&_table]:border-collapse [&_th]:border [&_th]:border-border [&_th]:p-2 [&_td]:border [&_td]:border-border [&_td]:p-2"
+							className="prose prose-neutral max-w-none dark:prose-invert font-body text-[15px] sm:text-[16px] leading-[1.8] text-foreground [&_h1]:font-display [&_h1]:text-2xl [&_h2]:font-display [&_h2]:text-xl [&_h3]:font-display [&_h3]:text-lg [&_p]:leading-[1.8] [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:italic [&_strong]:text-foreground [&_table]:w-full [&_table]:border-collapse [&_th]:border [&_th]:border-border [&_th]:p-2 [&_td]:border [&_td]:border-border [&_td]:p-2"
 							dangerouslySetInnerHTML={{ __html: post.body }}
 						/>
 					) : (
-						<div className="text-base sm:text-lg leading-relaxed text-foreground/90 whitespace-pre-line space-y-4">
+						<div className="font-body text-[15px] sm:text-[16px] leading-[1.8] text-foreground/90 whitespace-pre-line space-y-4">
 							{post.body}
 						</div>
 					)}
 				</div>
 
 				{/* Back to Club & Activity CTA */}
-				<div className="mt-12 rounded-xl border border-border bg-card/60 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+				<div className="mt-12 rounded-card border border-border bg-card p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
 					<div className="space-y-1">
-						<span className="text-xs text-muted-foreground font-mono">
+						<p className="t-eyebrow">
 							POSTED IN {post.club.name.toUpperCase()}
-						</span>
-						<h4 className="text-sm font-semibold text-foreground">
-							Explore more meetings, schedules, and members in this society
+						</p>
+						<h4 className="font-display text-[16px] font-semibold text-foreground">
+							Explore meetings, schedules, and members in this society
 						</h4>
 					</div>
 					<Link
 						to="/clubs/$slug"
 						params={{ slug: post.club.slug }}
-						className="inline-flex items-center gap-1.5 rounded-lg bg-secondary hover:bg-secondary/80 px-4 py-2 text-xs font-semibold text-foreground transition-colors shrink-0"
+						className="inline-flex min-h-10 items-center gap-1.5 rounded-chip border border-border bg-secondary hover:bg-secondary/80 px-4 py-2 text-xs font-semibold text-foreground transition-colors shrink-0"
 					>
-						Visit Club Page <ArrowRight className="h-3.5 w-3.5" />
+						Visit society page <ArrowRight className="h-3.5 w-3.5" />
 					</Link>
 				</div>
 
 				{/* More from this Club */}
 				{moreFromClub.length > 0 && (
-					<div className="mt-16 pt-10 border-t border-border">
+					<div className="mt-16 pt-10 border-t border-rule-soft">
 						<div className="flex items-center justify-between mb-6">
-							<h3 className="text-lg font-bold text-foreground">
-								More from {post.club.name}
-							</h3>
+							<div>
+								<p className="t-eyebrow">SOCIETY ARCHIVE</p>
+								<h3 className="mt-1 font-display text-xl font-semibold text-foreground">
+									More from {post.club.name}
+								</h3>
+							</div>
 							<Link
 								to="/activities"
-								className="text-xs text-primary hover:underline font-medium inline-flex items-center gap-1"
+								className="inline-flex items-center gap-1 text-[13px] text-muted-foreground hover:text-foreground transition-colors"
 							>
-								All activities <ArrowRight className="h-3 w-3" />
+								All dispatches <ArrowRight className="h-3.5 w-3.5" />
 							</Link>
 						</div>
-						<div className="grid gap-4 sm:grid-cols-3">
+						<div className="grid gap-6 sm:grid-cols-3">
 							{moreFromClub.map((item: any) => (
 								<Link
 									key={item.id}
 									to="/activities/$postId"
 									params={{ postId: item.id }}
-									className="group rounded-xl border border-border bg-card p-4 hover:border-primary/50 transition-colors flex flex-col justify-between"
+									className="group flex flex-col justify-between rounded-card border border-border bg-card p-5 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
 								>
 									<div>
 										{item.coverImage && (
-											<div className="h-28 w-full overflow-hidden rounded-lg mb-3 bg-secondary">
+											<div className="h-32 w-full overflow-hidden rounded-md mb-3 border border-border bg-secondary">
 												<img
 													src={item.coverImage}
 													alt=""
@@ -320,20 +316,20 @@ function ActivityBlogPostPage() {
 												/>
 											</div>
 										)}
-										<span className="text-[11px] font-mono text-muted-foreground">
+										<span className="t-meta">
 											{formatDistanceToNow(new Date(item.createdAt), {
 												addSuffix: true,
 											})}
 										</span>
-										<h4 className="mt-1 font-semibold text-sm text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+										<h4 className="mt-1.5 font-display text-[15px] font-semibold text-foreground line-clamp-2 transition-colors group-hover:text-foreground">
 											{item.title}
 										</h4>
-										<p className="mt-1 text-xs text-muted-foreground line-clamp-2">
-											{item.excerpt || item.body?.replace(/<[^>]*>/g, "").slice(0, 80)}
+										<p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground line-clamp-2">
+											{item.excerpt || item.body?.replace(/<[^>]*>/g, "").slice(0, 100)}
 										</p>
 									</div>
-									<span className="mt-3 text-xs font-medium text-primary inline-flex items-center gap-1 pt-2 border-t border-border/60">
-										Read article <ArrowRight className="h-3 w-3" />
+									<span className="mt-4 text-[12px] text-muted-foreground inline-flex items-center gap-1 pt-3 border-t border-rule-soft group-hover:text-foreground transition-colors">
+										Read report <ArrowRight className="h-3 w-3" />
 									</span>
 								</Link>
 							))}
@@ -342,37 +338,37 @@ function ActivityBlogPostPage() {
 				)}
 
 				{/* Comments Section */}
-				<div className="mt-16 pt-10 border-t border-border" id="comments">
+				<div className="mt-16 pt-10 border-t border-rule-soft" id="comments">
 					<div className="flex items-center gap-2 mb-6">
-						<MessageSquare className="h-5 w-5 text-primary" />
-						<h3 className="text-lg font-bold text-foreground">
-							Discussion & Feedback ({post.comments?.length || 0})
+						<MessageSquare className="h-4 w-4 text-muted-foreground" />
+						<h3 className="font-display text-lg font-semibold text-foreground">
+							Reader Notes &amp; Inquiries ({post.comments?.length || 0})
 						</h3>
 					</div>
 
 					{/* Comments List */}
 					{post.comments && post.comments.length > 0 ? (
-						<div className="space-y-4 mb-8">
+						<div className="space-y-3 mb-8">
 							{post.comments.map((comment: any) => (
 								<div
 									key={comment.id}
-									className="rounded-xl border border-border bg-card p-4 flex gap-3"
+									className="rounded-card border border-border bg-card p-4 flex gap-3 text-left shadow-xs"
 								>
-									<div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-xs text-primary shrink-0">
+									<div className="h-8 w-8 rounded-full border border-border bg-secondary flex items-center justify-center font-mono text-xs text-foreground uppercase shrink-0">
 										{(comment.author?.name || "U").charAt(0)}
 									</div>
 									<div className="flex-1 space-y-1">
 										<div className="flex items-center justify-between text-xs">
-											<span className="font-semibold text-foreground">
+											<span className="font-medium text-foreground">
 												{comment.author?.name || "Student"}
 											</span>
-											<span className="text-muted-foreground font-mono text-[11px]">
+											<span className="t-meta">
 												{formatDistanceToNow(new Date(comment.createdAt), {
 													addSuffix: true,
 												})}
 											</span>
 										</div>
-										<p className="text-xs text-foreground/90 whitespace-pre-line leading-relaxed">
+										<p className="text-[13px] text-muted-foreground whitespace-pre-line leading-relaxed">
 											{comment.body}
 										</p>
 									</div>
@@ -380,18 +376,18 @@ function ActivityBlogPostPage() {
 							))}
 						</div>
 					) : (
-						<div className="text-center py-8 rounded-xl border border-dashed border-border mb-8 text-xs text-muted-foreground">
-							No comments yet. Be the first to join the conversation!
+						<div className="text-center py-8 rounded-card border border-dashed border-border mb-8 text-xs text-muted-foreground">
+							No reader notes recorded on this dispatch yet.
 						</div>
 					)}
 
 					{/* Add Comment Form */}
 					{post.allowComments !== false && (
-						<div className="rounded-xl border border-border bg-card/80 p-5">
+						<div className="rounded-card border border-border bg-card p-5 shadow-xs">
 							{userId ? (
 								<form onSubmit={onCommentSubmit} className="space-y-3">
 									<label htmlFor="comment-text" className="text-xs font-medium text-foreground block">
-										Leave a comment or question:
+										Leave a note or inquiry:
 									</label>
 									<Textarea
 										id="comment-text"
@@ -399,7 +395,7 @@ function ActivityBlogPostPage() {
 										onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
 											setCommentBody(e.target.value)
 										}
-										placeholder="Share your thoughts on this activity…"
+										placeholder="Write a message regarding this activity…"
 										rows={3}
 										className="text-xs"
 										required
@@ -409,21 +405,21 @@ function ActivityBlogPostPage() {
 											type="submit"
 											size="sm"
 											disabled={isSubmittingComment || !commentBody.trim()}
-											className="gap-1.5 text-xs font-semibold"
+											className="gap-1.5 text-xs font-semibold rounded-chip"
 										>
 											<Send className="h-3.5 w-3.5" />
-											{isSubmittingComment ? "Posting…" : "Post Comment"}
+											{isSubmittingComment ? "Submitting…" : "Submit Note"}
 										</Button>
 									</div>
 								</form>
 							) : (
 								<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
 									<span className="text-muted-foreground">
-										Sign in to leave a question or comment for the club organizers.
+										Sign in through the school portal to leave a note or inquiry for the society officers.
 									</span>
 									<Link
 										to="/login"
-										className="inline-flex items-center gap-1.5 font-semibold text-primary hover:underline shrink-0"
+										className="inline-flex items-center gap-1.5 font-medium text-foreground hover:underline shrink-0"
 									>
 										Sign in <ArrowRight className="h-3 w-3" />
 									</Link>

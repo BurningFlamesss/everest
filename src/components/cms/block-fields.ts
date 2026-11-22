@@ -728,15 +728,53 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
 		{ key: "discoverEyebrow", label: "Discover eyebrow", kind: "text" },
 		{ key: "discoverTitle", label: "Discover title", kind: "text" },
 		{ key: "discoverDesc", label: "Discover description", kind: "textarea" },
+		{
+			key: "featuredFacilities",
+			label: "Featured Facilities Cards",
+			kind: "tags",
+			placeholder: "e.g. central-library, physics-chemistry-lab, computer-suites",
+			help: "Specific campus facility IDs or titles to feature. If empty, cards from Discover cards block are displayed.",
+		},
 		{ key: "galleryEyebrow", label: "Gallery eyebrow", kind: "text" },
 		{ key: "galleryTitle", label: "Gallery title", kind: "text" },
 		{ key: "galleryDesc", label: "Gallery description", kind: "textarea" },
+		{
+			key: "featuredGallery",
+			label: "Featured Gallery Albums",
+			kind: "tags",
+			placeholder: "e.g. a-sports, a-science, a-cultural",
+			help: "Specific album IDs or event titles to feature on landing page. If empty, first 3 albums are shown.",
+		},
 		{ key: "updatesEyebrow", label: "Updates eyebrow", kind: "text" },
 		{ key: "updatesTitle", label: "Updates title", kind: "text" },
 		{ key: "updatesDesc", label: "Updates description", kind: "textarea" },
 		{ key: "facultyEyebrow", label: "Faculty eyebrow", kind: "text" },
 		{ key: "facultyTitle", label: "Faculty title", kind: "text" },
 		{ key: "facultyDesc", label: "Faculty description", kind: "textarea" },
+		{
+			key: "featuredFaculty",
+			label: "Featured Administrators & Faculty",
+			kind: "tags",
+			placeholder: "e.g. krishna-neupane, umesh-regmi, bhimsen-gautam",
+			help: "Specific administrator IDs or names to feature on landing page. If empty, top leadership is shown.",
+		},
+		{ key: "activitiesEyebrow", label: "Activities eyebrow", kind: "text" },
+		{ key: "activitiesTitle", label: "Activities title", kind: "text" },
+		{ key: "activitiesDesc", label: "Activities description", kind: "textarea" },
+		{
+			key: "featuredClubs",
+			label: "Featured Clubs & Societies",
+			kind: "tags",
+			placeholder: "e.g. science-club, robotics-club, literature-club",
+			help: "Specific club slugs or titles to feature on landing page. If empty, first 3 active clubs are shown.",
+		},
+		{
+			key: "featuredActivities",
+			label: "Featured Society Activities / Dispatches",
+			kind: "tags",
+			placeholder: "e.g. basketball, extempore, arduino",
+			help: "Specific activity post IDs or title search keywords to feature. If empty, latest 3 dispatches are shown.",
+		},
 	],
 	// About page (/about) — the chapter index cards.
 	chapters: [
@@ -890,7 +928,14 @@ export function rows(
 
 export function tags(fields: Record<string, unknown>, key: string): string[] {
 	const value = fields[key];
-	return Array.isArray(value)
-		? value.filter((item): item is string => typeof item === "string")
-		: [];
+	if (Array.isArray(value)) {
+		return value.filter((item): item is string => typeof item === "string");
+	}
+	if (typeof value === "string" && value.trim()) {
+		return value
+			.split(/[,;\n]+/)
+			.map((s) => s.trim())
+			.filter(Boolean);
+	}
+	return [];
 }

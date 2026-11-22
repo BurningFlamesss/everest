@@ -3,7 +3,6 @@ import { formatDistanceToNow } from "date-fns";
 import {
 	ArrowRight,
 	Clock,
-	Compass,
 	Megaphone,
 	Paperclip,
 	Search,
@@ -11,7 +10,6 @@ import {
 } from "lucide-react";
 import type React from "react";
 import { useMemo, useState } from "react";
-import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "#/components/ui/tabs";
@@ -72,25 +70,31 @@ function ActivitiesPage() {
 		<PageFrame dense testId="activities-page">
 			{/* Page Header */}
 			<PageHeader
-				eyebrow="CO-CURRICULAR & STUDENT LIFE"
-				title="Clubs & Activities"
-				lead="Clubs give students at Everest English Secondary School a platform to build leadership, explore passions, organize tournaments, and present research beyond the curriculum."
+				eyebrow="04 / CO-CURRICULAR"
+				title="Student Societies & Activities"
+				lead="Every Friday afternoon and after class hours, pupils participate in student-managed societies across practical sciences, computing, bilingual debate, environmental conservation, and athletics."
 			/>
 
 			{/* Search & Tabs Controls */}
 			<Section className="mb-10">
-				<div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b border-border pb-6">
+				<div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b border-rule-soft pb-6">
 					<Tabs
 						value={activeTab}
 						onValueChange={(val: string) => setActiveTab(val as "clubs" | "posts")}
 						className="w-full sm:w-auto"
 					>
-						<TabsList className="grid grid-cols-2 w-full sm:w-[340px]">
-							<TabsTrigger value="clubs" className="text-xs font-medium">
-								Active Clubs ({clubs.length})
+						<TabsList className="grid grid-cols-2 w-full sm:w-[380px] p-1 bg-secondary/80 border border-border rounded-lg shadow-inner">
+							<TabsTrigger
+								value="clubs"
+								className="text-xs font-semibold rounded-md py-1.5 transition-all data-[state=active]:bg-foreground data-[state=active]:text-background data-[state=active]:shadow-xs data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:text-foreground"
+							>
+								Active Societies ({clubs.length})
 							</TabsTrigger>
-							<TabsTrigger value="posts" className="text-xs font-medium">
-								Club Activity Feed ({recentPosts.length})
+							<TabsTrigger
+								value="posts"
+								className="text-xs font-semibold rounded-md py-1.5 transition-all data-[state=active]:bg-foreground data-[state=active]:text-background data-[state=active]:shadow-xs data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:text-foreground"
+							>
+								Society Dispatches ({recentPosts.length})
 							</TabsTrigger>
 						</TabsList>
 					</Tabs>
@@ -98,7 +102,7 @@ function ActivitiesPage() {
 					<div className="relative w-full sm:w-72">
 						<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 						<Input
-							placeholder="Search clubs & posts..."
+							placeholder="Filter societies or reports..."
 							value={searchQuery}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 								setSearchQuery(e.target.value)
@@ -112,13 +116,13 @@ function ActivitiesPage() {
 				{activeTab === "clubs" && (
 					<div className="mt-8">
 						{filteredClubs.length === 0 ? (
-							<div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
-								<Users className="mx-auto h-10 w-10 text-muted-foreground/40 mb-3" />
-								<h3 className="text-base font-semibold text-foreground">
-									No clubs match &ldquo;{searchQuery}&rdquo;
+							<div className="rounded-card border border-dashed border-border bg-card p-12 text-center">
+								<Users className="mx-auto h-8 w-8 text-muted-foreground/40 mb-3" />
+								<h3 className="font-display text-base font-semibold text-foreground">
+									No societies match &ldquo;{searchQuery}&rdquo;
 								</h3>
 								<p className="mt-1 text-xs text-muted-foreground">
-									Try searching with a broader keyword or view all clubs above.
+									Check your search terms or view the complete societies directory.
 								</p>
 								<Button
 									variant="outline"
@@ -138,74 +142,71 @@ function ActivitiesPage() {
 									return (
 										<article
 											key={club.id}
-											className="group flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-xs transition-colors duration-fast hover:border-foreground/30 hover:bg-secondary/20"
+											className="group flex h-full flex-col justify-between rounded-card border border-border bg-card p-6 shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 text-left"
 										>
 											<div>
 												{club.coverImage ? (
-													<div className="mb-4 h-44 w-full overflow-hidden rounded-xl border border-border bg-secondary">
+													<div className="mb-6 h-[200px] w-full overflow-hidden rounded-md border border-border bg-secondary">
 														<img
 															src={club.coverImage}
 															alt={club.name}
-															className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+															className="h-full w-full object-cover transition-transform duration-[400ms] group-hover:scale-105"
 														/>
 													</div>
 												) : (
-													<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-														<Users className="h-6 w-6" />
+													<div className="mb-6 flex h-12 w-12 items-center justify-center rounded-md border border-border bg-secondary text-foreground">
+														<Users className="h-5 w-5" aria-hidden="true" />
 													</div>
 												)}
 
 												<div className="flex items-center justify-between gap-2">
-													{club.meetingSchedule ? (
-														<span className="inline-flex items-center gap-1 text-[11px] font-mono text-muted-foreground">
-															<Clock className="h-3 w-3" />
-															{club.meetingSchedule}
-														</span>
-													) : (
-														<span className="text-[11px] font-mono text-muted-foreground">
-															Active Society
-														</span>
-													)}
-													<Badge
-														variant="outline"
-														className="text-[10px] font-mono px-2 py-0"
-													>
+													<span className="t-eyebrow text-muted-foreground">
+														Student Society
+													</span>
+													<span className="inline-flex items-center gap-1 rounded-full border border-border/80 bg-secondary/60 px-2.5 py-0.5 text-[11px] font-mono text-muted-foreground shrink-0">
 														{memberCount} {memberCount === 1 ? "member" : "members"}
-													</Badge>
+													</span>
 												</div>
 
-												<h3 className="mt-2.5 text-lg font-bold text-foreground">
+												<h3 className="mt-2.5 font-display text-[19px] font-semibold leading-snug text-foreground">
 													{club.name}
 												</h3>
 
+												{club.meetingSchedule ? (
+													<p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+														<Clock className="h-3.5 w-3.5 shrink-0 text-primary/70" />
+														<span className="truncate">{club.meetingSchedule}</span>
+													</p>
+												) : null}
+
 												{club.description && (
-													<p className="mt-2 text-xs leading-relaxed text-muted-foreground line-clamp-3">
+													<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground line-clamp-3">
 														{club.description}
 													</p>
 												)}
 
 												{/* Attachments if any */}
 												{club.attachments?.length > 0 && (
-													<div className="mt-4 pt-3 border-t border-border/60">
-														<span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
+													<div className="mt-4 pt-3 border-t border-rule-soft">
+														<span className="text-[12px] font-mono text-muted-foreground flex items-center gap-1.5">
 															<Paperclip className="h-3 w-3" />
-															{club.attachments.length} downloadable resource{club.attachments.length === 1 ? "" : "s"}
+															{club.attachments.length} document{club.attachments.length === 1 ? "" : "s"}
 														</span>
 													</div>
 												)}
 											</div>
 
-											<div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
-												<span className="text-xs text-muted-foreground font-mono">
-													{postsCount} updates published
+											<div className="mt-6 pt-4 border-t border-rule-soft flex items-center justify-between">
+												<span className="t-meta">
+													{postsCount} {postsCount === 1 ? "report" : "reports"}
 												</span>
 												<Link
 													to="/clubs/$slug"
 													params={{ slug: club.slug }}
-													className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+													className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground"
 												>
-													Explore Club
-													<ArrowRight className="h-3 w-3" />
+													View society
+													<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
 												</Link>
 											</div>
 										</article>
@@ -220,102 +221,107 @@ function ActivitiesPage() {
 				{activeTab === "posts" && (
 					<div className="mt-8">
 						{filteredPosts.length === 0 ? (
-							<div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
-								<Megaphone className="mx-auto h-10 w-10 text-muted-foreground/40 mb-3" />
-								<h3 className="text-base font-semibold text-foreground">
-									No club activities match &ldquo;{searchQuery}&rdquo;
+							<div className="rounded-card border border-dashed border-border bg-card p-12 text-center">
+								<Megaphone className="mx-auto h-8 w-8 text-muted-foreground/40 mb-3" />
+								<h3 className="font-display text-base font-semibold text-foreground">
+									No society reports match &ldquo;{searchQuery}&rdquo;
 								</h3>
 								<p className="mt-1 text-xs text-muted-foreground">
-									Club officers regularly publish announcements, tournament recaps, and exhibitions here.
+									Secretaries and faculty advisors post term exhibition guidelines, tournament tallies, and meeting minutes here.
 								</p>
 							</div>
 						) : (
-							<div className="grid gap-5 md:grid-cols-2">
-								{filteredPosts.map((post: any) => (
-									<article
-										key={post.id}
-										className="rounded-2xl border border-border bg-card p-6 flex flex-col justify-between shadow-xs hover:border-foreground/30 transition-colors"
-									>
-										<div>
-											<div className="flex items-center justify-between gap-3 mb-3">
+							<div className="grid gap-6 md:grid-cols-2">
+								{filteredPosts.map((post: any) => {
+									const plainText = (post.excerpt || post.body || "")
+										.replace(/<[^>]*>/g, " ")
+										.replace(/\s+/g, " ")
+										.trim();
+									return (
+										<article
+											key={post.id}
+											className="group rounded-card border border-border bg-card p-6 flex flex-col justify-between shadow-xs hover:border-rule-strong hover:bg-secondary/40 transition-colors duration-fast text-left"
+										>
+											<div>
+												<div className="flex items-center justify-between gap-3 border-b border-rule-soft pb-3 mb-3">
+													<Link
+														to="/clubs/$slug"
+														params={{ slug: post.club.slug }}
+														className="t-eyebrow text-foreground hover:underline"
+													>
+														{post.club.name}
+													</Link>
+													<span className="t-meta">
+														{formatDistanceToNow(new Date(post.createdAt), {
+															addSuffix: true,
+														})}
+													</span>
+												</div>
+
 												<Link
-													to="/clubs/$slug"
-													params={{ slug: post.club.slug }}
-													className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary hover:underline"
+													to="/activities/$postId"
+													params={{ postId: post.id }}
+													className="block"
 												>
-													<Compass className="h-3 w-3" />
-													{post.club.name}
+													<h3 className="font-display text-[18px] font-semibold leading-snug text-foreground transition-colors group-hover:text-foreground">
+														{post.title}
+													</h3>
 												</Link>
-												<span className="text-xs text-muted-foreground font-mono">
-													{formatDistanceToNow(new Date(post.createdAt), {
-														addSuffix: true,
-													})}
-												</span>
+
+												<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground line-clamp-3">
+													{plainText}
+												</p>
 											</div>
 
-											<Link
-												to="/activities/$postId"
-												params={{ postId: post.id }}
-												className="hover:underline block group"
-											>
-												<h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors">
-													{post.title}
-												</h3>
-											</Link>
-
-											<p className="mt-2 text-xs leading-relaxed text-muted-foreground line-clamp-4 whitespace-pre-line">
-												{post.excerpt || post.body?.replace(/<[^>]*>/g, "")}
-											</p>
-										</div>
-
-										<div className="mt-5 pt-3.5 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-											<span>
-												By{" "}
-												<strong className="text-foreground font-medium">
-													{post.authorStudent?.user?.name || post.author?.name || "Club Officer"}
-												</strong>
-											</span>
-											<Link
-												to="/activities/$postId"
-												params={{ postId: post.id }}
-												className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
-											>
-												Read article
-												<ArrowRight className="h-3 w-3" />
-											</Link>
-										</div>
-									</article>
-								))}
+											<div className="mt-6 pt-4 border-t border-rule-soft flex items-center justify-between text-[12px] text-muted-foreground">
+												<span className="font-mono text-[11px]">
+													By{" "}
+													<strong className="text-foreground font-medium">
+														{post.authorStudent?.user?.name || post.author?.name || "Society Secretary"}
+													</strong>
+												</span>
+												<Link
+													to="/activities/$postId"
+													params={{ postId: post.id }}
+													className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground"
+												>
+													Read report
+													<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+												</Link>
+											</div>
+										</article>
+									);
+								})}
 							</div>
 						)}
 					</div>
 				)}
 
 				{/* How to Participate Callout */}
-				<div className="mt-16 rounded-2xl border border-border bg-card/60 p-6 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+				<div className="mt-16 rounded-card border border-border bg-card p-6 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xs">
 					<div className="max-w-xl space-y-2">
-						<span className="text-xs font-mono font-semibold uppercase tracking-wider text-primary">
-							STUDENT PARTICIPATION
-						</span>
-						<h3 className="text-xl font-bold text-foreground">
-							Interested in joining or launching a club?
+						<p className="t-eyebrow">
+							SOCIETY PARTICIPATION
+						</p>
+						<h3 className="font-display text-2xl font-semibold text-foreground">
+							Joining a Society at Everest
 						</h3>
-						<p className="text-xs text-muted-foreground leading-relaxed">
-							Students currently enrolled in Secondary and Senior Secondary grades can request membership directly through the student portal, or propose new co-curricular initiatives with faculty advisor sponsorship.
+						<p className="text-[13px] text-muted-foreground leading-relaxed">
+							Pupils in Grades 6 through 12 register for one academic society and one athletics club at the beginning of each academic session. Society inquiries and room allocations are maintained by the co-curricular desk in Block A.
 						</p>
 					</div>
 					<div className="flex items-center gap-3 shrink-0">
 						<Link
 							to="/login"
-							className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90"
+							className="inline-flex min-h-11 items-center gap-2 rounded-chip bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90"
 						>
 							Student Portal Sign In
 						</Link>
 						<Link
 							to="/contact"
-							className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-xs font-medium text-foreground hover:bg-secondary"
+							className="inline-flex min-h-11 items-center gap-2 rounded-chip border border-border bg-background px-4 py-2 text-xs font-medium text-foreground hover:bg-secondary"
 						>
-							Contact Activities Office
+							Administrative Office
 						</Link>
 					</div>
 				</div>

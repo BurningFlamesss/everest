@@ -13,7 +13,7 @@ import {
 	Users,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { num, rows, str } from "#/components/cms/block-fields";
+import { num, rows, str, tags } from "#/components/cms/block-fields";
 import { CmsSectionBox } from "#/components/cms/CmsSectionBox";
 import { NoticeDialog } from "#/components/common/NoticeDialog";
 import {
@@ -29,7 +29,8 @@ import { useHeroAutoplay } from "#/hooks/useHeroAutoplay.ts";
 import type { CmsPageKey } from "#/lib/cms-sections";
 import { getSectionFields, sectionDefaults } from "#/lib/cms-sections";
 import { FACEBOOK_PAGE_URL } from "#/lib/facebook-feed.ts";
-import { leadership } from "#/lib/faculty";
+import { facilities as campusFacilities } from "#/lib/facilities";
+import { leadership as defaultLeadership, people as staticPeople } from "#/lib/faculty";
 import type { OverlaySegment } from "#/lib/hero-autoplay.ts";
 import {
 	overlayBodyStyle,
@@ -40,6 +41,7 @@ import {
 import type { WebsitePageContent } from "#/lib/website-content-loader";
 import { getPublicClubActivitiesFn } from "#/packages/clubs/server.ts";
 import { getFacebookPostsServer } from "#/packages/content/server/facebook.ts";
+import { useFacultyDirectory } from "#/packages/school/hook.tsx";
 import { SectionHeading } from "#/templates/modern/components/chrome/PageFrame";
 import { MonogramAvatar } from "#/templates/modern/components/shared/MonogramAvatar";
 import { ResultsChart } from "#/templates/modern/components/utilities/ResultsChart";
@@ -98,6 +100,134 @@ export default function LandingPage({
 	const clubsList = dynamicClubs?.clubs ?? clubData?.clubs ?? [];
 	const activitiesList =
 		dynamicClubs?.recentPosts ?? clubData?.recentPosts ?? [];
+
+	// Faculty directory data (seeded/database fallback)
+	const dbPeople = useFacultyDirectory();
+	const allFaculty = dbPeople && dbPeople.length > 0 ? dbPeople : staticPeople;
+
+	// Curation selections from CMS landing_section_headings
+	const curatedFaculty = useMemo(() => {
+		const tagsList = tags(headings, "featuredFaculty");
+		if (tagsList.length === 0) {
+			return defaultLeadership.slice(0, 3);
+		}
+		const matched: typeof allFaculty = [];
+		for (const tag of tagsList) {
+			const clean = tag.toLowerCase().trim();
+			const found = allFaculty.find(
+				(p) =>
+					p.id.toLowerCase() === clean ||
+					p.name.toLowerCase().includes(clean) ||
+					(p.role && p.role.toLowerCase().includes(clean)),
+			);
+			if (found && !matched.some((m) => m.id === found.id)) {
+				matched.push(found);
+			}
+		}
+		return matched.length > 0 ? matched : defaultLeadership.slice(0, 3);
+	}, [allFaculty, headings]);
+
+	const curatedFacilityCards = useMemo(() => {
+		const tagsList = tags(headings, "featuredFacilities");
+		const rawCards = rows(discover, "cards");
+		if (tagsList.length === 0) {
+			return rawCards;
+		}
+		const matchedCards: typeof rawCards = [];
+		for (const tag of tagsList) {
+			const clean = tag.toLowerCase().trim();
+			// Match from campus facilities
+			const foundFacility = campusFacilities.find(
+				(f) =>
+					f.id.toLowerCase() === clean ||
+					f.name.toLowerCase().includes(clean),
+			);
+			if (foundFacility) {
+				matchedCards.push({
+					eyebrow: foundFacility.category,
+					title: foundFacility.name,
+					body: foundFacility.blurb || foundFacility.description,
+					href: "/facilities",
+					image: foundFacility.image,
+					ctaLabel: "Tour facility",
+				});
+				continue;
+			}
+			// Match from existing discover cards
+			const foundCard = rawCards.find(
+				(c) =>
+					str(c, "title").toLowerCase().includes(clean) ||
+					str(c, "eyebrow").toLowerCase().includes(clean) ||
+					str(c, "href").toLowerCase().includes(clean),
+			);
+			if (foundCard && !matchedCards.includes(foundCard)) {
+				matchedCards.push(foundCard);
+			}
+		}
+		return matchedCards.length > 0 ? matchedCards : rawCards;
+	}, [headings, discover]);
+
+	const curatedAlbums = useMemo(() => {
+		const tagsList = tags(headings, "featuredGallery");
+		if (tagsList.length === 0) {
+			return albums.slice(0, 3);
+		}
+		const matched: typeof albums = [];
+		for (const tag of tagsList) {
+			const clean = tag.toLowerCase().trim();
+			const found = albums.find(
+				(a) =>
+					a.id.toLowerCase() === clean ||
+					a.event.toLowerCase().includes(clean) ||
+					a.category.toLowerCase().includes(clean),
+			);
+			if (found && !matched.some((m) => m.id === found.id)) {
+				matched.push(found);
+			}
+		}
+		return matched.length > 0 ? matched : albums.slice(0, 3);
+	}, [headings]);
+
+	const curatedClubs = useMemo(() => {
+		const tagsList = tags(headings, "featuredClubs");
+		if (tagsList.length === 0) {
+			return clubsList.slice(0, 3);
+		}
+		const matched: typeof clubsList = [];
+		for (const tag of tagsList) {
+			const clean = tag.toLowerCase().trim();
+			const found = clubsList.find(
+				(c: any) =>
+					c.slug.toLowerCase() === clean ||
+					c.name.toLowerCase().includes(clean),
+			);
+			if (found && !matched.some((m: any) => m.id === found.id)) {
+				matched.push(found);
+			}
+		}
+		return matched.length > 0 ? matched : clubsList.slice(0, 3);
+	}, [clubsList, headings]);
+
+	const curatedActivities = useMemo(() => {
+		const tagsList = tags(headings, "featuredActivities");
+		if (tagsList.length === 0) {
+			return activitiesList.slice(0, 3);
+		}
+		const matched: typeof activitiesList = [];
+		for (const tag of tagsList) {
+			const clean = tag.toLowerCase().trim();
+			const found = activitiesList.find(
+				(p: any) =>
+					p.id.toLowerCase() === clean ||
+					p.title.toLowerCase().includes(clean) ||
+					(p.club?.name && p.club.name.toLowerCase().includes(clean)),
+			);
+			if (found && !matched.some((m: any) => m.id === found.id)) {
+				matched.push(found);
+			}
+		}
+		return matched.length > 0 ? matched : activitiesList.slice(0, 3);
+	}, [activitiesList, headings]);
 
 	const onSelectSection = (sectionType: BlockType) => {
 		if (typeof window !== "undefined" && window.parent) {
@@ -219,7 +349,7 @@ export default function LandingPage({
 								testId="cms-section-hit-discover_cards"
 							>
 								<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-									{rows(discover, "cards").map((card, i) => {
+									{curatedFacilityCards.map((card, i) => {
 										const href = str(card, "href", "/");
 										const Icon = DISCOVER_ICONS[href] ?? Info;
 										const image = str(card, "image", "");
@@ -316,42 +446,49 @@ export default function LandingPage({
 
 						{/* Gallery */}
 						<div className="mb-32">
-							<SectionHeading
-								eyebrow={str(headings, "galleryEyebrow", "Campus Life")}
-								title={str(headings, "galleryTitle", "Gallery Highlights")}
-								description={str(
-									headings,
-									"galleryDesc",
-									"Moments captured around the school grounds and during major events.",
-								)}
-							/>
-							<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-								{albums.slice(0, 3).map((album) => (
-									<Link
-										key={album.id}
-										to="/gallery"
-										className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
-									>
-										<div className="mb-6 h-[200px] w-full overflow-hidden rounded-md border border-border bg-secondary">
-											<img
-												src={album.photos[0].src}
-												alt={album.photos[0].alt}
-												className="h-full w-full object-cover transition-transform duration-[400ms] group-hover:scale-105"
-											/>
-										</div>
-										<p className="t-eyebrow mt-auto">
-											{album.year} · {album.category}
-										</p>
-										<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground line-clamp-2">
-											{album.event}
-										</h3>
-										<span className="mt-6 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
-											View all {album.photos.length} photos
-											<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-										</span>
-									</Link>
-								))}
-							</div>
+							<CmsSectionBox
+								preview={preview}
+								sectionType="landing_section_headings"
+								onSelect={onSelectSection}
+								testId="cms-section-hit-gallery"
+							>
+								<SectionHeading
+									eyebrow={str(headings, "galleryEyebrow", "Campus Life")}
+									title={str(headings, "galleryTitle", "Gallery Highlights")}
+									description={str(
+										headings,
+										"galleryDesc",
+										"Moments captured around the school grounds and during major events.",
+									)}
+								/>
+								<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+									{curatedAlbums.map((album) => (
+										<Link
+											key={album.id}
+											to="/gallery"
+											className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
+										>
+											<div className="mb-6 h-[200px] w-full overflow-hidden rounded-md border border-border bg-secondary">
+												<img
+													src={album.photos[0].src}
+													alt={album.photos[0].alt}
+													className="h-full w-full object-cover transition-transform duration-[400ms] group-hover:scale-105"
+												/>
+											</div>
+											<p className="t-eyebrow mt-auto">
+												{album.year} · {album.category}
+											</p>
+											<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground line-clamp-2">
+												{album.event}
+											</h3>
+											<span className="mt-6 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
+												View all {album.photos.length} photos
+												<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+											</span>
+										</Link>
+									))}
+								</div>
+							</CmsSectionBox>
 						</div>
 
 						{/* Latest Updates */}
@@ -382,190 +519,210 @@ export default function LandingPage({
 
 						{/* Faculty */}
 						<div className="mb-32">
-							<SectionHeading
-								eyebrow={str(headings, "facultyEyebrow", "Leadership")}
-								title={str(headings, "facultyTitle", "Our Faculty")}
-								description={str(
-									headings,
-									"facultyDesc",
-									"The educators leading our academic departments and steering the school's vision.",
-								)}
-							/>
-							<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-								{leadership.slice(0, 3).map((person) => (
-									<Link
-										key={person.id}
-										to="/faculty"
-										className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
-									>
-										<MonogramAvatar
-											name={person.name}
-											department={person.department}
-											src={person.photo}
-											size="lg"
-										/>
-										<p className="t-eyebrow mt-6">{person.role}</p>
-										<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
-											{person.name}
-										</h3>
-										{person.qualification ? (
-											<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
-												{person.qualification}
-											</p>
-										) : null}
-										<div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-rule-soft pt-4">
-											<span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[11.5px] leading-normal text-muted-foreground">
-												{person.department}
-											</span>
-											{person.extension ? (
-												<span className="t-meta">Ext. {person.extension}</span>
-											) : null}
-										</div>
-										<span className="mt-4 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
-											View directory
-											<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-										</span>
-									</Link>
-								))}
-							</div>
-						</div>
-
-						{/* Activities & Clubs Section */}
-						<div data-testid="landing-activities-section">
-							<SectionHeading
-								eyebrow={str(
-									headings,
-									"activitiesEyebrow",
-									"Co-Curricular & Student Life",
-								)}
-								title={str(
-									headings,
-									"activitiesTitle",
-									"Student Clubs & Activities",
-								)}
-								description={str(
-									headings,
-									"activitiesDesc",
-									"From science exhibitions and robotics sprints to bilingual debates and athletics conditioning — explore student-led societies shaping leadership beyond the classroom.",
-								)}
-								aside={
-									<Link
-										to="/activities"
-										data-testid="landing-view-all-activities"
-										className="inline-flex min-h-11 items-center gap-1.5 rounded-chip border border-border bg-card px-3.5 py-2 text-[12px] font-medium text-foreground transition-colors duration-fast hover:border-rule-strong hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
-									>
-										Explore all clubs & activities
-										<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-									</Link>
-								}
-							/>
-
-							{/* Clubs Showcase Grid */}
-							<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-								{clubsList.slice(0, 3).map((club: any) => {
-									const memberCount = club._count?.members ?? 0;
-									return (
+							<CmsSectionBox
+								preview={preview}
+								sectionType="landing_section_headings"
+								onSelect={onSelectSection}
+								testId="cms-section-hit-faculty"
+							>
+								<SectionHeading
+									eyebrow={str(headings, "facultyEyebrow", "Leadership")}
+									title={str(headings, "facultyTitle", "Our Faculty")}
+									description={str(
+										headings,
+										"facultyDesc",
+										"The educators leading our academic departments and steering the school's vision.",
+									)}
+								/>
+								<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+									{curatedFaculty.map((person) => (
 										<Link
-											key={club.id}
-											to="/clubs/$slug"
-											params={{ slug: club.slug }}
+											key={person.id}
+											to="/faculty"
 											className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
 										>
-											{club.coverImage ? (
-												<div className="mb-4 h-[180px] w-full overflow-hidden rounded-md border border-border bg-secondary">
-													<img
-														src={club.coverImage}
-														alt={club.name}
-														className="h-full w-full object-cover transition-transform duration-[400ms] group-hover:scale-105"
-													/>
-												</div>
-											) : (
-												<div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
-													<Users className="h-6 w-6" />
-												</div>
-											)}
-											<div className="flex items-center justify-between gap-2">
-												<span className="t-eyebrow">
-													{club.meetingSchedule || "Weekly Meetings"}
-												</span>
-												<span className="rounded-full border border-border bg-background px-2 py-0.5 text-[10.5px] font-medium text-muted-foreground">
-													{memberCount} {memberCount === 1 ? "member" : "members"}
-												</span>
-											</div>
-											<h3 className="mt-2.5 font-display text-[19px] font-semibold leading-snug text-foreground">
-												{club.name}
+											<MonogramAvatar
+												name={person.name}
+												department={person.department}
+												src={person.photo}
+												size="lg"
+											/>
+											<p className="t-eyebrow mt-6">{person.role}</p>
+											<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
+												{person.name}
 											</h3>
-											{club.description && (
-												<p className="mt-2 text-[13px] leading-relaxed text-muted-foreground line-clamp-2">
-													{club.description}
+											{person.qualification ? (
+												<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
+													{person.qualification}
 												</p>
-											)}
-											<span className="mt-auto pt-6 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
-												View club & feed
+											) : null}
+											<div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-rule-soft pt-4">
+												<span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[11.5px] leading-normal text-muted-foreground">
+													{person.department}
+												</span>
+												{person.extension ? (
+													<span className="t-meta">Ext. {person.extension}</span>
+												) : null}
+											</div>
+											<span className="mt-4 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
+												View directory
 												<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
 											</span>
 										</Link>
-									);
-								})}
-							</div>
+									))}
+								</div>
+							</CmsSectionBox>
+						</div>
 
-							{/* Public Activity Feed / Recent Club Posts */}
-							{activitiesList.length > 0 && (
-								<div className="mt-10 rounded-2xl border border-border bg-card/60 p-6 sm:p-8">
-									<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-4">
-										<div>
-											<span className="t-eyebrow text-primary">LATEST UPDATES</span>
-											<h4 className="text-base font-semibold text-foreground mt-0.5">
-												Recent Club Activity & Announcements
-											</h4>
-										</div>
+						{/* Activities & Clubs Section */}
+						<div className="mb-32" data-testid="landing-activities-section">
+							<CmsSectionBox
+								preview={preview}
+								sectionType="landing_section_headings"
+								onSelect={onSelectSection}
+								testId="cms-section-hit-activities"
+							>
+								<SectionHeading
+									eyebrow={str(
+										headings,
+										"activitiesEyebrow",
+										"Student Life",
+									)}
+									title={str(
+										headings,
+										"activitiesTitle",
+										"Clubs & Societies",
+									)}
+									description={str(
+										headings,
+										"activitiesDesc",
+										"Every Friday afternoon, pupils move to society rooms for laboratory demonstrations, bilingual debates, computing workshops, and inter-house athletics.",
+									)}
+									aside={
 										<Link
 											to="/activities"
-											className="text-xs text-primary hover:underline font-medium inline-flex items-center gap-1"
+											data-testid="landing-view-all-activities"
+											className="inline-flex min-h-11 items-center gap-1.5 rounded-chip border border-border bg-card px-3.5 py-2 text-[12px] font-medium text-foreground transition-colors duration-fast hover:border-rule-strong hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
 										>
-											View all activities <ArrowRight className="h-3 w-3" />
+											All clubs & activities
+											<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
 										</Link>
-									</div>
+									}
+								/>
 
-									<div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-										{activitiesList.slice(0, 3).map((post: any) => (
+								{/* Clubs Showcase Grid */}
+								<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+									{curatedClubs.map((club: any) => {
+										const memberCount = club._count?.members ?? 0;
+										return (
 											<Link
-												key={post.id}
-												to="/activities/$postId"
-												params={{ postId: post.id }}
-												className="rounded-xl border border-border/80 bg-background/80 p-4 hover:border-primary/50 transition-colors flex flex-col justify-between"
+												key={club.id}
+												to="/clubs/$slug"
+												params={{ slug: club.slug }}
+												className="group flex h-full w-full flex-col rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
 											>
-												<div>
-													<div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground mb-1.5">
-														<span className="font-medium text-primary line-clamp-1">
-															{post.club.name}
-														</span>
-														<span>
-															{formatDistanceToNow(new Date(post.createdAt), {
-																addSuffix: true,
-															})}
-														</span>
+												{club.coverImage ? (
+													<div className="mb-6 h-[200px] w-full overflow-hidden rounded-md border border-border bg-secondary">
+														<img
+															src={club.coverImage}
+															alt={club.name}
+															className="h-full w-full object-cover transition-transform duration-[400ms] group-hover:scale-105"
+														/>
 													</div>
-													<h5 className="font-semibold text-sm text-foreground line-clamp-2">
-														{post.title}
-													</h5>
-													<p className="mt-1 text-xs text-muted-foreground line-clamp-2">
-														{post.body}
+												) : (
+													<div className="mb-6 flex h-12 w-12 items-center justify-center rounded-md border border-border bg-secondary text-foreground">
+														<Users className="h-5 w-5" aria-hidden="true" />
+													</div>
+												)}
+												<p className="t-eyebrow">
+													{club.meetingSchedule || "Friday Co-Curricular"}
+												</p>
+												<h3 className="mt-2 font-display text-[19px] font-semibold leading-snug text-foreground">
+													{club.name}
+												</h3>
+												{club.description && (
+													<p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground line-clamp-2">
+														{club.description}
 													</p>
-												</div>
-												<div className="mt-3 pt-2.5 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground">
-													<span>
-														By {post.authorStudent?.user?.name || post.author?.name || "Club Officer"}
+												)}
+												<div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-rule-soft pt-4">
+													<span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[11.5px] leading-normal text-muted-foreground font-mono">
+														{memberCount} {memberCount === 1 ? "member" : "members"}
 													</span>
-													<span className="text-primary font-medium flex items-center gap-1">
-														Read <ArrowRight className="h-2.5 w-2.5" />
+													<span className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
+														View society
+														<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
 													</span>
 												</div>
 											</Link>
-										))}
-									</div>
+										);
+									})}
 								</div>
-							)}
+
+								{/* Recent Activity Dispatches / Club Reports */}
+								{curatedActivities.length > 0 && (
+									<div className="mt-14 border-t border-rule-soft pt-10">
+										<div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-6">
+											<div>
+												<p className="t-eyebrow">DISPATCHES &amp; REPORTS</p>
+												<h4 className="mt-1 font-display text-[21px] font-semibold text-foreground">
+													Recent Activity From the Societies
+												</h4>
+											</div>
+											<Link
+												to="/activities"
+												className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-foreground transition-colors"
+											>
+												All dispatches <ArrowRight className="h-3.5 w-3.5" />
+											</Link>
+										</div>
+
+										<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+											{curatedActivities.map((post: any) => {
+												const plainText = (post.excerpt || post.body || "")
+													.replace(/<[^>]*>/g, " ")
+													.replace(/\s+/g, " ")
+													.trim();
+												return (
+													<Link
+														key={post.id}
+														to="/activities/$postId"
+														params={{ postId: post.id }}
+														className="group flex flex-col justify-between rounded-card border border-border bg-card p-6 text-left shadow-xs transition-colors duration-fast hover:border-rule-strong hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring"
+													>
+														<div>
+															<div className="flex items-center justify-between gap-2 border-b border-rule-soft pb-3">
+																<span className="t-eyebrow text-foreground">
+																	{post.club?.name}
+																</span>
+																<span className="t-meta">
+																	{formatDistanceToNow(new Date(post.createdAt), {
+																		addSuffix: true,
+																	})}
+																</span>
+															</div>
+															<h4 className="mt-3 font-display text-[17px] font-semibold leading-snug text-foreground transition-colors group-hover:text-foreground">
+																{post.title}
+															</h4>
+															<p className="mt-2 text-[13px] leading-relaxed text-muted-foreground line-clamp-3">
+																{plainText}
+															</p>
+														</div>
+														<div className="mt-6 flex items-center justify-between border-t border-rule-soft pt-4 text-[12px] text-muted-foreground">
+															<span className="font-mono text-[11px]">
+																By {post.authorStudent?.user?.name || post.author?.name || "Society Secretary"}
+															</span>
+															<span className="inline-flex items-center gap-1 text-[13px] text-muted-foreground transition-colors duration-fast group-hover:text-foreground">
+																Read report <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+															</span>
+														</div>
+													</Link>
+												);
+											})}
+										</div>
+									</div>
+								)}
+							</CmsSectionBox>
 						</div>
 					</div>
 				</div>

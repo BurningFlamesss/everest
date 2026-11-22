@@ -589,12 +589,17 @@ function TagsEditor({
 	const [input, setInput] = useState("");
 
 	const add = () => {
-		const value = input.trim();
-		if (!value || values.includes(value)) {
-			setInput("");
-			return;
+		const raw = input.trim();
+		if (!raw) return;
+		const parts = raw
+			.split(/[,;\n]+/)
+			.map((s) => s.trim())
+			.filter(Boolean);
+		const next = [...values];
+		for (const p of parts) {
+			if (!next.includes(p)) next.push(p);
 		}
-		onChange([...values, value]);
+		onChange(next);
 		setInput("");
 	};
 

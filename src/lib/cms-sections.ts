@@ -126,7 +126,7 @@ export const SECTION_LABELS: Partial<Record<BlockType, string>> = {
 	discover_cards: "Discover cards",
 	chapters: "Chapters",
 	department_list: "Departments",
-	landing_section_headings: "Section headings",
+	landing_section_headings: "Headings & Landing Curation",
 	stats: "Results chart",
 	featured_events: "Featured events",
 	featured_notices: "Featured notices",
@@ -428,7 +428,7 @@ export const SECTION_DEFAULTS: Partial<
 		buttonLabel: "Contact the office",
 		buttonHref: "/contact",
 	},
-	// Landing page editorial section headings (the four SectionHeading strips).
+	// Landing page editorial section headings & featured item curation.
 	landing_section_headings: {
 		resultsEyebrow: "Academic Excellence",
 		resultsTitle: "Board Results",
@@ -437,10 +437,12 @@ export const SECTION_DEFAULTS: Partial<
 		discoverTitle: "Discover the school",
 		discoverDesc:
 			"Learn more about our academic programs, state-of-the-art facilities, and the institution's history.",
+		featuredFacilities: [],
 		galleryEyebrow: "Campus Life",
 		galleryTitle: "Gallery Highlights",
 		galleryDesc:
 			"Moments captured around the school grounds and during major events.",
+		featuredGallery: [],
 		updatesEyebrow: "Stay Updated",
 		updatesTitle: "Latest Announcements",
 		updatesDesc: "News and events from our community timeline.",
@@ -448,6 +450,13 @@ export const SECTION_DEFAULTS: Partial<
 		facultyTitle: "Our Faculty",
 		facultyDesc:
 			"The educators leading our academic departments and steering the school's vision.",
+		featuredFaculty: [],
+		activitiesEyebrow: "Student Life",
+		activitiesTitle: "Clubs & Societies",
+		activitiesDesc:
+			"Every Friday afternoon, pupils move to society rooms for laboratory demonstrations, bilingual debates, computing workshops, and inter-house athletics.",
+		featuredClubs: [],
+		featuredActivities: [],
 	},
 	// Contact page (/contact): mirrors the route copy.
 	social_links: {

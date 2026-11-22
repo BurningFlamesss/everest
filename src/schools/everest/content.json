@@ -28,6 +28,11 @@
         "label": "Faculty & Staff",
         "href": "/faculty"
       },
+      "clubs": {
+        "id": "clubs",
+        "label": "Clubs",
+        "href": "/clubs"
+      },
       "notices": {
         "id": "notices",
         "label": "Notice Board",
