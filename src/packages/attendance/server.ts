@@ -1,6 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { listCourses } from "#/packages/academics/courses-service.ts";
+import {
+	canTeacherAccessCourse,
+	getTeacherCourseAccess,
+} from "#/packages/academics/teacher-access.ts";
 import { auth } from "#/packages/auth/auth.ts";
 import {
 	AuthorizationError,
@@ -54,11 +58,22 @@ function failure(error: unknown) {
 
 export const getAttendanceDataFn = createServerFn().handler(async () => {
 	try {
-		await requireManager();
+		const { user } = await requireManager();
+		const access = await getTeacherCourseAccess(user.id, "MANAGE_ATTENDANCE");
 
 		const [courses, sessions] = await Promise.all([
-			listCourses({ includeInactive: false }),
-			listAttendanceSessions({ limit: 20 }),
+			listCourses({
+				includeInactive: false,
+				...(access.accessibleCourseIds === "ALL"
+					? {}
+					: { courseIds: access.accessibleCourseIds }),
+			}),
+			listAttendanceSessions({
+				limit: 20,
+				...(access.accessibleCourseIds === "ALL"
+					? {}
+					: { courseIds: access.accessibleCourseIds }),
+			}),
 		]);
 
 		return { success: true as const, courses, sessions };
@@ -77,7 +92,18 @@ export const openAttendanceSessionAction = createServerFn()
 	.validator(openSchema)
 	.handler(async ({ data }) => {
 		try {
-			const { staffId } = await requireManager();
+			const { user, staffId } = await requireManager();
+			const allowed = await canTeacherAccessCourse(
+				user.id,
+				data.courseId,
+				"MANAGE_ATTENDANCE",
+			);
+			if (!allowed) {
+				throw new AuthorizationError(
+					"You can only open attendance registers for subjects you teach.",
+				);
+			}
+
 			const session = await openAttendanceSession({
 				...data,
 				takenById: staffId,
@@ -107,6 +133,20 @@ export const saveAttendanceAction = createServerFn()
 	.handler(async ({ data }) => {
 		try {
 			const { user } = await requireManager();
+			const currentSession = await getAttendanceSession(data.sessionId);
+			if (currentSession) {
+				const allowed = await canTeacherAccessCourse(
+					user.id,
+					currentSession.courseId,
+					"MANAGE_ATTENDANCE",
+				);
+				if (!allowed) {
+					throw new AuthorizationError(
+						"You can only save attendance for subjects you teach.",
+					);
+				}
+			}
+
 			const session = await saveAttendance({ ...data, markedById: user.id });
 
 			return { success: true as const, session };

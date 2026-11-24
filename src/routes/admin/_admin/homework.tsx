@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useSearch } from "@tanstack/react-router";
 import { Loader2, NotebookPen, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ConfirmDialog } from "#/components/common/ConfirmDialog";
@@ -19,7 +19,10 @@ import { getAcademicsDataFn } from "#/packages/academics/server.ts";
 
 export const Route = createFileRoute("/admin/_admin/homework")({
 	beforeLoad: ({ context }) => {
-		if (!context.viewer.permissions.includes("MANAGE_ACADEMICS")) {
+		if (
+			!context.viewer.permissions.includes("MANAGE_ACADEMICS") &&
+			context.viewer.primaryRole !== "STAFF"
+		) {
 			throw redirect({ to: "/admin" });
 		}
 	},
@@ -72,7 +75,12 @@ function parseAttachments(raw: FormDataEntryValue | null) {
 }
 
 function AdminHomework() {
+	const searchParams =
+		(useSearch({ strict: false }) as Record<string, string | undefined>) || {};
+	const queryCourseId = searchParams.courseId;
+
 	const [courses, setCourses] = useState<Array<CourseOption>>([]);
+	const [filterCourseId, setFilterCourseId] = useState<string>(queryCourseId || "");
 	const [assignments, setAssignments] = useState<Array<AssignmentRow>>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -85,12 +93,21 @@ function AdminHomework() {
 
 	const load = useCallback(async () => {
 		const [academics, homework] = await Promise.all([
-			getAcademicsDataFn(),
+			getAcademicsDataFn().catch(() => ({
+				success: false as const,
+				error: "",
+				courses: [],
+			})),
 			getHomeworkDataFn(),
 		]);
 
-		if (!academics.success) setError(academics.error);
-		else setCourses(academics.courses as Array<CourseOption>);
+		if (homework.success && (homework as any).courses) {
+			setCourses((homework as any).courses as Array<CourseOption>);
+		} else if (academics.success) {
+			setCourses(academics.courses as Array<CourseOption>);
+		} else if (!academics.success && !homework.success) {
+			setError(homework.error || academics.error);
+		}
 
 		if (!homework.success) setError(homework.error);
 		else setAssignments(homework.assignments as Array<AssignmentRow>);
@@ -192,7 +209,7 @@ function AdminHomework() {
 					onSubmit={(event) => void submit(event)}
 					className="grid gap-4 md:grid-cols-2"
 				>
-					<Select label="Course" name="courseId" required>
+					<Select label="Course" name="courseId" defaultValue={queryCourseId || ""} required>
 						<option value="">Select…</option>
 						{courses.map((course) => (
 							<option key={course.id} value={course.id}>
@@ -243,6 +260,28 @@ function AdminHomework() {
 				title="Assignments"
 				testId="homework-assignments-panel"
 				bodyClassName="p-0"
+				actions={
+					courses.length > 1 ? (
+						<div className="flex items-center gap-2">
+							<span className="text-xs text-muted-foreground whitespace-nowrap">
+								Filter:
+							</span>
+							<select
+								value={filterCourseId}
+								onChange={(event) => setFilterCourseId(event.target.value)}
+								data-testid="homework-filter-course"
+								className="h-8 rounded-md border border-hairline bg-surface-1 px-2.5 text-xs font-medium text-foreground transition-colors hover:border-hairline-strong focus-ring"
+							>
+								<option value="">All courses ({assignments.length})</option>
+								{courses.map((course) => (
+									<option key={course.id} value={course.id}>
+										{course.code} · {course.name}
+									</option>
+								))}
+							</select>
+						</div>
+					) : undefined
+				}
 			>
 				{isLoading ? (
 					<div className="p-5">
@@ -257,7 +296,16 @@ function AdminHomework() {
 					/>
 				) : (
 					<ul className="divide-y divide-hairline">
-						{assignments.map((assignment) => (
+						{assignments
+							.filter((assignment) => {
+								if (!filterCourseId) return true;
+								const targetCourse = courses.find((c) => c.id === filterCourseId);
+								return (
+									(assignment.course as any).id === filterCourseId ||
+									(targetCourse && assignment.course.code === targetCourse.code)
+								);
+							})
+							.map((assignment) => (
 							<li
 								key={assignment.id}
 								className="group px-5 py-4 transition-colors duration-150 hover:bg-surface-2"

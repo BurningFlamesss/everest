@@ -7,6 +7,10 @@ import {
 } from "#/packages/auth/permissions.ts";
 import { prisma } from "#/packages/db/index.ts";
 import {
+	canTeacherAccessSchedule,
+	getTeacherCourseAccess,
+} from "./teacher-access.ts";
+import {
 	addExamSchedule,
 	createExam,
 	deleteExam,
@@ -18,7 +22,7 @@ import {
 	saveMarks,
 } from "./exams-service.ts";
 
-async function requireManager() {
+async function requireAuthUser() {
 	const { getRequestHeaders } = await import("@tanstack/react-start/server");
 	const session = await auth.api.getSession({ headers: getRequestHeaders() });
 
@@ -26,14 +30,18 @@ async function requireManager() {
 		throw new AuthorizationError("Please sign in to continue");
 	}
 
-	await requirePermission(session.user.id, "MANAGE_EXAMS");
-
 	const staff = await prisma.staff.findUnique({
 		where: { userId: session.user.id },
 		select: { id: true },
 	});
 
 	return { user: session.user, staffId: staff?.id ?? null };
+}
+
+async function requireManager() {
+	const { user, staffId } = await requireAuthUser();
+	await requirePermission(user.id, "MANAGE_EXAMS");
+	return { user, staffId };
 }
 
 function failure(error: unknown) {
@@ -56,7 +64,8 @@ function failure(error: unknown) {
 
 export const getExamOptionsFn = createServerFn().handler(async () => {
 	try {
-		await requireManager();
+		const { user } = await requireAuthUser();
+		const access = await getTeacherCourseAccess(user.id, "MANAGE_EXAMS");
 
 		const [terms, courses] = await Promise.all([
 			prisma.term.findMany({
@@ -64,7 +73,12 @@ export const getExamOptionsFn = createServerFn().handler(async () => {
 				orderBy: [{ academicYear: { startsOn: "desc" } }, { startsOn: "asc" }],
 			}),
 			prisma.course.findMany({
-				where: { isActive: true },
+				where: {
+					isActive: true,
+					...(access.accessibleCourseIds === "ALL"
+						? {}
+						: { id: { in: access.accessibleCourseIds } }),
+				},
 				select: {
 					id: true,
 					code: true,
@@ -179,7 +193,13 @@ export const getExamRosterAction = createServerFn()
 	.validator(z.object({ scheduleId: z.string().min(1) }))
 	.handler(async ({ data }) => {
 		try {
-			await requireManager();
+			const { user } = await requireAuthUser();
+			const allowed = await canTeacherAccessSchedule(user.id, data.scheduleId);
+			if (!allowed) {
+				throw new AuthorizationError(
+					"You can only view exam rosters for subjects you teach.",
+				);
+			}
 			const roster = await getExamRoster(data.scheduleId);
 
 			return { success: true as const, ...roster };
@@ -204,7 +224,13 @@ export const saveMarksAction = createServerFn()
 	)
 	.handler(async ({ data }) => {
 		try {
-			const { staffId } = await requireManager();
+			const { user, staffId } = await requireAuthUser();
+			const allowed = await canTeacherAccessSchedule(user.id, data.scheduleId);
+			if (!allowed) {
+				throw new AuthorizationError(
+					"You can only enter marks for subjects you teach.",
+				);
+			}
 			const roster = await saveMarks({
 				scheduleId: data.scheduleId,
 				enteredById: staffId,

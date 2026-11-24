@@ -13,6 +13,9 @@ export type Permission =
 	| "classes.manage"
 	| "courses.view"
 	| "courses.manage"
+	| "timetable.view"
+	| "homework.view"
+	| "exams.view"
 	| "attendance.view"
 	| "attendance.mark"
 	| "notices.view"
@@ -28,6 +31,8 @@ export type Permission =
 	| "transport.manage"
 	| "payments.view"
 	| "payments.manage"
+	| "fees.view"
+	| "fees.manage"
 	| "website.view"
 	| "website.manage"
 	| "activity.view"
@@ -40,6 +45,9 @@ const STAFF_PERMISSIONS: Permission[] = [
 	"staff.view",
 	"classes.view",
 	"courses.view",
+	"timetable.view",
+	"homework.view",
+	"exams.view",
 	"attendance.view",
 	"attendance.mark",
 	"notices.view",
@@ -64,6 +72,8 @@ const ADMIN_PERMISSIONS: Permission[] = [
 	"transport.manage",
 	"payments.view",
 	"payments.manage",
+	"fees.view",
+	"fees.manage",
 	"website.view",
 	"website.manage",
 	"activity.view",
@@ -80,13 +90,25 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
 	super_admin: SUPER_ADMIN_PERMISSIONS,
 	admin: ADMIN_PERMISSIONS,
 	staff: STAFF_PERMISSIONS,
-	student: ["overview.view", "notices.view", "events.view", "gallery.view"],
+	student: [
+		"overview.view",
+		"notices.view",
+		"events.view",
+		"gallery.view",
+		"timetable.view",
+		"homework.view",
+		"exams.view",
+	],
 	guardian: [
 		"overview.view",
 		"notices.view",
 		"events.view",
 		"gallery.view",
 		"payments.view",
+		"fees.view",
+		"timetable.view",
+		"homework.view",
+		"exams.view",
 	],
 };
 

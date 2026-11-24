@@ -274,30 +274,82 @@ export async function listTimetableOptions() {
 }
 
 export async function getMyTimetable(userId: string) {
-	const staff = await prisma.staff.findUnique({
-		where: { userId },
-		select: { id: true },
-	});
-
-	if (!staff) return [];
+	const [staff, student] = await Promise.all([
+		prisma.staff.findUnique({
+			where: { userId },
+			select: { id: true },
+		}),
+		prisma.student.findUnique({
+			where: { userId },
+			select: {
+				id: true,
+				grade: true,
+				section: true,
+				enrollments: { select: { courseId: true } },
+			},
+		}),
+	]);
 
 	const year = await prisma.academicYear.findFirst({
 		where: { isActive: true },
 		select: { id: true },
 	});
 
-	return prisma.timetableSlot.findMany({
-		where: {
-			staffId: staff.id,
-			...(year ? { academicYearId: year.id } : {}),
-		},
-		include: {
-			class: { select: { name: true } },
-			course: {
-				select: { code: true, name: true, grade: true, section: true },
+	if (staff) {
+		return prisma.timetableSlot.findMany({
+			where: {
+				staffId: staff.id,
+				...(year ? { academicYearId: year.id } : {}),
 			},
-			classroom: { select: { name: true } },
-		},
-		orderBy: [{ weekday: "asc" }, { periodIndex: "asc" }],
-	});
+			include: {
+				class: { select: { name: true } },
+				course: {
+					select: { code: true, name: true, grade: true, section: true },
+				},
+				classroom: { select: { name: true } },
+			},
+			orderBy: [{ weekday: "asc" }, { periodIndex: "asc" }],
+		});
+	}
+
+	if (student) {
+		const courseIds = student.enrollments.map((e) => e.courseId);
+
+		let classIds: string[] = [];
+		if (student.grade) {
+			const matchingClasses = await prisma.schoolClass.findMany({
+				where: {
+					grade: student.grade,
+					...(student.section ? { section: student.section } : {}),
+				},
+				select: { id: true },
+			});
+			classIds = matchingClasses.map((c) => c.id);
+		}
+
+		if (classIds.length === 0 && courseIds.length === 0) {
+			return [];
+		}
+
+		return prisma.timetableSlot.findMany({
+			where: {
+				...(year ? { academicYearId: year.id } : {}),
+				OR: [
+					...(classIds.length > 0 ? [{ classId: { in: classIds } }] : []),
+					...(courseIds.length > 0 ? [{ courseId: { in: courseIds } }] : []),
+				],
+			},
+			include: {
+				class: { select: { name: true } },
+				course: {
+					select: { code: true, name: true, grade: true, section: true },
+				},
+				classroom: { select: { name: true } },
+				facultyMember: { select: { name: true } },
+			},
+			orderBy: [{ weekday: "asc" }, { periodIndex: "asc" }],
+		});
+	}
+
+	return [];
 }

@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useSearch } from "@tanstack/react-router";
 import { Award, Loader2, Megaphone, Plus, Save, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ConfirmDialog } from "#/components/common/ConfirmDialog";
@@ -23,7 +23,10 @@ import {
 
 export const Route = createFileRoute("/admin/_admin/exams")({
 	beforeLoad: ({ context }) => {
-		if (!context.viewer.permissions.includes("MANAGE_EXAMS")) {
+		if (
+			!context.viewer.permissions.includes("MANAGE_EXAMS") &&
+			context.viewer.primaryRole !== "STAFF"
+		) {
 			throw redirect({ to: "/admin" });
 		}
 	},
@@ -76,6 +79,12 @@ interface Roster {
 }
 
 function AdminExams() {
+	const { viewer } = Route.useRouteContext();
+	const canManage = viewer.permissions.includes("MANAGE_EXAMS");
+	const searchParams =
+		(useSearch({ strict: false }) as Record<string, string | undefined>) || {};
+	const queryCourseId = searchParams.courseId;
+
 	const [terms, setTerms] = useState<Array<TermOption>>([]);
 	const [courses, setCourses] = useState<Array<CourseOption>>([]);
 	const [exams, setExams] = useState<Array<ExamRow>>([]);
@@ -199,6 +208,29 @@ function AdminExams() {
 		);
 	};
 
+	useEffect(() => {
+		if (queryCourseId && exams.length > 0 && !roster) {
+			const matchingExam = exams.find((exam) =>
+				exam.schedules.some(
+					(s) =>
+						(s.course as any).id === queryCourseId ||
+						s.course.code === queryCourseId,
+				),
+			);
+			if (matchingExam) {
+				setSelectedExamId(matchingExam.id);
+				const matchingSchedule = matchingExam.schedules.find(
+					(s) =>
+						(s.course as any).id === queryCourseId ||
+						s.course.code === queryCourseId,
+				);
+				if (matchingSchedule) {
+					void openRoster(matchingSchedule.id);
+				}
+			}
+		}
+	}, [queryCourseId, exams, roster]);
+
 	const save = async () => {
 		if (!roster) return;
 
@@ -306,39 +338,41 @@ function AdminExams() {
 				</div>
 			) : null}
 
-			<Panel
-				title="New exam"
-				description="Create an exam window for a term."
-				testId="exams-new-exam-panel"
-				bodyClassName="p-5"
-			>
-				<form
-					onSubmit={(event) => void createExam(event)}
-					className="grid gap-4 md:grid-cols-4"
+			{canManage && (
+				<Panel
+					title="New exam"
+					description="Create an exam window for a term."
+					testId="exams-new-exam-panel"
+					bodyClassName="p-5"
 				>
-					<Select label="Term" name="termId" required>
-						<option value="">Select…</option>
-						{terms.map((term) => (
-							<option key={term.id} value={term.id}>
-								{term.academicYear.name} · {term.name}
-							</option>
-						))}
-					</Select>
-					<Input label="Name" name="name" required placeholder="Mid-term" />
-					<Input label="Starts" name="startsOn" type="date" required />
-					<Input label="Ends" name="endsOn" type="date" required />
-					<div className="md:col-span-4">
-						<Button type="submit" disabled={isSubmitting} className="gap-1.5">
-							{isSubmitting ? (
-								<Loader2 className="h-3.5 w-3.5 animate-spin" />
-							) : (
-								<Award className="h-3.5 w-3.5" />
-							)}
-							Create exam
-						</Button>
-					</div>
-				</form>
-			</Panel>
+					<form
+						onSubmit={(event) => void createExam(event)}
+						className="grid gap-4 md:grid-cols-4"
+					>
+						<Select label="Term" name="termId" required>
+							<option value="">Select…</option>
+							{terms.map((term) => (
+								<option key={term.id} value={term.id}>
+									{term.academicYear.name} · {term.name}
+								</option>
+							))}
+						</Select>
+						<Input label="Name" name="name" required placeholder="Mid-term" />
+						<Input label="Starts" name="startsOn" type="date" required />
+						<Input label="Ends" name="endsOn" type="date" required />
+						<div className="md:col-span-4">
+							<Button type="submit" disabled={isSubmitting} className="gap-1.5">
+								{isSubmitting ? (
+									<Loader2 className="h-3.5 w-3.5 animate-spin" />
+								) : (
+									<Award className="h-3.5 w-3.5" />
+								)}
+								Create exam
+							</Button>
+						</div>
+					</form>
+				</Panel>
+			)}
 
 			<Panel
 				title="Exams"
@@ -397,64 +431,68 @@ function AdminExams() {
 									{selectedExam.term.name}
 								</p>
 							</div>
-							<div className="flex gap-2">
-								{!selectedExam.isPublished ? (
+							{canManage && (
+								<div className="flex gap-2">
+									{!selectedExam.isPublished ? (
+										<Button
+											size="sm"
+											className="gap-1.5"
+											data-testid={`exams-publish-${selectedExam.id}`}
+											onClick={() => setPendingPublish(selectedExam)}
+										>
+											<Megaphone className="h-3.5 w-3.5" /> Publish results
+										</Button>
+									) : null}
 									<Button
+										variant="outline"
 										size="sm"
-										className="gap-1.5"
-										data-testid={`exams-publish-${selectedExam.id}`}
-										onClick={() => setPendingPublish(selectedExam)}
+										className="gap-1.5 text-destructive hover:bg-destructive/10"
+										data-testid={`exams-delete-${selectedExam.id}`}
+										onClick={() => setPendingExam(selectedExam)}
 									>
-										<Megaphone className="h-3.5 w-3.5" /> Publish results
+										<Trash2 className="h-3.5 w-3.5" /> Delete
 									</Button>
-								) : null}
-								<Button
-									variant="outline"
-									size="sm"
-									className="gap-1.5 text-destructive hover:bg-destructive/10"
-									data-testid={`exams-delete-${selectedExam.id}`}
-									onClick={() => setPendingExam(selectedExam)}
-								>
-									<Trash2 className="h-3.5 w-3.5" /> Delete
-								</Button>
-							</div>
+								</div>
+							)}
 						</div>
 
-						<form
-							onSubmit={(event) => void addSchedule(event)}
-							className="grid gap-3 rounded-lg border border-hairline bg-surface-1 p-4 md:grid-cols-5"
-							data-testid="exams-add-paper-form"
-						>
-							<Select label="Course" name="courseId" required>
-								<option value="">Select…</option>
-								{courses.map((course) => (
-									<option key={course.id} value={course.id}>
-										{course.code} · {course.name}
-									</option>
-								))}
-							</Select>
-							<Input label="Date" name="date" type="date" required />
-							<Input
-								label="Max marks"
-								name="maxMarks"
-								type="number"
-								min={1}
-								max={1000}
-								defaultValue={100}
-							/>
-							<Input label="Room" name="room" className="md:col-span-2" />
-							<div className="md:col-span-5">
-								<Button
-									type="submit"
-									variant="outline"
-									size="sm"
-									className="gap-1.5"
-									disabled={isSubmitting}
-								>
-									<Plus className="h-3.5 w-3.5" /> Add paper
-								</Button>
-							</div>
-						</form>
+						{canManage && (
+							<form
+								onSubmit={(event) => void addSchedule(event)}
+								className="grid gap-3 rounded-lg border border-hairline bg-surface-1 p-4 md:grid-cols-5"
+								data-testid="exams-add-paper-form"
+							>
+								<Select label="Course" name="courseId" required>
+									<option value="">Select…</option>
+									{courses.map((course) => (
+										<option key={course.id} value={course.id}>
+											{course.code} · {course.name}
+										</option>
+									))}
+								</Select>
+								<Input label="Date" name="date" type="date" required />
+								<Input
+									label="Max marks"
+									name="maxMarks"
+									type="number"
+									min={1}
+									max={1000}
+									defaultValue={100}
+								/>
+								<Input label="Room" name="room" className="md:col-span-2" />
+								<div className="md:col-span-5">
+									<Button
+										type="submit"
+										variant="outline"
+										size="sm"
+										className="gap-1.5"
+										disabled={isSubmitting}
+									>
+										<Plus className="h-3.5 w-3.5" /> Add paper
+									</Button>
+								</div>
+							</form>
+						)}
 
 						{selectedExam.schedules.length === 0 ? (
 							<p
@@ -491,16 +529,18 @@ function AdminExams() {
 											>
 												Enter marks
 											</Button>
-											<Button
-												variant="ghost"
-												size="icon"
-												className="h-8 w-8 text-destructive"
-												aria-label="Delete paper"
-												data-testid={`exams-schedule-delete-${schedule.id}`}
-												onClick={() => setPendingSchedule(schedule)}
-											>
-												<Trash2 className="h-4 w-4" />
-											</Button>
+											{canManage && (
+												<Button
+													variant="ghost"
+													size="icon"
+													className="h-8 w-8 text-destructive"
+													aria-label="Delete paper"
+													data-testid={`exams-schedule-delete-${schedule.id}`}
+													onClick={() => setPendingSchedule(schedule)}
+												>
+													<Trash2 className="h-4 w-4" />
+												</Button>
+											)}
 										</div>
 									</li>
 								))}

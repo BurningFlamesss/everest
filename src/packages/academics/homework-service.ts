@@ -9,9 +9,17 @@ export interface AssignmentInput {
 	createdById?: string | null;
 }
 
-export async function listAssignments(courseId?: string) {
+export async function listAssignments(courseId?: string | string[]) {
+	let whereCourseId = undefined;
+	if (courseId) {
+		if (Array.isArray(courseId)) {
+			whereCourseId = { in: courseId };
+		} else {
+			whereCourseId = courseId;
+		}
+	}
 	return prisma.assignment.findMany({
-		where: courseId ? { courseId } : undefined,
+		where: whereCourseId ? { courseId: whereCourseId } : undefined,
 		include: {
 			course: { select: { id: true, code: true, name: true, grade: true } },
 			attachments: {

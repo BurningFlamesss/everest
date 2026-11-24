@@ -164,12 +164,14 @@ export async function deleteClass(id: string) {
 export async function listCourses(options?: {
 	includeInactive?: boolean;
 	search?: string;
+	courseIds?: string[];
 }) {
 	const search = options?.search?.trim();
 
 	return prisma.course.findMany({
 		where: {
 			...(options?.includeInactive ? {} : { isActive: true }),
+			...(options?.courseIds ? { id: { in: options.courseIds } } : {}),
 			...(search
 				? {
 						OR: [

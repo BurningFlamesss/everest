@@ -56,9 +56,23 @@ function mismatchRegion(error: unknown) {
 		: undefined;
 }
 
+function getEndpointUrl(): string {
+	const raw = serverEnv.S3_ENDPOINT.trim();
+	if (raw.startsWith("http://") || raw.startsWith("https://")) {
+		return raw;
+	}
+	const protocol = serverEnv.S3_USE_SSL ? "https" : "http";
+	const port = serverEnv.S3_PORT;
+	const isStandard =
+		(serverEnv.S3_USE_SSL && port === 443) ||
+		(!serverEnv.S3_USE_SSL && port === 80);
+	const host = raw.includes(":") && !raw.startsWith("[") ? `[${raw}]` : raw;
+	return `${protocol}://${host}${isStandard ? "" : `:${port}`}`;
+}
+
 function createClient(region: string) {
 	return new S3Client({
-		endpoint: `${serverEnv.S3_USE_SSL ? "https" : "http"}://${serverEnv.S3_ENDPOINT}:${serverEnv.S3_PORT}`,
+		endpoint: getEndpointUrl(),
 		region,
 		forcePathStyle: true,
 		followRegionRedirects: true,
@@ -137,7 +151,8 @@ export class S3StorageDriver implements StorageDriver {
 							!error ||
 							typeof error !== "object" ||
 							!("name" in error) ||
-							error.name !== "BucketAlreadyOwnedByYou"
+							(error.name !== "BucketAlreadyOwnedByYou" &&
+								error.name !== "BucketAlreadyExists")
 						) {
 							throw error;
 						}

@@ -16,10 +16,17 @@ export function normalizeAttendanceDate(value: Date | string): Date {
 
 export async function listAttendanceSessions(options?: {
 	courseId?: string;
+	courseIds?: string[];
 	limit?: number;
 }) {
+	const whereCourse = options?.courseId
+		? options.courseId
+		: options?.courseIds
+			? { in: options.courseIds }
+			: undefined;
+
 	return prisma.attendanceSession.findMany({
-		where: options?.courseId ? { courseId: options.courseId } : undefined,
+		where: whereCourse ? { courseId: whereCourse } : undefined,
 		include: {
 			course: { select: { id: true, code: true, name: true } },
 			_count: { select: { records: true } },

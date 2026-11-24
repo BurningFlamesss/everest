@@ -5,6 +5,7 @@ import {
 	AuthorizationError,
 	requirePermission,
 } from "#/packages/auth/permissions.ts";
+import { prisma } from "#/packages/db/index.ts";
 import {
 	createTimetableSlot,
 	deleteTimetableSlot,
@@ -13,6 +14,31 @@ import {
 	listTimetableOptions,
 	updateTimetableSlot,
 } from "./timetable-service.ts";
+
+async function requireReader() {
+	const { getRequestHeaders } = await import("@tanstack/react-start/server");
+	const session = await auth.api.getSession({ headers: getRequestHeaders() });
+
+	if (!session?.user?.id) {
+		throw new AuthorizationError("Please sign in to continue");
+	}
+
+	const user = await prisma.user.findUnique({
+		where: { id: session.user.id },
+		select: { userRoles: { select: { role: true } } },
+	});
+
+	const roles = (user?.userRoles ?? []).map((r) => r.role);
+	const isStaffOrAdmin = roles.some((r) =>
+		["SUPERADMIN", "ADMIN", "STAFF"].includes(r),
+	);
+
+	if (!isStaffOrAdmin) {
+		await requirePermission(session.user.id, "MANAGE_TIMETABLE");
+	}
+
+	return session.user;
+}
 
 async function requireManager() {
 	const { getRequestHeaders } = await import("@tanstack/react-start/server");
@@ -60,7 +86,7 @@ const slotSchema = z.object({
 
 export const getTimetableOptionsFn = createServerFn().handler(async () => {
 	try {
-		await requireManager();
+		await requireReader();
 		const options = await listTimetableOptions();
 
 		return { success: true as const, ...options };
@@ -80,7 +106,7 @@ export const getTimetableDataFn = createServerFn()
 	)
 	.handler(async ({ data }) => {
 		try {
-			await requireManager();
+			await requireReader();
 			const slots = await listTimetable(data?.academicYearId, data?.classId);
 
 			return { success: true as const, slots };

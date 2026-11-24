@@ -702,9 +702,9 @@ async function seedTestUsers(organizationId: string, branchId: string) {
     role: Role;
   }> = [
     {
-      email: "admin@gmail.com",
-      password: "everestadmin",
-      name: "Admin",
+      email: serverEnv.SUPER_ADMIN_EMAIL,
+      password: serverEnv.SUPER_ADMIN_PASSWORD,
+      name: serverEnv.SUPER_ADMIN_NAME,
       role: "SUPERADMIN",
     },
   ];

@@ -37,7 +37,10 @@ import {
 
 export const Route = createFileRoute("/admin/_admin/timetable")({
 	beforeLoad: ({ context }) => {
-		if (!context.viewer.permissions.includes("MANAGE_TIMETABLE")) {
+		if (
+			!context.viewer.permissions.includes("MANAGE_TIMETABLE") &&
+			context.viewer.primaryRole !== "STAFF"
+		) {
 			throw redirect({ to: "/admin" });
 		}
 	},
@@ -155,6 +158,9 @@ interface InlineEditState {
 }
 
 function AdminTimetable() {
+	const { viewer } = Route.useRouteContext();
+	const canManage = viewer.permissions.includes("MANAGE_TIMETABLE");
+
 	const [years, setYears] = useState<Array<YearOption>>([]);
 	const [classes, setClasses] = useState<Array<ClassOption>>([]);
 	const [courses, setCourses] = useState<Array<CourseOption>>([]);
@@ -763,7 +769,9 @@ function AdminTimetable() {
 				<div className="flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-xs text-primary">
 					<Sparkles className="h-4 w-4 shrink-0" />
 					<span className="font-medium">
-						Double-click any cell to assign or edit the subject instantly.
+						{canManage
+							? "Double-click any cell to assign or edit the subject instantly."
+							: "Staff timetable view: Browse weekly class schedules, teachers, and assigned rooms."}
 					</span>
 				</div>
 			</div>
@@ -842,9 +850,11 @@ function AdminTimetable() {
 														)}
 														data-testid={`timetable-cell-${day.id}-${period}`}
 														onDoubleClick={() =>
-															startInlineEdit(day.id, period, slot)
+															canManage && startInlineEdit(day.id, period, slot)
 														}
-														title="Double-click to edit subject"
+														title={
+															canManage ? "Double-click to edit subject" : undefined
+														}
 													>
 														{isEditing ? (
 															/* Inline Editor on Double-Click */
@@ -1004,37 +1014,52 @@ function AdminTimetable() {
 																			: ""}
 																	</p>
 
-																	<div className="flex items-center justify-between pt-1">
-																		<button
-																			type="button"
-																			onClick={() => setPendingSlot(slot)}
-																			className="inline-flex items-center gap-1 rounded text-[10px] font-medium text-muted-foreground hover:text-destructive focus-ring opacity-60 group-hover/card:opacity-100 transition-opacity"
-																			data-testid={`timetable-slot-remove-${slot.id}`}
-																		>
-																			<Trash2 className="h-2.5 w-2.5" /> Remove
-																		</button>
+																	{canManage && (
+																		<div className="flex items-center justify-between pt-1">
+																			<button
+																				type="button"
+																				onClick={() => setPendingSlot(slot)}
+																				className="inline-flex items-center gap-1 rounded text-[10px] font-medium text-muted-foreground hover:text-destructive focus-ring opacity-60 group-hover/card:opacity-100 transition-opacity"
+																				data-testid={`timetable-slot-remove-${slot.id}`}
+																			>
+																				<Trash2 className="h-2.5 w-2.5" /> Remove
+																			</button>
 
-																		<span className="text-[9px] text-primary/70 opacity-0 group-hover/card:opacity-100 font-mono">
-																			2× click to edit
-																		</span>
-																	</div>
+																			<span className="text-[9px] text-primary/70 opacity-0 group-hover/card:opacity-100 font-mono">
+																				2× click to edit
+																			</span>
+																		</div>
+																	)}
 																</div>
 															</div>
 														) : (
 															/* Empty Cell */
 															<div
-																className="flex h-full min-h-[94px] cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-hairline/80 p-2 text-center transition-colors hover:border-primary/50 hover:bg-primary/[0.04]"
+																className={cn(
+																	"flex h-full min-h-[94px] flex-col items-center justify-center rounded-lg border border-dashed border-hairline/80 p-2 text-center transition-colors",
+																	canManage
+																		? "cursor-pointer hover:border-primary/50 hover:bg-primary/[0.04]"
+																		: "opacity-40",
+																)}
 																onClick={() =>
-																	startInlineEdit(day.id, period)
+																	canManage && startInlineEdit(day.id, period)
 																}
 															>
-																<Plus className="h-4 w-4 text-muted-foreground/40 transition-colors group-hover:text-primary" />
-																<span className="mt-1 text-[11px] text-muted-foreground/60 transition-colors group-hover:text-primary">
-																	Add subject
-																</span>
-																<span className="text-[9px] text-muted-foreground/40 font-mono">
-																	(2× click)
-																</span>
+																{canManage ? (
+																	<>
+																		<Plus className="h-4 w-4 text-muted-foreground/40 transition-colors group-hover:text-primary" />
+																		<span className="mt-1 text-[11px] text-muted-foreground/60 transition-colors group-hover:text-primary">
+																			Add subject
+																		</span>
+																		<span className="text-[9px] text-muted-foreground/40 font-mono">
+																			(2× click)
+																		</span>
+																	</>
+																) : (
+																	<span className="text-[11px] text-muted-foreground/50">
+																		Free period
+																	</span>
+																)}
 															</div>
 														)}
 													</td>
@@ -1096,8 +1121,9 @@ function AdminTimetable() {
 			</Panel>
 
 			{/* Detailed Add Slot Panel */}
-			<Panel
-				title="Add slot manually"
+			{canManage && (
+				<Panel
+					title="Add slot manually"
 				description="Or configure start and end times explicitly for custom periods."
 				testId="timetable-add-slot-panel"
 				bodyClassName="p-5"
@@ -1233,6 +1259,7 @@ function AdminTimetable() {
 					</div>
 				</form>
 			</Panel>
+			)}
 
 			<ConfirmDialog
 				open={!!pendingSlot}

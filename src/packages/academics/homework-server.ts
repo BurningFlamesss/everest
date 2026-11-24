@@ -1,10 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { auth } from "#/packages/auth/auth.ts";
+import { AuthorizationError } from "#/packages/auth/permissions.ts";
+import { prisma } from "#/packages/db/index.ts";
 import {
-	AuthorizationError,
-	requirePermission,
-} from "#/packages/auth/permissions.ts";
+	canTeacherAccessAssignment,
+	canTeacherAccessCourse,
+	getTeacherCourseAccess,
+} from "./teacher-access.ts";
 import {
 	createAssignment,
 	deleteAssignment,
@@ -13,15 +16,13 @@ import {
 	updateAssignment,
 } from "./homework-service.ts";
 
-async function requireManager() {
+async function requireAuthUser() {
 	const { getRequestHeaders } = await import("@tanstack/react-start/server");
 	const session = await auth.api.getSession({ headers: getRequestHeaders() });
 
 	if (!session?.user?.id) {
 		throw new AuthorizationError("Please sign in to continue");
 	}
-
-	await requirePermission(session.user.id, "MANAGE_ACADEMICS");
 
 	return session.user;
 }
@@ -61,10 +62,45 @@ export const getHomeworkDataFn = createServerFn()
 	.validator(z.object({ courseId: z.string().optional() }).optional())
 	.handler(async ({ data }) => {
 		try {
-			await requireManager();
-			const assignments = await listAssignments(data?.courseId);
+			const user = await requireAuthUser();
+			const access = await getTeacherCourseAccess(user.id, "MANAGE_ACADEMICS");
 
-			return { success: true as const, assignments };
+			if (
+				access.accessibleCourseIds !== "ALL" &&
+				access.accessibleCourseIds.length === 0
+			) {
+				throw new AuthorizationError(
+					"You do not have permission to manage homework or have not been assigned any teaching subjects.",
+				);
+			}
+
+			if (data?.courseId && access.accessibleCourseIds !== "ALL") {
+				if (!access.accessibleCourseIds.includes(data.courseId)) {
+					throw new AuthorizationError("You do not teach this subject.");
+				}
+			}
+
+			const courseFilter = data?.courseId
+				? data.courseId
+				: access.accessibleCourseIds === "ALL"
+					? undefined
+					: access.accessibleCourseIds;
+
+			const [assignments, courses] = await Promise.all([
+				listAssignments(courseFilter),
+				prisma.course.findMany({
+					where: {
+						isActive: true,
+						...(access.accessibleCourseIds === "ALL"
+							? {}
+							: { id: { in: access.accessibleCourseIds } }),
+					},
+					select: { id: true, code: true, name: true },
+					orderBy: [{ grade: "asc" }, { name: "asc" }],
+				}),
+			]);
+
+			return { success: true as const, assignments, courses };
 		} catch (error) {
 			return failure(error);
 		}
@@ -74,7 +110,18 @@ export const createAssignmentAction = createServerFn()
 	.validator(assignmentSchema)
 	.handler(async ({ data }) => {
 		try {
-			const user = await requireManager();
+			const user = await requireAuthUser();
+			const allowed = await canTeacherAccessCourse(
+				user.id,
+				data.courseId,
+				"MANAGE_ACADEMICS",
+			);
+			if (!allowed) {
+				throw new AuthorizationError(
+					"You can only create assignments for subjects you teach.",
+				);
+			}
+
 			const assignment = await createAssignment({
 				...data,
 				dueAt: new Date(data.dueAt),
@@ -91,7 +138,27 @@ export const updateAssignmentAction = createServerFn()
 	.validator(assignmentSchema.partial().extend({ id: z.string().min(1) }))
 	.handler(async ({ data }) => {
 		try {
-			await requireManager();
+			const user = await requireAuthUser();
+			const allowed = await canTeacherAccessAssignment(user.id, data.id);
+			if (!allowed) {
+				throw new AuthorizationError(
+					"You can only edit assignments for subjects you teach.",
+				);
+			}
+
+			if (data.courseId) {
+				const courseAllowed = await canTeacherAccessCourse(
+					user.id,
+					data.courseId,
+					"MANAGE_ACADEMICS",
+				);
+				if (!courseAllowed) {
+					throw new AuthorizationError(
+						"You can only assign homework to subjects you teach.",
+					);
+				}
+			}
+
 			const { id, dueAt, ...input } = data;
 			const assignment = await updateAssignment(id, {
 				...input,
@@ -108,7 +175,14 @@ export const deleteAssignmentAction = createServerFn()
 	.validator(z.object({ id: z.string().min(1) }))
 	.handler(async ({ data }) => {
 		try {
-			await requireManager();
+			const user = await requireAuthUser();
+			const allowed = await canTeacherAccessAssignment(user.id, data.id);
+			if (!allowed) {
+				throw new AuthorizationError(
+					"You can only delete assignments for subjects you teach.",
+				);
+			}
+
 			await deleteAssignment(data.id);
 
 			return { success: true as const };

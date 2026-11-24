@@ -1,13 +1,18 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import {
 	ArrowRight,
+	Award,
 	Bell,
 	BookOpen,
 	CalendarDays,
 	ClipboardCheck,
+	CreditCard,
 	LayoutDashboard,
+	NotebookPen,
+	UserCheck,
 	Users,
 } from "lucide-react";
+import { useMemo } from "react";
 import { STAGGER } from "#/lib/motion";
 import { getViewerFn } from "#/packages/auth/server/viewer.ts";
 import { getMyNoticesFn } from "#/packages/content/server.ts";
@@ -43,38 +48,96 @@ export const Route = createFileRoute("/_portal/dashboard")({
 	component: Dashboard,
 });
 
-const shortcuts = [
-	{
-		label: "Notices",
-		description: "Read the latest school announcements.",
-		to: "/notices",
-		icon: Bell,
-	},
-	{
-		label: "Events",
-		description: "See what is coming up on the school calendar.",
-		to: "/events",
-		icon: CalendarDays,
-	},
-	{
-		label: "Clubs",
-		description: "Explore the clubs students can join.",
-		to: "/clubs",
-		icon: BookOpen,
-	},
-	{
-		label: "My records",
-		description:
-			"Courses, attendance and bus details for you or your children.",
-		to: "/my-records",
-		icon: ClipboardCheck,
-	},
-] as const;
-
 function Dashboard() {
 	const { viewer } = Route.useRouteContext();
 	const { notices, summary } = Route.useLoaderData();
 	const role = viewer.primaryRole ?? "USER";
+
+	const shortcuts = useMemo(() => {
+		if (role === "STAFF") {
+			return [
+				{
+					label: "My classes",
+					description: "Your courses, today's periods and pending registers.",
+					to: "/my-classes",
+					icon: BookOpen,
+				},
+				{
+					label: "Attendance",
+					description: "Mark attendance registers for your classes.",
+					to: "/admin/attendance",
+					icon: UserCheck,
+				},
+				{
+					label: "Homework",
+					description: "Publish assignments and track due dates.",
+					to: "/admin/homework",
+					icon: NotebookPen,
+				},
+				{
+					label: "Exams & Marks",
+					description: "Grade student assessments and submit exam marks.",
+					to: "/admin/exams",
+					icon: Award,
+				},
+			];
+		}
+		if (role === "STUDENT" || role === "GUARDIAN") {
+			return [
+				{
+					label: "My records",
+					description: "Courses, attendance records and bus route details.",
+					to: "/my-records",
+					icon: ClipboardCheck,
+				},
+				{
+					label: "Homework",
+					description: "Active assignments, instructions and due dates.",
+					to: "/my-homework",
+					icon: NotebookPen,
+				},
+				{
+					label: "Exam results",
+					description: "Check published exam marks and term reports.",
+					to: "/my-results",
+					icon: Award,
+				},
+				{
+					label: "Fees & Invoices",
+					description: "Review fee statements, receipts and balances.",
+					to: "/my-fees",
+					icon: CreditCard,
+				},
+			];
+		}
+		return [
+			{
+				label: "Notices",
+				description: "Read the latest school announcements.",
+				to: "/notices",
+				icon: Bell,
+			},
+			{
+				label: "Events",
+				description: "See what is coming up on the school calendar.",
+				to: "/events",
+				icon: CalendarDays,
+			},
+			{
+				label: "Clubs",
+				description: "Explore the clubs students can join.",
+				to: "/clubs",
+				icon: BookOpen,
+			},
+			{
+				label: "My records",
+				description:
+					"Courses, attendance and bus details for you or your children.",
+				to: "/my-records",
+				icon: ClipboardCheck,
+			},
+		];
+	}, [role]);
 
 	return (
 		<PageFrame testId="dashboard-page" dense>

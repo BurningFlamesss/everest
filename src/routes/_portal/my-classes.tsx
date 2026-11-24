@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { ClipboardCheck } from "lucide-react";
+import { Award, ClipboardCheck, NotebookPen, UserCheck } from "lucide-react";
 import { STAGGER } from "#/lib/motion";
 import { getMyClassesFn } from "#/packages/academics/staff-server.ts";
 import { getViewerFn } from "#/packages/auth/server/viewer.ts";
@@ -77,9 +77,17 @@ function MyClasses() {
 													{slot.classroom ? ` · ${slot.classroom.name}` : ""}
 												</p>
 											</div>
-											<Button variant="link" size="sm" asChild>
-												<Link to="/admin/attendance">Take attendance</Link>
-											</Button>
+											<div className="flex items-center gap-2">
+												<Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs" asChild>
+													<Link to="/admin/attendance">
+														<UserCheck className="h-3.5 w-3.5 text-muted-foreground" />
+														Take attendance
+													</Link>
+												</Button>
+												<Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground hover:text-foreground" asChild>
+													<Link to="/admin/timetable">Routine</Link>
+												</Button>
+											</div>
 										</li>
 									))}
 								</ul>
@@ -119,18 +127,38 @@ function MyClasses() {
 													{course._count.enrollments === 1 ? "" : "s"}
 												</p>
 											</div>
-											<span
-												className={
-													course.registerTakenToday
-														? "inline-flex items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2.5 py-1 text-[11px] font-medium text-success"
-														: "inline-flex items-center gap-1 rounded-full border border-warning/30 bg-warning/10 px-2.5 py-1 text-[11px] font-medium text-warning"
-												}
-											>
-												<ClipboardCheck className="h-3 w-3" />
-												{course.registerTakenToday
-													? "Register taken"
-													: "Register pending"}
-											</span>
+											<div className="flex flex-wrap items-center gap-2">
+												<span
+													className={
+														course.registerTakenToday
+															? "inline-flex items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2.5 py-1 text-[11px] font-medium text-success"
+															: "inline-flex items-center gap-1 rounded-full border border-warning/30 bg-warning/10 px-2.5 py-1 text-[11px] font-medium text-warning"
+													}
+												>
+													<ClipboardCheck className="h-3 w-3" />
+													{course.registerTakenToday
+														? "Register taken"
+														: "Register pending"}
+												</span>
+												<Button variant="outline" size="sm" className="h-8 gap-1 text-xs" asChild>
+													<Link to="/admin/attendance" search={{ courseId: course.id }}>
+														<UserCheck className="h-3.5 w-3.5 text-muted-foreground" />
+														Attendance
+													</Link>
+												</Button>
+												<Button variant="outline" size="sm" className="h-8 gap-1 text-xs" asChild>
+													<Link to="/admin/homework" search={{ courseId: course.id }}>
+														<NotebookPen className="h-3.5 w-3.5 text-muted-foreground" />
+														Homework
+													</Link>
+												</Button>
+												<Button variant="outline" size="sm" className="h-8 gap-1 text-xs" asChild>
+													<Link to="/admin/exams" search={{ courseId: course.id }}>
+														<Award className="h-3.5 w-3.5 text-muted-foreground" />
+														Marks
+													</Link>
+												</Button>
+											</div>
 										</li>
 									))}
 								</ul>
